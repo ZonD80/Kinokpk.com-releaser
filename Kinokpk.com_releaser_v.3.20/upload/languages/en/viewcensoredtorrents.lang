@@ -1,0 +1,10 @@
+error=Error
+success=Successfully
+ban_releases=Ban releases
+no_fields_blank=Do not leave any fields blank.
+ban_uninstalled=The ban has been successfully uninstalled.<br /> <a href="viewcensoredtorrents.php">list of bans</a>
+not_permission_prohibitions=You do not have permission to remove the prohibitions.
+title=Title
+reason_ban=The reason for the ban
+more=More
+add_ban=Add a ban

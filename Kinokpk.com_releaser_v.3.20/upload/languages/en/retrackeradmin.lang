@@ -1,0 +1,14 @@
+panel_name=Management retrackers
+$tracker_lang['panel_notice'] = 'This page allows you to manage retrackers<br />
+Warning, this <b>RETRACKERS</b>,and they will be added to the torrent file only <b> when user downloading torrent!
+You <b>cant</b> access any statistics of this trackers.<br />
+<b><u>Subnet Mask can be filled only 1 IP address, or a mask in the format of CIDR </ u> </ b> <br />
+Leave the field blank if you wish to register retracker for ALL users.';
+add_retracker=Add retracker
+order=Order
+announce_url=Announce URL
+subnet_mask=Subnet mask
+edit_delete=Edit/Delete
+are_you_sure=Are you sure?
+save_order=Save order
+editing_retracker=Edit retracker

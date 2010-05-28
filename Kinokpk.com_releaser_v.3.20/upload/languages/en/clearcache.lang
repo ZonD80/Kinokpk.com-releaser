@@ -1,0 +1,11 @@
+error=Error
+cleaning_cache=Cleaning cache
+select_cache=Select to clear the cache
+name_cache=Name cache
+select_all=Select all
+mark_all=Mark all
+clean=Clean!
+dont_set_cache=Not selected cache cleaning
+cache=Cache
+succ_purif=was successfully cleaned
+cache_cleared=Cache cleared

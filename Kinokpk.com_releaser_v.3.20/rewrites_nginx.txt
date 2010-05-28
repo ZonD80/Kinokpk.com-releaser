@@ -1,0 +1,21 @@
+location / {
+
+--insert rewrites for your categories here--
+
+rewrite ^/download/([0-9]+)/(.*?) /download.php?id=$1&name=$2 last;
+rewrite ^/([0-9]+)(.*?)page=([0-9]+) /details.php?id=$1&page=$3 last;
+rewrite ^/([0-9]+)(.*?) /details.php?id=$1 last;
+rewrite ^/login /login.php last;
+rewrite ^/lostpassword /recover.php last;
+rewrite ^/byebye /logout.php last;
+rewrite ^/welcome /signup.php last;
+rewrite ^/releases/dead /browse.php?dead last;
+rewrite ^/releases/nofile /browse.php?nofile last;
+rewrite ^/releases(.*?) /browse.php$1 last;
+rewrite ^/trackers/([0-9]+)(.*?)/information(.*?) /torrent_info.php?id=$1&info last;
+rewrite ^/trackers/([0-9]+)(.*?)/statistics-local(.*?) /torrent_info.php?id=$1&dllist last;
+rewrite ^/trackers/([0-9]+)(.*?) /torrent_info.php?id=$1 last;
+rewrite ^/export/([0-9]+)(.*?) /exportrelease.php?id=$1 last;
+rewrite ^/by_relgroup/([0-9]+)(.*?) /browse.php?relgroup=$1 last;
+break;
+}

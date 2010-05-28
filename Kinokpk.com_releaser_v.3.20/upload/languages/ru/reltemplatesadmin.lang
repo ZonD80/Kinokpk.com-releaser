@@ -1,0 +1,12 @@
+// language file for reltemplatesadmin (TinyMCE)
+page_title=Администрирование шаблонов описаний
+menu_header=<a href="reltemplatesadmin.php">Список шаблонов</a> / <a href="reltemplatesadmin.php?action=add">Добавить новый</a>
+add=Добавить
+del=Удалить
+edit=Редактировать
+content=Содержание
+name=Название
+actions=Действия
+some_fields_blank=Некоторые поля не заполнены. <a href="javascript:history.go(-1);">Вернуться назад</a>
+editing_succ=Изменение данных прошло успешно
+are_you_sure=Вы уверены?

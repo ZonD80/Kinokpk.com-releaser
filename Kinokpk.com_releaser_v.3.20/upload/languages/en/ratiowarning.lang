@@ -1,0 +1,3 @@
+// language file for ratio warning
+ratio_down=<span style="color:red;">our rating is reduced and now is %s</span><br/><p style="text-align:right;"><a href="myrating.php">More</a> or <a href="myrating.php?discount">Exchange rating on the farmed</a></p>
+ratio_warning=<span style="color:red;">Warning (rating)!</span>

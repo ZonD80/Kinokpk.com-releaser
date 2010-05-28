@@ -1,0 +1,11 @@
+error=Error
+invalid_id=Invalid ID.
+invalid_result=: invalid query result
+del_peers=Deleted peers
+invaled_passed=invalid arguments passed
+distr_our_tracker=This torrent at the moment is heard only on our tracker.
+unable_peers=Unable to obtain data on the peers from remote tracker
+leechers_l=leechers
+peers_l=peers
+tracker=Tracker
+status=Status
