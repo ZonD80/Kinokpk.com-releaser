@@ -1,0 +1,3 @@
+Order Allow,Deny
+Allow from all
+php_flag display_errors On
