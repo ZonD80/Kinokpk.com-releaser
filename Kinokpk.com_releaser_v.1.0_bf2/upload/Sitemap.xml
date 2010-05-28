@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="gss.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.google.com/schemas/sitemap/0.84 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url><loc>kinokpk/browse.php</loc><lastmod>2008-09-03T22:05:32+04:00</lastmod><changefreq>hourly</changefreq><priority>1</priority></url>
+<url><loc>kinokpk/</loc><lastmod>2008-09-03T22:05:32+04:00</lastmod><changefreq>hourly</changefreq><priority>1</priority></url>
+
+<url><loc>kinokpk/details.php?id=1</loc><lastmod>2008-08-31T21:47:49+04:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>kinokpk/browse.php?cat=1</loc><lastmod>2008-09-03T22:05:32+04:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+</urlset>
+
