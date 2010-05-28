@@ -1,0 +1,6 @@
+Order Allow,Deny
+Allow from all
+php_flag display_errors On
+#RewriteEngine on
+#RewriteRule ^torrentbar/bar.php/([0-9]+)\.png$ /torrentbar/bar.php?id=$1
+#RewriteRule ^torrentbar\/bar\.php\/(.*)\.png$ /torrentbar/bar.php?id=$1	[NC]
