@@ -1,0 +1,3 @@
+<?php
+// no language yet
+?>
