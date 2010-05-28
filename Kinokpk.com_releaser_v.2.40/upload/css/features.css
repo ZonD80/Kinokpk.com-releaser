@@ -1,0 +1,33 @@
+a.external {
+	background-image: url('/pic/extlink.gif');
+	background-position: right;
+	background-repeat: no-repeat;
+	padding: 0 10px 0 0;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.folded {
+	background: transparent url('/pic/plus.gif') no-repeat left center;
+	padding-left: 9px;
+}
+
+.unfolded {
+	background: transparent url('/pic/minus.gif') no-repeat left center;
+	padding-left: 9px;
+}
+
+.news-head {
+	font-size: 11px;
+	padding: 1px 14px 3px;
+	margin-left: 6px;
+	line-height: 15px;
+}
+
+.news-body {
+	padding: 1px 6px 2px;
+	display: none;
+	border-top: 1px solid #C3CBD1;
+}
