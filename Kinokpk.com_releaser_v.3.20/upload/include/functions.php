@@ -35,8 +35,7 @@ function validusername($username)
 	return false;
 
 	// The following characters are allowed in user names
-	$allowedchars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_. ".
-		"абвгдеёжзиклмнопрстуфхшщэюяьъАБВГДЕЁЖЗИКЛМНОПРСТУФХШЩЭЮЯЬЪ";
+	$allowedchars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.";
 
 	for ($i = 0; $i < strlen($username); ++$i)
 	if (strpos($allowedchars, $username[$i]) === false)
@@ -554,15 +553,15 @@ function httpauth(){
 
 	if(isset($_SERVER['HTTP_AUTHORIZATION'])) {
 		$auth_params = explode(":" , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
-		$_SERVER['PHP_AUTH_USER'] = $auth_params[0];
+		$_SERVER['PHP_AUTH_USER'] = strip_tags($auth_params[0]);
 		unset($auth_params[0]);
 		$_SERVER['PHP_AUTH_PW'] = implode('',$auth_params);
 	}
 
-	if ($CURUSER['passhash'] != md5($CURUSER['secret'].$_SERVER["PHP_AUTH_PW"].$CURUSER['secret'])) {
-		if ($_SERVER["PHP_AUTH_PW"]) write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".get_user_class_color($CURUSER['class'],$CURUSER['username'])."</a> at ".getip()." <font color=\"red\">ADMIN CONTROL PANEL Authentication FAILED</font>",'admincp_auth');
+	if (($CURUSER['passhash'] != md5($CURUSER['secret'].$_SERVER["PHP_AUTH_PW"].$CURUSER['secret'])) || ($_SERVER['PHP_AUTH_USER']<>$CURUSER['email'])) {
+		if ($_SERVER["PHP_AUTH_PW"]) write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".get_user_class_color($CURUSER['class'],$CURUSER['username'])."</a> at ".getip().", email: {$_SERVER['PHP_AUTH_USER']} <font color=\"red\">ADMIN CONTROL PANEL Authentication FAILED</font>",'admincp_auth');
 
-		header("WWW-Authenticate: Basic realm=\"Kinokpk.com releaser\"");
+		header("WWW-Authenticate: Basic realm=\"Kinokpk.com releaser AdminCP. USE EMAIL AS USERNAME!\"");
 		header("HTTP/1.0 401 Unauthorized");
 		stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'),'error');
 
@@ -1048,6 +1047,8 @@ function dbconn($lightmode = false) {
 
 		$REL_CACHE->set('system','config',$REL_CONFIG);
 	}
+	$REL_CONFIG['lang'] = substr(trim((string)$_COOKIE['lang']),0,2);
+	if (!$REL_CONFIG['lang']) $REL_CONFIG['lang'] = $REL_CONFIG['default_language'];
 	//configcache init end
 	/* @var object links parser/adder/changer for seo */
 	require_once(ROOT_PATH . 'classes/seo/seo.class.php');
@@ -1078,8 +1079,6 @@ function userlogin() {
 	/* @var object language system */
 	require_once(ROOT_PATH . 'classes/lang/lang.class.php');
 	$ip = getip();
-	$lang = substr(trim((string)$_COOKIE['lang']),0,2);
-	if (!$lang) $lang = $REL_CONFIG['default_language'];
 
 	if ($REL_CONFIG['use_ipbans']) {
 
@@ -1105,7 +1104,7 @@ function userlogin() {
 
 	if (empty($_COOKIE["uid"]) || empty($_COOKIE["pass"])) {
 		$REL_CONFIG['ss_uri'] = $REL_CONFIG['default_theme'];
-	$REL_LANG = new REL_LANG($lang);
+		$REL_LANG = new REL_LANG($REL_CONFIG);
 		user_session();
 		return;
 	}
@@ -1119,12 +1118,16 @@ function userlogin() {
 	$row = mysql_fetch_assoc($res);
 	if (!$row) {
 		$REL_CONFIG['ss_uri'] = $REL_CONFIG['default_theme'];
-	$REL_LANG = new REL_LANG($lang);
+		$REL_LANG = new REL_LANG($REL_CONFIG);
 		user_session();
 		return;
 	} elseif ((!$row['enabled']) && !defined("IN_CONTACT")) {
+		if ($row['language']<>$REL_CONFIG['lang']) {
+			sql_query("UPDATE users SET language=".sqlesc($REL_CONFIG['lang'])." WHERE id={$row['id']}");
+			$row['language'] = $REL_CONFIG['lang'];
+		}
 		$REL_CONFIG['ss_uri'] = $row['uri'];
-	$REL_LANG = new REL_LANG($row['language']);		
+		$REL_LANG = new REL_LANG($REL_CONFIG);
 		$REL_LANG->load('disableduser');
 		/* $cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('rating_enabled','rating_dislimit')");
 
@@ -1133,6 +1136,10 @@ function userlogin() {
 		die($REL_LANG->say_by_key('disabled').$row['dis_reason'].(($row['dis_reason']=='Your rating was too low.')?$REL_LANG->say_by_key('disabled_rating'):'').$REL_LANG->say_by_key('contact_admin'));
 
 	}
+	if ($row['language']<>$REL_CONFIG['lang']) {
+		sql_query("UPDATE users SET language=".sqlesc($REL_CONFIG['lang'])." WHERE id={$row['id']}");
+		$row['language'] = $REL_CONFIG['lang'];
+	}
 	$sec = hash_pad($row["secret"]);
 	if ($_COOKIE["pass"] != md5($row["passhash"].COOKIE_SECRET)) {
 		$REL_CONFIG['ss_uri'] = $row['uri'];
@@ -1140,7 +1147,7 @@ function userlogin() {
 		//$res = mysql_fetch_assoc(sql_query("SELECT id,class,username FROM users WHERE passhash=".sqlesc($pscheck)));
 		//if (!$res) unset($res); else $res = "of <a href=\"userdetails.php?id=\"{$res['id']}\">".get_user_class_color($res['class'],$res['username'])."</a>";
 		write_log(getip()." with cookie ID = $id <font color=\"red\">with passhash ".$pscheck." -> PASSHASH CHECKSUM FAILED!</font>",'security');
-	$REL_LANG = new REL_LANG($lang);
+		$REL_LANG = new REL_LANG($REL_CONFIG);
 		user_session();
 		return;
 	}
@@ -1164,7 +1171,7 @@ function userlogin() {
 	 * @see stdhead()
 	 */
 	$GLOBALS["CURUSER"] = $row;
-	$REL_LANG = new REL_LANG($lang);
+	$REL_LANG = new REL_LANG($REL_CONFIG);
 
 	user_session();
 
@@ -1186,7 +1193,7 @@ function get_server_load() {
 		$serverload[0] = round($serverload[0], 4);
 		if(!$serverload) {
 			$load = @exec("uptime");
-			$load = preg_split("load averages?: ", $load);
+			$load = preg_split("#load averages?: #si", $load);
 			$serverload = explode(",", $load[1]);
 		}
 	} else {
@@ -1532,7 +1539,7 @@ function sent_mail($to,$fromname,$fromemail,$subject,$body,$multiple=false,$mult
 		$headers .= "Message-ID: <$mid.thesystem@$name>".$eol;
 		$headers .= "X-Mailer: PHP v".phpversion().$eol;
 		$headers .= "MIME-Version: 1.0".$eol;
-		$headers .= "Content-Type: text/html; charset=\"".$REL_LANG->say_by_key('language_charset')."\"".$eol;
+		$headers .= "Content-Type: text/html; charset=\"windows-1251\"".$eol;
 		$headers .= "X-Sender: PHP".$eol;
 		if ($multiple)
 		$headers .= "Bcc: $multiplemail.$eol";
@@ -1542,6 +1549,7 @@ function sent_mail($to,$fromname,$fromemail,$subject,$body,$multiple=false,$mult
 			if ($windows)
 			ini_set('sendmail_from', $smtp_from);
 		}
+		//$headers = iconv("windows-1251","utf8",$headers);
 		@mail($to, $subject, $body, $headers) or $result = false;
 
 		ini_restore(SMTP);
@@ -1622,7 +1630,7 @@ function ajaxcheck() {
  * @param string $addition <head> tag additon, for example javascript file or css stylesheet link
  * @return void
  */
-function stdhead($title = "", $addition = '') {
+function stdhead($title = "", $descradd = '', $keywordsadd = "") {
 
 	global $CURUSER, $FUNDS, $REL_CONFIG, $ss_uri, $REL_LANG, $CRON, $REL_SEO;
 
@@ -1665,7 +1673,7 @@ function stdhead($title = "", $addition = '') {
         Пожалуйста, зайдите позже...</h1></td></tr></table></div>");
 	}
 
-	$title = $REL_CONFIG['sitename']. " | " . strip_tags($title);
+	$title =  $title." | ".$REL_CONFIG['sitename'];
 
 	if (isset($_GET['styleid']) && $CURUSER) {
 		if (is_valid_id($_GET['styleid'])) {
@@ -1722,9 +1730,9 @@ function stdhead($title = "", $addition = '') {
 	if (!REL_AJAX) print('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset='. $REL_LANG->say_by_key('language_charset').'" />
-<meta name="Description" content="'.$REL_CONFIG['description'].'" />
-<meta name="Keywords" content="'.$REL_CONFIG['keywords'].'" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+<meta name="Description" content="'.$descradd.' '.$REL_CONFIG['description'].'" />
+<meta name="Keywords" content="'.$keywordsadd.' '.$REL_CONFIG['keywords'].'" />
 <base href="'.$REL_CONFIG['defaultbaseurl'].'/" />
 <!--Тоже любишь смотреть исходники HTML? Знаешь еще и PHP/MySQL? обратись к админам, наверняка для тебя есть местечко в нашей команде http://www.kinokpk.com/staff.php -->
 <title>'.$title.'</title>
@@ -1740,7 +1748,7 @@ function stdhead($title = "", $addition = '') {
 <link rel="alternate" type="application/atom+xml" title="Atom" href="'.$REL_SEO->make_link('atom').'" />
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script language="javascript" type="text/javascript" src="js/resizer.js"></script>'
-	.((!$CURUSER || ($CURUSER['extra_ef']))?'
+.((!$CURUSER || ($CURUSER['extra_ef']))?'
 <!--<script language="javascript" type="text/javascript" src="js/snow.js"></script>-->':'').
 '<script language="javascript" type="text/javascript" src="js/jquery.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.history.js"></script>
@@ -1759,13 +1767,13 @@ function stdhead($title = "", $addition = '') {
 <script language="javascript" type="text/javascript" src="js/jquery.bgiframe.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.linkselect.js"></script>
 '.$addition);
-	if (get_user_class() == UC_SYSOP) {
-		if ($row['onoff'] != 1) print('<div align="center"><font color="red" size="20">ADMIN WARNING: SITE IS CLOSED FOR MAINTENANCE!</font></div>');
-	}
-	require_once(ROOT_PATH."themes/" . $ss_uri . "/template.php");
-	require_once(ROOT_PATH."themes/" . $ss_uri . "/stdhead.php");
+if (get_user_class() == UC_SYSOP) {
+	if ($row['onoff'] != 1) print('<div align="center"><font color="red" size="20">ADMIN WARNING: SITE IS CLOSED FOR MAINTENANCE!</font></div>');
+}
+require_once(ROOT_PATH."themes/" . $ss_uri . "/template.php");
+require_once(ROOT_PATH."themes/" . $ss_uri . "/stdhead.php");
 
-	return;
+return;
 }
 
 /**
@@ -1775,8 +1783,6 @@ function stdhead($title = "", $addition = '') {
 function stdfoot() {
 	global $CURUSER, $ss_uri, $REL_LANG, $queries, $tstart, $query_stat, $querytime, $REL_CONFIG, $CRON, $REL_SEO;
 
-	require_once(ROOT_PATH."themes/" . $ss_uri . "/stdfoot.php");
-
 	if (defined("TINYMCE_REQUIRED") && !defined("NO_TINYMCE"))
 	print '<script language="javascript" type="text/javascript">mcejs();</script>';
 	// notification popup
@@ -1784,7 +1790,6 @@ function stdfoot() {
 	// rating warning
 	print generate_ratio_popup_warning();
 	// close old sessions
-	print("<div id=\"debug\">");
 	$secs = 1 * 3600;
 	$time = time();
 	$dt = $time - $secs;
@@ -1796,7 +1801,10 @@ function stdfoot() {
 	/// end
 	$cronrow=sql_query("SELECT * FROM cron WHERE cron_name IN ('last_cleanup','in_cleanup','in_remotecheck','num_cleaned','num_checked','remotecheck_disabled','last_remotecheck','autoclean_interval','remotecheck_interval')");
 	while ($cronres = mysql_fetch_assoc($cronrow)) $CRON[$cronres['cron_name']]=$cronres['cron_value'];
-	//		  var_dump($CRON);
+
+	require_once(ROOT_PATH."themes/" . $ss_uri . "/stdfoot.php");
+
+	print("<div id=\"debug\">");
 
 	if (((($time-$CRON['last_cleanup'])>$CRON['autoclean_interval']) && !$CRON['in_cleanup'])) print '<img width="0px" height="0px" alt="" title="" src="'.$REL_SEO->make_link('cleanup').'"/>';
 	if (!$CRON['remotecheck_disabled'] && (($time-$CRON['last_remotecheck'])>$CRON['remotecheck_interval'])) print '<img width="0px" height="0px" alt="" title="" src="'.$REL_SEO->make_link('remote_check').'"/>';
@@ -2618,7 +2626,7 @@ function send_notifs($type,$text = '',$id = 0) {
 	global $REL_LANG, $CURUSER, $REL_CONFIG, $REL_SEO;
 	$REL_LANG->load('delayed_notifs');
 	$subject = sqlesc($REL_LANG->say_by_key('new_'.$type));
-	$msg = sqlesc($REL_LANG->say_by_key('notice_'.$type).$text."<hr/ ><a href=\"".$REL_SEO->make_link($REL_CONFIG['defaultbaseurl'])."\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->say_by_key('notifications_cp')}</div>");
+	$msg = sqlesc($REL_LANG->say_by_key('notice_'.$type).$text."<hr/ ><a href=\"".$REL_SEO->make_link($REL_CONFIG['defaultbaseurl'])."\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->_('You can always configure your notifications in <a href="%s">notification settings</a> of your account.',$REL_SEO->make_link("mynotifs","settings"))}</div>");
 	//	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
 	sql_query("INSERT INTO cron_emails (email, subject, body) SELECT users.email, $subject, $msg FROM users WHERE FIND_IN_SET('$type',emailnotifs) AND ".(!$id?"id != ".(int)$CURUSER['id']:"id = $id")) or sqlerr(__FILE__,__LINE__);
 }
@@ -2919,7 +2927,7 @@ function get_trailer($descr) {
  */
 function translit($st,$replace_spaces = true) {
 	$ar = array("а"=>"a","б"=>"b","в"=>"v","г"=>"g","д"=>"d","е"=>"e","ё" =>"yo","ж"=>"j","з"=>"z","и"=>"i","й"=>"i","к"=>"k","л"=>"l","м"=>"m","н"=>"n","о"=>"o","п"=>"p","р"=>"r","с"=>"s","т"=>"t","у"=>"y","ф"=>"f","х"=>"h","ц"=>"c","ч"=>"ch", "ш"=>"sh","щ"=>"sh","ы"=>"i","э"=>"e","ю"=>"u","я"=>"ya",
-"ь"=>"","ъ"=>"");
+"ь"=>"","ъ"=>"",'%'=>'');
 	$alfavitlover = array('ё','й','ц','у','к','е','н','г', 'ш','щ','з','х','ъ','ф','ы','в', 'а','п','р','о','л','д','ж','э', 'я','ч','с','м','и','т','ь','б','ю');
 	$alfavitupper = array('Ё','Й','Ц','У','К','Е','Н','Г', 'Ш','Щ','З','Х','Ъ','Ф','Ы','В', 'А','П','Р','О','Л','Д','Ж','Э', 'Я','Ч','С','М','И','Т','Ь','Б','Ю');
 
@@ -2943,5 +2951,5 @@ define ("BETA_NOTICE", "\n<br />This isn't complete release of source!");
  * Kinokpk.com releaser's version
  * @var string
  */
-define("RELVERSION","3.20 alpha (3.19)");
+define("RELVERSION","3.20 ALPHA UNSTABLE (3.19)");
 ?>

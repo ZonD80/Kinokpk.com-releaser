@@ -26,14 +26,23 @@ class REL_LANG {
 	private $parsed_langs;
 	
 	/**
+	 * Debug mode
+	 * @var boolean
+	 */
+	private $DEBUG;
+	
+	
+	
+	/**
 	 * Class constructor, loads main language file
 	 * @param string $language Language to use
 	 * @return boolean True
 	 */
-	function __construct($language='en') {
-		$this->lang[$language]=array();
-		$this->parsed_langs[$language]=array();
-		$this->language = $language;
+	function __construct($REL_CONFIG) {
+		if ($REL_CONFIG['debug_language']) $this->DEBUG=true; else $this->DEBUG=false;
+		$this->lang[$REL_CONFIG['lang']]=array();
+		$this->parsed_langs[$REL_CONFIG['lang']]=array();
+		$this->language = $REL_CONFIG['lang'];
 		$this->load('main');
 		return true;
 	}
@@ -48,15 +57,17 @@ class REL_LANG {
 	/**
 	 * Say something by key
 	 * @param string $value Key to use
+	 * @param string $language Language to use
 	 * @return string String of a language file
 	 */
-	public function say_by_key($value) {
+	public function say_by_key($value,$language = '') {
 		$return = '';
-		if (!array_key_exists($value,$this->lang[$this->language])) $return .="*NO_KEY:{$this->language}* "; 
-		if (!$this->lang[$this->language][$value]) { $return .= "*NO_VALUE:$value* ";
+		if (!$language) $language=$this->language;
+		if (!array_key_exists($value,$this->lang[$language])) $return .= ($this->DEBUG?"*NO_KEY:{$language}* ":''); 
+		if (!$this->lang[$language][$value]) { $return .= ($this->DEBUG?"*NO_VALUE:$value* ":'');
 		return $return.$this->lang['en'][$value];
 		}
-		return $return.$this->lang[$this->language][$value];
+		return $return.$this->lang[$language][$value];
 		
 	}
 	
@@ -74,9 +85,9 @@ class REL_LANG {
 		foreach ($parse as $string) {
 			$cut = strpos($string,'=');
 			if (!$cut) continue;
-			$key = substr($string,0,$cut);
-			$value = substr($string,$cut+1,strlen($string));
-			if ($this->lang[$language][$key]) $value = "*REDECLARATED_KEY:$key* $value";
+			$key = strtolower(trim(substr($string,0,$cut)));
+			$value = trim(substr($string,$cut+1,strlen($string)));
+			if ($this->lang[$language][$key]) $value = ($this->DEBUG?"*REDECLARATED_KEY:$key* ":'').$value;
 			$this->lang[$language][$key] = $value;
 		}
 		$this->parsed_langs[$language][] = $file;
@@ -91,15 +102,41 @@ class REL_LANG {
 		$text = $args[0];
 		$return = '';
 		$key = array_search($text,$this->lang['en']);
-		if (!$key) $return .= "*NO_KEY_OR_NO_TRANSLATION* "; 
+		if (!$key) $return .= ($this->DEBUG?"*NO_KEY_OR_NO_TRANSLATION* ":''); 
 		else
 		$text = $this->say_by_key($key);
 		
-		if (count($args>1)) { $args[0] = $text;
+		if (count($args)>1) { $args[0] = $text;
 		return $return.call_user_func_array("sprintf",$args);
 		}
 		else return $return.$text;
 
 	}	
 	
+	/**
+	 * Formates string to output, like print or spritnf. Many argumets allowed
+	 * This function used to say something to specified userid, that comes first argument
+	 * @example _to(11,'this is a test');
+	 * @return string|string Formatted string
+	 */
+	public function _to() {
+		/*global $REL_DATABASE;
+		if (!$REL_DATABASE) die("FATAL ERROR: No database");*/
+		
+		$args = func_get_args();
+		$langauge = @mysql_result(sql_query("SELECT language FROM users WHERE id={$args[0]}"),0);
+		$text = $args[1];
+		$return = '';
+		$key = array_search($text,$this->lang['en']);
+		if (!$key) $return .= ($this->DEBUG?"*NO_KEY_OR_NO_TRANSLATION* ":''); 
+		else
+		$text = $this->say_by_key($key,$language);
+		
+		if (count($args)>2) { $args[1] = $text; unset($args[0]);
+		return $return.call_user_func_array("sprintf",$args);
+		}
+		else return $return.$text;
+
+	}	
 }
+?>
