@@ -567,7 +567,7 @@ function httpauth(){
 		$_SERVER['PHP_AUTH_PW'] = implode('',$auth_params);
 	}
 
-	if ($CURUSER['passhash'] != md5($CURUSER['secret'].$_SERVER["PHP_AUTH_PW"].$CURUSER['secret'])) {
+	if (($CURUSER['passhash'] != md5($CURUSER['secret'].$_SERVER["PHP_AUTH_PW"].$CURUSER['secret'])) || ($CURUSER['username']<>$_SERVER['PHP_AUTH_USER'])) {
 		if ($_SERVER["PHP_AUTH_PW"]) write_log("<a href=\"userdetails.php?id={$CURUSER['id']}\">".get_user_class_color($CURUSER['class'],$CURUSER['username'])."</a> at ".getip()." <font color=\"red\">ADMIN CONTROL PANEL Authentication FAILED</font>",'admincp_auth');
 
 		header("WWW-Authenticate: Basic realm=\"Kinokpk.com releaser\"");
