@@ -1,25 +1,11 @@
 <?php
-
-/*
- Project: Kinokpk.com releaser
- This file is part of Kinokpk.com releaser.
- Kinokpk.com releaser is based on TBDev,
- originally by RedBeard of TorrentBits, extensively modified by
- Gartenzwerg and Yuna Scatari.
- Kinokpk.com releaser is free software;
- you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
- Kinokpk.com is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- You should have received a copy of the GNU General Public License
- along with Kinokpk.com releaser; if not, write to the
- Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- MA  02111-1307  USA
- Do not remove above lines!
+/**
+ * Polls comments parser
+ * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
+ * @package Kinokpk.com releaser
+ * @author ZonD80 <admin@kinokpk.com>
+ * @copyright (C) 2008-now, ZonD80, Germany, TorrentsBook.com
+ * @link http://dev.kinokpk.com
  */
 
 require_once("include/bittorrent.php");
@@ -118,7 +104,7 @@ elseif ($action == "quote")
 	stdhead("Добавления комментария к опросу");
 
 	$text = "<blockquote><p>" . format_comment($arr["text"]) . "</p><cite>$arr[username]</cite></blockquote><hr /><br /><br />\n";
-	
+
 	print("<form method=\"post\" name=\"comment\" action=\"".$REL_SEO->make_link('pollcomment','action','add')."\">\n");
 	print("<input type=\"hidden\" name=\"pid\" value=\"$arr[pid]\" />\n");
 	?>
@@ -209,34 +195,30 @@ elseif ($action == "delete")
 	if (get_user_class() < UC_MODERATOR)
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
-	if(!is_valid_id($_GET["cid"])) stderr($REL_LANG->say_by_key("error"),$REL_LANG->say_by_key("invalid_id"));
-	$commentid = (int) $_GET["cid"];
-
-
-	$res = sql_query("SELECT poll FROM pollcomments WHERE id=$commentid")  or sqlerr(__FILE__,__LINE__);
-	$arr = mysql_fetch_array($res);
-	if ($arr)
-	$pid = $arr["poll"];
-	else
+	if (!is_array($_GET["cid"])||!$_GET["cid"])
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
-
-	sql_query("DELETE FROM pollcomments WHERE id=$commentid") or sqlerr(__FILE__,__LINE__);
-
-	list($commentid) = mysql_fetch_row(sql_query("SELECT id FROM pollcomments WHERE poll = $pid ORDER BY added DESC LIMIT 1"));
-
-	$returnto = $REL_SEO->make_link('polloverview','id',$pid)."#comm$commentid";
+	$cids = array_map("intval",$_GET["cid"]);
+	$redaktor = 'pollcomment';
+	foreach ($cids AS $commentid) {
 
 
-	$REL_CACHE->clearGroupCache("block-polls");
+		$res = sql_query("SELECT poll AS torrent FROM {$redaktor}s WHERE id=$commentid")  or sqlerr(__FILE__,__LINE__);
+		$arr = mysql_fetch_array($res);
+		if ($arr)
+		$torrentid = $arr["torrent"];
+		else
+		stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
-	if ($returnto)
-	safe_redirect(" $returnto");
-	else
-	safe_redirect(" {$REL_CONFIG['defaultbaseurl']}/");      // change later ----------------------
-	die;
+		sql_query("DELETE FROM {$redaktor}s WHERE id=$commentid") or sqlerr(__FILE__,__LINE__);
+		if ($torrentid && mysql_affected_rows() > 0)
+		sql_query("UPDATE {$redaktor}s SET comments = comments - 1 WHERE id = $torrentid");
+	}
+	$clearcache = array('block-polls');
+	foreach ($clearcache as $cachevalue) $REL_CACHE->clearGroupCache($cachevalue);
+	safe_redirect(strip_tags($_SERVER['HTTP_REFERER']),1);
+	stderr($REL_LANG->_("Success"),$REL_LANG->_("Comments successfully deleted. Now you will back to revious page."),'success');
 }
 else
-stderr($REL_LANG->say_by_key('error'), "Unknown action");
+stderr($REL_LANG->say_by_key('error'), $REL_LANG->_("Unknown action"));
 
-die;
 ?>

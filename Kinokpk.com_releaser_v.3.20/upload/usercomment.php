@@ -104,7 +104,7 @@ elseif ($action == "quote")
 	stdhead("Добавления комментария к пользователю");
 
 	$text = "<blockquote><p>" . format_comment($arr["text"]) . "</p><cite>$arr[username]</cite></blockquote><hr /><br /><br />\n";
-	
+
 	print("<form method=\"post\" name=\"comment\" action=\"".$REL_SEO->make_link('usercomment','action','add')."\">\n");
 	print("<input type=\"hidden\" name=\"uid\" value=\"$arr[uid]\" />\n");
 	?>
@@ -198,34 +198,30 @@ elseif ($action == "delete")
 	if (get_user_class() < UC_MODERATOR)
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
-	if (!is_valid_id($_GET["cid"]))
+	if (!is_array($_GET["cid"])||!$_GET["cid"])
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
-	$commentid = (int) $_GET["cid"];
+	$cids = array_map("intval",$_GET["cid"]);
+	$redaktor = 'usercomment';
+	foreach ($cids AS $commentid) {
 
 
-	$res = sql_query("SELECT userid FROM usercomments WHERE id=$commentid")  or sqlerr(__FILE__,__LINE__);
-	$arr = mysql_fetch_array($res);
-	if ($arr)
-	$uid = $arr["userid"];
-	else
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+		$res = sql_query("SELECT userid AS torrent FROM {$redaktor}s WHERE id=$commentid")  or sqlerr(__FILE__,__LINE__);
+		$arr = mysql_fetch_array($res);
+		if ($arr)
+		$torrentid = $arr["torrent"];
+		else
+		stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
-	sql_query("DELETE FROM usercomments WHERE id=$commentid") or sqlerr(__FILE__,__LINE__);
-
-	$REL_CACHE->clearGroupCache("block-userid");
-
-	list($commentid) = mysql_fetch_row(sql_query("SELECT id FROM usercomments WHERE userid = $uid ORDER BY added DESC LIMIT 1"));
-
-	$returnto = $REL_SEO->make_link('userdetails','id',$uid)."#comm$commentid";
-
-	if ($returnto)
-	safe_redirect(" $returnto");
-	else
-	safe_redirect(" {$REL_CONFIG['defaultbaseurl']}/");      // change later ----------------------
-	die;
+		sql_query("DELETE FROM {$redaktor}s WHERE id=$commentid") or sqlerr(__FILE__,__LINE__);
+		if ($torrentid && mysql_affected_rows() > 0)
+		sql_query("UPDATE {$redaktor}s SET comments = comments - 1 WHERE id = $torrentid");
+	}
+	$clearcache = array('block-userid');
+	foreach ($clearcache as $cachevalue) $REL_CACHE->clearGroupCache($cachevalue);
+	safe_redirect(strip_tags($_SERVER['HTTP_REFERER']),1);
+	stderr($REL_LANG->_("Success"),$REL_LANG->_("Comments successfully deleted. Now you will back to revious page."),'success');
 }
 else
-stderr($REL_LANG->say_by_key('error'), "Unknown action");
+stderr($REL_LANG->say_by_key('error'), $REL_LANG->_("Unknown action"));
 
-die;
 ?>

@@ -207,7 +207,7 @@ function write_sys_msg($receiver,$msg,$subject) {
 function mcejstemplate () {
 	global $CURUSER;
 
-	/*$valid_elm = 'verify_html : true,
+	$valid_elm = 'verify_html : true,
 	 valid_elements : ""
 	 +"a[accesskey|charset|class|coords|dir<ltr?rtl|href|hreflang|id|lang|name"
 	 +"|onblur|onclick|ondblclick|onfocus|onkeydown|onkeypress|onkeyup"
@@ -464,7 +464,7 @@ function mcejstemplate () {
 	 +"|onmouseup|style|title|type],"
 	 +"var[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
 	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title]",';*/
+	 +"|title]",';
 	if (get_user_class() >= UC_ADMINISTRATOR) {
 		return $valid_elm.'theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
 theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
@@ -513,15 +513,24 @@ function mcejs() {
 	global $REL_CONFIG,$ss_uri,$CURUSER;
 
 	$lang = (($CURUSER['language']=='ua')?'uk':$CURUSER['language']);
-	$return .= '
-<script type="text/javascript" src="/js/tiny_mce/jquery.tinymce.js"></script>
+	$return .= '<script type="text/javascript" src="js/tiny_mce/tiny_mce_gzip.js"></script>
 <script language="javascript" type="text/javascript">
-function mcejs(){
-$("textarea.tmce").tinymce({
-script_url : "/js/tiny_mce/tiny_mce_gzip.php",
+function mcejs() {
+tinyMCE_GZ.init({
 	plugins : \'style,layer,table,save,advhr,advimage,advlink,emotions,iespell,insertdatetime,preview,media,stamps,kinopoisk,\'+
-        \'searchreplace,'./*contextmenu,*/'print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,spoiler,reltemplates\',
+        \'searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,spoiler,reltemplates\',
 	themes : \'advanced\',
+	languages : \'ru, en\',
+	disk_cache : true,
+	gecko_spellcheck:"1",
+	debug : false
+}, function() { tinyMCE.init({
+       forced_root_block : false,
+   force_br_newlines : true,
+   force_p_newlines : false,
+		theme : "advanced",
+plugins : \'style,layer,table,save,advhr,advimage,advlink,emotions,iespell,insertdatetime,preview,media,stamps,kinopoisk,\'+
+        \'searchreplace,'./*contextmenu,*/'print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,spoiler,reltemplates\',
 	languages : \''.$lang.'\',
 	disk_cache : true,
 	gecko_spellcheck:"1",
@@ -533,13 +542,17 @@ script_url : "/js/tiny_mce/tiny_mce_gzip.php",
 	content_css : "/themes/'.$ss_uri.'/'.$ss_uri.'.css",
     gecko_spellcheck:"1",
     language: "'.$lang.'",
+    	mode : "exact",
+	elements : "tmce",
 	template_replace_values : {
 		username : "'.$CURUSER['username'].'"
 	},
    '.mcejstemplate ().'
-   });
+});
+});
 }
-</script>';
+</script>
+'.(defined("NO_TINYMCE")?'':'<script language="javascript" type="text/javascript">mcejs();</script>');
 	define("TINYMCE_REQUIRED",true);
 	return $return;
 }
@@ -2066,15 +2079,17 @@ function fuckIE() {
  */
 function commenttable($rows, $redaktor = "comment") {
 	global $CURUSER, $REL_CONFIG, $REL_LANG, $REL_SEO;
-
+	
 	$count = 0;
+		if (get_user_class()>=UC_MODERATOR)
+		print "<form method=\"get\" action=\"{$REL_SEO->make_link($redaktor)}\">";
 	foreach ($rows as $row)	{
 		if ($row["last_access"] > (time() - 300)) {
 			$online = "online";
-			$online_text = "В сети";
+			$online_text = $REL_LANG->_("Online");
 		} else {
 			$online = "offline";
-			$online_text = "Не в сети";
+			$online_text = $REL_LANG->_("Offline");
 		}
 
 		print("<div id=\"comm{$row['id']}\"><table class=maibaugrand width=100% border=1 cellspacing=0 cellpadding=3>");
@@ -2090,10 +2105,10 @@ function commenttable($rows, $redaktor = "comment") {
 			}
 			print("<img src=\"pic/button_".$online.".gif\" alt=\"".$online_text."\" title=\"".$online_text."\" style=\"position: relative; top: 2px;\" border=\"0\" height=\"14\">"
 			." <a href=\"".$REL_SEO->make_link('userdetails','id',$row['user'],'username',translit($row['username']))."\" class=altlink_white><b>". get_user_class_color($row["class"], $row["username"]) . "</b></a> ".get_user_icons($row).
-			":&nbsp;Re (<a href=\"{$row['link']}\">#{$row['id']}</a>): ".((strlen($row['subject'])>70)?makesafe(substr($row['subject'],0,67).'...'):makesafe($row['subject']))."<span style=\"float: right\"><small>{$REL_LANG->say_by_key('rate_comment')}</small> ".ratearea($row['ratingsum'],$row['id'],$redaktor.'s',(($CURUSER['id']==$row['user'])?$row['id']:0))."</span>");
+			ratearea($row['urating'],$row['user'],'users',$CURUSER['id']).":&nbsp;Re (<a href=\"{$row['link']}\">{$row['id']}</a>): ".((strlen($row['subject'])>70)?makesafe(substr($row['subject'],0,67).'...'):makesafe($row['subject']))."<span style=\"float: right\"><small>{$REL_LANG->say_by_key('rate_comment')}</small> ".ratearea($row['ratingsum'],$row['id'],$redaktor.'s',(($CURUSER['id']==$row['user'])?$row['id']:0))."</span>");
 
 		} else {
-			print("<i>Анонимус</i>:&nbsp;Re (<a href=\"{$row['link']}\">#{$row['id']}</a>): ".((strlen($row['subject'])>70)?makesafe(substr($row['subject'],0,67).'...'):makesafe($row['subject']))."\n");
+			print("<i>{$REL_LANG->_("Anonym")}</i>:&nbsp;Re (<a href=\"{$row['link']}\">{$row['id']}</a>): ".((strlen($row['subject'])>70)?makesafe(substr($row['subject'],0,67).'...'):makesafe($row['subject']))."\n");
 		}
 
 		$avatar = ($CURUSER["avatars"] ? htmlspecialchars($row["avatar"]) : "");
@@ -2102,28 +2117,31 @@ function commenttable($rows, $redaktor = "comment") {
 
 		if ($row["editedby"]) {
 			//$res = mysql_fetch_assoc(sql_query("SELECT * FROM users WHERE id = $row[editedby]")) or sqlerr(__FILE__,__LINE__);
-			$text .= "<p><font size=1 class=small>Последний раз редактировалось <a href=\"".$REL_SEO->make_link('userdetails','id',$row['editedby'],'username', translit($row['editedbyname']))."\"><b>$row[editedbyname]</b></a> ".mkprettytime($row['editedat'])." (".get_elapsed_time($row['editedat'],false)." {$REL_LANG->say_by_key('ago')})</font></p>\n";
+			$text .= "<p><font size=1 class=small>{$REL_LANG->_("Last edited by")} <a href=\"".$REL_SEO->make_link('userdetails','id',$row['editedby'],'username', translit($row['editedbyname']))."\"><b>$row[editedbyname]</b></a> ".mkprettytime($row['editedat'])." (".get_elapsed_time($row['editedat'],false)." {$REL_LANG->say_by_key('ago')})</font></p>\n";
 	 }
 		print("</td></tr>");
 		print("<tr valign=top>\n");
-		print("<td style=\"padding: 0px; width: 5%;\" align=\"center\"><img src=\"$avatar\"><br/>".ratearea($row['urating'],$row['user'],'users',$CURUSER['id'])."</td>\n");
+		print("<td style=\"padding: 0px; width: 5%;\" align=\"center\"><img src=\"$avatar\" width=\"50px\" title=\"{$REL_LANG->_("Avatar")}\"></td>\n");
 		print("<td width=100% class=text>");
 		//print("<span style=\"float: right\"><a href=\"#top\"><img title=\"Top\" src=\"pic/top.gif\" alt=\"Top\" border=\"0\" width=\"15\" height=\"13\"></a></span>");
-		print("$text</td>\n");
+		if (!isset($REL_CONFIG['low_comment_hide'])) $REL_CONFIG['low_comment_hide'] = 0;
+		print(($row['ratingsum']<$REL_CONFIG['low_comment_hide']?"<div align=\"center\"><i>{$REL_LANG->_("This comment is too bad to show it to you")}</i></div>".(get_user_class()>=UC_MODERATOR?$REL_LANG->_("You are viewing as moderator:<br/>").$text:''):$text)."</td>\n");
 		print("</tr>\n");
 		print("<tr><td class=colhead align=\"center\" colspan=\"2\">");
 		print"<div style=\"float: left; width: auto;\">"
-		.($CURUSER ? " [<a href=\"".$REL_SEO->make_link($redaktor,'action','quote','cid',$row['id'])."\" class=\"altlink_white\">Цитата</a>]" : "")
-		.($row["user"] == $CURUSER["id"] || get_user_class() >= UC_MODERATOR ? " [<a href=\"".$REL_SEO->make_link($redaktor, 'action', 'edit','cid',$row['id'])."\" class=\"altlink_white\">Изменить</a>]" : "")
-		.(get_user_class() >= UC_MODERATOR ? " [<a href=\"".$REL_SEO->make_link($redaktor, 'action','delete','cid',$row['id'])."\" onClick=\"return confirm('Вы уверены?')\" class=\"altlink_white\">Удалить</a>]" : "")
-		.(get_user_class() >= UC_MODERATOR ? " IP: ".($row["ip"] ? "<a href=\"".$REL_SEO->make_link('usersearch','ip',$row['ip'])."\" class=\"altlink_white\">".$row["ip"]."</a>" : "Неизвестен" ) : "")
+		.($CURUSER ? " [<a href=\"".$REL_SEO->make_link($redaktor,'action','quote','cid',$row['id'])."\" class=\"altlink_white\">{$REL_LANG->_("Quote")}</a>]" : "")
+		.($row["user"] == $CURUSER["id"] || get_user_class() >= UC_MODERATOR ? " [<a href=\"".$REL_SEO->make_link($redaktor, 'action', 'edit','cid',$row['id'])."\" class=\"altlink_white\">{$REL_LANG->_("Edit")}</a>]" : "")
+		.(get_user_class() >= UC_MODERATOR ? " [<a href=\"".$REL_SEO->make_link($redaktor, 'action','delete','cid[]',$row['id'])."\" onClick=\"return confirm('{$REL_LANG->_("Are you sure?")}')\" class=\"altlink_white\">{$REL_LANG->_("Delete")}</a>]" : "")
+		.(get_user_class() >= UC_MODERATOR ? " IP: ".($row["ip"] ? "<a href=\"".$REL_SEO->make_link('usersearch','ip',$row['ip'])."\" class=\"altlink_white\">".$row["ip"]."</a>" : $REL_LANG->_("Unknown") ) : "")
 		.reportarea($row['id'],$redaktor.'s')."</div>";
 
-		print("<div align=\"right\"><small>Комментарий добавлен: ".mkprettytime($row["added"])."</small></td></tr>");
+		print("<div align=\"right\" nowrap><small>".mkprettytime($row["added"])."</small>".(get_user_class()>=UC_MODERATOR?"<input type=\"checkbox\" name=\"cid[]\" value=\"{$row['id']}\">":'')."</td></tr>");
 		print("</table><br /></div>");
 		// set that instance was visited
 		set_visited($redaktor.'s',$row['id']);
 	}
+	if (get_user_class()>=UC_MODERATOR)
+	print "<div align=\"right\"><input type=\"hidden\" name=\"action\" value=\"delete\"><input type=\"submit\" value=\"{$REL_LANG->_("Delete")}\" onClick=\"return confirm('{$REL_LANG->_("Are you sure?")}')\"></div></form>";
 	return;
 }
 

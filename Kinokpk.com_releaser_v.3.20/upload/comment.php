@@ -31,9 +31,7 @@ if ($action == "add")
 		stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_torrent_with_such_id'));
 		$name = $arr[0];
 
-		if ($REL_CONFIG['use_integration']) $topicid=$arr[1];
-
-		$text = trim($_POST["text"]);
+		$text = trim((string)$_POST["text"]);
 		if (!$text)
 		stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('comment_cant_be_empty'));
 		// ANTISPAM AND ANTIFLOOD SYSTEM
@@ -274,71 +272,28 @@ elseif ($action == "delete")
 	if (get_user_class() < UC_MODERATOR)
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
-	if (!is_valid_id($_GET["cid"]))
+	if (!is_array($_GET["cid"])||!$_GET["cid"])
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
-
-	$commentid = (int) $_GET["cid"];
-
-
-	$res = sql_query("SELECT torrent,post_id FROM comments WHERE id=$commentid")  or sqlerr(__FILE__,__LINE__);
-	$arr = mysql_fetch_array($res);
-	if ($arr)
-	$torrentid = $arr["torrent"];
-	else
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
-	if ($REL_CONFIG['use_integration']) {
-		// IPB COMMENT TRANSFER
-		$postid = $arr['post_id'];
-		if ($postid != 0) {
-			// connecting to IPB DB
-			forumconn();
-			//connection opened
-			$postdeldetails = sql_query("SELECT * FROM ".$fprefix."posts WHERE pid=".sqlesc($postid));
-			$postdeldetails = mysql_fetch_array($postdeldetails);
-
-			$topicdeltitle = sql_query("SELECT title FROM ".$fprefix."topics WHERE tid=".sqlesc($postdeldetails['topic_id']));
-			$topicdeltitle = mysql_result($topicdeltitle,0);
-			$topicdelid = strval($postdeldetails['topic_id']);
-
-			$forumid = $REL_CONFIG['forum_bin_id'];
-
-			$topicid = sql_query("INSERT INTO ".$fprefix."topics (title, description, state, posts, starter_id, start_date, last_poster_id, last_post, icon_id, starter_name, last_poster_name, poll_state, last_vote, views, forum_id, approved, author_mode, pinned, moved_to, total_votes, topic_hasattach, topic_firstpost,	topic_queuedposts, topic_open_time,	topic_close_time,	topic_rating_total,	topic_rating_hits) VALUES
-(".sqlesc($topicdeltitle).", ".sqlesc($topicdelid).", 'open', 0, ".sqlesc($postdeldetails['author_id']).", ".time().", ".sqlesc($postdeldetails['author_id']).", ".time().", 0, ".sqlesc($postdeldetails['starter_name']).", ".sqlesc($postdeldetails['starter_name']).", 0, 0, 0, ".sqlesc($forumid).", 1, 1, 0, NULL, 0, 0, ".sqlesc($postid).", 0, 0, 0, 0, 0)");
-			$topicid = mysql_insert_id();
-
-			$post = sql_query("UPDATE ".$fprefix."posts SET topic_id = ".sqlesc($topicid).", new_topic = 1 WHERE pid = ".sqlesc($postid));
-
-			$updateforum = sql_query("UPDATE ".$fprefix."forums SET topics =topics+1, posts =posts+1, last_post =".time().", last_poster_id =".sqlesc($postdeldetails['author_id']).", last_poster_name =".sqlesc($postdeldetails['starter_name']).", last_title=".sqlesc($topicdeltitle).", last_id =".sqlesc($topicid)." WHERE id =".sqlesc($forumid));
+	$cids = array_map("intval",$_GET["cid"]);
+	foreach ($cids AS $commentid) {
 
 
-			// closing IPB DB connection
-			relconn();
-			// connection closed
+		$res = sql_query("SELECT torrent FROM comments WHERE id=$commentid")  or sqlerr(__FILE__,__LINE__);
+		$arr = mysql_fetch_array($res);
+		if ($arr)
+		$torrentid = $arr["torrent"];
+		else
+		stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
-
-		}
-		// IPB comment transfer end
+		sql_query("DELETE FROM comments WHERE id=$commentid") or sqlerr(__FILE__,__LINE__);
+		if ($torrentid && mysql_affected_rows() > 0)
+		sql_query("UPDATE torrents SET comments = comments - 1 WHERE id = $torrentid");
 	}
-
-	sql_query("DELETE FROM comments WHERE id=$commentid") or sqlerr(__FILE__,__LINE__);
-	if ($torrentid && mysql_affected_rows() > 0)
-	sql_query("UPDATE torrents SET comments = comments - 1 WHERE id = $torrentid");
-
 	$clearcache = array('block-indextorrents','block-comments');
 	foreach ($clearcache as $cachevalue) $REL_CACHE->clearGroupCache($cachevalue);
-
-	list($commentid,$torname) = mysql_fetch_row(sql_query("SELECT comments.id, torrents.name FROM comments LEFT JOIN comments ON comments.torrent = torrents.id WHERE comments.torrent = $torrentid ORDER BY added DESC LIMIT 1"));
-
-	$returnto = $REL_SEO->make_link('details','id',$torrentid,'name',translit($torname))."#comm$commentid";
-
-	if ($returnto)
-	safe_redirect(" $returnto");
-	else
-	safe_redirect(" {$REL_CONFIG['defaultbaseurl']}/");      // change later ----------------------
-	die;
+	safe_redirect(strip_tags($_SERVER['HTTP_REFERER']),1);
+	stderr($REL_LANG->_("Success"),$REL_LANG->_("Comments successfully deleted. Now you will back to revious page."),'success');
 }
 else
-stderr($REL_LANG->say_by_key('error'), "Unknown action");
-
-die;
+stderr($REL_LANG->say_by_key('error'), $REL_LANG->_("Unknown action"));
 ?>

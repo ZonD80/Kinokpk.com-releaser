@@ -31,27 +31,13 @@ if (!isset($_GET['action'])){
 	print('<tr><td>Емайл для связи с администратором:</td><td><input type="text" name="adminemail" size="30" value="'.$REL_CONFIG['adminemail'].'"> <br/>Например, "admin@windows.lox"</td></tr>');
 	print('<tr><td>Язык релизера по умолчанию (имя lang_%язык%):</td><td><input type="text" name="default_language" size="2" value="'.$REL_CONFIG['default_language'].'"></td></tr>');
 	print('<tr><td>Использовать систему многоязычности (отключать не рекомендуется):</td><td><select name="use_lang"><option value="1" '.($REL_CONFIG['use_lang']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_lang']==0?"selected":"").'>Нет</option> Указываются только первые 2 буквы языка (ru,en)</select></td></tr>');
-	print('<tr><td>Стандартная тема для гостей и регестрирующихся (themes/%тема%):</td><td><input type="text" name="default_theme" size="10" value="'.$REL_CONFIG['default_theme'].'"> По умолчанию "kinokpk"</td></tr>');
+	print('<tr><td>Стандартная тема для гостей и регистрирующихся (themes/%тема%):</td><td><input type="text" name="default_theme" size="10" value="'.$REL_CONFIG['default_theme'].'"> По умолчанию "kinokpk"</td></tr>');
 	print('<tr><td>Ваш копирайт для отображения внизу страницы:<br /><small>*вы можете использовать шаблон <b>{datenow}</b> для показа текущего года</small></td><td><input type="text" name="yourcopy" size="60" value="'.$REL_CONFIG['yourcopy'].'"> <br/>Например, "&copy; 2008-{datenow} Мой Мосх"</td></tr>');
 	print('<tr><td>Использовать систему блоков (отключать не рекомендуется):</td><td><select name="use_blocks"><option value="1" '.($REL_CONFIG['use_blocks']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_blocks']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>Использовать gzip сжатие для страниц:</td><td><select name="use_gzip"><option value="1" '.($REL_CONFIG['use_gzip']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_gzip']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>Использовать систему банов по IP/Подсетям:</td><td><select name="use_ipbans"><option value="1" '.($REL_CONFIG['use_ipbans']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_ipbans']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>Тип SMTP:</td><td><input type="text" name="smtptype" size="10" value="'.$REL_CONFIG['smtptype'].'"></td></tr>');
 	print('<tr><td>Бинарный формат пиров в анонсере:</td><td><select name="announce_packed"><option value="1" '.($REL_CONFIG['announce_packed']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['announce_packed']==0?"selected":"").'>Нет</option></select> По умолчанию, Да</td></tr>');
-
-	print('<tr><td align="center" colspan="2" class="colhead">Настройки интеграции с форумом IPB</td></tr>');
-
-	print('<tr><td>Использовать интеграцию с форумом IPB:</td><td><select name="use_integration"><option value="1" '.($REL_CONFIG['use_integration']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_integration']==0?"selected":"").'>Нет</option></select></td></tr>');
-	print('<tr><td>Пароль от форума важнее пароля от релизера:<br /><small>В этом случае при несовпадении паролей при входе на релизер пользователю будет выдана ошибка, иначе релизер автоматически сменит пароль на форуме</small></td><td><select name="ipb_password_priority"><option value="1" '.($REL_CONFIG['ipb_password_priority']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['ipb_password_priority']==0?"selected":"").'>Нет</option></select></td></tr>');
-	print('<tr><td>Тип экспорта релизов на форум:<br /><small>*для использования функции экспорта в вики-секцию<br />установите интеграцию IPB и wikimedia с <a target="_blank" href="http://www.ipbwiki.com/">http://www.ipbwiki.com/</a></small></td><td><select name="exporttype"><option value="wiki" '.($REL_CONFIG['exporttype']=="wiki"?"selected":"").'>В вики-секцию</option><option value="post" '.($REL_CONFIG['exporttype']=="post"?"selected":"").'>Непосредственно в пост</option></select></td></tr>');
-	print('<tr><td>Адрес форума (без /):</td><td><input type="text" name="forumurl" size="60" value="'.$REL_CONFIG['forumurl'].'"> <br/>Например, "http://forum.pdaprime.ru"</td></tr>');
-	print('<tr><td>Название форума:</td><td><input type="text" name="forumname" size="60" value="'.$REL_CONFIG['forumname'].'"> <br/>Например, "pdaPRIME.ru"</td></tr>');
-	print('<tr><td>Префикс форумных cookie:</td><td><input type="text" name="ipb_cookie_prefix" size="4" value="'.$REL_CONFIG['ipb_cookie_prefix'].'"> По умолчанию IPB, пусто</td></tr>');
-	print('<tr><td>ID форума-корзины:</td><td><input type="text" name="forum_bin_id" size="3" value="'.$REL_CONFIG['forum_bin_id'].'"></td></tr>');
-	print('<tr><td>Класс пользователей после экспорта на форум:</td><td><input type="text" name="defuserclass" size="1" value="'.$REL_CONFIG['defuserclass'].'"> По умолчанию IPB, "3"</td></tr>');
-	print('<tr><td>ID форума для экспорта прочих релизов:<br /><small>*Это релизы, форум которых не совпадает с названием тегов, либо возникла ошибка при определении форума</small></td><td><input type="text" name="not_found_export_id" size="3" value="'.$REL_CONFIG['not_found_export_id'].'"></td></tr>');
-	print('<tr><td>Папка со смайлами форума (без /):</td><td><input type="text" name="emo_dir" size="10" value="'.$REL_CONFIG['emo_dir'].'"> По умолчанию IPB, "default"</td></tr>');
-
 
 	print('<tr><td align="center" colspan="2" class="colhead">Настройки регистрации</td></tr>');
 
@@ -69,6 +55,7 @@ if (!isset($_GET['action'])){
 
 	print('<tr><td align="center" colspan="2" class="colhead">Настройки ограничений</td></tr>');
 
+	print('<tr><td>'.$REL_LANG->_("Comment hide rating").':</td><td><input type="text" name="low_comment_hide" size="4" value="'.$REL_CONFIG['low_comment_hide'].'">'.$REL_LANG->_('Points, after which post text will be replaced by "This post too bad"').'</td></tr>');	
 	print('<tr><td>Максимальное количество пользователей:</td><td><input type="text" name="maxusers" size="6" value="'.$REL_CONFIG['maxusers'].'">пользователей, укажите 0 для отключения лимита</td></tr>');
 	print('<tr><td>Максимальное количество сообщений в Личном ящике:</td><td><input type="text" name="pm_max" size="4" value="'.$REL_CONFIG['pm_max'].'">сообщений</td></tr>');
 	print('<tr><td>Максимальная ширина автара:</td><td><input type="text" name="avatar_max_width" size="3" value="'.$REL_CONFIG['avatar_max_width'].'">пикселей</td></tr>');
@@ -83,7 +70,8 @@ if (!isset($_GET['action'])){
 	print('<tr><td>Флуд-интервал в секундах:</td><td><input type="text" name="as_timeout" size="10" value="'.$REL_CONFIG['as_timeout'].'">секунд</td></tr>');
 	print('<tr><td>Использовать проверку последних 5 комментариев (антиспам):</td><td><select name="as_check_messages"><option value="1" '.($REL_CONFIG['as_check_messages']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['as_check_messages']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>Дебаг-режим:</td><td><select name="debug_mode"><option value="1" '.($REL_CONFIG['debug_mode']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['debug_mode']==0?"selected":"").'>Нет</option></select></td></tr>');
-
+	print('<tr><td>'.$REL_LANG->_("Language debug").':</td><td><select name="debug_language"><option value="1" '.($REL_CONFIG['debug_language']==1?"selected":"").'>'.$REL_LANG->_("Yes").'</option><option value="0" '.($REL_CONFIG['debug_language']==0?"selected":"").'>'.$REL_LANG->_("No").'</option></select></td></tr>');
+	
 	print('<tr><td align="center" colspan="2" class="colhead">Прочее</td></tr>');
 
 	print('<tr><td>Попробовать автоматически получить трейлер фильма с кинопоиск.ру:<br/><small>*Работает только, если в описании релиза есть ссылка вида http://www.kinopoisk.ru/level/1/film/ID_фильма</small></td><td><select name="use_ttl"><option value="1" '.($REL_CONFIG['use_kinopoisk_trailers']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_kinopoisk_trailers']==0?"selected":"").'>Нет</option></select></td></tr>');
@@ -99,26 +87,19 @@ if (!isset($_GET['action'])){
 
 elseif ($_GET['action'] == 'save'){
 	$reqparametres = array('torrentsperpage','maxusers','max_torrent_size','max_images','defaultbaseurl','siteemail','adminemail','sitename','description','keywords',
-'forumname','yourcopy','pm_max','default_language',
+'yourcopy','pm_max','default_language',
 'avatar_max_width','avatar_max_height','default_theme','use_dc','deny_signup','allow_invite_signup',
 'use_ttl','use_email_act','use_wait','use_lang','use_captcha','use_blocks','use_gzip','use_ipbans','smtptype',
-'as_timeout','as_check_messages','use_integration','debug_mode','ipb_cookie_prefix','announce_packed','pron_cats','register_timezone');
-	$int_param = array('exporttype','forumurl','forum_bin_id','defuserclass','not_found_export_id','emo_dir','ipb_password_priority');
+'as_timeout','as_check_messages','debug_mode','debug_language','announce_packed','pron_cats','register_timezone','low_comment_hide');
 	$captcha_param = array('re_publickey','re_privatekey');
 
 	$updateset = array();
 
 	foreach ($reqparametres as $param) {
-		if (!isset($_POST[$param]) && ($param != 'forumname') && ($param != 'ipb_cookie_prefix') && ($param != 'pron_cats')) stderr($REL_LANG->say_by_key('error'),"Некоторые поля не заполнены ($param)");
+		if (!isset($_POST[$param]) && ($param != 'pron_cats')) stderr($REL_LANG->say_by_key('error'),"Некоторые поля не заполнены ($param)");
 		$updateset[] = "UPDATE cache_stats SET cache_value=".sqlesc($_POST[$param])." WHERE cache_name='$param'";
 	}
 
-	if ($_POST['use_integration'] == 1) {
-		foreach ($int_param as $param) {
-			if (!isset($_POST[$param])) stderr($REL_LANG->say_by_key('error'),"Некоторые поля для интеграции с форумом не заполнены");
-			$updateset[] = "UPDATE cache_stats SET cache_value=".sqlesc($_POST[$param])." WHERE cache_name='$param'";
-		}
-	}
 	if ($_POST['use_captcha'] == 1) {
 		foreach ($captcha_param as $param) {
 			if (!$_POST[$param] || !isset($_POST[$param])) stderr($REL_LANG->say_by_key('error'),"Приватный или публичный ключи капчи не определены");

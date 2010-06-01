@@ -1406,3 +1406,10 @@ CREATE TABLE `users` (
 -- Дамп данных таблицы `users`
 -- 
 
+INSERT INTO `snt_tracker`.`cache_stats` (
+`cache_name` ,
+`cache_value`
+)
+VALUES (
+'low_comment_hide', '-3'
+);
