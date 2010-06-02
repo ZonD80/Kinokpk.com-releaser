@@ -102,7 +102,7 @@ if (($CURUSER["id"] != $row["owner"]) && (get_user_class() < UC_MODERATOR) && !$
 	tr("\"Обновлен\"", "<input type=\"checkbox\" name=\"upd\" value=\"1\" />Сделать первым на главной", 1);
 	if(get_user_class() >= UC_MODERATOR)
 	tr("Забанен", "<input type=\"checkbox\" name=\"banned\"" . (($row["banned"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" />", 1);
-}
+
 if((get_user_class() >= UC_MODERATOR) || $tedit)
 tr("Золотая раздача", "<input type=\"checkbox\" name=\"free\"" . (($row["free"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Золотая раздача (считается только раздача, скачка не учитывается)", 1);
 if(get_user_class() >= UC_MODERATOR)   {
@@ -140,6 +140,7 @@ if(get_user_class() >= UC_MODERATOR) {
 	print("</table>");
 	print("</form>\n");
 	print("</p>\n");
+}
 }
 stdfoot();
 
