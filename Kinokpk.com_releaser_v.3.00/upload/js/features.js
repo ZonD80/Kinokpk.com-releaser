@@ -84,3 +84,27 @@ $(function(){
 				});
 				
 			});
+//Get user selection text on page
+function getSelectedText() {
+    if (window.getSelection) {
+        return window.getSelection();
+    }
+    else if (document.selection) {
+        return document.selection.createRange().text;
+    }
+    return false;
+}
+function quote_comment(nickname) {
+	selection = getSelectedText();
+	if (selection=='') { alert(REL_LANG_NO_TEXT_SELECTED);} else {
+		insert = "<blockquote><p>"+selection+"</p><cite>"+nickname+"</cite></blockquote><hr/><br/><br/>";
+	if (tinyMCE) {
+		tinyMCE.execCommand("mceInsertContent", false, insert);
+		tinyMCE.execCommand("mceRepaint");
+	} else {
+		$("input[name=text]").append(insert);
+	}
+	}
+	
+}
+var REL_LANG_NO_TEXT_SELECTED = 'Не выбран текст!';

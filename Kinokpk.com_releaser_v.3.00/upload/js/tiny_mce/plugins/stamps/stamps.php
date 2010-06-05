@@ -19,7 +19,7 @@ require_once ($path."include/bittorrent.php");
 dbconn();
 if (!$CURUSER) die('Only users enabled');
 $stamparray = sql_query("SELECT image FROM stamps WHERE class <= ".get_user_class()." ORDER BY sort ASC");
-while ((list($img) = mysql_fetch_array($stamparray))) print('<tr><td><a href="javascript:StampsDialog.insert(\''.$img.'\');"><img src="'.$CACHEARRAY['defaultbaseurl'].'/pic/stamp/'.$img.'" border="0" alt="Stamp" title="Stamp" /></a></td></tr>');
+while ((list($img) = mysql_fetch_array($stamparray))) print('<tr><td><a href="javascript:StampsDialog.insert(\''.$img.'\');"><img src="'.$REL_CONFIG['defaultbaseurl'].'/pic/stamp/'.$img.'" border="0" alt="Stamp" title="Stamp" /></a></td></tr>');
 
 ?>
 </table>
