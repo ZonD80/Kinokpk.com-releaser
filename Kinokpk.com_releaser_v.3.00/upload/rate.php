@@ -39,7 +39,7 @@ if ($_GET['act']=='up') $act='+1'; else $act='-1';
 
 if (!in_array($type,$allowed_types)) $invalid=true;
 
-if (!$rid || !$type || $invalid) die($tracker_lang['invalid_id']);
+if (!$rid || !$type || $invalid || !is_valid_id($rid)) die($tracker_lang['invalid_id']);
 
 $myself = check_myself($rid,$type);
 if (!$myself) stderr($tracker_lang['error'],$tracker_lang['cant_rate_yourself']);
