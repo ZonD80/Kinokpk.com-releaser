@@ -1725,7 +1725,6 @@ function stdhead($title = "", $addition = '') {
 			$allowed_types_moderator = array('users', 'reports', 'unchecked');
 			$allowed_types = array_merge($allowed_types,$allowed_types_moderator);
 		}
-<<<<<<< HEAD
 		$cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('pm_delete_sys_days','pm_delete_user_days')");
 
 		while ($cronres = mysql_fetch_assoc($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
@@ -1739,14 +1738,6 @@ function stdhead($title = "", $addition = '') {
 				case 'unread' :  $addition = "location=1 AND receiver={$CURUSER['id']} AND unread=1 AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table='messages'; $noadd=true; break;
 				case 'inbox' :  $addition = "location=1 AND receiver={$CURUSER['id']} AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table='messages'; $noadd=true; break;
 				case 'outbox' : $addition = "saved=1 AND sender={$CURUSER['id']} AND IF(archived_receiver<>1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table = 'messages'; $noadd=true; break;
-=======
-
-		foreach ($allowed_types as $type) {
-			switch ($type) {
-				case 'unread' :  $addition = "location=1 AND receiver={$CURUSER['id']} AND unread=1"; $table='messages'; $noadd=true; break;
-				case 'inbox' :  $addition = "location=1 AND receiver={$CURUSER['id']}"; $table='messages'; $noadd=true; break;
-				case 'outbox' : $addition = "saved=1 AND sender={$CURUSER['id']}"; $table = 'messages'; $noadd=true; break;
->>>>>>> ce57a26a436f4363cdb37c78debc150c007cc9eb
 				case 'unchecked' : $addition = 'moderatedby=0'; $table = 'torrents'; $noadd=true; break;
 				case 'reports' : $noadd=true; break;
 				case 'friends' : $noadd=true; $addition = "friendid={$CURUSER['id']} AND confirmed=0"; break;
