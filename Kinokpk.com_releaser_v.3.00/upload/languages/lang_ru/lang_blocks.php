@@ -1,0 +1,33 @@
+<?
+$tracker_lang['view_all'] = '[Посмотреть все]';
+$tracker_lang['warning'] = 'За публикацию данных фильмов ваш аккаунт будет немедленно заблокирован без каких-либо предупреждений. Публикация этих фильмов была официально запрещена правообладателем, либо запрещена по любой другой причине, не зависящей от нас.<br />Запрет действует до тех пор, пока фильм находится в <a href="viewcensoredtorrents.php">списке запрещенных релизов</a>.';
+$tracker_lang['banned_releases'] = 'Запрещенные релизы';
+$tracker_lang['our_films'] = 'Наши фильмы';
+$tracker_lang['large_tags'] = 'Большие теги';
+$tracker_lang['subject'] = 'Тема';
+$tracker_lang['autor'] = 'Автор';
+$tracker_lang['views'] = 'Просмотров';
+$tracker_lang['replies'] = 'Ответов';
+$tracker_lang['last_post'] = 'Посл. сообщение';
+$tracker_lang['helpseed'] = 'Файлы, которым нужны раздающим';
+$tracker_lang['help_seed'] = 'Скачали сами, дайте скачать другому. Если вы скачали фильм не по torrent, встаньте, пожалуйста, на раздачу';
+$tracker_lang['no_need_seeding'] = 'Все необходимые фильмы сидируются:)';
+$tracker_lang['new_torrents_stats'] = 'Раздают: %d, Качают: %d';
+$tracker_lang['server_load'] = 'Нагрузка на сервер';
+$tracker_lang['loading'] = 'Нагрузка...';
+$tracker_lang['average'] = 'Средняя';
+$tracker_lang['the_unique_1'] = 'Всего к трекеру подключено уникальных';
+$tracker_lang['users_sl'] = 'пользователей';
+$tracker_lang['torrents'] = 'Торренты';
+$tracker_lang['search_btn'] = 'Искать!';
+$tracker_lang['requests'] = 'Запросы';
+$tracker_lang['search_google'] = 'Искать в Гугле';
+$tracker_lang['pages'] = 'Страницы';
+$tracker_lang['test_releaser'] = 'Непроверенные релизы';
+$tracker_lang['account_settings'] = 'Настройки аккаунта';
+$tracker_lang['my_warnings'] = 'Мои предупреждения';
+$tracker_lang['inbox_m'] = 'Входящие ЛС';
+$tracker_lang['outbox_m'] = 'Исходящие ЛС';
+$tracker_lang['check_port'] = 'Проверить порт';
+$tracker_lang['tbhome'] = 'Перейти на главную страницу Torrentsbook';
+?>

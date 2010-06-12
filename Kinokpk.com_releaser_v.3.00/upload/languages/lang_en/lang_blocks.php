@@ -1,0 +1,33 @@
+<?
+$tracker_lang['view_all'] = '[View all]';
+$tracker_lang['warning'] = 'For the publication of data files to your account will be immediately blocked without any warning. The publication of these files was officially banned by the right holder, or prohibited for any other reason, does not depend on us.<br />The ban is valid until until the file is located in <a href="viewcensoredtorrents.php">list of prohibited releases</a>.';
+$tracker_lang['banned_releases'] = 'Banned releases';
+$tracker_lang['our_films'] = 'Our films';
+$tracker_lang['large_tags'] = 'Large tags';
+$tracker_lang['subject'] = 'Subject';
+$tracker_lang['autor'] = 'Autor';
+$tracker_lang['views'] = 'Views';
+$tracker_lang['replies'] = 'Replies';
+$tracker_lang['last_post'] = 'Last Post';
+$tracker_lang['helpseed'] = 'Files to which are necessary to the distributing';
+$tracker_lang['help_seed'] = 'Got it done? Let others get it!';
+$tracker_lang['no_need_seeding'] = 'No torrents without seeders';
+$tracker_lang['new_torrents_stats'] = 'Seeding: %d, Leeching: %d';
+$tracker_lang['server_load'] = 'Server load';
+$tracker_lang['loading'] = 'Loading...';
+$tracker_lang['average'] = 'Average';
+$tracker_lang['the_unique_1'] = 'Total Unique is connected to the tracker';
+$tracker_lang['users_sl'] = 'users';
+$tracker_lang['torrents'] = 'Torrents';
+$tracker_lang['search_btn'] = 'Search!';
+$tracker_lang['requests'] = 'Requests';
+$tracker_lang['search_google'] = 'Search Google';
+$tracker_lang['pages'] = 'Our pages';
+$tracker_lang['test_releaser'] = 'Test releaser';
+$tracker_lang['account_settings'] = 'Account settings';
+$tracker_lang['my_warnings'] = 'My warnings';
+$tracker_lang['inbox_m'] = 'Incoming messages';
+$tracker_lang['outbox_m'] = 'Outgoing messages';
+$tracker_lang['check_port'] = 'Check port';
+$tracker_lang['tbhome'] = 'Go to home page';
+?>
