@@ -1196,8 +1196,13 @@ function userlogin() {
 	if ($row['override_class'] < $row['class'])
 	$row['class'] = $row['override_class']; // Override class and save in GLOBAL array below.
 	/* @var array Not full yet array of variables of current user
+<<<<<<< HEAD
 	* @see stdhead()
 	*/
+=======
+	 * @see stdhead()
+	 */
+>>>>>>> ce57a26a436f4363cdb37c78debc150c007cc9eb
 	$GLOBALS["CURUSER"] = $row;
 	getlang();
 
@@ -1720,6 +1725,7 @@ function stdhead($title = "", $addition = '') {
 			$allowed_types_moderator = array('users', 'reports', 'unchecked');
 			$allowed_types = array_merge($allowed_types,$allowed_types_moderator);
 		}
+<<<<<<< HEAD
 		$cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('pm_delete_sys_days','pm_delete_user_days')");
 
 		while ($cronres = mysql_fetch_assoc($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
@@ -1733,6 +1739,14 @@ function stdhead($title = "", $addition = '') {
 				case 'unread' :  $addition = "location=1 AND receiver={$CURUSER['id']} AND unread=1 AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table='messages'; $noadd=true; break;
 				case 'inbox' :  $addition = "location=1 AND receiver={$CURUSER['id']} AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table='messages'; $noadd=true; break;
 				case 'outbox' : $addition = "saved=1 AND sender={$CURUSER['id']} AND IF(archived_receiver<>1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table = 'messages'; $noadd=true; break;
+=======
+
+		foreach ($allowed_types as $type) {
+			switch ($type) {
+				case 'unread' :  $addition = "location=1 AND receiver={$CURUSER['id']} AND unread=1"; $table='messages'; $noadd=true; break;
+				case 'inbox' :  $addition = "location=1 AND receiver={$CURUSER['id']}"; $table='messages'; $noadd=true; break;
+				case 'outbox' : $addition = "saved=1 AND sender={$CURUSER['id']}"; $table = 'messages'; $noadd=true; break;
+>>>>>>> ce57a26a436f4363cdb37c78debc150c007cc9eb
 				case 'unchecked' : $addition = 'moderatedby=0'; $table = 'torrents'; $noadd=true; break;
 				case 'reports' : $noadd=true; break;
 				case 'friends' : $noadd=true; $addition = "friendid={$CURUSER['id']} AND confirmed=0"; break;
@@ -1782,7 +1796,11 @@ function stdhead($title = "", $addition = '') {
 <link rel="alternate" type="application/atom+xml" title="Atom" href="'.$CACHEARRAY['defaultbaseurl'].'/atom.php" />
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script language="javascript" type="text/javascript" src="js/resizer.js"></script>'
+<<<<<<< HEAD
 .((!$CURUSER || ($CURUSER['extra_ef']))?'
+=======
+	.((!$CURUSER || ($CURUSER['extra_ef']))?'
+>>>>>>> ce57a26a436f4363cdb37c78debc150c007cc9eb
 <!--<script language="javascript" type="text/javascript" src="js/snow.js"></script>-->':'').
 '<script language="javascript" type="text/javascript" src="js/jquery.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.history.js"></script>
@@ -1801,6 +1819,7 @@ function stdhead($title = "", $addition = '') {
 <script language="javascript" type="text/javascript" src="js/jquery.bgiframe.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.linkselect.js"></script>
 '.$addition);
+<<<<<<< HEAD
 if (get_user_class() == UC_SYSOP) {
 	if ($row['onoff'] != 1) print('<div align="center"><font color="red" size="20">ADMIN WARNING: SITE IS CLOSED FOR MAINTENANCE!</font></div>');
 }
@@ -1808,6 +1827,15 @@ if (get_user_class() == UC_SYSOP) {
 @require_once(ROOT_PATH."themes/" . $ss_uri . "/stdhead.php");
 
 return;
+=======
+	if (get_user_class() == UC_SYSOP) {
+		if ($row['onoff'] != 1) print('<div align="center"><font color="red" size="20">ADMIN WARNING: SITE IS CLOSED FOR MAINTENANCE!</font></div>');
+	}
+	@require_once(ROOT_PATH."themes/" . $ss_uri . "/template.php");
+	@require_once(ROOT_PATH."themes/" . $ss_uri . "/stdhead.php");
+
+	return;
+>>>>>>> ce57a26a436f4363cdb37c78debc150c007cc9eb
 }
 
 /**
@@ -2074,7 +2102,11 @@ function deletetorrent($id) {
  }
  $pagerstr = join("", $pagerarr);
  $pagertop = "<table class=\"main\"><tr>$pager $pagerstr $pager2</tr></table>\n";
+<<<<<<< HEAD
  $pagerbottom = "¬сего $count на $i страницах по $rpp на каждой странице.<br /><br /><table class=\"main\"><tr>$pager $pagerstr $pager2</tr></table>\n"
+=======
+ $pagerbottom = "¬сего $count на $i страницах по $rpp на каждой странице.<br /><br /><table class=\"main\"><tr>$pager $pagerstr $pager2</tr></table>\n";
+>>>>>>> ce57a26a436f4363cdb37c78debc150c007cc9eb
  }
  else {
  $pagertop = $pager;
