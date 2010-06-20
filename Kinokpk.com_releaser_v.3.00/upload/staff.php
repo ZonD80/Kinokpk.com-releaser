@@ -105,8 +105,8 @@ begin_frame("Администрация");
 	{
 
 		$firstline .= "<tr height=15><td class=embedded><a class=altlink href=userdetails.php?id=".$arr['ids'].">".$arr['username']."</a></td>
-<td class=embedded> ".("'".$arr['last_access']."'">$dt?"<img src=pic/button_online.gif border=0 alt=\"online\">":"<img src=pic/button_offline.gif border=0 alt=\"offline\">" )."</td>".
-"<td class=embedded><a href=message.php?action=sendmessage&amp;receiver=".$arr['ids'].">"."<img src=pic/button_pm.gif border=0></a></td>".
+<td class=embedded> ".($arr['last_access'] > $dt ? "<img src=pic/button_online.gif border=0 alt=\"online\">":"<img src=pic/button_offline.gif border=0 alt=\"offline\">" )."</td>".
+		"<td class=embedded><a href=message.php?action=sendmessage&amp;receiver=".$arr['ids'].">"."<img src=pic/button_pm.gif border=0></a></td>".
 "<td class=embedded><img src=pic/flag/$arr[flagpic] title=$arr[name] border=0 width=19 height=12></td>".
 "<td class=embedded>".htmlspecialchars($arr['supportfor'])."</td></tr>\n";
 	}
