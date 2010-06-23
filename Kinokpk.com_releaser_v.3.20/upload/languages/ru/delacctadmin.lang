@@ -1,0 +1,11 @@
+error=Ошбка
+success=Успешно
+no_access=Нет доступа.
+fill_form=Пожалуйста заполняйте форму корректно.
+invalid_username=Неверное имя пользователя. Проверьте введеные данные.
+cant_dell_acc=Невозможно удалить аккаунт.
+account=Аккаунт
+removed=удален.
+delete_account=Удалить аккаунт
+username=Пользователь
+remove=Удалить

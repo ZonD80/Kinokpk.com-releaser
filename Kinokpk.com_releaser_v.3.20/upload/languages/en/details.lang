@@ -1,0 +1,9 @@
+screens=Screenshots
+not_yet_checked=<font color="red">This release <b>NOT</b> yet checked by moderator</font>
+checked_by=<font color="green">This release <b>was checked</b> by </font>
+check=Check
+uncheck=Uncheck
+include_remote=, exclude %s %s on remote trackers
+present_to_friend=<img border="0" src="pic/presents/present.gif" title="Present torrent to friend!"/>&nbsp; Present torrent to friend!
+number_release=ID release:
+private_release_access_denied=This release <strong>private</strong> group %s, to view information about this release you must be in subscribers in this group. Get a subscription, <a href="relgroups.php">please visit Release group</a>

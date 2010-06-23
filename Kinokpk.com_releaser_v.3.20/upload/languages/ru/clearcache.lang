@@ -1,0 +1,10 @@
+cleaning_cache=Очистка кэшей
+select_cache=Выберите кэш для очистки
+name_cache=Название кэша
+select_all=Выбрать все
+mark_all=Выделить все
+clean=Очистить!
+dont_set_cache=Не выбран кэш для очистки
+cache=Кэш
+succ_purif=был успешно очищен
+cache_cleared=Кеш очищен

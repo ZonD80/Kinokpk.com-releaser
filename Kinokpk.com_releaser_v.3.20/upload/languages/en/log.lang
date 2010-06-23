@@ -1,0 +1,13 @@
+logs=Logs
+tracker=Tracker
+bans=Bans
+release=Release
+exchange=Exchange
+torrent=Torrents
+errors=Errors
+error=Error
+access_closed=Access to this section is closed.
+log_file_empty=The log file is empty
+date=Date
+time=Time
+event=Event

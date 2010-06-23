@@ -1,0 +1,31 @@
+//language for presents, english
+no_type=Incorrectly selected type of present
+$tracker_lang['present_torrent'] ='Present torrent to a friend';
+present_discount=Present farmed to a friend
+present_ratingsum=Present rating to a friend
+$tracker_lang['select_friend'] ='Select friend';
+user_unconfirmed=<small>Friendship is not confirmed, you can not make a present</small>
+select_present=<strong>Present!</strong>
+$tracker_lang['presents'] ='Presents';
+what_present=What exactly do you wish to present?
+how_many_present=How much to present&
+how_discount=Farmed
+how_torrent=ID torrent, you can get by details.php?id=<font color="red">ID Torrent</font>
+how_ratingsum=Karma
+how_present_notice_discount=This quantity of a farmed will be subtracted at you and added to your friend.
+how_present_notice_torrent=Rating for downloading this release will be deducted from you and your friend will be able to download this torrent, not taking into account your rating
+how_present_notice_ratingsum=This amount will be deducted karma you have and adding the karma of your friend.
+big_present_discount=<img border="0" src="pic/presents/discount_big.png"/><br />Present farmed
+big_present_torrent=<img border="0" src="pic/presents/torrent_big.png"/><br />Present realese
+big_present_ratingsum=<img border="0" src="pic/presents/ratingsum_big.png"/><br />Present rating
+you_have=You have 
+no_present_torrent=Release with this ID is not on our site or this release is presented
+no_friend=This user has not confirmed your friendship, or it is not your friend.
+presented_torrent=release "%s", now that this release will show an icon <img src="pic/presents/present.gif"/>, to remind you of your friends
+presented_discount=%s farmed
+presented_ratingsum=part of their rating (%s respekt)
+presented=You friend %s just gave you %s! Congratulations! You can also <a href="present.php?id=%s">present anything to your friend</a>
+no_money_torrent=You do not have enough "money"! Type rating to give this release, or select another release for a present
+no_money_discount=You do not have enough "money"! Enter more farmed, or present a smaller amount
+no_money_ratingsum=You do not have enough "money"! Unfortunately, you are not respectable enough to give present
+you_success_presented=You have been given a %s present!

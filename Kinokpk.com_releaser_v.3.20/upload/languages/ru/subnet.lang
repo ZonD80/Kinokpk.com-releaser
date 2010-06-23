@@ -1,0 +1,13 @@
+error=Ошибка
+invalid_subnet=Неверная маска подсети.
+network_neighbot=Сетевые соседи
+speed_above=Эти пользователи ваши сетевые соседи, что означает что вы можете получить от них скорость выше.
+username=Пользователь
+up_size=Раздал
+down_size=Скачал
+ratio=Рейтинг
+registered=Зарегестрирован
+last_access=Последний доступ
+class=Класс
+information=Информация
+not_found_neighbot=Сетевых соседей не обнаружено.

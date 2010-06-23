@@ -1,0 +1,13 @@
+// LANGUAGE FOR pagescategory ADMIN
+pagescategory_admin=Management categories pages
+add_new_pagescategory=Add new category
+pagescategory_success_delete=The category successfully deteted
+pagescategory_success_edit=The category successfully edited
+you_edit=You are editing
+no_parent=No parent category
+parent=Parent categoryt
+add_new_pagescategory=The category successfully added
+cur_tree=Current section categories
+confirmation_delete=Are you sure?
+sort=Display order
+class=Class of access

@@ -1,0 +1,13 @@
+// LANGUAGE FOR pagescategory ADMIN
+pagescategory_admin=Админка категорий страниц
+add_new_pagescategory=Добавить новую категорию
+pagescategory_success_delete=Категория успешно удалена
+pagescategory_success_edit=Категория успешно отредактирована
+you_edit=Вы редактируете
+no_parent=Нет родителя
+parent=Родитель
+add_new_pagescategory=Добавление новой категории
+cur_tree=Текущее дерево категорий страниц
+confirmation_delete=Вы уверены?
+sort=Порядок
+class=Класс доступа
