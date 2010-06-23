@@ -1,7 +1,4 @@
 TRUNCATE TABLE `cron`;
-/* Alter table in target */
-ALTER TABLE `censoredtorrents` 
-	DROP KEY `name`, COMMENT='';
 
 /* Alter table in target */
 ALTER TABLE `cron` 
