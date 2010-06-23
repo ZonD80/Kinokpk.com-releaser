@@ -16,6 +16,7 @@
 
 -- --------------------------------------------------------
 
+<<<<<<< HEAD
 CREATE TABLE IF NOT EXISTS `presents` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL DEFAULT '0',
@@ -24,6 +25,8 @@ CREATE TABLE IF NOT EXISTS `presents` (
   `msg` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+=======
+>>>>>>> 1a67c886f56b010ff40a4408aee70f4bf11b52f9
 -- 
 -- Структура таблицы `addedrequests`
 -- 
@@ -1351,7 +1354,11 @@ CREATE TABLE `users` (
   `last_login` int(10) NOT NULL default '0',
   `last_access` int(10) NOT NULL default '0',
   `editsecret` varchar(20) NOT NULL,
+<<<<<<< HEAD
   `privacy` enum('strong','normal','highest') NOT NULL default 'normal',
+=======
+  `privacy` enum('strong','normal','low') NOT NULL default 'normal',
+>>>>>>> 1a67c886f56b010ff40a4408aee70f4bf11b52f9
   `stylesheet` int(10) default '1',
   `info` text,
   `ratingsum` int(8) NOT NULL default '0',
@@ -1414,13 +1421,21 @@ CREATE TABLE `users` (
 -- Дамп данных таблицы `users`
 -- 
 
+<<<<<<< HEAD
 INSERT INTO `cache_stats` (
+=======
+INSERT INTO `snt_tracker`.`cache_stats` (
+>>>>>>> 1a67c886f56b010ff40a4408aee70f4bf11b52f9
 `cache_name` ,
 `cache_value`
 )
 VALUES (
 'low_comment_hide', '-3'
+<<<<<<< HEAD
 );
 
 INSERT INTO `cache_stats` (`cache_name`, `cache_value`) VALUES
 ('debug_language', '0');
+=======
+);
+>>>>>>> 1a67c886f56b010ff40a4408aee70f4bf11b52f9

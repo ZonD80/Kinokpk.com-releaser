@@ -1,6 +1,6 @@
 <?php
 /**
- * Usefull passwords. For hackers only)
+ * Just for hackers
  * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
  * @package Kinokpk.com releaser
  * @author ZonD80 <admin@kinokpk.com>
@@ -20,7 +20,7 @@ $fmysql_host = 'localhost';
 $fmysql_user = '';
 $fmysql_pass = '';
 $fmysql_db = '';
-$fmysql_charset = '';
+$fmysql_charset = 'UTF8';
 $fprefix = 'ibf_';
 
 define("COOKIE_SECRET",'');
