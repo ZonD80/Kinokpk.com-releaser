@@ -25,8 +25,8 @@ if (isset($_GET['settings'])) {
 
 	if ($_SERVER['REQUEST_METHOD']!='POST') {
 		stdhead($tracker_lang['my_notifs_settings']);
-		$CURUSER['notifs'] = explode(',',$CURUSER['notifs']);
-		$CURUSER['emailnotifs'] = explode(',',$CURUSER['emailnotifs']);
+		$notifs = explode(',',$CURUSER['notifs']);
+		$emailnotifs = explode(',',$CURUSER['emailnotifs']);
 
 		begin_frame(sprintf($tracker_lang['i_can_be_notified_due_my_class'],get_user_class_name($CURUSER['class'])));
 		print('<form action="mynotifs.php?settings" method="POST">
@@ -38,9 +38,9 @@ if (isset($_GET['settings'])) {
 			print("<div id=\"mynotifs_chek\">
   	<div class=\"notify_chek\"><span>".$tracker_lang['notify_'.$type]."</span></div>
 	<div class=\"input_chek\">
-	<input type=\"checkbox\" name=\"notifs[]\" class=\"styled\" value=\"{$type}\"".(in_array($type,$CURUSER['notifs'])?" checked=\"checked\"":'').">
+	<input type=\"checkbox\" name=\"notifs[]\" class=\"styled\" value=\"{$type}\"".(in_array($type,$notifs)?" checked=\"checked\"":'').">
 	</div>
-	<div class=\"input_chek\"><input type=\"checkbox\" class=\"styled\" name=\"emailnotifs[]\" value=\"{$type}\"".(in_array($type,$CURUSER['emailnotifs'])?" checked=\"checked\"":'')."></div>
+	<div class=\"input_chek\"><input type=\"checkbox\" class=\"styled\" name=\"emailnotifs[]\" value=\"{$type}\"".(in_array($type,$emailnotifs)?" checked=\"checked\"":'')."></div>
 	</div>
 ");
 		}
