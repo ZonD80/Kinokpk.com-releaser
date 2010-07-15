@@ -1,0 +1,35 @@
+/**
+ * Language file for userdetails
+ * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
+ * @package Kinokpk.com releaser
+ * @author ZonD80 <admin@kinokpk.com>
+ * @copyright (C) 2008-now, ZonD80, Germany, TorrentsBook.com
+ * @link http://dev.kinokpk.com
+ */
+no_user=Такого пользователя не существует
+viewing_profile=Вы смотрите профиль 
+bonus=Откуп
+ratio=Торрент-рейтинг
+status=Статус
+information=Информация
+zodiac=Знак зодиака
+present=Подарки
+present_torrent=Подарить торрент!
+actions=Действия
+del_friend=Прекратить дружбу
+add_friend=Дружить
+moderate=Admin
+comments_and_social=Комментарии<br/><br/>Соцактивность<br/><br/>Файлообмен
+social_friends=Друзей
+social_pages=Созданных страниц
+social_seeding=Раздает
+social_leeching=Качает
+social_downloaded=Скачал(а)
+social_uploaded=Созданных релизов
+social_comments=К релизам
+social_pollcomments=К опросам
+social_newscomments=К новостям
+social_usercomments=К пользователям
+social_reqcomments=К запросам
+social_rgcomments=К релиз-группам
+social_pagecomments=К страницам

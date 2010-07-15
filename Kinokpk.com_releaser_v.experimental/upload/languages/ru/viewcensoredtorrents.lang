@@ -1,0 +1,10 @@
+error=Ошибка
+success=Успешно
+ban_releases=Запрещенные релизы
+no_fields_blank=Не оставляйте пустых полей.
+ban_uninstalled=Запрет успешно удален.<br /><a href="viewcensoredtorrents.php">К списку запретов</a>
+not_permission_prohibitions=У вас нет прав для удаления запретов.
+title=Название
+reason_ban=Причина запрета
+more=Подробнее
+add_ban=Добавить запрет

@@ -1,0 +1,12 @@
+// language file for reltemplatesadmin (TinyMCE)
+page_title=Release Templates administration
+menu_header=<a href="reltemplatesadmin.php">List of all templates</a> / <a href="reltemplatesadmin.php?action=add">Add new</a>
+add=Add
+del=Delete
+edit=Edit
+content=Content
+name=Name
+actions=Actions
+some_fields_blank=Some fields are blank. <a href="javascript:history.go(-1);">Back</a>
+editing_succ=Editing of data was successful
+are_you_sure=Are you sure?

@@ -1,0 +1,20 @@
+// language notifs.php - manipulate message notifications
+now_notified_comments=Вы успешно подписались на рассылку о комментариях к этому релизу
+now_notified_reqcomments=Вы успешно подписались на рассылку о комментариях к этому запросу
+now_notified_pollcomments=Вы успешно подписались на рассылку о комментариях к этому опросу
+now_notified_usercomments=Вы успешно подписались на рассылку о комментариях к этому пользователю
+now_notified_rgcomments=Вы успешно подписались на рассылку о комментариях к этой релиз группе
+now_notified_rgnewscomments=Вы успешно подписались на рассылку о комментариях к этой новости от релиз группы
+now_notified_newscomments=Вы успешно подписались на рассылку о комментариях к этой новости
+now_notified_pagecomments=Вы успешно подписались на рассылку о комментариях к этой странице
+already_notified_comments=Вы уже подписаны на оповещения о комментариях к этому релизу
+already_notified_reqcomments=Вы уже подписаны на оповещения о комментариях к этому запросу
+already_notified_pollcomments=Вы уже подписаны на оповещения о комментариях к этому опросу
+already_notified_usercomments=Вы уже подписаны на оповещения о комментариях к этому пользователю
+already_notified_rgcomments=Вы уже подписаны на оповещения о комментариях к этой релиз группе
+already_notified_rgnewscomments=Вы уже подписаны на оповещения о комментариях к этой новости от релиз группы
+already_notified_newscomments=Вы уже подписаны на оповещения о комментариях к этой новости
+already_notified_pagecomments=Вы уже подписаны на оповещения о комментариях к этой странице
+delete_notif=Вы успешно отменили подписку
+invalid_type=Неверный тип подписки
+invalid_idtype=Система не нашла то, на что вы подписываетесь

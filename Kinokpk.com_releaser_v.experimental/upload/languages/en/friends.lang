@@ -1,0 +1,26 @@
+// lang for friends
+friends=Friends
+no_user=The user you want to add to friends does not exist!
+already_in_private_group=This user is already in your friend list!
+friend_notice=User %s asks you for friendship, if he is your friend, you can [<a href="friends.php?action=confirm&amp;id=%s">Confirm</a>] or [<a href="friends.php?action=deny&amp;id=%s">Deny</a>] friendship
+friend_notice_subject=Lets be friends?
+user_notice_sent=User %s sent a message of friendship offered for you. He can become your friend, only after you confirm a friend request
+my_private_groups=My friends
+confirm=Confirm friendship
+friend_deleted=The user has been removed from your friends
+friend_confirmed=Now you are confirmed that %s is your friend, thank you
+friend_deny=The user %s any more does not wish to be friends with you, it has removed you from the list of friends
+friendship_cancelled=The friendship is over
+cannot_edit_friends=You cannot make action not over the friends
+cant_add_myself=You cannot add yourselves in friends
+class=Class
+friend_deny=The user миша has refused to you friendship
+init=<div align="right"><small>The initiator of friendship</small></div>
+delete_from_friends=Remove from Friends
+friend_pending=Expects confirmation
+add_to_friends=Be friends
+delete_on_friends=Delete from friends
+present_torrents=Present torrents
+present_bonus=Present farming
+present_upload=Present apload
+present_ratio=Present rating

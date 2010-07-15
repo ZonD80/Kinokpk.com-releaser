@@ -1,0 +1,10 @@
+panel_admin=Panel Administrator
+1=Инструменты владельца<font color=#FF0000> - Видно сис. администраторам.</font>
+2=Инструменты владельца<font color=#009900> - Видно администраторам.</font>
+missing_form_data=Please fill in all fields.
+password_mismatch=Passwords do not match.
+unable_to_create_account=Unable to create an account. Perhaps the user name already exists. 
+add_user=Add user
+username=Username
+password=Password
+repeat_password=Confirm password

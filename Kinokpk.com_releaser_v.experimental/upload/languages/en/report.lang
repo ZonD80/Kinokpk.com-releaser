@@ -1,0 +1,10 @@
+//lang for reports
+reason=Select report reason:
+spam=Spam
+abuse=Abuse
+badwords=Bad words
+hack=Hacking attempt
+own_reason=My reason: 
+invalid_type=Wrong report type
+already_report=You already reported
+report_ok=Your report successfully accepted

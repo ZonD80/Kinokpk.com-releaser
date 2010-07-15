@@ -1,0 +1,11 @@
+error=Ошибка
+invalid_id=Неверный идентификатор.
+invalid_result=: неверный результат запроса
+del_peers=Удаленные пиры
+invaled_passed=invalid arguments passed
+distr_our_tracker=Этот торрент на данный момент раздается только на нашем трекере.
+unable_peers=Не удалось получить данные о пирах с удаленного трекера
+leechers_l=качающих
+peers_l=пиров
+tracker=Трекер
+status=Статус

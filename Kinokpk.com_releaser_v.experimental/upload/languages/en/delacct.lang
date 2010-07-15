@@ -1,0 +1,10 @@
+error=Error
+success=Successfully
+fill_form=Fill out the form correctly.
+invalid_username=Incorrect name of the user or the password. Check up the entered information.
+cant_del_acc=You can not delete your account.
+account_deleted=Account deleted.
+delete_account=Delete Account
+username=Username
+password=Password
+remove=Remove

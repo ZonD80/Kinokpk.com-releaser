@@ -1,0 +1,7 @@
+error=Error
+invalid_id=Invalid ID.
+how_did_get_here=How did you get here? <a href=\"javascript:history.go(-1)\">Back</a>
+have_been_last_release=Have you been on the last release
+this_category=this category
+back=. <a href=\"javascript:history.go(-1)\">Back</a>
+have_first_release=You were on the first release
