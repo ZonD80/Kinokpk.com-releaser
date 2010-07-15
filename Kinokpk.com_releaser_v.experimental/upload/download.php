@@ -13,7 +13,7 @@ require_once (ROOT_PATH."include/benc.php");
 
 dbconn();
 loggedinorreturn();
-$REL_LANG->load('download');
+
 
 $cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('rating_enabled','rating_perdownload','rating_downlimit','rating_freetime')");
 

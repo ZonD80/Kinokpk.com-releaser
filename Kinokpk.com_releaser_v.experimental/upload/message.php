@@ -14,8 +14,6 @@ dbconn ();
 
 loggedinorreturn ();
 
-$REL_LANG->load( 'friends' );
-
 // Define constants
 define ( 'PM_DELETED', 0 ); // Message was deleted
 define ( 'PM_INBOX', 1 ); // Message located in Inbox for reciever
@@ -741,12 +739,10 @@ elseif ($action == "moveordel") {
 			}
 		}
 		// Проверяем, были ли помечены сообщения
-		if (@mysql_affected_rows () == 0) {
-			stderr ( $REL_LANG->say_by_key('error'), "Сообщение не может быть помечено как прочитанное! " );
-		} else {
+
 			safe_redirect($REL_SEO->make_link('message','action','viewmailbox','box',$pm_box));
 			exit ();
-		}
+
 	} elseif ($_POST ["archive"]) {
 		//архивируем одно сообщение
 		if ($pm_id) {
@@ -857,12 +853,10 @@ elseif ($action == "forward") {
 	</TR>
 	<TR>
 		<TD>Сообщение:</TD>
-		<TD><?=print ( textbbcode ( "msg" ) );?></TD>
+		<TD><?=( textbbcode ( "msg" ) );?></TD>
 	</TR>
 	<TR>
-		<TD colspan="2" align="center">Сохранить сообщение <INPUT
-			type="checkbox" name="save" value="1"
-			<?=$CURUSER ['savepms'] ? " checked" : ""?>>&nbsp;<INPUT
+		<TD colspan="2" align="center">Сохранить сообщение <INPUT type="checkbox" name="save" value="1" <?=$CURUSER ['savepms'] ? " checked" : ""?>>&nbsp;<INPUT
 			type="submit" value="Переслать"></TD>
 	</TR>
 </TABLE>

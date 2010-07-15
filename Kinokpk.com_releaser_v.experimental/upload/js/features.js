@@ -2,7 +2,6 @@ $(document).ready(
 function(){
 	initSpoilers();
 	init_js();
-	$('input').checkBox();
 });
 
 function initSpoilers(context) {
@@ -25,7 +24,7 @@ function init_js() {
 $(function() {
   $('a[href!="http://"]').each(
     function(){
-            if((this.href.indexOf(location.hostname) == -1) && (this.href.indexOf('javascript') == -1) && (this.href.indexOf('magnet') == -1))
+            if((this.href.indexOf(location.hostname) == -1) && (this.href.indexOf('javascript') == -1) && (this.href.indexOf('magnet') == -1) && (!this.onclick))
             {
             	$(this).addClass('external');//.attr('target', '_blank');
             	this.href='away.php?url='+this.href;
@@ -84,3 +83,29 @@ $(function(){
 				});
 				
 			});
+
+//Get user selection text on page
+function getSelectedText() {
+    if (window.getSelection) {
+        return window.getSelection();
+    }
+    else if (document.selection) {
+        return document.selection.createRange().text;
+    }
+    return false;
+}
+
+function quote_comment(nickname) {
+	selection = getSelectedText();
+	if (selection=='') { alert(REL_LANG_NO_TEXT_SELECTED);} else {
+		insert = "<blockquote><p>"+selection+"</p><cite>"+nickname+"</cite></blockquote><hr/><br/><br/>";
+	if (tinyMCE) {
+		tinyMCE.execCommand("mceInsertContent", false, insert);
+		tinyMCE.execCommand("mceRepaint");
+	} else {
+		$("input[name=text]").append(insert);
+	}
+	}
+	
+}
+var REL_LANG_NO_TEXT_SELECTED = 'Не выбран текст!';

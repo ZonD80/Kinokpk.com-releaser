@@ -10,7 +10,7 @@
 
 require_once "include/bittorrent.php";
 dbconn();
-$REL_LANG->load('clearcache');
+
 if (get_user_class() < UC_ADMINISTRATOR) stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
 

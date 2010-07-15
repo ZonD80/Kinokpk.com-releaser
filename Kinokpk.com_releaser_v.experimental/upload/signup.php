@@ -10,7 +10,7 @@
 
 require_once("include/bittorrent.php");
 dbconn();
-$REL_LANG->load('my');
+
 
 //echo "<body><META http-equiv=\"refresh\" content=\"3; URL=$REL_CONFIG['forumurl']/index.php?act=Reg&CODE=00\"></body>";
 //stderr($REL_LANG->say_by_key('error'), "Наш проект осуществляется совместно с форумом $REL_CONFIG['forumname'], пройдите регистрацию на нем, а затем просто войдите под своим логином и паролем. Через 3 секунды вы будете перенаправлены.");

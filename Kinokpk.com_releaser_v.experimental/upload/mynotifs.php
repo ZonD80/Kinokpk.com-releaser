@@ -12,7 +12,7 @@ require_once("include/bittorrent.php");
 
 dbconn();
 loggedinorreturn();
-$REL_LANG->load('mynotifs');
+
 
 //		$allowed_types = array ('unread' => 'message.php?action=viewmessage&id=', 'saved' => 'message.php?action=viewmessage&id=', 'torrents' => 'details.php?id=', 'comments' => 'comment.php?action=edit&amp;cid=', 'pollcomments' => 'pollcommennt.php?action=edit&amp;cid=', 'newscomments' => 'newscomment.php?action=edit&amp;cid=', 'usercomments' => 'usercomment.php?action=edit&amp;cid=', 'reqcomments' => 'reqcomment.php?action=edit&amp;cid=', 'rgcomments' => 'rgcomment.php?action=edit&amp;cid=', 'pages' => 'pagedetails.php?id=', 'pagecomments' => 'pagecomment.php?action=edit&amp;cid=');
 if (isset($_GET['settings'])) {
@@ -25,8 +25,8 @@ if (isset($_GET['settings'])) {
 
 	if ($_SERVER['REQUEST_METHOD']!='POST') {
 		stdhead($REL_LANG->say_by_key('my_notifs_settings'));
-		$CURUSER['notifs'] = explode(',',$CURUSER['notifs']);
-		$CURUSER['emailnotifs'] = explode(',',$CURUSER['emailnotifs']);
+		$notifs = explode(',',$CURUSER['notifs']);
+		$emailnotifs = explode(',',$CURUSER['emailnotifs']);
 
 		begin_frame(sprintf($REL_LANG->say_by_key('i_can_be_notified_due_my_class'),get_user_class_name($CURUSER['class'])));
 		print('<form action="'.$REL_SEO->make_link('mynotifs','settings','').'" method="POST">
@@ -38,9 +38,9 @@ if (isset($_GET['settings'])) {
 			print("<div id=\"mynotifs_chek\">
   	<div class=\"notify_chek\"><span>".$REL_LANG->say_by_key('notify_'.$type)."</span></div>
 	<div class=\"input_chek\">
-	<input type=\"checkbox\" name=\"notifs[]\" class=\"styled\" value=\"{$type}\"".(in_array($type,$CURUSER['notifs'])?" checked=\"checked\"":'').">
+	<input type=\"checkbox\" name=\"notifs[]\" class=\"styled\" value=\"{$type}\"".(in_array($type,$notifs)?" checked=\"checked\"":'').">
 	</div>
-	<div class=\"input_chek\"><input type=\"checkbox\" class=\"styled\" name=\"emailnotifs[]\" value=\"{$type}\"".(in_array($type,$CURUSER['emailnotifs'])?" checked=\"checked\"":'')."></div>
+	<div class=\"input_chek\"><input type=\"checkbox\" class=\"styled\" name=\"emailnotifs[]\" value=\"{$type}\"".(in_array($type,$emailnotifs)?" checked=\"checked\"":'')."></div>
 	</div>
 ");
 		}
@@ -63,7 +63,7 @@ if (isset($_GET['settings'])) {
 		//die(var_dump($allowed_notifs));
 		// if ($allowed_emailnotifs || $allowed_notifs)
 		sql_query("UPDATE users SET notifs = ".sqlesc(@implode(',',$allowed_notifs)).', emailnotifs = '.sqlesc(@implode(',',$allowed_emailnotifs))." WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__,__LINE__);
-		safe_refirect($REL_SEO->make_link('my'));
+		safe_redirect($REL_SEO->make_link('my'));
 		stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('notify_settigs_saved'),'success');
 	}
 }
@@ -83,8 +83,16 @@ if (!$type) {
 		die();
 	}
 
-	print '<div class="notifs">'.
-	generate_notify_popup(true).'</div>';
+	$array = generate_notify_array();
+	print '<table width="100%"><tr><td>';
+	print "<h1>{$REL_LANG->_("Total notifications")}: {$array['total']}</h1>";
+	print '</td></tr>';
+	
+	foreach ($array['notifs'] as $notify => $ncount) {
+		print "<tr><td><a href=\"{$REL_SEO->make_link('mynotifs','type',$notify)}\">".$REL_LANG->_(ucfirst($notify)).": $ncount</a></td></tr>";
+	}
+	print '</table>';
+	
 	/*end_frame();
 	 stdfoot();
 	 die();*/

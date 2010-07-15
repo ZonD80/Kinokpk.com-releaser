@@ -4,7 +4,7 @@ if (!defined('BLOCK_FILE')) {
 	exit;
 }
 global  $REL_LANG, $REL_SEO;
-$REL_LANG->load('blocks');
+
 //$blocktitle = $REL_LANG->say_by_key('our_films');
 
 $content = cloud('cloud-small','','',300,300);

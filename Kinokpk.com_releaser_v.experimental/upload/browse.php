@@ -11,7 +11,7 @@
 require_once("include/bittorrent.php");
 
 dbconn();
-$REL_LANG->load('browse');
+
 
 //loggedinorreturn();
 
@@ -168,9 +168,14 @@ if ($rgarray) {
 
 print("<div class=\"friends_search\">
 <form class='formbr' action=\"".$REL_SEO->make_link('browse')."\" method=\"get\">".'
-<input type="text" name="search" size="30" />'.gen_select_area('cat',$tree,$cat, true).'
-'.$rgselect.'<input class="button" type="submit" size="40" value="'.$REL_LANG->say_by_key('search').'!" />
+<input type="text" name="search" size="30" style="margin-right: 10px;"/>
+'.gen_select_area('cat',$tree,$cat, true).'<br />
+<div class="brel">
+'.$rgselect.'
+</div>
+<input class="button" type="submit" size="40" value="'.$REL_LANG->say_by_key('search').'!" />
 </form>
+<div class="clear"></div>
 <!-- Google Search -->
 <form action="http://www.google.com/cse">
     <input name="cx" value="008925083164290612781:gpt7xhlrdou" type="hidden" />

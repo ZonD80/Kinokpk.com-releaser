@@ -14,7 +14,7 @@ loggedinorreturn();
 if (get_user_class() < UC_SYSOP) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 httpauth();
 
-$REL_LANG->load('cronadmin');
+
 $cronrow = sql_query("SELECT * FROM cron");
 
 while ($cronres = mysql_fetch_array($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];

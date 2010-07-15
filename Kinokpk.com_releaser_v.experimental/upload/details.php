@@ -12,8 +12,6 @@ require_once ("include/bittorrent.php");
 
 dbconn ();
 
-$REL_LANG->load( 'details' );
-$REL_LANG->load('exportrelease');
 
 if (! is_valid_id ( $_GET ['id'] ))
 stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
@@ -263,23 +261,13 @@ if (! $count) {
 
 	$subres = sql_query ( "SELECT c.id, c.post_id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE torrent = " . "$id GROUP BY c.id ORDER BY c.id $limit" ) or sqlerr ( __FILE__, __LINE__ );
 	$allrows = array ();
-	if ($REL_CONFIG ['use_integration']) {
-		// ipb comment transfer
-		$postids = array ();
-		// end, cont below
-	}
+
 	while ( $subrow = mysql_fetch_array ( $subres ) ) {
 		$subrow['subject'] = $row['name'];
 		$subrow['link'] = $REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comm{$subrow['id']}";
 		$allrows [] = $subrow;
 	}
 
-	if ($REL_CONFIG ['use_integration']) {
-		// ipb comment transfer
-		foreach ( $allrows as $rows )
-		$postids [] = $rows ['post_id'];
-		// end,cont below
-	}
 
 	print ( "<table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
 	print ( "<tr><td class=\"colhead\" align=\"center\" >" );
@@ -306,56 +294,12 @@ print ( "<tr><td width=\"100%\" align=\"center\" >" );
 //print("Ваше имя: ");
 //print("".$CURUSER['username']."<p>");
 print ( "<form name=\"comment\" method=\"post\" action=\"".$REL_SEO->make_link('comment','action','add')."\">" );
-print ( "<table width=\"0%\"><tr><td align=\"center\">" . textbbcode ( "text") . "</td></tr>" );
+print ( "<tr><td align=\"center\">" . textbbcode ( "text") . "</td></tr>" );
 
 print ( "<tr><td  align=\"center\">" );
 print ( "<input type=\"hidden\" name=\"tid\" value=\"$id\"/>" );
 print ( "<input type=\"submit\" value=\"Разместить комментарий\" />" );
 print ( "</td></tr></table></form>" );
-
-if ($REL_CONFIG ['use_integration']) {
-	if ($topicid != 0) {
-
-		// connecting to IPB DB
-		forumconn ();
-		//connection opened
-
-
-		if (count ( $postids ) >= 1)
-		$condition = "AND pid NOT IN (" . implode ( ",", $postids ) . ")";
-		else
-		$condition = "";
-
-		$postsarray = sql_query ( "SELECT author_name, post, post_date FROM " . $fprefix . "posts WHERE topic_id=" . $topicid . " AND new_topic<>1 " . $condition . " ORDER BY post_date DESC LIMIT 5" );
-		$forumid = sql_query ( "SELECT forum_id FROM " . $fprefix . "topics WHERE tid=" . $topicid );
-		$forumid = @mysql_result ( $forumid, 0 );
-
-		if (! $forumid)
-		sql_query ( "UPDATE torrents SET topic_id=0 WHERE id=$id" );
-		else {
-
-			while ( $posts = mysql_fetch_array ( $postsarray ) ) {
-				$count = 1;
-				if ($count == 1) {
-					print ( "<table class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
-					print ( "<tr><td class=\"colhead\" align=\"center\" >" );
-					print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев форума {$REL_CONFIG['forumname']}</div>" );
-					print ( "</td></tr>" );
-					print ( "<tr><td>" );
-				}
-				print ( "<b><i>" . $posts ['author_name'] . "</i></b> от " . mkprettytime ( $posts ['post_date'] ) . ":<br /><br />" );
-				print ( str_replace ( "style_emoticons/<#EMO_DIR#>", $REL_CONFIG ['forumurl'] . "/style_emoticons/" . $REL_CONFIG ['emo_dir'], $posts ['post'] ) . "<hr />" );
-				if ($count == 1) {
-					print ( "</tr></td>" );
-					print ( "</table>" );
-				}
-				$count ++;
-			}
-
-			relconn ();
-		}
-	}
-}
 
 print '</table>';
 sql_query ( "UPDATE torrents SET views = views + 1 WHERE id = $id" );

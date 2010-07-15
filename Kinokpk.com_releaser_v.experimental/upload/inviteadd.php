@@ -25,7 +25,7 @@
 require_once "include/bittorrent.php";
 
 dbconn();
-$REL_LANG->load('inviteadd');
+
 loggedinorreturn();
 
 if (get_user_class() < UC_SYSOP)

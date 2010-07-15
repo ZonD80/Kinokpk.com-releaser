@@ -3,7 +3,7 @@
 require_once("include/bittorrent.php");
 
 dbconn();
-$REL_LANG->load('takeinvite');
+
 loggedinorreturn();
 
 function bark($msg) {

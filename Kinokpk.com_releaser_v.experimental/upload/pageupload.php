@@ -13,7 +13,7 @@ require_once("include/bittorrent.php");
 
 dbconn();
 
-//$REL_LANG->load('pageupload');
+//
 
 loggedinorreturn();
 //stderr('Загрузка релизов временно отключена','Загрузка новых релизов временно отключена администрацией');

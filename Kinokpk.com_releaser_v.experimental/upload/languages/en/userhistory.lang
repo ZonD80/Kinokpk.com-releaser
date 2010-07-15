@@ -20,6 +20,7 @@ history_uploaded=Uploaded releases
 history_seeding=Seeding at present
 history_leeching=Leeching at present
 history_downloaded=Downloaded releases
+history_presents=Presents for user
 invalid_type=Invalid the type history
 add_to_frends=Add to my friends
 to_history= | <a href="userhistory.php?id=%s">To history %s</a>

@@ -14,17 +14,16 @@ dbconn();
 
 
 loggedinorreturn();
-$REL_LANG->load('notifs');
 
 
 
-if ($_GET['id'] && !is_valid_id($_GET['id']))
-
-stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 $action = (string)$_GET['action'];
 
-$id = (int)$_GET['id'];
+$id = (int)$_GET[($action=='deny'?'c':'').'id'];
+if ($id && !is_valid_id($id))
+
+stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 $type = (string)$_GET['type'];
 

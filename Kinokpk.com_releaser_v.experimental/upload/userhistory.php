@@ -60,8 +60,8 @@ loggedinorreturn();
 $userid = (int)$_GET["id"];
 
 if (!$userid) $userid=$CURUSER['id'];
-$REL_LANG->load('userhistory');
-$REL_LANG->load('userdetails');
+
+
 
 $page = (int)$_GET["page"];
 

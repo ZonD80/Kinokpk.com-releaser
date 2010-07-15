@@ -11,7 +11,7 @@
 require_once("include/bittorrent.php");
 
 dbconn();
-$REL_LANG->load('pagescategory');
+
 loggedinorreturn();
 httpauth();
 if (get_user_class() < UC_SYSOP) {

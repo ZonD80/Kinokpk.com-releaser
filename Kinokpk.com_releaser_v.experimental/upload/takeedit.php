@@ -13,7 +13,7 @@ require_once("include/bittorrent.php");
 dbconn();
 
 loggedinorreturn();
-$REL_LANG->load('upload');
+
 
 require_once("include/benc.php");
 
@@ -31,7 +31,7 @@ if (isset($_GET['checkonly'])) {
 
 
 	if (get_user_class() < UC_MODERATOR) die($REL_LANG->say_by_key('error').': '.$REL_LANG->say_by_key('invalid_id'));
-	$REL_LANG->load('details');
+	
 	$id = (int) $_GET['id'];
 
 
@@ -97,7 +97,7 @@ EOD;
 		}
 	}
 	stdhead($REL_LANG->say_by_key('add_announce_urls'));
-	$REL_LANG->load('remotepeers');
+	
 	print ('<table width="100%"><tr><td class="colhead">'.$REL_LANG->say_by_key('tracker').'</td><td class="colhead">'.$REL_LANG->say_by_key('status').'</td></tr>');
 	foreach ($state AS $tracker => $status) {
 		print ("<tr><td>$tracker</td><td>{$REL_LANG->say_by_key('tracker_'.$status)}{$reason[$tracker]}</td></tr>");

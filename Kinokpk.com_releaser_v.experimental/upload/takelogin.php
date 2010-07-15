@@ -15,7 +15,7 @@ die();
 
 dbconn();
 
-$REL_LANG->load('login');
+
 
 function bark($text = '')
 {

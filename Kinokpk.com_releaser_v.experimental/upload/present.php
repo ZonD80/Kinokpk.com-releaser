@@ -11,8 +11,8 @@
 require "include/bittorrent.php";
 dbconn();
 loggedinorreturn();
-$REL_LANG->load('present');
-$REL_LANG->load('friends');
+
+
 
 $fid = (int) $_GET['id'];
 

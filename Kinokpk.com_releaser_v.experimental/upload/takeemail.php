@@ -1,7 +1,7 @@
 <?
 require_once("include/bittorrent.php");
 dbconn();
-$REL_LANG->load('takeemail');
+
 loggedinorreturn();
 
 if (get_user_class() < UC_SYSOP)

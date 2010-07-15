@@ -1,7 +1,7 @@
 <?
 require "include/bittorrent.php";
 dbconn();
-$REL_LANG->load('testport');
+
 loggedinorreturn();
 stdhead($REL_LANG->say_by_key('test_port'));
 if ($CURUSER) {

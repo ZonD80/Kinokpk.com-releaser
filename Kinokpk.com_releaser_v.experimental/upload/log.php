@@ -25,7 +25,7 @@
 require_once "include/bittorrent.php";
 
 dbconn();
-$REL_LANG->load('log');
+
 loggedinorreturn();
 
 if (get_user_class() < UC_MODERATOR) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));

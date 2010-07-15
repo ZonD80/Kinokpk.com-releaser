@@ -4,7 +4,7 @@ if (!defined('BLOCK_FILE')) {
 	safe_redirect(" ../".$REL_SEO->make_link('index'));
 	exit;
 }
-$REL_LANG->load('blocks');
+
 $content .= "<table border=\"1\" width=\"100%\"><tr><td align=\"center\"><a href=\"".$REL_SEO->make_link('viewcensoredtorrents')."\">".$REL_LANG->say_by_key('view_all')."</a><hr/><table border=\"1\" class=\"main\" width=\"100%\">";
 
 

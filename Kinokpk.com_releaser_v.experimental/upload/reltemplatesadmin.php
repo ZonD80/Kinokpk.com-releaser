@@ -17,7 +17,7 @@ if (get_user_class() < UC_ADMINISTRATOR) stderr($REL_LANG->say_by_key('error'),$
 
 httpauth();
 
-$REL_LANG->load('reltemplatesadmin');
+
 
 stdhead($REL_LANG->say_by_key('page_title'));
 

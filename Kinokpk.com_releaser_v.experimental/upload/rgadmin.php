@@ -13,7 +13,7 @@ dbconn();
 loggedinorreturn();
 if (get_user_class() < UC_ADMINISTRATOR) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 httpauth();
-$REL_LANG->load('rgadmin');
+
 
 $fields = explode(',','name,spec,image,owners,members,private,page_pay,amount,only_invites,subscribe_length,descr');
 

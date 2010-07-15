@@ -14,7 +14,7 @@ $md5 = $_GET["secret"];
 
 
 dbconn();
-$REL_LANG->load('confirm');
+
 if (!is_valid_id($_GET["id"])) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 $id = (int) $_GET["id"];
 

@@ -10,7 +10,7 @@
 
 require "include/bittorrent.php";
 dbconn();
-$REL_LANG->load('adduser');
+
 loggedinorreturn();
 httpauth();
 

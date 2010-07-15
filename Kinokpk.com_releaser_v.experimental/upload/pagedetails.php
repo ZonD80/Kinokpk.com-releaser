@@ -159,7 +159,7 @@ if (!$row['denycomments']) {
 	//print("Ваше имя: ");
 	//print("".$CURUSER['username']."<p>");
 	print ( "<form name=comment method=\"post\" action=\"".$REL_SEO->make_link('pagecomment','action','add')."\">" );
-	print ( "<table width=\"100%\"><tr><td align=\"center\">" . textbbcode ( "text") . "</td></tr>" );
+	print ( "<table width=\"0%\"><tr><td align=\"center\">" . textbbcode ( "text") . "</td></tr>" );
 
 	print ( "<tr><td  align=\"center\">" );
 	print ( "<input type=\"hidden\" name=\"tid\" value=\"$id\"/>" );

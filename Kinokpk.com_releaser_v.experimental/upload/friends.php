@@ -25,7 +25,7 @@
 require "include/bittorrent.php";
 dbconn();
 loggedinorreturn();
-$REL_LANG->load('friends');
+
 
 $action = (string)$_GET['action'];
 if ($action)

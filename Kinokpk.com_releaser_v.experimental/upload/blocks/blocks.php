@@ -241,7 +241,9 @@ function show_blocks($position) {
 			$view = $block ["view"];
 			$which = explode ( ",", $block ["which"] );
 			$module_name = str_replace ( ".php", "", basename ( $_SERVER ["PHP_SELF"] ) );
+			
 			//if (get_user_class() >= UC_SYSOP) print ('<h1>'.basename ( $_SERVER ["PHP_SELF"] ).'</h1>');
+			 print ('<h1>'.basename ( $_SERVER ["PHP_SELF"] ).'</h1>');
 			if (! (in_array ( $module_name, $which ) || in_array ( "all", $which ) || (in_array ( "ihome", $which ) && $module_name == "index"))) {
 				continue;
 			}

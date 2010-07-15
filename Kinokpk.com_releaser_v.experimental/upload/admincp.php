@@ -11,7 +11,7 @@
 require "include/bittorrent.php";
 dbconn();
 loggedinorreturn();
-$REL_LANG->load('admincp');
+
 httpauth();
 
 stdhead($REL_LANG->_('Administrator control panel'));
@@ -36,7 +36,9 @@ if (get_user_class() >= UC_SYSOP) {
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('retrackeradmin');?>"><?=$REL_LANG->_("Retracker administration");?></a></td>
 		<td><a href="<?=$REL_SEO->make_link('cronadmin');?>"><b><?=$REL_LANG->_("Sheduled jobs administration");?></b></a></td>
-		<td colspan="2"><a href="<?=$REL_SEO->make_link('pagescategory');?>"><?=$REL_LANG->_("Categories for pages");?></a></td>
+		<td><a href="<?=$REL_SEO->make_link('langadmin');?>"><?=$REL_LANG->_("Language tools");?></a></td>
+
+		<td><a href="<?=$REL_SEO->make_link('pagescategory');?>"><?=$REL_LANG->_("Categories for pages");?></a></td>
 	</tr>
 </table>
 	<? end_frame();

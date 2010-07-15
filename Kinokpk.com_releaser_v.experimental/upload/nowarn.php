@@ -18,7 +18,7 @@ function bark($msg) {
 	exit;
 }
 dbconn();
-$REL_LANG->load('nowarn');
+
 loggedinorreturn();
 if(isset($_POST["nowarned"])&&($_POST["nowarned"]=="nowarned")){
 	//if (get_user_class() >= UC_SYSOP) {

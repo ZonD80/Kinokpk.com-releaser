@@ -8,7 +8,7 @@ subcats=Extra categories
 uploaded=You uploaded a release
 uploaded_body=You have just uploaded a release. You are not an uploader, so you release must be checked by moderator.<br /><h3>Attention!</h3>This message contains a link to your release, here it is:<h1>%s</h1>Please, do not delete this message ultil you release checked. <font color="red">This message contains a link to you release, which does not seen everywhere until it\'s get checked</font><hr />You also will receive notifications about checking you release.<br /><div align="right"><i>Be sereous to this message, lets keep our site clean.<br />Thank you, best regards, Moderators.</div>
 no_relgroup=Chosen release group does not exist on our site
-upload_notice=You have just uploaded a release. Your rating was increased by %s. You must <a href="download.php?id=%s">Download .torrent file</a> and begin seeding in your torrent-client. Thank you.
+upload_notice=You have just uploaded a release. Your rating will be increased by %s after moderator check your release. You must <a href="download.php?id=%s">Download .torrent file</a> and begin seeding in your torrent-client. Thank you.
 upload_notice_norating=You have just uploaded a release. You must <a href="download.php?id=%s">Download .torrent file</a> and begin seeding in your torrent-client. Thank you.
 forum_selector=*In the rounds selected category, which will be used for automatic creation of release on the forum
 announce_urls=Addresses trackers<br/><small>If empty, then the torrent is not multitracker</small>

@@ -15,7 +15,7 @@ function bark($msg) {
 }
 
 dbconn();
-$REL_LANG->load('retrackeradmin');
+
 loggedinorreturn();
 httpauth();
 

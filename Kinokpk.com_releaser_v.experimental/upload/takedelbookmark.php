@@ -30,7 +30,7 @@ function bark($msg) {
 	exit;
 }
 dbconn();
-$REL_LANG->load('takedelbookmark');
+
 loggedinorreturn();
 
 if (!isset($_POST[delbookmark]))

@@ -11,7 +11,7 @@
 require_once("include/bittorrent.php");
 
 dbconn();
-$REL_LANG->load('my');
+
 loggedinorreturn();
 
 stdhead($REL_LANG->say_by_key('my_my'));
@@ -100,20 +100,12 @@ while ($ct_a = mysql_fetch_array($ct_r))
 $countries .= "<option value=$ct_a[id]" . ($CURUSER["country"] == $ct_a['id'] ? " selected" : "") . ">$ct_a[name]</option>\n";
 
 $dir = opendir('languages');
-$lang = array();
-while ( $file = readdir($dir) ) {
-	if (!is_file($dir . '/' . $file) && !is_link($dir . '/' . $file) && ($file<>'.') && ($file<>'..') && (strlen($file)==2)) {
-		$lang[] = $file;
-	}
-}
-closedir($dir);
-@asort($lang);
-@reset($lang);
+$lang = array('ru'=>'Русский (RU)','en'=>'English (EN-US)','ua'=>'Українська (UA)');
 
 $lang_select = '<select class="linkselect" id="language" name="language">';
-foreach ( $lang as $l ) {
+foreach ( $lang as $l=>$ldesc ) {
 	$selected = ((strtolower($CURUSER["language"]) == strtolower($l) ) ? ' selected="selected"' : '');
-	$lang_select .= '<option value="' . $l . '"' . $selected . '>' . $l . '</option>';
+	$lang_select .= '<option value="' . $l . '"' . $selected . '>' . $ldesc . '</option>';
 }
 $lang_select .= '</select>';
 /*основное*/

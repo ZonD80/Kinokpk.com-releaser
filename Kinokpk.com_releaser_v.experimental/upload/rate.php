@@ -13,7 +13,7 @@ dbconn();
 
 
 loggedinorreturn();
-$REL_LANG->load('rate');
+
 
 $rid = (int)$_GET['id'];
 $type = (string)$_GET['type'];

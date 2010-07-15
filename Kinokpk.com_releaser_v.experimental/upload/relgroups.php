@@ -12,7 +12,7 @@ require "include/bittorrent.php";
 dbconn();
 loggedinorreturn();
 
-$REL_LANG->load('relgroups');
+
 
 $id = (int)$_GET['id'];
 $sort = (string) $_GET['sort'];

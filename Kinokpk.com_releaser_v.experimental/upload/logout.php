@@ -25,7 +25,7 @@
 require_once("include/bittorrent.php");
 
 dbconn();
-$REL_LANG->load('logout');
+
 $s = ipb_logout($CURUSER['username']);
 
 logoutcookie();

@@ -53,8 +53,8 @@ function dltable($name, $arr, $torrent)
 }
 
 dbconn();
-$REL_LANG->load('remotepeers');
-$REL_LANG->load('exportrelease');
+
+
 
 loggedinorreturn();
 

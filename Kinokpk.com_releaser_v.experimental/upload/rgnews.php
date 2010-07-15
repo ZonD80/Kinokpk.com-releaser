@@ -12,7 +12,7 @@ require "include/bittorrent.php";
 
 dbconn();
 loggedinorreturn();
-$REL_LANG->load('relgroups');
+
 
 if (get_user_class() < UC_UPLOADER)
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));

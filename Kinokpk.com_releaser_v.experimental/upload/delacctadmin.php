@@ -11,7 +11,7 @@
 
 require "include/bittorrent.php";
 dbconn();
-$REL_LANG->load('delacctadmin');
+
 loggedinorreturn();
 
 if (get_user_class() < UC_ADMINISTRATOR)

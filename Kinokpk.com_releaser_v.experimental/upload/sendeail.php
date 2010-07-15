@@ -25,7 +25,7 @@
 require_once("include/bittorrent.php");
 define("IN_CONTACT",true);
 dbconn();
-$REL_LANG->load('sendeail');
+
 if (!$CURUSER) {
 	require_once('include/recaptchalib.php');
 	$resp = recaptcha_check_answer ($REL_CONFIG['re_privatekey'],

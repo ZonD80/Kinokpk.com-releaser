@@ -19,7 +19,7 @@ function bark($msg) {
 }
 
 dbconn();
-$REL_LANG->load('upload');
+
 
 loggedinorreturn();
 

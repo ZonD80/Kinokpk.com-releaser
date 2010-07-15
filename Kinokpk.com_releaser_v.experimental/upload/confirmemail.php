@@ -30,7 +30,7 @@ stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 $id = (int) $_GET["id"];
 $email = urldecode($_GET['email']);
 
-$REL_LANG->load('confirmemail');
+
 
 $res = sql_query("SELECT editsecret FROM users WHERE id = $id");
 $row = mysql_fetch_array($res);

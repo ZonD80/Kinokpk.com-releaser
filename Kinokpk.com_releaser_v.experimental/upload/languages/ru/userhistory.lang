@@ -20,6 +20,7 @@ history_uploaded=Загруженные релизы
 history_seeding=Раздает в данный момент
 history_leeching=Качает в данный момент
 history_downloaded=Скачанные релизы
+history_presents=Подарки для пользователя
 invalid_type=Неизвестный тип истории
 add_to_frends=Добавить в мои друзья
 to_history= | <a href="userhistory.php?id=%s">К истории %s</a>

@@ -9,7 +9,6 @@
  */
 require_once ("include/bittorrent.php");
 dbconn ();
-$REL_LANG->load ( 'report' );
 loggedinorreturn ();
 
 $id = ( int ) $_GET ['id'];

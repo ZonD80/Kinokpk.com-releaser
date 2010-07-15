@@ -17,7 +17,7 @@ if (get_user_class() < UC_SYSOP) stderr($REL_LANG->say_by_key('error'),$REL_LANG
 
 httpauth();
 
-define("NO_TINYMCE",true);
+define("NO_WYSIWYG",true);
 
 $allowed_modules = array(
 	"admincp" => "Админка",

@@ -4,7 +4,7 @@ if (!defined('BLOCK_FILE')) {
 	safe_redirect(" ../".$REL_SEO->make_link('index'));
 	exit;
 }
-$REL_LANG->load('blocks');
+
 forumconn();
 //connection opened
 

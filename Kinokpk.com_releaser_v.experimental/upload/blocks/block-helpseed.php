@@ -4,7 +4,7 @@ if (!defined('BLOCK_FILE')) {
 	safe_redirect(" ../".$REL_SEO->make_link('index'));
 	exit;
 }
-$REL_LANG->load('blocks');
+
 
 $blocktitle = $REL_LANG->say_by_key('helpseed');
 $content .= "<div align=\"center\"><font color=\"#FF6633\"><b>".$REL_LANG->say_by_key('help_seed')."</b></font></div>

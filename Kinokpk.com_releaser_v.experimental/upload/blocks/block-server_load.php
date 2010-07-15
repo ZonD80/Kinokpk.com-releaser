@@ -4,7 +4,7 @@ if (!defined('BLOCK_FILE')) {
 	safe_redirect(" ../".$REL_SEO->make_lank('index'));
 	exit;
 }
-$REL_LANG->load('blocks');
+
 $con = sql_query("SELECT userid FROM peers GROUP by userid");
 $connected = mysql_num_rows($con);
 $blocktitle = $REL_LANG->say_by_key('server_load');

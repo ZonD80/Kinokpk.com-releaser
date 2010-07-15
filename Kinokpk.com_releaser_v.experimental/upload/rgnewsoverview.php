@@ -11,7 +11,7 @@
 require "include/bittorrent.php";
 dbconn();
 loggedinorreturn();
-$REL_LANG->load('relgroups');
+
 
 $rgnewsid = (int) $_GET['id'];
 if (!is_valid_id($rgnewsid)) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));

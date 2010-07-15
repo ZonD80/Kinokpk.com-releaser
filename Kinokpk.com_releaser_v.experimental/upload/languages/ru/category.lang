@@ -1,13 +1,13 @@
 // LANGUAGE FOR CATEGORY ADMIN
 category_admin=Админка категорий
-add_new_category=Добавить новую категорию
+add_new_categoryb=Добавить новую категорию
 category_success_delete=Категория успешно удалена
 category_success_edit=Категория успешно отредактирована
 you_edit=Вы редактируете
 no_parent=Нет родителя
 parent=Родитель
 export_id=ID форума IPB для экспорта релизов<br /><small>Оставьте это поле пустым для автоматического экспорта, если названия форума и категории совпадают</small>
-add_new_category=Категория успешно добавлена
+add_new_categoryok=Категория успешно добавлена
 add_new_category=Добавление новой категории
 cur_tree=Текущее дерево категорий
 forum_id=ID форума IPB

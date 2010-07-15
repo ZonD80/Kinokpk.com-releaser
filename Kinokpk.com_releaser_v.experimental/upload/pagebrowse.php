@@ -11,7 +11,7 @@
 require_once("include/bittorrent.php");
 
 dbconn();
-//$REL_LANG->load('browse');
+//
 loggedinorreturn();
 
 $page = (int) $_GET["page"];

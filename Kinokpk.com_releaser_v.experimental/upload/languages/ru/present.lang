@@ -1,12 +1,12 @@
 //language for presents, russian
 no_type=Неверно выбран тип подарка
-$tracker_lang['present_torrent'] ='Подарить торрент другу';
+present_torrent=Подарить торрент другу
 present_discount=Подарить откуп другу
 present_ratingsum=Подарить рейтинг другу
-$tracker_lang['select_friend'] ='Выберите друга';
+select_friend=Выберите друга
 user_unconfirmed=<small>Дружба не подтверждена, вы не можете сделать подарок</small>
 select_present=<strong>Подарить!</strong>
-$tracker_lang['presents'] ='Подарки';
+presents=Подарки
 what_present=Что именно вы хотите подарить?
 how_many_present=Сколько дарить?
 how_discount=Откупа
@@ -29,3 +29,5 @@ no_money_torrent=У вас не хватает "денег"! Наберите рейтинг, чтобы подарить этот
 no_money_discount=У вас не хватает "денег"! Наберите побольше откупа, либо подарите меньшее количество
 no_money_ratingsum=У вас не хватает "денег"! К сожалению, вы не настролько респектабельны, чтобы дарить такие подарки
 you_success_presented=Вы успешно подарили %s подарок!
+enter_reason_pr=Введите короткое сообщение, которое будет прикреплено к вашему подарку
+pr_now=Подарить сейчас

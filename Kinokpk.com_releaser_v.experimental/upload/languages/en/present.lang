@@ -1,12 +1,12 @@
 //language for presents, english
 no_type=Incorrectly selected type of present
-$tracker_lang['present_torrent'] ='Present torrent to a friend';
+present_torrent=Present torrent to a friend
 present_discount=Present farmed to a friend
 present_ratingsum=Present rating to a friend
-$tracker_lang['select_friend'] ='Select friend';
+select_friend=Select friend
 user_unconfirmed=<small>Friendship is not confirmed, you can not make a present</small>
 select_present=<strong>Present!</strong>
-$tracker_lang['presents'] ='Presents';
+presents=Presents
 what_present=What exactly do you wish to present?
 how_many_present=How much to present&
 how_discount=Farmed
@@ -29,3 +29,5 @@ no_money_torrent=You do not have enough "money"! Type rating to give this releas
 no_money_discount=You do not have enough "money"! Enter more farmed, or present a smaller amount
 no_money_ratingsum=You do not have enough "money"! Unfortunately, you are not respectable enough to give present
 you_success_presented=You have been given a %s present!
+enter_reason_pr=Enter a short message to attach to your present
+pr_now=Present now!

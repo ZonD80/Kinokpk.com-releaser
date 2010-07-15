@@ -14,7 +14,7 @@ dbconn ();
 
 loggedinorreturn ();
 
-$REL_LANG->load('userdetails');
+
 
 function bark($msg) {
 	global $REL_LANG;

@@ -10,7 +10,7 @@
 
 require "include/bittorrent.php";
 dbconn();
-$REL_LANG->load('delacct');
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST")
 {

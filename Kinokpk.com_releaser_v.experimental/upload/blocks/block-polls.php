@@ -136,8 +136,8 @@ if ($CURUSER) {
 		if (((!is_null($pexp) && ($pexp > time())) || is_null($pexp)) && !$voted) $novote=true;
 		if ($novote) $content .="<ul class=\"polls_f\"><li><input type=\"submit\" class=\"button\" value=\"Голосовать за этот вариант!\" style=\"margin-top: 2px;\"/></li>";
 		elseif (!is_null($pexp) && ($pexp < time())) $content .='<ul><li>Опрос закрыт</li>';
-		elseif ($voted) $content .='<ul><li>Вы уже голосовали в этом опросе</li>';
-		$content .='<li style="text-align:center;">Всего голосов: '.$tvotes.', Комментариев: '.$comments.' [<a href="'.$REL_SEO->make_link('polloverview','id',$id).'"><b>Подробнее</b></a>] [<a href="'.$REL_SEO->make_link('polloverview','id',$id).'#comments"><b>Комментировать</b></a>] [<a href="'.$REL_SEO->make_link('pollsarchive').'"><b>Архив опросов</b></a>]</li></ul>'.($novote?'</form>':'');
+		elseif ($voted) $content .='<ul><li class="pollsend">Вы уже голосовали в этом опросе</li>';
+		$content .='<li style="text-align:center; float:left;">Всего голосов: '.$tvotes.', Комментариев: '.$comments.' [<a href="'.$REL_SEO->make_link('polloverview','id',$id).'"><b>Подробнее</b></a>] [<a href="'.$REL_SEO->make_link('polloverview','id',$id).'#comments"><b>Комментировать</b></a>] [<a href="'.$REL_SEO->make_link('pollsarchive').'"><b>Архив опросов</b></a>]</li></ul>'.($novote?'</form>':'');
 
 		$content .= "</div>";
 	}

@@ -1,3 +1,12 @@
-error=Error
+invalid_login=Username or password is invalid
+login_error=Login error
+invalid_format=Invalid e-mail or username format
+please_register=You have not registered on this site yet, or this combination of e-mail and password is invalid. You can <a href="%s">Register now</a> or <a href="javascript:history.go(-1);">Try again</a>.
+account_disabled=Your account was disabled due reason: %s
+login_ok=Successful login
+cookie_login=For successfull login cookies must be enabled.
+email_nickname=E-mail or nickname
+forgot_psw=If you forgot your password, try to recover it on <a href="%s">Password recovery page</a></p><p>You did not register yet? You can <a href="%s">Register now!</a></p>
+resend_activation=If you did not receive confirmation letter, you can <a href="%s">Resend</a> it.
 logged=You are already logged on 
 logged_on=Unfortunately the page you are trying to view is available only <b>to registered</b>.<br />After successful registered you will be redirected to the requested page.

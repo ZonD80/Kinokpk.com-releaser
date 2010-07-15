@@ -45,12 +45,9 @@ class REL_SEO {
 						elseif ($param=='dead') {
 							$dest.="releases/dead";
 						}
-<<<<<<< HEAD
 						elseif ($param=='unchecked') {
 							$dest.='releases/unchecked';
 						}
-=======
->>>>>>> 1a67c886f56b010ff40a4408aee70f4bf11b52f9
 					}
 					elseif (($script<>'download')&&($script<>'details')&&($script<>'torrent_info')&&($script<>'exportrelease'))
 					$destar[] = "$param={$linkar[$place+1]}";

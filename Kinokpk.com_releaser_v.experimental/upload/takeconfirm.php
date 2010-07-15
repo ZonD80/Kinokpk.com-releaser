@@ -23,7 +23,7 @@
 
 require_once("include/bittorrent.php");
 dbconn();
-$REL_LANG->load('takeconfirm');
+
 loggedinorreturn();
 
 if (!is_valid_id($_GET["id"]))

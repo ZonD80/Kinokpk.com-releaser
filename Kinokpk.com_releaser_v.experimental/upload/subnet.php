@@ -10,7 +10,7 @@
 
 require "include/bittorrent.php";
 dbconn();
-$REL_LANG->load('subnet');
+
 loggedinorreturn();
 
 $mask = "255.255.255.0";

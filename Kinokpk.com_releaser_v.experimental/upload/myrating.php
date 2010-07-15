@@ -11,7 +11,7 @@
 require_once("include/bittorrent.php");
 
 dbconn();
-$REL_LANG->load('myrating');
+
 loggedinorreturn();
 // getting cron array about rating system
 $cronrow = sql_query("SELECT * FROM cron WHERE cron_name LIKE 'rating_%'");

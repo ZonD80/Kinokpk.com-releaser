@@ -5,7 +5,7 @@ if (!defined('BLOCK_FILE')) {
 	exit;
 }
 
-$REL_LANG->load('blocks');
+
 $content = '<form method="get" action="'.$REL_SEO->make_link('browse').'">
 			<span class="embedded">&nbsp;'.$REL_LANG->say_by_key('torrents').'
 				<input type="text" name="search" size="20"/><br />

@@ -214,7 +214,7 @@ elseif ($action == "delete")
 	$clearcache = array('block-news');
 	foreach ($clearcache as $cachevalue) $REL_CACHE->clearGroupCache($cachevalue);
 	safe_redirect(strip_tags($_SERVER['HTTP_REFERER']),1);
-	stderr($REL_LANG->_("Success"),$REL_LANG->_("Comments successfully deleted. Now you will back to revious page."),'success');
+	stderr($REL_LANG->_("Success"),$REL_LANG->_("Comments successfully deleted. Now you will back to previous page."),'success');
 }
 else
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->_("Unknown action"));

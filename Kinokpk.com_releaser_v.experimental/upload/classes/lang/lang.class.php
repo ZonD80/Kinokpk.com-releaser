@@ -19,11 +19,6 @@ class REL_LANG {
 	 * @var string
 	 */
 	private $language;
-	/**
-	 * Array of already parsed language files
-	 * @var array
-	 */
-	private $parsed_langs;
 	
 	/**
 	 * Debug mode
@@ -41,9 +36,9 @@ class REL_LANG {
 	function __construct($REL_CONFIG) {
 		if ($REL_CONFIG['debug_language']) $this->DEBUG=true; else $this->DEBUG=false;
 		$this->lang[$REL_CONFIG['lang']]=array();
-		$this->parsed_langs[$REL_CONFIG['lang']]=array();
 		$this->language = $REL_CONFIG['lang'];
-		$this->load('main');
+		$this->load();
+		if ($this->language<>'en') $this->load($this->language);
 		return true;
 	}
 	
@@ -51,8 +46,8 @@ class REL_LANG {
 	 * Loads selected language file
 	 * @param string $option What file to load
 	 */
-	public function load($option='main') {
-	$this->parse_langfile($option,$this->language);
+	public function load($language='en') {
+	$this->parse_db($language);
 	}
 	/**
 	 * Say something by key
@@ -72,25 +67,48 @@ class REL_LANG {
 	}
 	
 	/**
-	 * Parses language file into associative array
-	 * @param string $file File to be userd
-	 * @param string $language Language to be used
+	 * Description
+	 * @param unknown_type $file
+	 * @param unknown_type $language
 	 */
-	private function parse_langfile($file,$language='en') {
-		global $REL_SEO;
-		if (@in_array($file,$this->parsed_langs[$language])) return;
-		if ($language<>'en') $this->parse_langfile($file,'en');
-		$parse = @file(ROOT_PATH."languages/$language/$file.lang",FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
-		if (!$parse) die ("FATAL ERROR: no language ($language) for option $file. <a href=\"".$REL_SEO->make_link('setlang','l','en')."\">Switch to English (default)</a>.");
+	private function parse_db($language='en') {
+		global $REL_CACHE,$REL_SEO, $CURUSER;
+		if ($this->lang[$language]) return;
+		$this->lang[$language] = $REL_CACHE->get('languages',$language);
+		if ($this->lang[$language]===false) {
+			$res = sql_query("SELECT lkey,lvalue FROM languages WHERE ltranslate='$language'");
+			while ($row = mysql_fetch_assoc($res))
+			$this->lang[$language][$row['lkey']] = $row['lvalue'];
+			if (!$this->lang[$language]) print ("ERROR: no language ($language). <a href=\"".$REL_SEO->make_link('setlang','l','en')."\">Switch to English (default)</a>.".(get_user_class()>=UC_SYSOP?" Or you can <a href=\"".$REL_SEO->make_link('langadmin','import')."\">Import a language file</a>":''));
+			$REL_CACHE->set('languages',$language,$this->lang[$language]);
+			$this->lang[$language] = array();
+		}
+		
+	}
+	
+	
+	public function import_langfile($file,$language='en') {
+	
+		$parse = @file($file,FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
+		if (!$parse) return false;
+			$res = sql_query("SELECT lkey,lvalue FROM languages WHERE ltranslate='$language'");
+			while ($row = mysql_fetch_assoc($res))
+			$check[$row['lkey']] = $row['lvalue'];
 		foreach ($parse as $string) {
 			$cut = strpos($string,'=');
 			if (!$cut) continue;
 			$key = strtolower(trim(substr($string,0,$cut)));
 			$value = trim(substr($string,$cut+1,strlen($string)));
-			if ($this->lang[$language][$key]) $value = ($this->DEBUG?"*REDECLARATED_KEY:$key* ":'').$value;
-			$this->lang[$language][$key] = $value;
+			if ($to_database[$key]||$check[$key]) { $return['errors'][] = 'REDECLARATED KEY:"'.$key.'"';}
+			$to_database[$key] = $value;
 		}
-		$this->parsed_langs[$language][] = $file;
+		//if ($return['errors']) return $return;
+		
+		foreach ($to_database as $key=>$value) {
+			sql_query("INSERT INTO languages (lkey,ltranslate,lvalue) VALUES (".sqlesc(makesafe($key)).",'$language',".sqlesc(makesafe($value)).")");
+			if (!mysql_errno()) $return['words'][] = "$key : $value";
+		}
+		return $return;
 	}
 	
 	/**
@@ -101,7 +119,9 @@ class REL_LANG {
 		$args = func_get_args();
 		$text = $args[0];
 		$return = '';
+		if ($this->lang['en'])
 		$key = array_search($text,$this->lang['en']);
+		else return ("*NO_ENGLISH_LANGUAGE*");
 		if (!$key) $return .= ($this->DEBUG?"*NO_KEY_OR_NO_TRANSLATION* ":''); 
 		else
 		$text = $this->say_by_key($key);

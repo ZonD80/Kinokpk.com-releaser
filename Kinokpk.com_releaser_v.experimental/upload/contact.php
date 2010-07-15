@@ -24,7 +24,7 @@
 require_once("include/bittorrent.php");
 define("IN_CONTACT",true);
 dbconn();
-$REL_LANG->load('contact');
+
 stdhead($REL_LANG->say_by_key('form_contact'));
 
 ?>

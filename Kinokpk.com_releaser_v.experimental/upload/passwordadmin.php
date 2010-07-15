@@ -24,7 +24,7 @@
 
 require_once("include/bittorrent.php");
 dbconn();
-$REL_LANG->load('passwordadmin');
+
 loggedinorreturn();
 httpauth();
 

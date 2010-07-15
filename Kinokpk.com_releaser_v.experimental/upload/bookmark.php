@@ -10,7 +10,7 @@
 
 require_once("include/bittorrent.php");
 dbconn();
-$REL_LANG->load('bookmark');
+
 loggedinorreturn();
 
 function bark($msg, $error = true) {

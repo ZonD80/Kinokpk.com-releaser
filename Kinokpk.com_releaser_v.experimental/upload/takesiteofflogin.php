@@ -22,7 +22,7 @@
  */
 require_once("include/bittorrent.php");
 dbconn();
-$REL_LANG->load('takesiteofflogin');
+
 if (!mkglobal("username:password"))
 die();
 

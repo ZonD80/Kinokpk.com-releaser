@@ -196,9 +196,13 @@ elseif ($action == "edit")
 		?></td>
 	</tr>
 	<tr>
-		<td><?
+		<td>
+		<div class="textbbcode">
+			<?
 		print textbbcode("text",$arr["text"]);
-		?></td>
+		?>	
+		</div>
+		</td>
 	</tr>
 </table>
 
@@ -234,7 +238,7 @@ elseif ($action == "delete")
 	}
 
 	safe_redirect(strip_tags($_SERVER['HTTP_REFERER']),1);
-	stderr($REL_LANG->_("Success"),$REL_LANG->_("Comments successfully deleted. Now you will back to revious page."),'success');
+	stderr($REL_LANG->_("Success"),$REL_LANG->_("Comments successfully deleted. Now you will back to previous page."),'success');
 }
 else
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->_("Unknown action"));

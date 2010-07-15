@@ -12,7 +12,7 @@
 require "include/bittorrent.php";
 
 dbconn();
-$REL_LANG->load('contact');
+
 
 if ($REL_CONFIG['use_integration'] && $REL_CONFIG['ipb_password_priority']) safe_redirect(" ".$REL_CONFIG['forumurl']."/index.php?act=Reg&CODE=10");
 

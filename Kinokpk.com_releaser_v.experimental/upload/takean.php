@@ -23,7 +23,7 @@
 
 require "include/bittorrent.php";
 dbconn();
-$REL_LANG->load('takean');
+
 if ((@strpos($_SERVER['HTTP_REFERER'],"edit.php") === false) || !is_numeric($_GET['id'])) die ($REL_LANG->say_by_key('wrong_id'));
 $id = $_GET['id'];
 $curowner = sql_query("SELECT owner FROM torrents WHERE id = ".$id);

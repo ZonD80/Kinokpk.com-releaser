@@ -12,7 +12,7 @@ require_once("include/bittorrent.php");
 
 dbconn();
 
-$REL_LANG->load('login');
+
 if ($CURUSER)
 stderr($REL_LANG->say_by_key('error'), "Вы уже вошли на {$REL_CONFIG['sitename']}!");
 

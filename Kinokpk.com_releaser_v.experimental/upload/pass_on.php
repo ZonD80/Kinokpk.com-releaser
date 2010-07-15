@@ -24,7 +24,7 @@
 
 require "include/bittorrent.php";
 dbconn();
-$REL_LANG->load('pass_on');
+
 $cat = sqlwildcardesc((string)$_GET['cat']);
 if (!is_valid_id($_GET["from"])) stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 $from = (int)$_GET["from"];

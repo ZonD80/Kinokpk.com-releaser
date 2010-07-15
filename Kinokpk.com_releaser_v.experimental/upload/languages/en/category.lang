@@ -1,13 +1,13 @@
 // LANGUAGE FOR CATEGORY ADMIN
 category_admin=Management of categories
-add_new_category=Add a new category
+add_new_categoryb=Add a new category
 category_success_delete=The category successfully deteted
 category_success_edit=The category is successfully edited
 you_edit=You are editing
 no_parent=No parent category
 parent=Parent category
 export_id=ID forums IPB for export releases <br /><small>Leave this field blank for auto exports, if the name of the forum and category match</small>
-add_new_category=The category successfully added
+add_new_categoryok=The category successfully added
 add_new_category=Adding new category
 cur_tree=Current section categories
 forum_id=IPB\'s forum ID

@@ -2,7 +2,7 @@
 my_notifs=Мои уведомления
 to_notifs_list= | <a href="mynotifs.php">К списку уведомлений</a>
 my_notifs_settings=Настройки моих уведомлений
-$tracker_lang['i_can_be_notified_due_my_class'] = "Мой класс %s, я хочу получать уведомления о:";
+i_can_be_notified_due_my_class=Мой класс %s, я хочу получать уведомления о:
 notify_type=Тип уведомления
 notify_popup=Уведомлять вспл.окном
 notify_email=Уведомлять на email

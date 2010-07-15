@@ -23,7 +23,7 @@
 
 require "include/bittorrent.php";
 dbconn();
-$REL_LANG->load('avatarup');
+
 loggedinorreturn();
 $max_image_width = $REL_CONFIG['avatar_max_width'];
 $max_image_height = $REL_CONFIG['avatar_max_height'];
