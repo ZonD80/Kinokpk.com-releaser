@@ -73,7 +73,7 @@ stdhead($REL_LANG->say_by_key('my_notifs'));
 $allowed_types = explode(',',$CURUSER['notifs']);
 $type =  (string)$_GET['type'];
 
-begin_frame($REL_LANG->say_by_key('my_notifs').$REL_LANG->say_by_key('to_notifs_list'));
+begin_frame($REL_LANG->say_by_key('my_notifs')."| <a href=\"{$REL_SEO->make_link('mynotifs')}\">{$REL_LANG->say_by_key('to_notifs_list')}</a>");
 
 if (!$type) {
 

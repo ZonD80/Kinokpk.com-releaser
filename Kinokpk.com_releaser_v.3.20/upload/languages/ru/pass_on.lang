@@ -1,7 +1,0 @@
-error=Ошибка
-invalid_id=Неверный идентификатор.
-how_did_get_here=Как вы сюда попали? <a href=\"javascript:history.go(-1)\">Назад</a>
-have_been_last_release=Вы уже были на последнем релизе
-this_category=этой категории
-back=. <a href=\"javascript:history.go(-1)\">Назад</a>
-have_first_release=Вы были на первом релизе

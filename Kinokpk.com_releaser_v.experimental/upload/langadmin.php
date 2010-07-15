@@ -136,9 +136,9 @@ function ajaxdel(key,lang) {
 <form action=<?php print $REL_SEO->make_link('langadmin','editor','','a','gensave');?> method="POST">
 <table width="100%"><tr><td><?php print $REL_LANG->_("Key");?></td><td><?php print $REL_LANG->_("Language");?></td><td><?php print $REL_LANG->_("Value");?></td><td><?php print $REL_LANG->_("Delete");?></td></tr>
 <?php 
-$count = get_row_count('languages');
+$count = get_row_count('languages',($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":''));
 $limited=50;
-	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, $REL_SEO->make_link('langadmin','editor').'&');
+	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, $REL_SEO->make_link('langadmin','editor','search',$search).'&');
 $res = sql_query("SELECT * FROM languages".($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":'')." ORDER BY lkey DESC $limit");
 print '<tr><td colspan="4">'.$pagertop.'</td></tr>';
 while ($row = mysql_fetch_assoc($res)) {
