@@ -99,7 +99,6 @@ $ct_r = sql_query("SELECT id,name FROM countries ORDER BY name") or die;
 while ($ct_a = mysql_fetch_array($ct_r))
 $countries .= "<option value=$ct_a[id]" . ($CURUSER["country"] == $ct_a['id'] ? " selected" : "") . ">$ct_a[name]</option>\n";
 
-$dir = opendir('languages');
 $lang = array('ru'=>'Русский (RU)','en'=>'English (EN-US)','ua'=>'Українська (UA)');
 
 $lang_select = '<select class="linkselect" id="language" name="language">';
