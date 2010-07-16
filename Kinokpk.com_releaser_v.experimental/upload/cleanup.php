@@ -146,6 +146,12 @@ $REL_CONFIG['lang'] = $REL_CONFIG['default_language'];
 /* @var object links parser/adder/changer for seo */
 require_once(ROOT_PATH . 'classes/seo/seo.class.php');
 $REL_SEO = new REL_SEO();
+
+require_once(ROOT_PATH . 'classes/cache/cache.class.php');
+require_once(ROOT_PATH .  'classes/cache/fileCacheDriver.class.php');
+/* @var object general cache object */
+$REL_CACHE=new Cache();
+$REL_CACHE->addDriver(NULL, new FileCacheDriver());
 /* @var object language system */
 require_once(ROOT_PATH . 'classes/lang/lang.class.php');
 $REL_LANG = new REL_LANG($REL_CONFIG);
@@ -189,11 +195,6 @@ if ($CRON['delete_votes']) {
 	sql_query("DELETE FROM ratings WHERE added < $dt");
 }
 //$REL_CONFIG['defaultbaseurl'] = mysql_result(sql_query("SELECT cache_value FROM cache_stats WHERE cache_name='defaultbaseurl'"),0);
-require_once(ROOT_PATH . 'classes/cache/cache.class.php');
-require_once(ROOT_PATH .  'classes/cache/fileCacheDriver.class.php');
-/* @var object general cache object */
-$REL_CACHE=new Cache();
-$REL_CACHE->addDriver(NULL, new FileCacheDriver());
 
 require_once(ROOT_PATH . "include/createsitemap.php");
 
