@@ -48,6 +48,7 @@ if (isset($_GET['checkonly'])) {
 		sql_query("UPDATE torrents SET moderatedby={$CURUSER['id']}, moderated=1 WHERE id=$id");
 		// send notifs
 		if (!$row['moderated']) {
+			$CRON['rating_perrelease'] = @mysql_result(sql_query("SELECT cron_value FROM cron WEHRE cron_name='rating_perrelease'"),0);
 			 sql_query("UPDATE users SET ratingsum = ratingsum + {$CRON['rating_perrelease']} WHERE id={$row['owner']}");
 			$bfooter = <<<EOD
 „тобы посмотреть релиз, перейдите по этой ссылке:
