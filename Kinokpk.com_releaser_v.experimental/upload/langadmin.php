@@ -19,7 +19,7 @@ if (isset($_GET['del'])) {
 				$key = sqlesc(makesafe(trim((string)$_GET['key'])));
 				sql_query("DELETE FROM languages WHERE lkey=$key AND ltranslate=$lang");
 				$REL_CACHE->clearCache('languages',$lang);
-				stderr($REL_LANG->_("Success"),$REL_LANG->_("Deleted"));
+				stderr($REL_LANG->_("Successful"),$REL_LANG->_("Deleted"));
 				//if (!REL_AJAX) safe_redirect(makesafe($_SERVER['HTTP_REFERER']),1);
 }
 stdhead($REL_LANG->_("Language administration tools"));
@@ -28,7 +28,7 @@ stdhead($REL_LANG->_("Language administration tools"));
 <?php
 if (isset($_GET['clearcache'])) {
 	$REL_CACHE->clearGroupCache('languages');
-	stdmsg($REL_LANG->_("Successfull"),$REL_LANG->_("Language cache cleared"));
+	stdmsg($REL_LANG->_("Successful"),$REL_LANG->_("Language cache cleared"));
 	stdfoot();
 	die();
 } 
@@ -38,6 +38,7 @@ elseif (isset($_GET['import'])) {
 <table><tr><td>
 <input type="text" name="language" maxlength="2" size="2"/> <?php print $REL_LANG->_("Language to be imported, e.g. 'ru,en,ua'");?></td><td>
 <input type="file" name="langfile"/> <?php print $REL_LANG->_("Language file as it is");?></td><td>
+<input type="checkbox" name="override" value="1"/> <?php print $REL_LANG->_("Override current data");?></td><td>
 <input type="submit" value="<?php print $REL_LANG->_("Continue");?>"/></td>
 </tr>
 </table>
@@ -51,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 	stdfoot();
 	die();
 			}
-			$result = $REL_LANG->import_langfile($f["tmp_name"],$lang);
+			$result = $REL_LANG->import_langfile($f["tmp_name"],$lang,$_POST['override']);
 			print ("<h1>{$REL_LANG->_("Importing results")}</h1>");
 			if ($result['errors']) {
 				stdmsg($REL_LANG->_("Error"),implode('<br/>',$result['errors']),'error');
@@ -92,7 +93,7 @@ elseif (isset($_GET['editor'])) {
 					}
 				}
 				if ($fail) stdmsg($REL_LANG->_("Error"),implode("<br/>",$fail),'error');
-				if ($success) stdmsg($REL_LANG->_("Success"),implode("<br/>",$success));
+				if ($success) stdmsg($REL_LANG->_("Successful"),implode("<br/>",$success));
 				$REL_CACHE->clearGroupCache('languages');
 				stdfoot();
 				die();
@@ -134,7 +135,7 @@ function ajaxdel(key,lang) {
 </table>
 </form>
 <form action=<?php print $REL_SEO->make_link('langadmin','editor','','a','gensave');?> method="POST">
-<table width="100%"><tr><td><?php print $REL_LANG->_("Key");?></td><td><?php print $REL_LANG->_("Language");?></td><td><?php print $REL_LANG->_("Value");?></td><td><?php print $REL_LANG->_("Delete");?></td></tr>
+<table width="100%"><tr><td class="colhead"><?php print $REL_LANG->_("Key");?></td><td class="colhead"><?php print $REL_LANG->_("Language");?></td><td class="colhead"><?php print $REL_LANG->_("Value");?></td><td class="colhead"><?php print $REL_LANG->_("Delete");?></td></tr>
 <?php 
 $count = get_row_count('languages',($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":''));
 $limited=50;

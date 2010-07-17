@@ -87,7 +87,7 @@ class REL_LANG {
 	}
 	
 	
-	public function import_langfile($file,$language='en') {
+	public function import_langfile($file,$language='en',$override=false) {
 	
 		$parse = @file($file,FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
 		if (!$parse) return false;
@@ -105,7 +105,7 @@ class REL_LANG {
 		//if ($return['errors']) return $return;
 		
 		foreach ($to_database as $key=>$value) {
-			sql_query("INSERT INTO languages (lkey,ltranslate,lvalue) VALUES (".sqlesc(makesafe($key)).",'$language',".sqlesc(makesafe($value)).")");
+			sql_query("INSERT INTO languages (lkey,ltranslate,lvalue) VALUES (".sqlesc(makesafe($key)).",'$language',".sqlesc(makesafe($value)).")".($override?" ON DUPLICATE KEY UPDATE lvalue=".sqlesc(makesafe($value)):''));
 			if (!mysql_errno()) $return['words'][] = "$key : $value";
 		}
 		return $return;
