@@ -272,7 +272,7 @@ function BlocksEdit($bid) {
 	}
 	closedir($dir);
 
-	echo "<tr><td>Содержание:<br/><a href=\"javascript:mcejs();\">Включить TinyMCE</a></td><td>".textbbcode("content",$content)."</td></tr>";
+	echo "<tr><td>Содержание:<br/><a href=\"javascript:wysiwygjs();\">Включить TinyMCE</a></td><td>".textbbcode("content",$content)."</td></tr>";
 
 	$oldposition = $bposition;
 	echo "<input type=\"hidden\" name=\"oldposition\" value=\"$oldposition\">";
