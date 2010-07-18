@@ -157,7 +157,7 @@ function BlocksNew() {
 	}
 	closedir($handle);
 	echo "</select></td></tr>"
-	."<tr><td>Содержание:<br/><a href=\"javascript:mcejs();\">Включить TinyMCE</a></td><td>".textbbcode("content")."</td></tr>"
+	."<tr><td>Содержание:<br/><a href=\"javascript:wysiwygjs();\">Включить TinyMCE</a></td><td>".textbbcode("content")."</td></tr>"
 	."<tr><td>Позиция:</td><td><select name=\"bposition\" style=\"width:400px\">"
 	."<option name=\"bposition\" value=\"l\">Слева</option>"
 	."<option name=\"bposition\" value=\"c\">По центру вверху</option>"
