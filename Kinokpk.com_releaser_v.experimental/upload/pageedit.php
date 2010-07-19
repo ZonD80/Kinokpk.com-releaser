@@ -58,9 +58,9 @@ if (($CURUSER["id"] != $row["owner"]) && (get_user_class() < UC_MODERATOR)) {
 		// class selection
 		$classsel = '<select name="class">';
 		for ($i=get_user_class();$i--;$i<=0){
-			$classsel.= "<option value=\"$i\">".get_user_class_name($i)."</option>\n";
+			$classsel.= "<option value=\"$i\"".($row['class']==$i?' selected':'').">".get_user_class_name($i)."</option>\n";
 		}
-			$classsel.= "<option value=\"-1\">".$REL_LANG->say_by_key('guest')."</option>\n";
+			$classsel.= "<option value=\"-1\"".($row['class']==$i?' selected':'').">".$REL_LANG->say_by_key('guest')."</option>\n";
 		$classsel .='</select>';
 		// class selection end
 		tr('Класс доступа',$classsel,1);
