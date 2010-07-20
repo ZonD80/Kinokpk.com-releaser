@@ -19,19 +19,19 @@ class REL_SEO {
 		$script = $dest;
 		unset($linkar[0]);
 		if ($linkar) {
-		/*	if ($script=='browse') { unset($dest); }
+			if ($script=='browse') { unset($dest); }
 			elseif ($script=='details') {
 				$dest='';
 			}
 						elseif ($script=='torrent_info') $dest = 'trackers/';
 			elseif ($script=='exportrelease') $dest = 'export/';
-			elseif (($script<>'download')&&($script<>'details'))*/
+			elseif (($script<>'download')&&($script<>'details'))
 			$dest .= '.php?';
-			//else $dest.='/';
+			else $dest.='/';
 			foreach ($linkar as $place => $param) {
 				if ($place % 2 == 0) continue;
 				//if (isset($linkar[$place+1])) {
-			/*	if ($script=='browse') {
+				if ($script=='browse') {
 						if ($param=='cat') {
 							$cats = $this->assoc_cats();
 							$dest.="{$cats[$linkar[$place+1]]}/";
@@ -50,20 +50,20 @@ class REL_SEO {
 						}
 					}
 					elseif (($script<>'download')&&($script<>'details')&&($script<>'torrent_info')&&($script<>'exportrelease'))
-					*/$destar[] = "$param={$linkar[$place+1]}";
-					/*else {
+					$destar[] = "$param={$linkar[$place+1]}";
+					else {
 						if ($param=='catname') $dest.="{$linkar[$place+1]}/";
 						elseif ($param=='id') $dest.="{$linkar[$place+1]}/";
 						elseif ($param=='name') $dest.="{$linkar[$place+1]}/";
 						elseif ($param=='dllist') $dest.="statistics-local/";
 						elseif ($param=='info') $dest.="information/";
-					}*/
+					}
 				//}
 			}
-			//if (($script<>'download')&&($script<>'details')&&($script<>'browse')&&($script<>'torrent_info')&&($script<>'exportrelease') && $destar)
+			if (($script<>'download')&&($script<>'details')&&($script<>'browse')&&($script<>'torrent_info')&&($script<>'exportrelease') && $destar)
 			$dest .= implode("&",$destar);
 		}
-		/*elseif ($script=='login') $dest = 'login';
+		elseif ($script=='login') $dest = 'login';
 		elseif ($script=='recover') $dest = 'lostpassword';
 		elseif ($script=='logout') $dest = 'byebye';
 		elseif ($script=='signup') $dest = 'welcome';
@@ -72,7 +72,7 @@ class REL_SEO {
 		elseif ($script=='providers') $dest = 'pagedetails.php?id=33';
 		elseif ($script=='press') $dest = 'pagedetails.php?id=47';
 		elseif ($script=='privacy') $dest = 'pagedetails.php?id=49';
-		elseif ($script=='faq') $dest = 'pagedetails.php?id=48';*/
+		elseif ($script=='faq') $dest = 'pagedetails.php?id=48';
 		else $dest .='.php?';
 		return $REL_CONFIG['defaultbaseurl'].'/'.addslashes($dest);
 	}
