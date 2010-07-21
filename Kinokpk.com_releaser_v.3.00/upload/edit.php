@@ -103,44 +103,44 @@ if (($CURUSER["id"] != $row["owner"]) && (get_user_class() < UC_MODERATOR) && !$
 	if(get_user_class() >= UC_MODERATOR)
 	tr("Забанен", "<input type=\"checkbox\" name=\"banned\"" . (($row["banned"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" />", 1);
 
-if((get_user_class() >= UC_MODERATOR) || $tedit)
-tr("Золотая раздача", "<input type=\"checkbox\" name=\"free\"" . (($row["free"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Золотая раздача (считается только раздача, скачка не учитывается)", 1);
-if(get_user_class() >= UC_MODERATOR)   {
-	tr("Важный", "<input type=\"checkbox\" name=\"sticky\"" . (($row["sticky"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Прикрепить этот торрент (всегда наверху)", 1);
-	tr("Комментарии модераторов<br /><small>Подписываться не надо</small></td>","<textarea cols=60 rows=6 name=modcomm" . ">".htmlspecialchars($row['modcomm'])."</textarea>\n",1);
+	if((get_user_class() >= UC_MODERATOR) || $tedit)
+	tr("Золотая раздача", "<input type=\"checkbox\" name=\"free\"" . (($row["free"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Золотая раздача (считается только раздача, скачка не учитывается)", 1);
+	if(get_user_class() >= UC_MODERATOR)   {
+		tr("Важный", "<input type=\"checkbox\" name=\"sticky\"" . (($row["sticky"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Прикрепить этот торрент (всегда наверху)", 1);
+		tr("Комментарии модераторов<br /><small>Подписываться не надо</small></td>","<textarea cols=60 rows=6 name=modcomm" . ">".htmlspecialchars($row['modcomm'])."</textarea>\n",1);
 
-}
-if ($row['filename'] != 'nofile') $word = ''; else $word = 'checked=\"checked\"';
-$nofsize = $row['size'] / 1024 / 1024;
-tr("Релиз без торрента", "<input type=\"checkbox\" name=\"nofile\" ".$word." value=\"1\">Релиз без торрента ; Размер (МБ) <input type=\"text\" name=\"nofilesize\" value=\"" . $nofsize . "\" size=\"20\" />", 1);
+	}
+	if ($row['filename'] != 'nofile') $word = ''; else $word = 'checked=\"checked\"';
+	$nofsize = $row['size'] / 1024 / 1024;
+	tr("Релиз без торрента", "<input type=\"checkbox\" name=\"nofile\" ".$word." value=\"1\">Релиз без торрента ; Размер (МБ) <input type=\"text\" name=\"nofilesize\" value=\"" . $nofsize . "\" size=\"20\" />", 1);
 
-if (get_user_class() >= UC_UPLOADER)
-tr("Защита от правообладателей","<a href=\"javascript:openwindow('takean')\">Анонимизировать / восстановить обладателя релиза</a> (откроется новое окошко)",1,1);
-if ((get_user_class() >= UC_MODERATOR) && $CACHEARRAY['use_integration']) {
-	tr("ID темы<br />форума {$CACHEARRAY['forumname']}<br /><br /><font color=\"red\">Будьте внимательны!</font><br /><br />Текущий ID: <font color=\"red\"><b>".$row['topic_id']."</b></font>", "<input type=\"text\" name=\"topic\" size=\"8\" disabled /><input type=\"checkbox\" onclick=\"document.edit.topic.disabled = false;\" /> - отметить, чтобы ввести ID темы. <input type=\"text\" size=\"7\" name=\"source\"/> - описание топика (опц.,обычно - кач-во исходника)<hr />Пример: {$CACHEARRAY['forumurl']}/index.php?showtopic=<b>45270</b> | <font color=\"red\">45270</font> - это ID темы<hr /><b>Данная функция используется, когда тему с фильмом нужно переэкспортировать/восстановить на форуме.</b><br />Данные будут записаны в WIKI секцию топика, название в шапке будет изменено в соответствии с названием релиза.<br />Если поле пустое, операция реэкспорта игнорируется.\n",1);
-}
+	if (get_user_class() >= UC_UPLOADER)
+	tr("Защита от правообладателей","<a href=\"javascript:openwindow('takean')\">Анонимизировать / восстановить обладателя релиза</a> (откроется новое окошко)",1,1);
+	if ((get_user_class() >= UC_MODERATOR) && $CACHEARRAY['use_integration']) {
+		tr("ID темы<br />форума {$CACHEARRAY['forumname']}<br /><br /><font color=\"red\">Будьте внимательны!</font><br /><br />Текущий ID: <font color=\"red\"><b>".$row['topic_id']."</b></font>", "<input type=\"text\" name=\"topic\" size=\"8\" disabled /><input type=\"checkbox\" onclick=\"document.edit.topic.disabled = false;\" /> - отметить, чтобы ввести ID темы. <input type=\"text\" size=\"7\" name=\"source\"/> - описание топика (опц.,обычно - кач-во исходника)<hr />Пример: {$CACHEARRAY['forumurl']}/index.php?showtopic=<b>45270</b> | <font color=\"red\">45270</font> - это ID темы<hr /><b>Данная функция используется, когда тему с фильмом нужно переэкспортировать/восстановить на форуме.</b><br />Данные будут записаны в WIKI секцию топика, название в шапке будет изменено в соответствии с названием релиза.<br />Если поле пустое, операция реэкспорта игнорируется.\n",1);
+	}
 
-print("<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"{$tracker_lang['edit']}\" style=\"height: 25px; width: 100px\"> <input type=reset value=\"Обратить изменения\" style=\"height: 25px; width: 100px\"></td></tr>\n");
-print("</table>\n");
-print("</form>\n");
-if(get_user_class() >= UC_MODERATOR) {
-	print("<p>\n");
-	print("<form method=\"post\" action=\"delete.php\">\n");
-	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-	print("<tr><td class=embedded style='background-color: #F5F4EA;padding-bottom: 5px' colspan=\"2\"><b>Удалить торрент</b> Причина:</td></tr>");
-	print("<td><input name=\"reasontype\" type=\"radio\" value=\"1\">&nbsp;Мертвяк </td><td> 0 раздающих, 0 качающих = 0 соединений</td></tr>\n");
-	print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"2\">&nbsp;Дупликат</td><td><input type=\"text\" size=\"40\" name=\"reason[]\"></td></tr>\n");
-	print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"3\">&nbsp;Nuked</td><td><input type=\"text\" size=\"40\" name=\"reason[]\"></td></tr>\n");
-	print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"4\">&nbsp;Правила</td><td><input type=\"text\" size=\"40\" name=\"reason[]\">(Обязательно)</td></tr>");
-	print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"5\" checked>&nbsp;Другое:</td><td><input type=\"text\" size=\"40\" name=\"reason[]\">(Обязательно)</td></tr>\n");
-	print("<input type=\"hidden\" name=\"id\" value=\"$id\">\n");
-	if (isset($_GET["returnto"]))
-	print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_GET["returnto"]) . "\" />\n");
-	print("<td colspan=\"2\" align=\"center\"><input type=submit value='Удалить' style='height: 25px'></td></tr>\n");
-	print("</table>");
+	print("<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"{$tracker_lang['edit']}\" style=\"height: 25px; width: 100px\"> <input type=reset value=\"Обратить изменения\" style=\"height: 25px; width: 100px\"></td></tr>\n");
+	print("</table>\n");
 	print("</form>\n");
-	print("</p>\n");
-}
+	if(get_user_class() >= UC_MODERATOR) {
+		print("<p>\n");
+		print("<form method=\"post\" action=\"delete.php\">\n");
+		print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
+		print("<tr><td class=embedded style='background-color: #F5F4EA;padding-bottom: 5px' colspan=\"2\"><b>Удалить торрент</b> Причина:</td></tr>");
+		print("<td><input name=\"reasontype\" type=\"radio\" value=\"1\">&nbsp;Мертвяк </td><td> 0 раздающих, 0 качающих = 0 соединений</td></tr>\n");
+		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"2\">&nbsp;Дупликат</td><td><input type=\"text\" size=\"40\" name=\"reason[]\"></td></tr>\n");
+		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"3\">&nbsp;Nuked</td><td><input type=\"text\" size=\"40\" name=\"reason[]\"></td></tr>\n");
+		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"4\">&nbsp;Правила</td><td><input type=\"text\" size=\"40\" name=\"reason[]\">(Обязательно)</td></tr>");
+		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"5\" checked>&nbsp;Другое:</td><td><input type=\"text\" size=\"40\" name=\"reason[]\">(Обязательно)</td></tr>\n");
+		print("<input type=\"hidden\" name=\"id\" value=\"$id\">\n");
+		if (isset($_GET["returnto"]))
+		print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_GET["returnto"]) . "\" />\n");
+		print("<td colspan=\"2\" align=\"center\"><input type=submit value='Удалить' style='height: 25px'></td></tr>\n");
+		print("</table>");
+		print("</form>\n");
+		print("</p>\n");
+	}
 }
 stdfoot();
 

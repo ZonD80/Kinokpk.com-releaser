@@ -38,7 +38,7 @@ span.linkselectDisabled {
 	color: #333;
 	font-size: 12px;
 	background: #fff url(../images/dropdown.gif) 99% 2px no-repeat;
-	filter: alpha(opacity =   75);
+	filter: alpha(opacity =     75);
 	-moz-opacity: 0.75;
 	opacity: 0.75;
 	-khtml-user-select: none;

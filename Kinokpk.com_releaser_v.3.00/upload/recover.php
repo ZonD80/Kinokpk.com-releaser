@@ -49,18 +49,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 Если вы подтверждаете этот запрос, перейдите по следующей ссылке:
 
-{$CACHEARRAY['defaultbaseurl']}/recover.php?confirm&id={$arr["id"]}&secret=$hash
+	{$CACHEARRAY['defaultbaseurl']}/recover.php?confirm&id={$arr["id"]}&secret=$hash
 
 
 После того как вы это сделаете, ваш пароль будет сброшен и новый пароль будет отправлен вам на E-Mail.
 
 --
-{$CACHEARRAY['sitename']}
+	{$CACHEARRAY['sitename']}
 EOD;
 
-if (sent_mail($arr['email'], $CACHEARRAY['sitename'], $CACHEARRAY['siteemail'],  "{$CACHEARRAY['defaultbaseurl']} восстановление пароля",  wordwrap($body,70))==false) stderr($tracker_lang['error'],"Ошибка при отправке письма");
+	if (sent_mail($arr['email'], $CACHEARRAY['sitename'], $CACHEARRAY['siteemail'],  "{$CACHEARRAY['defaultbaseurl']} восстановление пароля",  wordwrap($body,70))==false) stderr($tracker_lang['error'],"Ошибка при отправке письма");
 
-stderr($tracker_lang['success'], "Подтверждающее письмо было отправлено.\n" .
+	stderr($tracker_lang['success'], "Подтверждающее письмо было отправлено.\n" .
 		" Через несколько минут (обычно сразу) вам прийдет письмо с дальнейшими указаниями.");
 }
 elseif(isset($_GET['confirm']))
@@ -113,12 +113,12 @@ elseif(isset($_GET['confirm']))
 Вы можете войти на сайт тут: {$CACHEARRAY['defaultbaseurl']}/login.php
 
 --
-{$CACHEARRAY['sitename']}
+	{$CACHEARRAY['sitename']}
 EOD;
 
-$mail_sent = sent_mail($email,$CACHEARRAY['sitename'],$CACHEARRAY['siteemail'], "{$CACHEARRAY['defaultbaseurl']} данные аккаунта", $body);
-if (!$mail_sent) stderr($tracker_lang['error'],'Mail not sent, configure smtp/sendmail or contact site admin');
-stderr($tracker_lang['success'], "Новые данные по аккаунту отправлены на E-Mail <b>$email</b>.\n" .
+	$mail_sent = sent_mail($email,$CACHEARRAY['sitename'],$CACHEARRAY['siteemail'], "{$CACHEARRAY['defaultbaseurl']} данные аккаунта", $body);
+	if (!$mail_sent) stderr($tracker_lang['error'],'Mail not sent, configure smtp/sendmail or contact site admin');
+	stderr($tracker_lang['success'], "Новые данные по аккаунту отправлены на E-Mail <b>$email</b>.\n" .
     "Через несколько минут (обычно сразу) вы получите ваши новые данные.");
 }
 else

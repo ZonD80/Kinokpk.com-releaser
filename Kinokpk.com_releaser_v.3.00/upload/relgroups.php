@@ -41,13 +41,13 @@ if (!$id) {
 	if (!$rgarray) stderr($tracker_lang['error'],$tracker_lang['no_relgroups']);
 	//var_dump($memarray);
 	/* $ownres = sql_query("SELECT id,username,class FROM users WHERE id IN(".implode(',',($memarray?array_merge($uidsarray,$memarray):$uidsarray)).")") or sqlerr(__FILE__,__LINE__);
-	 while ($owner = mysql_fetch_array($ownres)) {
-	 if (in_array($owner['id'],$uidsarray))
-	 $owners[$owner['id']] = "<a href=\"userdetails.php?id={$owner['id']}\">".get_user_class_color($owner['class'],$owner['username'])."</a>";
-	 else
-	 $members[$owner['id']] = "<a href=\"userdetails.php?id={$owner['id']}\">".get_user_class_color($owner['class'],$owner['username'])."</a>";
+	while ($owner = mysql_fetch_array($ownres)) {
+	if (in_array($owner['id'],$uidsarray))
+	$owners[$owner['id']] = "<a href=\"userdetails.php?id={$owner['id']}\">".get_user_class_color($owner['class'],$owner['username'])."</a>";
+	else
+	$members[$owner['id']] = "<a href=\"userdetails.php?id={$owner['id']}\">".get_user_class_color($owner['class'],$owner['username'])."</a>";
 
-	 }*/
+	}*/
 	stdhead($tracker_lang['relgroups']);
 	begin_frame($tracker_lang['relgroups']);
 	print("<table width=\"100%\">");
@@ -482,7 +482,7 @@ else {
 
 			safe_redirect("relgroups.php?id=$id",1);
 			stderr($tracker_lang['success'],$tracker_lang['success_invite'],'success');
-				
+
 		}
 	}
 	elseif ($action=='deny') {

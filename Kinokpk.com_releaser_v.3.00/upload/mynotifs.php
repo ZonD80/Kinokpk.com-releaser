@@ -104,8 +104,8 @@ if (!$type) {
 		case 'unchecked': $addition = 'torrents.id, torrents.id, torrents.name, torrents.owner, users.username, users.class, torrents.added FROM torrents LEFT JOIN users ON torrents.owner=users.id WHERE torrents.moderatedby=0 ORDER BY torrents.added DESC'; break;
 		// unchecked done
 		/* case 'rgcomments':
-		 $addition = "CONCAT_WS('#comm',$type.{$comment_fields[$type]},$type.id) AS cid, $type.id, relgroups.{$name_fields[$type]}, $type.user, users.username, users.class, $type.added FROM $type LEFT JOIN users ON $type.user = users.id LEFT JOIN relgroups ON $type.relgroup=relgroups.id WHERE $type.added>{$CURUSER['last_login']} ORDER BY $type.added DESC"; break;
-		 */
+		$addition = "CONCAT_WS('#comm',$type.{$comment_fields[$type]},$type.id) AS cid, $type.id, relgroups.{$name_fields[$type]}, $type.user, users.username, users.class, $type.added FROM $type LEFT JOIN users ON $type.user = users.id LEFT JOIN relgroups ON $type.relgroup=relgroups.id WHERE $type.added>{$CURUSER['last_login']} ORDER BY $type.added DESC"; break;
+		*/
 		case 'pages': $addition = 'pages.id, pages.name, NULL, pages.owner, users.username, users.class, pages.added FROM pages LEFT JOIN users ON pages.owner=users.id WHERE pages.added>'.$CURUSER['last_login'].' AND pages.class <= '.get_user_class().' ORDER BY pages.added DESC'; break;
 		// pages done
 		case 'users': $addition = "users.id, NULL, NULL, users.id, users.username, users.class, users.added FROM users WHERE users.added>{$CURUSER['last_login']} ORDER BY users.added DESC"; break;

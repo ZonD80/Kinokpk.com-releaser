@@ -471,7 +471,7 @@ $highlight = " bgcolor=#BBAF9B";
 				$where_is .= "> '$date'";
 			}
 		}
-					// ratio
+		// ratio
 
 		$ratio = (int)$_GET['r'];
 

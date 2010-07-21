@@ -182,8 +182,8 @@ function register_ipb_user($wantusername,$password, $email, $gender, $year, $mon
 		$gs = generate_auto_log_in_key();
 		/////END OF PASSWORD GENERATOR/////
 		/*function insert_db($table_name, $arr){
-		 sql_query("INSERT INTO ".$prefix.$table_name.$arr."");
-		 */
+		sql_query("INSERT INTO ".$prefix.$table_name.$arr."");
+		*/
 		////register////
 
 		$first = sql_query("INSERT INTO ".$fprefix."members_converge (converge_email,converge_joined,converge_pass_hash,converge_pass_salt)

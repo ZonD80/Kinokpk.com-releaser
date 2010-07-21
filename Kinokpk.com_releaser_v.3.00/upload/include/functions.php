@@ -1196,8 +1196,8 @@ function userlogin() {
 	if ($row['override_class'] < $row['class'])
 	$row['class'] = $row['override_class']; // Override class and save in GLOBAL array below.
 	/* @var array Not full yet array of variables of current user
-	 * @see stdhead()
-	 */
+	* @see stdhead()
+	*/
 	$GLOBALS["CURUSER"] = $row;
 	getlang();
 
@@ -1782,7 +1782,7 @@ function stdhead($title = "", $addition = '') {
 <link rel="alternate" type="application/atom+xml" title="Atom" href="'.$CACHEARRAY['defaultbaseurl'].'/atom.php" />
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script language="javascript" type="text/javascript" src="js/resizer.js"></script>'
-	.((!$CURUSER || ($CURUSER['extra_ef']))?'
+.((!$CURUSER || ($CURUSER['extra_ef']))?'
 <!--<script language="javascript" type="text/javascript" src="js/snow.js"></script>-->':'').
 '<script language="javascript" type="text/javascript" src="js/jquery.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.history.js"></script>
@@ -1801,13 +1801,13 @@ function stdhead($title = "", $addition = '') {
 <script language="javascript" type="text/javascript" src="js/jquery.bgiframe.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.linkselect.js"></script>
 '.$addition);
-	if (get_user_class() == UC_SYSOP) {
-		if ($row['onoff'] != 1) print('<div align="center"><font color="red" size="20">ADMIN WARNING: SITE IS CLOSED FOR MAINTENANCE!</font></div>');
-	}
-	@require_once(ROOT_PATH."themes/" . $ss_uri . "/template.php");
-	@require_once(ROOT_PATH."themes/" . $ss_uri . "/stdhead.php");
+if (get_user_class() == UC_SYSOP) {
+	if ($row['onoff'] != 1) print('<div align="center"><font color="red" size="20">ADMIN WARNING: SITE IS CLOSED FOR MAINTENANCE!</font></div>');
+}
+@require_once(ROOT_PATH."themes/" . $ss_uri . "/template.php");
+@require_once(ROOT_PATH."themes/" . $ss_uri . "/stdhead.php");
 
-	return;
+return;
 }
 
 /**
@@ -2074,11 +2074,11 @@ function deletetorrent($id) {
  }
  $pagerstr = join("", $pagerarr);
  $pagertop = "<table class=\"main\"><tr>$pager $pagerstr $pager2</tr></table>\n";
-<<<<<<< HEAD
+ <<<<<<< HEAD
  $pagerbottom = "¬сего $count на $i страницах по $rpp на каждой странице.<br /><br /><table class=\"main\"><tr>$pager $pagerstr $pager2</tr></table>\n"
-=======
+ =======
  $pagerbottom = "¬сего $count на $i страницах по $rpp на каждой странице.<br /><br /><table class=\"main\"><tr>$pager $pagerstr $pager2</tr></table>\n";
->>>>>>> ce57a26a436f4363cdb37c78debc150c007cc9eb
+ >>>>>>> ce57a26a436f4363cdb37c78debc150c007cc9eb
  }
  else {
  $pagertop = $pager;

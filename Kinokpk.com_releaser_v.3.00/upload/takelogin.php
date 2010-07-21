@@ -97,9 +97,9 @@ if (!$row) {
 		$ret = sql_query("INSERT INTO users (username, passhash, secret, editsecret, gender, country, icq, msn, aim, yahoo, website, email, confirmed, ". (!$users?"class, ":"") ."added, birthday, language, invitedby, invitedroot, avatar) VALUES (" .
 		implode(",", array_map("sqlesc", array($username, $wantpasshash, $secret, $editsecret, $forumgender, 0, $ipbusere['icq'], $ipbusere['msnname'], $ipbusere['aim_name'], $ipbusere['yahoo'], $ipbusere['website'], $ipbuser['email'], 1))).
 		", ". (!$users?UC_SYSOP.", ":""). "'". time() ."', '$birthday', '{$CACHEARRAY['default_language']}', 0, 0, '$uavatar')");// or sqlerr(__FILE__, __LINE__);
-	
+
 		if (mysql_errno()==1062) {
-				bark();
+			bark();
 		}
 		$res = sql_query("SELECT * FROM users WHERE username = " . sqlesc($username));
 		$row = mysql_fetch_array($res);

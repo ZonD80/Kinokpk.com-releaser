@@ -137,7 +137,7 @@ elseif ($action == "quote")
 	stdhead("Добавления комментария к \"" . htmlspecialchars($arr["name"]) . "\"");
 
 	$text = "<blockquote><p>" . format_comment($arr["text"]) . "</p><cite>$arr[username]</cite></blockquote><hr /><br /><br />\n";
-	
+
 	print("<form method=\"post\" name=\"comment\" action=\"pagecomment.php?action=add\">\n");
 	print("<input type=\"hidden\" name=\"tid\" value=\"$arr[tid]\" />\n");
 	?>

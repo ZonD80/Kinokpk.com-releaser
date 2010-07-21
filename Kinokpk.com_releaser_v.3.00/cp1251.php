@@ -27,11 +27,11 @@ $result = mysql_query($sql) or die( mysql_error() );
 
 while ( $row = mysql_fetch_row($result) )
 {
-$table = mysql_real_escape_string($row[0]);
-$sql = "ALTER TABLE $table DEFAULT CHARACTER SET cp1251 COLLATE cp1251_general_ci, CONVERT TO CHARACTER SET cp1251 COLLATE cp1251_general_ci";
-mysql_query($sql) or die( mysql_error() );
-print "$table changed to cp1251.\n";
-flush();
+	$table = mysql_real_escape_string($row[0]);
+	$sql = "ALTER TABLE $table DEFAULT CHARACTER SET cp1251 COLLATE cp1251_general_ci, CONVERT TO CHARACTER SET cp1251 COLLATE cp1251_general_ci";
+	mysql_query($sql) or die( mysql_error() );
+	print "$table changed to cp1251.\n";
+	flush();
 }
 
 mysql_close($dbconn);

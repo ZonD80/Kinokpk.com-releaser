@@ -170,12 +170,12 @@ if ($changedemail) {
 Если вы НЕ совершали действий, указанных в этом письме, то проигнорируйте это письмо.
 
 Если вы действительно хотите изменить e-mail, то проследуйте по следующей ссылке:
-	{$CACHEARRAY['defaultbaseurl']}/confirmemail.php?id={$CURUSER["id"]}&confirmcode=$hash&email=$obemail
+{$CACHEARRAY['defaultbaseurl']}/confirmemail.php?id={$CURUSER["id"]}&confirmcode=$hash&email=$obemail
 
 EOD;
 
-	sent_mail($email, $CACHEARRAY['sitename'], $CACHEARRAY['siteemail'], "{$CACHEARRAY['defaultbaseurl']} подтверждение изменения профиля", $body);
-	$string.= "<br /><h2>".$tracker_lang['my_mail_sent']."</h2>";
+sent_mail($email, $CACHEARRAY['sitename'], $CACHEARRAY['siteemail'], "{$CACHEARRAY['defaultbaseurl']} подтверждение изменения профиля", $body);
+$string.= "<br /><h2>".$tracker_lang['my_mail_sent']."</h2>";
 }
 
 sql_query("UPDATE users SET " . implode(",", $updateset) . " WHERE id = " . $CURUSER["id"]) or sqlerr(__FILE__,__LINE__);

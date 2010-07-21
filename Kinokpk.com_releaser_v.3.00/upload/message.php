@@ -511,39 +511,39 @@ elseif ($action == 'takemessage') {
 
 Пройдите по ссылке ниже, чтобы его прочитать.
 
-	{$CACHEARRAY['defaultbaseurl']}/message.php?action=viewmessage&id=$sended_id
+{$CACHEARRAY['defaultbaseurl']}/message.php?action=viewmessage&id=$sended_id
 
 
 EOD;
 
-	// email notifs
-	send_notifs('unread',$body,$receiver);
+// email notifs
+send_notifs('unread',$body,$receiver);
 
-	$delete = $_POST ["delete"];
-	if ($origmsg) {
-		if ($delete) {
-			// Make sure receiver of $origmsg is current user
-			$res = sql_query ( "SELECT * FROM messages WHERE id=$origmsg" ) or sqlerr ( __FILE__, __LINE__ );
-			if (mysql_num_rows ( $res ) == 1) {
-				$arr = mysql_fetch_assoc ( $res );
-				if ($arr ["receiver"] != $CURUSER ["id"])
-				stderr ( $tracker_lang ['error'], "Вы пытаетесь удалить не свое сообщение!" );
-				if (! $arr ["saved"])
-				sql_query ( "DELETE FROM messages WHERE id=$origmsg" ) or sqlerr ( __FILE__, __LINE__ );
-				elseif ($arr ["saved"])
-				sql_query ( "UPDATE messages SET location = '0' WHERE id=$origmsg" ) or sqlerr ( __FILE__, __LINE__ );
-			}
+$delete = $_POST ["delete"];
+if ($origmsg) {
+	if ($delete) {
+		// Make sure receiver of $origmsg is current user
+		$res = sql_query ( "SELECT * FROM messages WHERE id=$origmsg" ) or sqlerr ( __FILE__, __LINE__ );
+		if (mysql_num_rows ( $res ) == 1) {
+			$arr = mysql_fetch_assoc ( $res );
+			if ($arr ["receiver"] != $CURUSER ["id"])
+			stderr ( $tracker_lang ['error'], "Вы пытаетесь удалить не свое сообщение!" );
+			if (! $arr ["saved"])
+			sql_query ( "DELETE FROM messages WHERE id=$origmsg" ) or sqlerr ( __FILE__, __LINE__ );
+			elseif ($arr ["saved"])
+			sql_query ( "UPDATE messages SET location = '0' WHERE id=$origmsg" ) or sqlerr ( __FILE__, __LINE__ );
 		}
-		if (! $returnto)
-		$returnto = "message.php";
 	}
-	if ($returnto) {
-		safe_redirect(" $returnto" );
-		die ();
-	} else {
-		safe_redirect('message.php',2);
-		stderr ( $tracker_lang ['success'], "Сообщение было успешно отправлено!" );
-	}
+	if (! $returnto)
+	$returnto = "message.php";
+}
+if ($returnto) {
+	safe_redirect(" $returnto" );
+	die ();
+} else {
+	safe_redirect('message.php',2);
+	stderr ( $tracker_lang ['success'], "Сообщение было успешно отправлено!" );
+}
 
 } // конец прием посланного сообщения
 

@@ -35,10 +35,7 @@ if (isset($_GET['checkonly'])) {
 	$id = (int) $_GET['id'];
 
 
-	$clearcache = array('block-indextorrents','browse-normal','browse-cat');
-
-	foreach ($clearcache as $cachevalue)
-	$CACHE->clearGroupCache($cachevalue);
+	$CACHE->clearGroupCache('block-indextorrents');
 
 	if ($row['moderatedby']) {
 		sql_query("UPDATE torrents SET moderatedby=0 WHERE id=$id");
@@ -51,11 +48,11 @@ if (isset($_GET['checkonly'])) {
 			$bfooter = <<<EOD
 „тобы посмотреть релиз, перейдите по этой ссылке:
 
-{$CACHEARRAY['defaultbaseurl']}/details.php?id=$id
+			{$CACHEARRAY['defaultbaseurl']}/details.php?id=$id
 
 EOD;
-$descr = format_comment($row['descr']).nl2br($bfooter);
-send_notifs('torrents',format_comment($descr),$CURUSER['id']);
+			$descr = format_comment($row['descr']).nl2br($bfooter);
+			send_notifs('torrents',format_comment($descr),$CURUSER['id']);
 		}
 
 		die($tracker_lang['checked_by'].'<a href="userdetails.php?id='.$CURUSER['id'].'">'.get_user_class_color(get_user_class(),$CURUSER['username']).'</a> <a onclick="return ajaxcheck();" href="takeedit.php?checkonly&id='.$id.'">'.$tracker_lang['uncheck'].'</a>'.$return);
@@ -359,11 +356,11 @@ if ((get_user_class() >= UC_UPLOADER) && isset($_POST['approve'])) {
 		$bfooter = <<<EOD
 „тобы посмотреть релиз, перейдите по этой ссылке:
 
-{$CACHEARRAY['defaultbaseurl']}/details.php?id=$id
+		{$CACHEARRAY['defaultbaseurl']}/details.php?id=$id
 
 EOD;
-$descr = format_comment($row['descr']).nl2br($bfooter);
-send_notifs('torrents',format_comment($descr),$CURUSER['id']);
+		$descr = format_comment($row['descr']).nl2br($bfooter);
+		send_notifs('torrents',format_comment($descr),$CURUSER['id']);
 	}
 } else $updateset[] = "moderatedby = 0";
 
@@ -383,10 +380,7 @@ if ($_POST['upd']) $updateset[] = "added = '" . time() . "'";
 sql_query("UPDATE torrents SET " . join(",", $updateset) . " WHERE id = $id");
 if (mysql_errno() == 1062) stderr($tracker_lang['error'],'Torrent already uploaded!'); elseif (mysql_errno()) sqlerr(__FILE__,__LINE__);
 
-$clearcache = array('block-indextorrents','browse-normal','browse-cat');
-
-foreach ($clearcache as $cachevalue)
-$CACHE->clearGroupCache($cachevalue);
+$CACHE->clearGroupCache('block-indextorrents');
 
 
 if ($CACHEARRAY['use_integration']) {

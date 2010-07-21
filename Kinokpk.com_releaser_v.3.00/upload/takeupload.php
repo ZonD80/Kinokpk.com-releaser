@@ -360,11 +360,7 @@ if ($_POST['nofile']) {
 		// IPB TOPIC TRANSFER END
 	}
 
-	$clearcache = array('block-indextorrents','browse-normal','browse-cat');
-
-	foreach ($clearcache as $cachevalue)
-	$CACHE->clearGroupCache($cachevalue);
-	$CACHE->clearCache('system','cat_tags');
+	$CACHE->clearGroupCache('block-indextorrents');
 
 	sql_query("INSERT INTO notifs (checkid, userid, type) VALUES ($id, $CURUSER[id], 'comments')") or sqlerr(__FILE__,__LINE__);
 	@sql_query("DELETE FROM files WHERE torrent = $id");
@@ -402,51 +398,51 @@ if ($_POST['nofile']) {
 
 Информация о Релизе:
 -------------------------------------------------------------------------------
-	$forumdesc
+$forumdesc
 -------------------------------------------------------------------------------
 EOD;
 
-	$bfooter = <<<EOD
+$bfooter = <<<EOD
 Чтобы посмотреть релиз, перейдите по этой ссылке:
 
-	{$CACHEARRAY['defaultbaseurl']}/details.php?id=$id
+{$CACHEARRAY['defaultbaseurl']}/details.php?id=$id
 
 EOD;
 
-	$body .= $bfooter;
-	$descr .= nl2br($bfooter);
+$body .= $bfooter;
+$descr .= nl2br($bfooter);
 
 
-	if (get_user_class() < UC_UPLOADER) {
-		write_sys_msg($CURUSER['id'],sprintf($tracker_lang['uploaded_body'],"<a href=\"details.php?id=$id\">$torrent</a>"),$tracker_lang['uploaded']);
-		send_notifs('unchecked',nl2br($body),$CURUSER['id']);
-	} else {
-		send_notifs('torrents',format_comment($descr),$CURUSER['id']);
-	}
-	// safe_redirect(" $CACHEARRAY['defaultbaseurl']/details.php?id=$id");
+if (get_user_class() < UC_UPLOADER) {
+	write_sys_msg($CURUSER['id'],sprintf($tracker_lang['uploaded_body'],"<a href=\"details.php?id=$id\">$torrent</a>"),$tracker_lang['uploaded']);
+	send_notifs('unchecked',nl2br($body),$CURUSER['id']);
+} else {
+	send_notifs('torrents',format_comment($descr),$CURUSER['id']);
+}
+// safe_redirect(" $CACHEARRAY['defaultbaseurl']/details.php?id=$id");
 
 
-	$cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('rating_enabled','rating_perrelease')");
+$cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('rating_enabled','rating_perrelease')");
 
-	while ($cronres = mysql_fetch_array($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
-
-
-	$announce_urls_list[] = $CACHEARRAY['defaultbaseurl']."/announce.php?passkey=".$CURUSER['passkey'];
-	$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
-	while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
-
-	$retrackers = get_retrackers();
-	//var_dump($retrackers);
-	if ($retrackers) foreach ($retrackers as $announce)
-	if (!in_array($announce,$announce_urls_list)) $announce_urls_list[] = $announce;
-
-	$link = make_magnet($infohash,makesafe($torrent),$announce_urls_list);
-
-	if ($CRON['rating_enabled']) { $msg = sprintf($tracker_lang['upload_notice'],$CRON['rating_perrelease'],$id,$link); sql_query("UPDATE users SET ratingsum = ratingsum + {$CRON['rating_perrelease']} WHERE id={$CURUSER['id']}"); }
-	else $msg = sprintf($tracker_lang['upload_notice_norating'],$id,$link);
+while ($cronres = mysql_fetch_array($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
 
 
+$announce_urls_list[] = $CACHEARRAY['defaultbaseurl']."/announce.php?passkey=".$CURUSER['passkey'];
+$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
+while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
 
-	stderr($tracker_lang['uploaded'],$msg.($anarray?"<img src=\"remote_check.php?id=$id\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
+$retrackers = get_retrackers();
+//var_dump($retrackers);
+if ($retrackers) foreach ($retrackers as $announce)
+if (!in_array($announce,$announce_urls_list)) $announce_urls_list[] = $announce;
 
-	?>
+$link = make_magnet($infohash,makesafe($torrent),$announce_urls_list);
+
+if ($CRON['rating_enabled']) { $msg = sprintf($tracker_lang['upload_notice'],$CRON['rating_perrelease'],$id,$link); sql_query("UPDATE users SET ratingsum = ratingsum + {$CRON['rating_perrelease']} WHERE id={$CURUSER['id']}"); }
+else $msg = sprintf($tracker_lang['upload_notice_norating'],$id,$link);
+
+
+
+stderr($tracker_lang['uploaded'],$msg.($anarray?"<img src=\"remote_check.php?id=$id\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
+
+?>

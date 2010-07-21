@@ -371,9 +371,9 @@ li span.title {
 
 		// Start table
 		/*print("<table cellspacing=\"0\" cellpadding=\"0\" class=\"tabs\"><tbody><tr>
-		 <td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"details.php?id=$id\">Описание</a></td>
-		 <td class=\"tab\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"torrent_info.php?id=$id\">Данные о торренте</a></td>
-		 <td class=\"tab3\"> </td></tr></tbody></table>\n");*/
+		<td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"details.php?id=$id\">Описание</a></td>
+		<td class=\"tab\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"torrent_info.php?id=$id\">Данные о торренте</a></td>
+		<td class=\"tab3\"> </td></tr></tbody></table>\n");*/
 		print("<table width=100% border=1 cellspacing=0 cellpadding=5>");
 
 		print("<td>");

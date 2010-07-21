@@ -76,11 +76,7 @@ else
 
 deletetorrent($id);
 
-$clearcache = array('block-indextorrents','block-comments','browse-normal','browse-cat');
-
-foreach ($clearcache as $cachevalue)
-$CACHE->clearGroupCache($cachevalue);
-$CACHE->clearCache('system','cat_tags');
+$CACHE->clearGroupCache('block-indextorrents');
 
 $reasonstr = htmlspecialchars($reasonstr);
 write_log("Торрент $id ($row[name]) был удален пользователем $CURUSER[username] ($reasonstr)\n","torrent");
