@@ -53,6 +53,7 @@ if (!isset($_POST['save']) && !isset($_POST['reset']) && !isset($_POST['recount'
 	print('<tr><td>–ейтингова€ система включена:<br /><small>*Ёта опци€ отвечает только <b>автоматическое</b> изменение рейтинга системой и ограничени€, св€занные с ним. ѕользователи в любом случае смогут оценивать действи€ друг друга, но эти оценки не будут вли€ть ни на что.</small></td><td><select name="rating_enabled"><option value="1" '.($CRON['rating_enabled']==1?"selected":"").'>ƒа</option><option value="0" '.($CRON['rating_enabled']==0?"selected":"").'>Ќет</option></select></td></tr>');
 	print('<tr><td>¬рем€, в течении которого пользователь считаетс€ новичком (рейтингова€ система на него не действует):</td><td><input type="text" name="rating_freetime" size="2" value="'.$CRON['rating_freetime'].'">дней</td></tr>');
 	print('<tr><td>»нтервал менжу пересчетом рейтинга дл€ пользователей:</td><td><input type="text" name="rating_checktime" size="4" value="'.$CRON['rating_checktime'].'">минут</td></tr>');
+	print('<tr><td> оличество рейтинга, необходимое дл€ повышени€ до опытного пользовател€:</td><td><input type="text" size="3" name="promote_rating" value="'.$CRON['promote_rating'].'"></td></tr>');
 	print('<tr><td> оличество рейтинга, даваемое пользователю за заливку релиза:</td><td><input type="text" size="3" name="rating_perrelease" value="'.$CRON['rating_perrelease'].'"></td></tr>');
 	print('<tr><td> оличество рейтинга, даваемое пользователю за регистрацию приглашенного пользовател€:</td><td><input type="text" size="3" name="rating_perinvite" value="'.$CRON['rating_perinvite'].'"></td></tr>');
 	print('<tr><td> оличество рейтинга, даваемое пользователю за выполнение запроса:</td><td><input type="text" size="3" name="rating_perrequest" value="'.$CRON['rating_perrequest'].'"></td></tr>');
@@ -132,7 +133,7 @@ elseif (isset($_POST['save'])) {
 
 	$multi_param = array('remotepeers_cleantime');
 
-	$rating_param = array('rating_freetime','rating_perseed','rating_perinvite','rating_perrequest','rating_checktime','rating_perrelease','rating_dislimit','rating_downlimit', 'rating_perleech', 'rating_perdownload', 'rating_discounttorrent','rating_max');
+	$rating_param = array('rating_freetime','promote_rating','rating_perseed','rating_perinvite','rating_perrequest','rating_checktime','rating_perrelease','rating_dislimit','rating_downlimit', 'rating_perleech', 'rating_perdownload', 'rating_discounttorrent','rating_max');
 	$updateset = array();
 
 	foreach ($reqparametres as $param) {
