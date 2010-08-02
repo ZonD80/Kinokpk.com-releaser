@@ -468,7 +468,7 @@ else {
 
 		else {
 			if ($invitecode) {
-				$check = @mysql_result(sql_query("SELECT 1 FROM rg_invites WHERE invite=".sqlesc($invitecode)));
+				$check = @mysql_result(sql_query("SELECT 1 FROM rg_invites WHERE invite=".sqlesc($invitecode)),0);
 				if (!$check)
 				stderr($tracker_lang['error'],$tracker_lang['invalid_invite_code']);
 				sql_query("DELETE FROM invites WHERE invite=".sqlesc($invitecode));
