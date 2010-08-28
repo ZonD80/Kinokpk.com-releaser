@@ -66,10 +66,8 @@ else {
 	}else
 	{
 		@unlink("./".$CURUSER['avatar']);
-		copy($_FILES['avatar']['tmp_name'],"./avatars/".$CURUSER["id"].substr($_FILES['avatar']['name'], strripos($_FILES['avatar']['name'], '.')));
-		$pathav = "avatars/".$CURUSER["id"].substr($_FILES['avatar']['name'], strripos($_FILES['avatar']['name'], '.'));
-		sql_query("UPDATE users SET avatar = '".$pathav."' WHERE id = " . $CURUSER["id"])or sqlerr(__FILE__,__LINE__);
-
+      $pathav = "avatars/".$CURUSER["id"].".".$allowed_types[$_FILES['avatar']['type']];
+      copy($_FILES['avatar']['tmp_name'],$pathav);		sql_query("UPDATE users SET avatar = '".$pathav."' WHERE id = " . $CURUSER["id"])or sqlerr(__FILE__,__LINE__);
 		if ($CACHEARRAY['use_integration']) {
 			forumconn();
 

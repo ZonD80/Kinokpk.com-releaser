@@ -267,12 +267,9 @@ if ($update_torrent) {
 
 	$infohash = sha1($info["string"]);
 	move_uploaded_file($tmpname, ROOT_PATH."torrents/$id.torrent");
-	$fp = fopen("torrents/$id.torrent", "w");
-	if ($fp) {
-		@fwrite($fp, benc($dict['value']['info']), strlen(benc($dict['value']['info'])));
-		fclose($fp);
-		@chmod($fp, 0644);
-	}
+      $fp = @file_put_contents("torrents/$id.torrent", benc($dict['value']['info']));
+      if (!$fp) stderr($REL_LANG->say_by_key('error'),'Загрузка torrent файла не удалась');
+      
 	$updateset[] = "info_hash = " . sqlesc($infohash);
 	$updateset[] = "filename = " . sqlesc($fname);
 	sql_query("DELETE FROM files WHERE torrent = $id");
