@@ -31,7 +31,7 @@ elseif ($downloaded && !$seeding) { $formula = $tracker_lang['rating_disconnecte
 elseif ($downloaded>($seeding+$CURUSER['discount']))
 $formula = sprintf($tracker_lang['down_formula'],$seeding,$CURUSER['discount'],$downloaded).-$CRON['rating_perleech'];
 else {
-	$upcount = @round(($seeding+$CURUSER['discount'])/$downloaded);
+	$upcount = (int)@round(($seeding+$CURUSER['discount'])/$downloaded);
 	if (!$upcount) { $upcount=1; $formula = "({$CRON['rating_perseed']}*1) = +{$CRON['rating_perseed']}"; } else {
 		$rateup = ((($seeding+$CURUSER['discount'])>=$downloaded)?$CRON['rating_perseed']*$upcount:(-$CRON['rating_perleech']));
 
