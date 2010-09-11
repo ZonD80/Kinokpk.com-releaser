@@ -14,3 +14,4 @@ DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` =  'use_wait';
 update orbital_blocks set bposition='t' where bposition='c';
 update news set comments=(SELECT COUNT(*) FROM comments WHERE type='news' AND toid=news.id) where id=id
 update comments set type='rel' where type='';
+update notifs set type='relcomments' where type='comments';
