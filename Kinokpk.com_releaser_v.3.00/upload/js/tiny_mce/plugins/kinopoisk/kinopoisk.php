@@ -124,7 +124,7 @@ function get_content($text, $option)
 	}
 
 	elseif ($option == 'actors') {
-		$search = '#В главных ролях:</span></td></tr>(.*?)class="all">...</a></td></tr>#si';
+		$search = '#В главных ролях:</span>(.*?)>...</a></span>#si';
 	}
 
 	elseif ($option == 'genre') {
@@ -192,10 +192,10 @@ elseif (isset($_GET['id']) && $_GET['id'] != '') {
 
 	function format_actors($text){
 		$text = preg_replace("#\t|\r|\x0B#si","",$text);
-		$text = preg_replace("#\n#si",", ",$text);
-		$text = preg_replace("/<\/a><\/td><\/tr><tr>/",", ",$text);
+		$text = preg_replace("#\n#si"," ",$text);
+		$text = preg_replace("/<\/a>/",", ",$text);
 		$text = preg_replace("#\&\#133;|\&\#151;#si","",strip_tags(trim(html_entity_decode($text,ENT_QUOTES))));
-		if (strpos($text,',')<=2) $text = substr($text,20,strlen($text));
+		if (strpos($text,',')<=2) $text = substr($text,20,iconv_strlen($text));
 
 		return $text;
 	}
