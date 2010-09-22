@@ -19,15 +19,15 @@ class REL_LANG {
 	 * @var string
 	 */
 	private $language;
-	
+
 	/**
 	 * Debug mode
 	 * @var boolean
 	 */
 	private $DEBUG;
-	
-	
-	
+
+
+
 	/**
 	 * Class constructor, loads main language file
 	 * @param string $language Language to use
@@ -41,13 +41,13 @@ class REL_LANG {
 		if ($this->language<>'en') $this->load($this->language);
 		return true;
 	}
-	
+
 	/**
 	 * Loads selected language file
 	 * @param string $option What file to load
 	 */
 	public function load($language='en') {
-	$this->parse_db($language);
+		$this->parse_db($language);
 	}
 	/**
 	 * Say something by key
@@ -58,14 +58,14 @@ class REL_LANG {
 	public function say_by_key($value,$language = '') {
 		$return = '';
 		if (!$language) $language=$this->language;
-		if (!array_key_exists($value,$this->lang[$language])) $return .= ($this->DEBUG?"*NO_KEY:{$language}* ":''); 
+		if (!array_key_exists($value,$this->lang[$language])) $return .= ($this->DEBUG?"*NO_KEY:{$language}* ":'');
 		if (!$this->lang[$language][$value]) { $return .= ($this->DEBUG?"*NO_VALUE:$value* ":'');
 		return $return.$this->lang['en'][$value];
 		}
 		return $return.$this->lang[$language][$value];
-		
+
 	}
-	
+
 	/**
 	 * Description
 	 * @param unknown_type $file
@@ -83,17 +83,17 @@ class REL_LANG {
 			$REL_CACHE->set('languages',$language,$this->lang[$language]);
 			$this->lang[$language] = array();
 		}
-		
+
 	}
-	
-	
+
+
 	public function import_langfile($file,$language='en',$override=false) {
-	
+
 		$parse = @file($file,FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
 		if (!$parse) return false;
-			$res = sql_query("SELECT lkey,lvalue FROM languages WHERE ltranslate='$language'");
-			while ($row = mysql_fetch_assoc($res))
-			$check[$row['lkey']] = $row['lvalue'];
+		$res = sql_query("SELECT lkey,lvalue FROM languages WHERE ltranslate='$language'");
+		while ($row = mysql_fetch_assoc($res))
+		$check[$row['lkey']] = $row['lvalue'];
 		foreach ($parse as $string) {
 			$cut = strpos($string,'=');
 			if (!$cut) continue;
@@ -103,14 +103,14 @@ class REL_LANG {
 			$to_database[$key] = $value;
 		}
 		//if ($return['errors']) return $return;
-		
+
 		foreach ($to_database as $key=>$value) {
 			sql_query("INSERT INTO languages (lkey,ltranslate,lvalue) VALUES (".sqlesc(makesafe($key)).",'$language',".sqlesc(makesafe($value)).")".($override?" ON DUPLICATE KEY UPDATE lvalue=".sqlesc(makesafe($value)):''));
 			if (!mysql_errno()) $return['words'][] = "$key : $value";
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Formates string to output, like print or spritnf. Many argumets allowed
 	 * @return string|string Formatted string
@@ -122,17 +122,17 @@ class REL_LANG {
 		if ($this->lang['en'])
 		$key = array_search($text,$this->lang['en']);
 		else return ("*NO_ENGLISH_LANGUAGE*");
-		if (!$key) $return .= ($this->DEBUG?"*NO_KEY_OR_NO_TRANSLATION* ":''); 
+		if (!$key) $return .= ($this->DEBUG?"*NO_KEY_OR_NO_TRANSLATION* ":'');
 		else
 		$text = $this->say_by_key($key);
-		
+
 		if (count($args)>1) { $args[0] = $text;
 		return $return.call_user_func_array("sprintf",$args);
 		}
 		else return $return.$text;
 
-	}	
-	
+	}
+
 	/**
 	 * Formates string to output, like print or spritnf. Many argumets allowed
 	 * This function used to say something to specified userid, that comes first argument
@@ -141,22 +141,22 @@ class REL_LANG {
 	 */
 	public function _to() {
 		/*global $REL_DATABASE;
-		if (!$REL_DATABASE) die("FATAL ERROR: No database");*/
-		
+		 if (!$REL_DATABASE) die("FATAL ERROR: No database");*/
+
 		$args = func_get_args();
 		$langauge = @mysql_result(sql_query("SELECT language FROM users WHERE id={$args[0]}"),0);
 		$text = $args[1];
 		$return = '';
 		$key = array_search($text,$this->lang['en']);
-		if (!$key) $return .= ($this->DEBUG?"*NO_KEY_OR_NO_TRANSLATION* ":''); 
+		if (!$key) $return .= ($this->DEBUG?"*NO_KEY_OR_NO_TRANSLATION* ":'');
 		else
 		$text = $this->say_by_key($key,$language);
-		
+
 		if (count($args)>2) { $args[1] = $text; unset($args[0]);
 		return $return.call_user_func_array("sprintf",$args);
 		}
 		else return $return.$text;
 
-	}	
+	}
 }
 ?>
