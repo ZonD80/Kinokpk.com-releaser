@@ -382,7 +382,7 @@ INSERT INTO `cron` VALUES ('rating_perrelease', 5);
 INSERT INTO `cron` VALUES ('rating_perseed', 1);
 INSERT INTO `cron` VALUES ('remotecheck_disabled', 0);
 INSERT INTO `cron` VALUES ('remotepeers_cleantime', 10800);
-INSERT INTO `cron` VALUES ('remote_torrents', 30);
+INSERT INTO `cron` VALUES ('remote_trackers', 100);
 INSERT INTO `cron` VALUES ('signup_timeout', 5);
 INSERT INTO `cron` VALUES ('ttl_days', 100);
 INSERT INTO `cron` VALUES ('rating_perrequest', 10);
