@@ -4,7 +4,7 @@
 /*!40101 SET NAMES utf8 */;
 -- --------------------------------------------------------
 
--- 
+--
 -- Структура таблицы `addedrequests`
 -- 
 
@@ -15,7 +15,7 @@ CREATE TABLE `addedrequests` (
   PRIMARY KEY  (`id`),
   KEY `pollid` (`id`),
   KEY `userid` (`userid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `addedrequests`
@@ -36,7 +36,7 @@ CREATE TABLE `bannedemails` (
   `email` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `bannedemails`
@@ -53,7 +53,7 @@ CREATE TABLE `bans` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `mask` varchar(60) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `bans`
@@ -71,7 +71,7 @@ CREATE TABLE `bookmarks` (
   `userid` int(10) unsigned NOT NULL default '0',
   `torrentid` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `bookmarks`
@@ -88,7 +88,7 @@ CREATE TABLE `cache_stats` (
   `cache_name` varchar(255) NOT NULL,
   `cache_value` text,
   PRIMARY KEY  (`cache_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
 -- 
 -- Дамп данных таблицы `cache_stats`
@@ -166,7 +166,7 @@ CREATE TABLE `categories` (
   `forum_id` smallint(5) NOT NULL default '0',
   `disable_export` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `categories`
@@ -184,7 +184,7 @@ CREATE TABLE `censoredtorrents` (
   `name` varchar(255) NOT NULL,
   `reason` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `censoredtorrents`
@@ -211,7 +211,7 @@ CREATE TABLE `comments` (
   PRIMARY KEY  (`id`),
   KEY `user` (`user`),
   KEY `torrent` (`torrent`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `comments`
@@ -229,7 +229,7 @@ CREATE TABLE `countries` (
   `name` varchar(50) default NULL,
   `flagpic` varchar(50) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=105 DEFAULT CHARSET=utf8 AUTO_INCREMENT=105 ;
+) ENGINE=MyISAM AUTO_INCREMENT=105 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=105 ;
 
 -- 
 -- Дамп данных таблицы `countries`
@@ -350,7 +350,7 @@ CREATE TABLE `cron` (
   `cron_name` varchar(255) NOT NULL,
   `cron_value` int(10) NOT NULL default '0',
   PRIMARY KEY  (`cron_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
 -- 
 -- Дамп данных таблицы `cron`
@@ -382,8 +382,7 @@ INSERT INTO `cron` VALUES ('rating_perrelease', 5);
 INSERT INTO `cron` VALUES ('rating_perseed', 1);
 INSERT INTO `cron` VALUES ('remotecheck_disabled', 0);
 INSERT INTO `cron` VALUES ('remotepeers_cleantime', 10800);
-INSERT INTO `cron` VALUES ('remote_lastchecked', 1);
-INSERT INTO `cron` VALUES ('remote_torrents', 30);
+INSERT INTO `cron` VALUES ('remote_trackers', 100);
 INSERT INTO `cron` VALUES ('signup_timeout', 5);
 INSERT INTO `cron` VALUES ('ttl_days', 100);
 INSERT INTO `cron` VALUES ('rating_perrequest', 10);
@@ -400,7 +399,7 @@ CREATE TABLE `cron_emails` (
   `email` varchar(255) NOT NULL,
   `subject` varchar(255) NOT NULL,
   `body` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
 -- 
 -- Дамп данных таблицы `cron_emails`
@@ -422,7 +421,7 @@ CREATE TABLE `faq` (
   `categ` int(10) NOT NULL default '0',
   `order` int(10) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=75 DEFAULT CHARSET=utf8 AUTO_INCREMENT=75 ;
+) ENGINE=MyISAM AUTO_INCREMENT=75 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=75 ;
 
 -- 
 -- Дамп данных таблицы `faq`
@@ -512,7 +511,7 @@ CREATE TABLE `files` (
   `size` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `torrent` (`torrent`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `files`
@@ -533,7 +532,7 @@ CREATE TABLE `friends` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `userid` (`userid`,`friendid`),
   UNIQUE KEY `friendid` (`friendid`,`userid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `friends`
@@ -554,7 +553,7 @@ CREATE TABLE `invites` (
   `time_invited` int(10) NOT NULL,
   `confirmed` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `invites`
@@ -585,7 +584,7 @@ CREATE TABLE `messages` (
   KEY `receiver` (`receiver`),
   KEY `sender` (`sender`),
   KEY `poster` (`poster`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `messages`
@@ -606,7 +605,7 @@ CREATE TABLE `news` (
   `subject` varchar(300) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `added` (`added`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `news`
@@ -632,7 +631,7 @@ CREATE TABLE `newscomments` (
   PRIMARY KEY  (`id`),
   KEY `user` (`user`),
   KEY `news` (`news`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `newscomments`
@@ -652,7 +651,7 @@ CREATE TABLE `notifs` (
   `userid` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `checkid` (`checkid`,`type`,`userid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `notifs`
@@ -683,7 +682,7 @@ CREATE TABLE `orbital_blocks` (
   KEY `title` (`title`),
   KEY `weight` (`weight`),
   KEY `active` (`active`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=17 ;
 
 -- 
 -- Дамп данных таблицы `orbital_blocks`
@@ -723,7 +722,7 @@ CREATE TABLE `pagecomments` (
   PRIMARY KEY  (`id`),
   KEY `user` (`user`),
   KEY `torrent` (`page`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `pagecomments`
@@ -752,7 +751,7 @@ CREATE TABLE `pages` (
   `denycomments` tinyint(1) unsigned NOT NULL default '0',
   `views` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=2 ;
 
 -- 
 -- Дамп данных таблицы `pages`
@@ -775,7 +774,7 @@ CREATE TABLE `pagescategories` (
   `class` int(2) NOT NULL default '0',
   `class_edit` int(2) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=2 ;
 
 -- 
 -- Дамп данных таблицы `pagescategories`
@@ -816,7 +815,7 @@ CREATE TABLE `peers` (
   KEY `last_action` (`last_action`),
   KEY `connectable` (`connectable`),
   KEY `userid` (`userid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `peers`
@@ -842,7 +841,7 @@ CREATE TABLE `pollcomments` (
   PRIMARY KEY  (`id`),
   KEY `user` (`user`),
   KEY `poll` (`poll`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `pollcomments`
@@ -862,7 +861,7 @@ CREATE TABLE `polls` (
   `exp` int(10) default NULL,
   `public` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `polls`
@@ -880,7 +879,7 @@ CREATE TABLE `polls_structure` (
   `pollid` int(10) NOT NULL,
   `value` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `polls_structure`
@@ -900,7 +899,7 @@ CREATE TABLE `polls_votes` (
   `pid` int(10) NOT NULL,
   PRIMARY KEY  (`vid`),
   UNIQUE KEY `sid` (`sid`,`user`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `polls_votes`
@@ -921,7 +920,7 @@ CREATE TABLE `ratings` (
   `added` int(10) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `rid` (`rid`,`userid`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `ratings`
@@ -951,7 +950,7 @@ CREATE TABLE `relgroups` (
   `subscribe_length` int(2) NOT NULL default '31',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `relgroups`
@@ -970,7 +969,7 @@ CREATE TABLE `reltemplates` (
   `content` text NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `reltemplates`
@@ -992,7 +991,7 @@ CREATE TABLE `reports` (
   `added` int(10) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `reportid` (`reportid`,`userid`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `reports`
@@ -1018,7 +1017,7 @@ CREATE TABLE `reqcomments` (
   PRIMARY KEY  (`id`),
   KEY `user` (`user`),
   KEY `news` (`request`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `reqcomments`
@@ -1044,7 +1043,7 @@ CREATE TABLE `requests` (
   `filledby` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `userid` (`userid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `requests`
@@ -1063,7 +1062,7 @@ CREATE TABLE `retrackers` (
   `announce_url` varchar(500) NOT NULL,
   `mask` varchar(60) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `retrackers`
@@ -1085,7 +1084,7 @@ CREATE TABLE `rg_invites` (
   `time_invited` int(10) NOT NULL,
   `confirmed` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `rg_invites`
@@ -1105,7 +1104,7 @@ CREATE TABLE `rg_subscribes` (
   `valid_until` int(10) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `userid` (`userid`,`rgid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `rg_subscribes`
@@ -1131,7 +1130,7 @@ CREATE TABLE `rgcomments` (
   PRIMARY KEY  (`id`),
   KEY `user` (`user`),
   KEY `news` (`relgroup`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `rgcomments`
@@ -1152,7 +1151,7 @@ CREATE TABLE `rgnews` (
   `subject` varchar(300) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `added` (`added`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `rgnews`
@@ -1178,7 +1177,7 @@ CREATE TABLE `rgnewscomments` (
   PRIMARY KEY  (`id`),
   KEY `user` (`user`),
   KEY `news` (`rgnews`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `rgnewscomments`
@@ -1199,7 +1198,7 @@ CREATE TABLE `rules` (
   `categ` int(10) NOT NULL default '0',
   `order` int(10) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=80 DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=80 ;
+) ENGINE=MyISAM AUTO_INCREMENT=80 DEFAULT CHARSET=cp1251 PACK_KEYS=0 AUTO_INCREMENT=80 ;
 
 -- 
 -- Дамп данных таблицы `rules`
@@ -1294,7 +1293,7 @@ CREATE TABLE `sessions` (
   KEY `time` (`time`),
   KEY `uid` (`uid`),
   KEY `url` (`url`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
 -- 
 -- Дамп данных таблицы `sessions`
@@ -1315,7 +1314,7 @@ CREATE TABLE `sitelog` (
   `type` varchar(80) NOT NULL default 'tracker',
   PRIMARY KEY  (`id`),
   KEY `added` (`added`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `sitelog`
@@ -1339,7 +1338,7 @@ CREATE TABLE `snatched` (
   `finished` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `snatch` (`torrent`,`userid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `snatched`
@@ -1358,7 +1357,7 @@ CREATE TABLE `stamps` (
   `class` tinyint(3) NOT NULL default '0',
   `image` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `stamps`
@@ -1377,7 +1376,7 @@ CREATE TABLE `stylesheets` (
   `name` varchar(64) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `uri` (`uri`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=2 ;
 
 -- 
 -- Дамп данных таблицы `stylesheets`
@@ -1428,7 +1427,7 @@ CREATE TABLE `torrents` (
   KEY `owner` (`owner`),
   KEY `visible` (`visible`),
   KEY `category_visible` (`category`,`visible`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 PACK_KEYS=0 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 PACK_KEYS=0 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `torrents`
@@ -1441,15 +1440,18 @@ CREATE TABLE `torrents` (
 -- Структура таблицы `trackers`
 -- 
 
-CREATE TABLE `trackers` (
+CREATE TABLE IF NOT EXISTS `trackers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `torrent` int(10) unsigned NOT NULL,
-  `tracker` varchar(255) NOT NULL default 'localhost',
-  `seeders` int(5) unsigned NOT NULL default '0',
-  `leechers` int(5) unsigned NOT NULL default '0',
-  `lastchecked` int(10) unsigned NOT NULL default '0',
+  `tracker` varchar(255) NOT NULL DEFAULT 'localhost',
+  `seeders` int(5) unsigned NOT NULL DEFAULT '0',
+  `leechers` int(5) unsigned NOT NULL DEFAULT '0',
+  `lastchecked` int(10) unsigned NOT NULL DEFAULT '0',
   `state` varchar(300) NOT NULL,
+  `num_failed` int(5) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   UNIQUE KEY `torrent` (`torrent`,`tracker`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `trackers`
@@ -1475,7 +1477,7 @@ CREATE TABLE `usercomments` (
   PRIMARY KEY  (`id`),
   KEY `user` (`user`),
   KEY `news` (`userid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `usercomments`
@@ -1560,7 +1562,7 @@ CREATE TABLE `users` (
   KEY `warned` (`warned`),
   KEY `user` (`id`,`confirmed`,`enabled`),
   KEY `passkey` (`passkey`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `users`

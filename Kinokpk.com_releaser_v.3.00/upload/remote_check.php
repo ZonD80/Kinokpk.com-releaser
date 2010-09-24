@@ -63,34 +63,36 @@ if ($id)  {
 	}
 }
 
-$cronrow = mysql_query("SELECT * FROM cron WHERE cron_name IN ('remotecheck_disabled','remotepeers_cleantime','in_remotecheck','remote_torrents','remote_lastchecked')") or sqlerr(__FILE__,__LINE__);
+$cronrow = mysql_query("SELECT * FROM cron WHERE cron_name IN ('remotecheck_disabled','remotepeers_cleantime','in_remotecheck','remote_trackers')") or sqlerr(__FILE__,__LINE__);
 while ($cronres = mysql_fetch_array($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
 
 if (!$CRON['remotecheck_disabled']) {
 	$CRON['remote_lastchecked'] = (int)$CRON['remote_lastchecked'];
-	$CRON['remote_torrents'] = (int)$CRON['remote_torrents'];
+	$CRON['remote_trackers'] = (int)$CRON['remote_trackers'];
 
 	mysql_query("UPDATE cron SET cron_value=1 WHERE cron_name='in_remotecheck'") or sqlerr(__FILE__,__LINE__);
 	mysql_query("UPDATE cron SET cron_value=".time()." WHERE cron_name='last_remotecheck'") or sqlerr(__FILE__,__LINE__);
 	mysql_query("UPDATE cron SET cron_value=cron_value+1 WHERE cron_name='num_checked'") or sqlerr(__FILE__,__LINE__);
 
-	$res = mysql_query("SELECT torrents.id, torrents.info_hash, trackers.tracker FROM trackers LEFT JOIN torrents ON torrents.id=trackers.torrent WHERE ".($CRON['remotepeers_cleantime']?"trackers.lastchecked<".(time()-$CRON['remotepeers_cleantime'])." AND ":'')."trackers.tracker<>'localhost'".($CRON['remote_lastchecked']?" AND torrents.id<{$CRON['remote_lastchecked']}":'')." ORDER BY torrents.id DESC".($CRON['remote_torrents']?" LIMIT {$CRON['remote_torrents']}":'')) or sqlerr(__FILE__,__LINE__);
+	$res = mysql_query("SELECT trackers.id, trackers.tracker, torrents.info_hash FROM trackers LEFT JOIN torrents ON torrents.id=trackers.torrent WHERE ".($CRON['remotepeers_cleantime']?"trackers.lastchecked<".(time()-$CRON['remotepeers_cleantime'])." AND ":'')."trackers.tracker<>'localhost' AND trackers.state<>'in_check' ORDER BY trackers.id DESC".($CRON['remote_trackers']?" LIMIT {$CRON['remote_trackers']}":'')) or sqlerr(__FILE__,__LINE__);
 
 	//try {
-	while ($row = mysql_fetch_assoc($res)) {$LAST_ID=$row['id']; $parray[$row['id']] = array('info_hash'=>$row['info_hash'],'tracker'=>$row['tracker']); }
+	while ($row = mysql_fetch_assoc($res)) {
 
-	if ($parray) {
-		mysql_query("UPDATE cron SET cron_value=$LAST_ID WHERE cron_name='remote_lastchecked'") or sqlerr(__FILE__,__LINE__);
-		foreach ($parray as $id => $torrent) {
-			$hash = $torrent['info_hash'];
-			$url = $torrent['tracker'];
-			$peers = get_remote_peers($url, $hash);
-			mysql_query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", lastchecked=".time().", state='".mysql_real_escape_string($peers['state'])."' WHERE torrent=$id AND tracker='$url'") or sqlerr(__FILE__,__LINE__);
+		$parray[$row['id']] = array('info_hash'=>$row['info_hash'],'tracker'=>$row['tracker']); }
+
+		if ($parray) {
+			mysql_query("UPDATE trackers SET state = 'in_check' WHERE id IN (".implode(',',array_keys($parray)).")") or sqlerr(__FILE__,__LINE__);
+			foreach ($parray as $id => $torrent) {
+				$hash = $torrent['info_hash'];
+				$url = $torrent['tracker'];
+				$peers = get_remote_peers($url, $hash);
+				if (preg_match('/failed/',$peers['state'])) $fail = true; else $fail = false;
+				mysql_query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", lastchecked=".time().", state='".mysql_real_escape_string($peers['state'])."', num_failed=".($fail?'num_failed+1':'0')." WHERE id=$id") or sqlerr(__FILE__,__LINE__);
+			}
+			//} catch (Exception $e) mysql_query("UPDATE cron SET cron_value=0 WHERE cron_name='in_remotecheck'");
 		}
-		//} catch (Exception $e) mysql_query("UPDATE cron SET cron_value=0 WHERE cron_name='in_remotecheck'");
-	} else mysql_query("UPDATE cron SET cron_value=0 WHERE cron_name='remote_lastchecked'") or sqlerr(__FILE__,__LINE__);
-
-	mysql_query("UPDATE cron SET cron_value=0 WHERE cron_name='in_remotecheck'") or sqlerr(__FILE__,__LINE__);
+		mysql_query("UPDATE cron SET cron_value=0 WHERE cron_name='in_remotecheck'") or sqlerr(__FILE__,__LINE__);
 }
 print base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
 
