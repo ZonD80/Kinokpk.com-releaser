@@ -86,7 +86,7 @@ EOD;
 			$peers = get_remote_peers($tracker, $row['info_hash'],'announce');
 			$reason[$tracker] = makesafe($peers['state']);
 			if (preg_match('/ok_/',$peers['state'])) {
-				sql_query("INSERT INTO trackers (tracker,torrent) VALUES ('$tracker',$id)") or sqlerr(__FILE__,__LINE__);
+				sql_query("INSERT INTO trackers (tracker,torrent) VALUES ('$tracker',$id)");// or sqlerr(__FILE__,__LINE__);
 				sql_query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", lastchecked=".time().", state='".mysql_real_escape_string($peers['state'])."' WHERE torrent=$id AND tracker='$tracker'") or sqlerr(__FILE__,__LINE__);
 				$state[$tracker] = 'added';
 			} else $state[$tracker] = 'failed';
