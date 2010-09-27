@@ -76,7 +76,7 @@ if (!$CRON['remotecheck_disabled']) {
 	// delete stuck trackers
 	mysql_query("UPDATE trackers SET state='' WHERE lastchecked<".(time()-($CRON['remotepeers_cleantime']*2))." AND state = 'in_check'") or sqlerr(__FILE__,__LINE__);
 	
-	$res = mysql_query("SELECT trackers.id, trackers.tracker, torrents.info_hash FROM trackers LEFT JOIN torrents ON torrents.id=trackers.torrent WHERE ".($CRON['remotepeers_cleantime']?"trackers.lastchecked<".(time()-$CRON['remotepeers_cleantime'])." AND ":'')."trackers.tracker<>'localhost' AND trackers.state<>'in_check' ORDER BY trackers.id DESC".($CRON['remote_trackers']?" LIMIT {$CRON['remote_trackers']}":'')) or sqlerr(__FILE__,__LINE__);
+	$res = mysql_query("SELECT trackers.id, trackers.tracker, torrents.info_hash FROM trackers LEFT JOIN torrents ON torrents.id=trackers.torrent WHERE ".($CRON['remotepeers_cleantime']?"trackers.lastchecked<".(time()-$CRON['remotepeers_cleantime'])." AND ":'')."trackers.tracker<>'localhost' AND trackers.state<>'in_check' ORDER BY trackers.lastchecked, trackers.id DESC".($CRON['remote_trackers']?" LIMIT {$CRON['remote_trackers']}":'')) or sqlerr(__FILE__,__LINE__);
 
 	//try {
 	while ($row = mysql_fetch_assoc($res)) {
