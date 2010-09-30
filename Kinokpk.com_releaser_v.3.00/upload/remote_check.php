@@ -25,7 +25,7 @@ mysql_select_db ($mysql_db, $db);
 require_once(ROOT_PATH."include/benc.php");
 
 /**
- * Generates SQL error message sending notification to SYSOP
+ * Generates SQL error message sending notification to site log
  * @param string $file File where error begins __FILE__
  * @param string $line Line where error begins __LINE__
  * @return void
@@ -34,7 +34,6 @@ function sqlerr($file = '', $line = '') {
 	$err = mysql_error();
 	$text = ("SQL error, mysql server said: " . $err . ($file != '' && $line != '' ? " file: $file, line: $line" : ""));
 	write_log("Remote_check SQL ERROR: $text",'sql_errors');
-	err($text);
 	return;
 }
 
@@ -45,10 +44,10 @@ function sqlerr($file = '', $line = '') {
  * @return void
  */
 function write_log($text, $type = "tracker") {
-	$type = sqlesc($type);
-	$text = sqlesc($text);
+	$type = mysql_real_escape_string($type);
+	$text =  mysql_real_escape_string($text);
 	$added = time();
-	mysql_query("INSERT INTO sitelog (added, txt, type) VALUES($added, $text, $type)") or sqlerr(__FILE__,__LINE__);
+	mysql_query("INSERT INTO sitelog (added, txt, type) VALUES($added, '$text', '$type')") or sqlerr(__FILE__,__LINE__);
 	return;
 }
 $id=(int)$_GET['id'];
