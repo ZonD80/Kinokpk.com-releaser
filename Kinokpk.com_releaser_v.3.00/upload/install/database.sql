@@ -49,11 +49,14 @@ CREATE TABLE `bannedemails` (
 -- Структура таблицы `bans`
 -- 
 
-CREATE TABLE `bans` (
-  `id` int(11) unsigned NOT NULL auto_increment,
+CREATE TABLE IF NOT EXISTS `bans` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `mask` varchar(60) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+  `descr` varchar(255) DEFAULT NULL,
+  `user` int(10) unsigned NOT NULL DEFAULT '0',
+  `added` int(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
 -- Дамп данных таблицы `bans`
