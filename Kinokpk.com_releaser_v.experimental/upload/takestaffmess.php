@@ -46,6 +46,6 @@ $counter = mysql_affected_rows();
 
 safe_redirect($REL_SEO->make_link('staffmess'),1);
 
-stderr($REL_LANG->say_by_key('success'), "".$REL_LANG->say_by_key('send')." $counter ".$REL_LANG->say_by_key('messages')."");
+stderr($REL_LANG->say_by_key('success'), "".$REL_LANG->say_by_key('send')." $counter ".$REL_LANG->say_by_key('messages'),'success');
 
 ?>

@@ -1,27 +1,12 @@
 <?php
-
-/*
- Project: Kinokpk.com releaser
- This file is part of Kinokpk.com releaser.
- Kinokpk.com releaser is based on TBDev,
- originally by RedBeard of TorrentBits, extensively modified by
- Gartenzwerg and Yuna Scatari.
- Kinokpk.com releaser is free software;
- you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
- Kinokpk.com is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- You should have received a copy of the GNU General Public License
- along with Kinokpk.com releaser; if not, write to the
- Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- MA  02111-1307  USA
- Do not remove above lines!
+/**
+ * Requests viewer and editor
+ * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
+ * @package Kinokpk.com releaser
+ * @author ZonD80 <admin@kinokpk.com>
+ * @copyright (C) 2008-now, ZonD80, Germany, TorrentsBook.com
+ * @link http://dev.kinokpk.com
  */
-
 require_once("include/bittorrent.php");
 
 dbconn();
@@ -34,10 +19,9 @@ if ($_GET["delreq"])
 		if (empty($_GET["delreq"]))
 		stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_fileds_blank'));
 		sql_query("DELETE FROM requests WHERE id IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
-		sql_query("DELETE FROM reqcomments WHERE request IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
+		sql_query("DELETE FROM comments WHERE toid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ") AND type='req'");
 		sql_query("DELETE FROM notifs WHERE type='reqcomments' AND checkid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
 		sql_query("DELETE FROM addedrequests WHERE requestid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
-		sql_query("DELETE FROM reqcomments WHERE request IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
 		sql_query("DELETE FROM notifs WHERE checkid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ") AND type='reqcomments'");
 		$REL_CACHE->clearGroupCache('block-req');
 		stderr($REL_LANG->say_by_key('success'), "Запрос успешно удален.<br /><a href=\"".$REL_SEO->make_link('viewrequests')."\">К списку запросов</a>");
@@ -47,7 +31,7 @@ if ($_GET["delreq"])
 }
 
 if ((!is_valid_id($_GET['category'])) && ($_GET['category']<>0)) stderr ($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
-stdhead($REL_LANG->say_by_key('requests_section'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('requests_section'));
 
 $categ = (int)$_GET["category"];
 $requestorid = (int)$_GET["requestorid"];
@@ -59,7 +43,6 @@ print("<table class=\"embedded\" cellspacing=\"0\" cellpadding=\"5\" width=\"100
 print("<tr><td class=\"colhead\" align=\"center\" colspan=\"15\">Секция запросов</td></tr>");
 print("<tr><td class=\"index\" colspan=\"15\">");
 
-//begin_main_frame();
 
 //print("<h1>".$REL_LANG->say_by_key('requests_section')."</h1>\n");
 print("<p><a href=\"".$REL_SEO->make_link('requests','action','new')."\">".$REL_LANG->say_by_key('make_request')."</a></p>\n");
@@ -184,9 +167,9 @@ if ($requestorid <> NULL) {
 
 	}
 
-	//end_main_frame();
+
 	print("</table>");
-	stdfoot();
+	$REL_TPL->stdfoot();
 	//die;
 
 	?>

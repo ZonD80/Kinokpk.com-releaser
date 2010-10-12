@@ -26,13 +26,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	if ($arr['class']>=UC_MODERATOR) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('cant_del_acc'));
 	$id = $arr['id'];
 	$avatar = $arr['avatar'];
-	delete_ipb_user($arr["username"]);
 	delete_user($id);
 	@unlink(ROOT_PATH.$avatar);
 	// if (mysql_affected_rows() != 1)     stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('cant_del_acc'));
 	stderr($REL_LANG->say_by_key('success'), $REL_LANG->say_by_key('account_deleted'));
 }
-stdhead($REL_LANG->say_by_key('delete_account'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('delete_account'));
 ?>
 <h1></h1>
 <table border="1" cellspacing="0" cellpadding="5">
@@ -57,5 +56,5 @@ stdhead($REL_LANG->say_by_key('delete_account'));
 	</form>
 </table>
 <?
-stdfoot();
+$REL_TPL->stdfoot();
 ?>

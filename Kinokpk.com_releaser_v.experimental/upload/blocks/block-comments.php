@@ -13,7 +13,7 @@ $content .= "<td align=\"center\" class=\"colhead\">Название</td><td align=\"cen
 
 $comarray = $REL_CACHE->get('block-comments','query');
 if ($comarray===false) {
-	$res = sql_query("SELECT comments.id, comments.torrent, torrents.name, comments.user, users.class, users.username FROM comments LEFT JOIN torrents ON comments.torrent = torrents.id LEFT JOIN users ON comments.user = users.id ORDER BY comments.id DESC LIMIT 5");
+	$res = sql_query("SELECT comments.id, comments.toid AS torrent, torrents.name, comments.user, users.class, users.username FROM comments LEFT JOIN torrents ON comments.torrent = torrents.id LEFT JOIN users ON comments.user = users.id WHERE comments.type='' ORDER BY comments.id DESC LIMIT 5");
 	$comarray=array();
 	while( $row = mysql_fetch_assoc($res) ) {
 		$comarray[] = $row;

@@ -1,39 +1,23 @@
-<?
-
-/*
- Project: Kinokpk.com releaser
- This file is part of Kinokpk.com releaser.
- Kinokpk.com releaser is based on TBDev,
- originally by RedBeard of TorrentBits, extensively modified by
- Gartenzwerg and Yuna Scatari.
- Kinokpk.com releaser is free software;
- you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
- Kinokpk.com is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- You should have received a copy of the GNU General Public License
- along with Kinokpk.com releaser; if not, write to the
- Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- MA  02111-1307  USA
- Do not remove above lines!
+<?php
+/**
+ * Logouts user
+ * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
+ * @package Kinokpk.com releaser
+ * @author ZonD80 <admin@kinokpk.com>
+ * @copyright (C) 2008-now, ZonD80, Germany, TorrentsBook.com
+ * @link http://dev.kinokpk.com
  */
 
 require_once("include/bittorrent.php");
 
 dbconn();
 
-$s = ipb_logout($CURUSER['username']);
-
 logoutcookie();
 
 unset($CURUSER);
 
-stdhead($REL_LANG->say_by_key('succ_logout'));
-stdmsg($REL_LANG->say_by_key('you_succ_logout'),"$s<a href=\"".$REL_CONFIG['defaultbaseurl']."\">".$REL_LANG->say_by_key('continue')."</a>");
-stdfoot();
+$REL_TPL->stdhead($REL_LANG->say_by_key('succ_logout'));
+stdmsg($REL_LANG->say_by_key('you_succ_logout'),"<a href=\"".$REL_CONFIG['defaultbaseurl']."\">".$REL_LANG->say_by_key('continue')."</a>");
+$REL_TPL->stdfoot();
 
 ?>

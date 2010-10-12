@@ -43,9 +43,9 @@ if ($id && (!is_valid_id($id) || !@mysql_result(sql_query("SELECT 1 FROM relgrou
 
 if (!$a) {
 
-	stdhead($REL_LANG->say_by_key('rg_title'));
+	$REL_TPL->stdhead($REL_LANG->say_by_key('rg_title'));
 	$res = sql_query("SELECT relgroups.*, COUNT(rg_subscribes.id) AS users FROM relgroups LEFT JOIN rg_subscribes ON relgroups.id=rg_subscribes.rgid GROUP BY relgroups.id ORDER BY relgroups.added DESC");
-	begin_frame($REL_LANG->say_by_key('relgroups').$REL_LANG->say_by_key('relgroupsadd'));
+	$REL_TPL->begin_frame($REL_LANG->say_by_key('relgroups').$REL_LANG->say_by_key('relgroupsadd'));
 
 	print ("<table with=\"100%\"><tr><td class=\"colhead\">ID</td><td class=\"colhead\">{$REL_LANG->say_by_key('name')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('added')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('spec')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('descr')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('image')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('owners')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('members')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('private')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('nonfree')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('page_pay')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('subscribe_length')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('users')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('actions')}</td></tr>");
 	while ($row = mysql_fetch_assoc($res)) {
@@ -55,9 +55,9 @@ if (!$a) {
 		if ($row['members']) $memarray[$row['id']] = $row['members'];
 	}
 
-	if (!$rgarray) { print '<tr><td colspan="14">'.$REL_LANG->say_by_key('no_relgroups').'</td></tr>'; end_frame(); stdfoot(); die(); }
+	if (!$rgarray) { print '<tr><td colspan="14">'.$REL_LANG->say_by_key('no_relgroups').'</td></tr>'; $REL_TPL->end_frame(); $REL_TPL->stdfoot(); die(); }
 
-	
+
 	$ownres = sql_query("SELECT id,username,class FROM users WHERE id IN(".implode(',',($memarray?array_merge($uidsarray,$memarray):$uidsarray)).")") or sqlerr(__FILE__,__LINE__);
 
 	while ($owner = mysql_fetch_array($ownres)) {
@@ -92,18 +92,18 @@ if (!$a) {
 		print ("<tr><td>{$row['id']}</td><td><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'name',translit($row['name']))."\">{$row['name']}</a></td><td>".mkprettytime($row['added'])."</td><td>{$row['spec']}</td><td>".format_comment($row['descr'])."</td><td>".($row['image']?"<img src=\"{$row['image']}\" title=\"{$row['name']}\"/>":$REL_LANG->say_by_key('no'))."</td><td>$rgown</td><td>$rgmemb</td><td>".($row['private']?$REL_LANG->say_by_key('yes'):$REL_LANG->say_by_key('no'))."</td><td>".($row['page_pay']?$REL_LANG->say_by_key('yes'):$REL_LANG->say_by_key('no'))."</td><td>".($row['page_pay']?$row['page_pay']:$REL_LANG->say_by_key('no'))."</td><td>{$row['subscribe_length']}</td><td><a href=\"".$REL_SEO->make_link('rgadmin','id',$row['id'],'a','users')."\">{$row['users']}</a></td><td><a href=\"".$REL_SEO->make_link('rgadmin','id',$row['id'],'a','edit')."\">E</a> / <a href=\"".$REL_SEO->make_link('rgadmin','id',$row['id'],'a','delete')."\" onclick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}');\">D</a> | <a href=\"".$REL_SEO->make_link('rgadmin','id',$row['id'],'a','users')."\">{$REL_LANG->say_by_key('view_users')}</a> / <a href=\"".$REL_SEO->make_link('rgadmin','id',$row['id'],'a','deleteusers')."\" onclick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}');\">{$REL_LANG->say_by_key('delete_all_users')}</a></td></tr>");
 	}
 	print ('</table>');
-	end_frame();
-	stdfoot();
+	$REL_TPL->end_frame();
+	$REL_TPL->stdfoot();
 	die();
 }
 elseif ($a == 'add' || $a == 'edit') {
 
-	stdhead($REL_LANG->say_by_key('rg_title'));
+	$REL_TPL->stdhead($REL_LANG->say_by_key('rg_title'));
 	if ($a == 'edit') {
 		$groupsql = sql_query("SELECT * FROM relgroups WHERE id=$id");
 		$group = mysql_fetch_assoc($groupsql);
 	}
-	begin_frame($REL_LANG->say_by_key($a.'_group').$REL_LANG->say_by_key('to_rgadmin'));
+	$REL_TPL->begin_frame($REL_LANG->say_by_key($a.'_group').$REL_LANG->say_by_key('to_rgadmin'));
 	print ('<form method="post" action="'.$REL_SEO->make_link('rgadmin','a',"save$a").'"><p>'.$REL_LANG->say_by_key('rg_faq').'</p><table width="100%"><input type="hidden" name="id" value="'.$id.'">');
 
 	foreach ($fields as $key) {
@@ -117,8 +117,8 @@ elseif ($a == 'add' || $a == 'edit') {
 
 	}
 	print '<tr><td colspan="2" align="center"><input type="submit" value="'.$REL_LANG->say_by_key('continue').'"></td></tr></table></form>';
-	end_frame();
-	stdfoot();
+	$REL_TPL->end_frame();
+	$REL_TPL->stdfoot();
 	die();
 
 }
@@ -152,16 +152,16 @@ elseif ($a == 'deleteusers') {
 	stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('users_deleted'),'success');
 }
 elseif ($a == 'users') {
-	stdhead($REL_LANG->say_by_key('view_users'));
+	$REL_TPL->stdhead($REL_LANG->say_by_key('view_users'));
 	$count = get_row_count('rg_subscribes',"WHERE rgid=$id");
 	list($pagertop, $pagerbottom, $limit) = pager(30, $count, $REL_SEO->make_link('rgadmin','id',$id,$addparam,''));
-	
+
 	$res = sql_query("SELECT rg_subscribes.*, users.username, users.class FROM rg_subscribes LEFT JOIN users ON rg_subscribes.userid=users.id WHERE rgid = $id ORDER BY valid_until ASC $LIMIT") or sqlerr(__FILE__,__LINE__);
-	begin_frame($REL_LANG->say_by_key('view_users'). ' '.@mysql_result(sql_query("SELECT name FROM relgroups WHERE id = $id"),0).$REL_LANG->say_by_key('to_rgadmin'));
+	$REL_TPL->begin_frame($REL_LANG->say_by_key('view_users'). ' '.@mysql_result(sql_query("SELECT name FROM relgroups WHERE id = $id"),0).$REL_LANG->say_by_key('to_rgadmin'));
 	begin_table();
-	
+
 	print ('<tr><td class="colhead">'.$REL_LANG->say_by_key('signup_username').'</td><td class="colhead">'.$REL_LANG->say_by_key('subscribe_until').'</td><td class="colhead">'.$REL_LANG->say_by_key('actions').'</td></tr>');
-		print("<tr><td class=\"index\" colspan=\"4\">");
+	print("<tr><td class=\"index\" colspan=\"4\">");
 	print($pagertop);
 	print("</td></tr>");
 	while ($row = mysql_fetch_assoc($res)) {
@@ -169,32 +169,32 @@ elseif ($a == 'users') {
 		print ("<tr><td><a href=\"".$REL_SEO->make_link('userdetails','id',$row['userid'],'username',translit($row['username']))."\">".get_user_class_color($row['class'],$row['username'])."</a></td><td>".($row['valid_until']?mkprettytime($row['valid_until'])."{$REL_LANG->say_by_key('in_time')}".get_elapsed_time($row['valid_until']):$REL_LANG->say_by_key('never'))."</td><td><a href=\"".$REL_SEO->make_link('rgadmin','id',$id,'a','deleteuser','userid',$row['userid'])."\" onclick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}');\">D</a> / <a href=\"".$REL_SEO->make_link('rgadmin','id',$id,'a','deleteuser','userid',$row['userid'],'notify','')."\" onclick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}');\">{$REL_LANG->say_by_key('delete_with_notify')}</a></td></tr>");
 	}
 	if (!$has_users) print '<tr><td colspan="4" align="center">'.$REL_LANG->say_by_key('no_users').'</td></tr>';
-		print("<tr><td class=\"index\" colspan=\"4\">");
+	print("<tr><td class=\"index\" colspan=\"4\">");
 	print($pagerbottom);
 	print("</td></tr>");
-	end_table();
-	end_frame();
+	$REL_TPL->end_table();
+	$REL_TPL->end_frame();
 }
 elseif ($a == 'deleteuser') {
 	$userid = (int)$_GET['userid'];
-		$groupsql = sql_query("SELECT name FROM relgroups WHERE id=$id");
-		$group = mysql_fetch_assoc($groupsql);
+	$groupsql = sql_query("SELECT name FROM relgroups WHERE id=$id");
+	$group = mysql_fetch_assoc($groupsql);
 	if (!$userid) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 	$notify=isset($_GET['notify']);
 	sql_query("DELETE FROM rg_subscribes WHERE userid=$userid AND rgid=$id") or sqlerr(__FILE__,__LINE__);
 	if ($notify) write_sys_msg($userid,sprintf($REL_LANG->say_by_key('delete_notify'),"<a href=\"".$REL_SEO->make_link('relgroups','id',$id,'name',translit($group['name']))."\">{$group['name']}</a>"),$REL_LANG->say_by_key('notify_subject'));
 	stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('delete_user_ok').($notify?" {$REL_LANG->say_by_key('notify_send')}":''),'success');
-	
+
 }
 elseif ($a == 'delete') {
 	sql_query("DELETE FROM relgroups WHERE id=$id") or sqlerr(__FILE__,__LINE__);
 	sql_query("UPDATE torrents SET relgroup=0 WHERE relgroup=$id") or sqlerr(__FILE__,__LINE__);
 	sql_query("DELETE FROM rg_subscribes WHERE rgid=$id") or sqlerr(__FILE__,__LINE__);
-	sql_query("DELETE FROM rgcomments WHERE relgroup=$id") or sqlerr(__FILE__,__LINE__);
-	$newstodeletesql = sql_query("SELECT rgnewscomments.id FROM rgnewscomments LEFT JOIN rgnews ON rgnewscomments.rgnews=rgnews.id WHERE rgnews.relgroup=$id") or sqlerr(__FILE__,__LINE__);
+	sql_query("DELETE FROM comments WHERE toid=$id AND type='rg'") or sqlerr(__FILE__,__LINE__);
+	$newstodeletesql = sql_query("SELECT comments.id FROM comments LEFT JOIN rgnews ON comments.toid=rgnews.id WHERE rgnews.relgroup=$id AND comments.type='rgnews'") or sqlerr(__FILE__,__LINE__);
 	while(list($nid) = mysql_fetch_array($newstodeletesql)) $nids[] = $id;
 	sql_query("DELETE FROM rgnews WHERE relgroup=$id") or sqlerr(__FILE__,__LINE__);
-	if ($nids) sql_query("DELETE FROM rgnewscomments WHERE rgnews IN (".implode(',',$nids).")") or sqlerr(__FILE__,__LINE__);
+	if ($nids) sql_query("DELETE FROM comments WHERE toid IN (".implode(',',$nids).") AND type='rgnews'") or sqlerr(__FILE__,__LINE__);
 	safe_redirect($REL_SEO->make_link('rgadmin'),1);
 	stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('relgroup_deleted'),'success');
 }

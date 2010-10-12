@@ -16,12 +16,12 @@ loggedinorreturn();
 if (get_user_class() < UC_MODERATOR)
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
-stdhead("Административный поиск");
+$REL_TPL->stdhead("Административный поиск");
 print "<h1>Административный поиск</h1>\n";
 
 if ($_GET['h'])
 {
-	begin_frame("Инструкция<font color=#009900> - Читать обязательно</font>");
+	$REL_TPL->begin_frame("Инструкция<font color=#009900> - Читать обязательно</font>");
 	?>
 <ul>
 	<li>Пустые поля будут проигнорированы</li>
@@ -47,7 +47,7 @@ if ($_GET['h'])
 	<li>Колонка история отображает количество постов в форуме и
 	комментариев к торрентам, соотвественно, как и ведет на страницу
 	истории. <?
-	end_frame();
+	$REL_TPL->end_frame();
 }
 else
 {
@@ -292,7 +292,7 @@ $highlight = " bgcolor=#BBAF9B";
 	  $q .= ($q ? "&amp;" : "") . "n=".urlencode(trim(htmlspecialchars($_GET['n'])));
 		}
 
-				// ratio
+		// ratio
 
 		$ratio = (int)$_GET['r'];
 
@@ -336,7 +336,7 @@ $highlight = " bgcolor=#BBAF9B";
 
 						stdmsg($REL_LANG->say_by_key('error'), "Второй рейтинг должен быть больше первого.");
 
-						stdfoot();
+						$REL_TPL->stdfoot();
 
 						die();
 
@@ -365,7 +365,7 @@ $highlight = " bgcolor=#BBAF9B";
 			$q .= ($q ? "&amp;" : "") . "r=$ratio";
 
 		}
-		
+
 		// email
 		$emaila = explode(' ', trim(htmlspecialchars($_GET['em'])));
 		if ($emaila[0] !== "")
@@ -379,7 +379,7 @@ $highlight = " bgcolor=#BBAF9B";
 	  		if (!validemail($email))
 	  		{
 	  			stdmsg($REL_LANG->say_by_key('error'), "Неправильный E-mail.");
-	  			stdfoot();
+	  			$REL_TPL->stdfoot();
 	  			die();
 	  		}
 	  		$email_is .= (isset($email_is)?" OR ":"")."u.email =".sqlesc($email);
@@ -411,7 +411,7 @@ $highlight = " bgcolor=#BBAF9B";
 			if (!preg_match($regex, $ip))
 			{
 				stdmsg($REL_LANG->say_by_key('error'), "Неверный IP.");
-				stdfoot();
+				$REL_TPL->stdfoot();
 				die();
 			}
 
@@ -426,7 +426,7 @@ $highlight = " bgcolor=#BBAF9B";
 					if (!is_numeric($n) or $n < 0 or $n > 32)
 					{
 						stdmsg($REL_LANG->say_by_key('error'), "Неверная макса подсети.");
-						stdfoot();
+						$REL_TPL->stdfoot();
 						die();
 					}
 					else
@@ -435,7 +435,7 @@ $highlight = " bgcolor=#BBAF9B";
 				elseif (!preg_match($regex, $mask))
 				{
 					stdmsg($REL_LANG->say_by_key('error'), "Неверная макса подсети.");
-					stdfoot();
+					$REL_TPL->stdfoot();
 					die();
 				}
 				$where_is .= (isset($where_is)?" AND ":"")."INET_ATON(u.ip) & INET_ATON('$mask') = INET_ATON('$ip') & INET_ATON('$mask')";
@@ -504,7 +504,7 @@ $highlight = " bgcolor=#BBAF9B";
 			if (!$date = mkdate($date))
 			{
 				stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
-				stdfoot();
+				$REL_TPL->stdfoot();
 				die();
 			}
 			$q .= ($q ? "&amp;" : "") . "d=$date";
@@ -526,7 +526,7 @@ $highlight = " bgcolor=#BBAF9B";
 						if (!$date = mkdate($date))
 						{
 							stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
-							stdfoot();
+							$REL_TPL->stdfoot();
 							die();
 						}
 						$q .= ($q ? "&amp;" : "") . "d2=$date2";
@@ -535,7 +535,7 @@ $highlight = " bgcolor=#BBAF9B";
 					else
 					{
 						stdmsg($REL_LANG->say_by_key('error'), "Нужны две даты для этого типа поиска.");
-						stdfoot();
+						$REL_TPL->stdfoot();
 						die();
 					}
 				}
@@ -553,7 +553,7 @@ $highlight = " bgcolor=#BBAF9B";
 			if (!$last = mkdate($last))
 			{
 				stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
-				stdfoot();
+				$REL_TPL->stdfoot();
 				die();
 			}
 			$q .= ($q ? "&amp;" : "") . "ls=$last";
@@ -578,7 +578,7 @@ $highlight = " bgcolor=#BBAF9B";
 					else
 					{
 						stdmsg($REL_LANG->say_by_key('error'), "Вторая дата неверна.");
-						stdfoot();
+						$REL_TPL->stdfoot();
 						die();
 					}
 				}
@@ -751,7 +751,7 @@ $highlight = " bgcolor=#BBAF9B";
 	}
 
 	print("<p>$pagemenu<br />$browsemenu</p>");
-	stdfoot();
+	$REL_TPL->stdfoot();
 	die;
 
 	?>

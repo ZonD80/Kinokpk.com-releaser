@@ -34,7 +34,7 @@ $row = @mysql_fetch_array($res);
 
 
 if (!$row) {
-stderr($REL_LANG->_('Error'),$REL_LANG->_('You have not registered on this site yet, or this combination of e-mail and password is invalid. You can <a href="%s">Register now</a> or <a href="javascript:history.go(-1);">Try again</a>.',$REL_SEO->make_link("signup")));
+	stderr($REL_LANG->_('Error'),$REL_LANG->_('You have not registered on this site yet, or this combination of e-mail and password is invalid. You can <a href="%s">Register now</a> or <a href="javascript:history.go(-1);">Try again</a>.',$REL_SEO->make_link("signup")));
 }
 
 
@@ -53,11 +53,11 @@ $CURUSER = $row;
 
 $returnto = strip_tags(trim((string)$_POST['returnto']));
 
-stdhead($REL_LANG->_("Successful login"));
+$REL_TPL->stdhead($REL_LANG->_("Successful login"));
 if ($returnto)
 stdmsg($REL_LANG->_("Successful login"),"<a href=\"".$returnto."\">{$REL_LANG->_("Continue")}</a>");
 else
 stdmsg($REL_LANG->_("Successful login"),"<a href=\"".$REL_CONFIG['defaultbaseurl']."\">{$REL_LANG->_("Continue")}</a>");
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

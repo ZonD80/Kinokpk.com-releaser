@@ -26,9 +26,9 @@ require_once("include/bittorrent.php");
 
 
 function bark($msg) {
-	stdhead($REL_LANG->say_by_key('error'));
+	$REL_TPL->stdhead($REL_LANG->say_by_key('error'));
 	stdmsg($REL_LANG->say_by_key('error'), $msg);
-	stdfoot();
+	$REL_TPL->stdfoot();
 	exit;
 }
 
@@ -76,16 +76,12 @@ else
 
 deletetorrent($id);
 
-$clearcache = array('block-indextorrents','block-comments','browse-normal','browse-cat');
-
-foreach ($clearcache as $cachevalue)
-$REL_CACHE->clearGroupCache($cachevalue);
-$REL_CACHE->clearCache('system','cat_tags');
+$REL_CACHE->clearGroupCache('block-indextorrents');
 
 $reasonstr = htmlspecialchars($reasonstr);
 write_log("Торрент $id ($row[name]) был удален пользователем $CURUSER[username] ($reasonstr)\n","torrent");
 
-stdhead("Торрент удален!");
+$REL_TPL->stdhead("Торрент удален!");
 
 if (isset($_POST["returnto"]))
 $ret = "<a href=\"" . htmlspecialchars($_POST["returnto"]) . "\">Назад</a>";
@@ -97,6 +93,6 @@ $ret = "<a href=\"{$REL_CONFIG['defaultbaseurl']}/\">На главную</a>";
 <p><?= $ret ?></p>
 <?
 
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

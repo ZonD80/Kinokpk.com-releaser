@@ -1,171 +1,126 @@
-var Paginator = function(paginatorHolderId, pagesTotal, pagesSpan, pageCurrent, baseUrl){
-	if(!document.getElementById(paginatorHolderId) || !pagesTotal || !pagesSpan) return false;
+/*
+	Paginator 3000
+	- idea by ecto (ecto.ru)
+	- coded by karaboz (karaboz.ru)
+	- edited by WacesRedky (redk.in)
+*/
+Paginator = function(id, pagesTotal, pagesSpan, currentPage, baseUrl, returnOrder){
+	this.htmlBox = document.getElementById(id);
+	if(!this.htmlBox || !pagesTotal || !pagesSpan) return;
 
-	this.inputData = {
-		paginatorHolderId: paginatorHolderId,
-		pagesTotal: pagesTotal,
-		pagesSpan: pagesSpan < pagesTotal ? pagesSpan : pagesTotal,
-		pageCurrent: pageCurrent,
-		baseUrl: baseUrl ? baseUrl : '/pages/'
-	};
+	if(returnOrder){
+		this.returnOrder = returnOrder;
+	} else {
+		this.returnOrder = false;
+	}
 
-	this.html = {
-		holder: null,
+	this.pagesTable;
+	this.pagesTr;
+	this.sliderTr;
+	this.pagesCells;
+	this.slider;
 
-		table: null,
-		trPages: null, 
-		trScrollBar: null,
-		tdsPages: null,
+	this.pagesTotal = pagesTotal;
+	if(pagesSpan < pagesTotal){
+		this.pagesSpan = pagesSpan;
+	} else {
+		this.tableWidth = Math.floor(100*pagesTotal/pagesSpan) + '%';
+		this.htmlBox.className += ' fullsize';
+		this.pagesSpan = pagesTotal;
+	}
 
-		scrollBar: null,
-		scrollThumb: null,
-			
-		pageCurrentMark: null
-	};
+	this.currentPage = currentPage;
+	this.currentPage = currentPage;
+	this.firstCellValue;
+
+	if(baseUrl){
+		this.baseUrl = baseUrl;
+	} else {
+		this.baseUrl = "/pages/";
+	}
+	if (!this.baseUrl.match(/%page%/i))
+	  this.baseUrl += '%page%';
 
 
-	this.prepareHtml();
-
-	this.initScrollThumb();
-	this.initPageCurrentMark();
+	this.initPages();
+	this.initSlider();
+	this.drawPages();
 	this.initEvents();
 
-	this.scrollToPageCurrent();
-} 
+	this.scrollToCurrentPage();
+	this.setCurrentPagePoint();
+}
 
-/*
-	Set all .html properties (links to dom objects)
-*/
-Paginator.prototype.prepareHtml = function(){
-
-	this.html.holder = document.getElementById(this.inputData.paginatorHolderId);
-	this.html.holder.innerHTML = this.makePagesTableHtml();
-
-	this.html.table = this.html.holder.getElementsByTagName('table')[0];
-
-	var trPages = this.html.table.getElementsByTagName('tr')[0]; 
-	this.html.tdsPages = trPages.getElementsByTagName('td');
-
-	this.html.scrollBar = getElementsByClassName(this.html.table, 'div', 'scroll_bar')[0];
-	this.html.scrollThumb = getElementsByClassName(this.html.table, 'div', 'scroll_thumb')[0];
-	this.html.pageCurrentMark = getElementsByClassName(this.html.table, 'div', 'current_page_mark')[0];
-	if(this.inputData.pagesSpan == this.inputData.pagesTotal){
-		addClass(this.html.holder, 'fullsize');
+Paginator.prototype.initPages = function(){
+	var html = "<table><tr>"
+	for (var i= 1; i<=this.pagesSpan; i++){
+		html += "<td></td>"
 	}
+	html += "</tr>" +
+	"<tr><td colspan='" + this.pagesSpan + "'>" +
+	"<div class='scrollbar'>" +
+		"<div class='line'></div>" +
+		"<div class='current_page_point'></div>" +
+		"<div class='slider'>" +
+			"<div class='slider_point'></div>" +
+		"</div>" +
+	"</div>" +
+	"</td></tr></table>"
+	this.htmlBox.innerHTML = html;
+
+	this.pagesTable = this.htmlBox.getElementsByTagName('table')[0];
+	this.pagesTr = this.pagesTable.getElementsByTagName('tr')[0];
+	this.sliderTr = this.pagesTable.getElementsByTagName('tr')[1];
+	this.pagesCells = this.pagesTr.getElementsByTagName('td');
+	this.scrollbar = getElementsByClassName(this.pagesTable,'div','scrollbar')[0];
+	this.slider = getElementsByClassName(this.pagesTable,'div','slider')[0];
+	this.currentPagePoint = getElementsByClassName(this.pagesTable,'div','current_page_point')[0];
+
+	this.pagesTable.style.width = this.tableWidth;
+//	this.pagesTable.style.width = '100%';
 }
 
-Paginator.prototype.makePagesTableHtml = function(){
-	var tdWidth = (100 / this.inputData.pagesSpan) + '%';
-
-	var html = '' +
-	'<table width="100%">' +
-		'<tr>' 
-			for (var i=1; i<=this.inputData.pagesSpan; i++){
-				html += '<td width="' + tdWidth + '"></td>';
-			}
-			html += '' + 
-		'</tr>' +
-		'<tr>' +
-			'<td colspan="' + this.inputData.pagesSpan + '">' +
-				'<div class="scroll_bar">' + 
-					'<div class="scroll_trough"></div>' + 
-					'<div class="scroll_thumb">' + 
-						'<div class="scroll_knob"></div>' + 
-					'</div>' + 
-					'<div class="current_page_mark"></div>' + 
-				'</div>' +
-			'</td>' +
-		'</tr>' +
-	'</table>';
-
-	return html;
+Paginator.prototype.initSlider = function(){
+	this.slider.xPos = 0;
+	this.slider.style.width = this.pagesSpan/this.pagesTotal * 100 + "%";
 }
 
-Paginator.prototype.initScrollThumb = function(){
-	this.html.scrollThumb.widthMin = '8'; 
-	this.html.scrollThumb.widthPercent = this.inputData.pagesSpan/this.inputData.pagesTotal * 100;
-
-	this.html.scrollThumb.xPosPageCurrent = (this.inputData.pageCurrent - Math.round(this.inputData.pagesSpan/2))/this.inputData.pagesTotal * this.html.table.offsetWidth;
-	this.html.scrollThumb.xPos = this.html.scrollThumb.xPosPageCurrent;
-
-	this.html.scrollThumb.xPosMin = 0;
-	this.html.scrollThumb.xPosMax;
-
-	this.html.scrollThumb.widthActual;
-
-	this.setScrollThumbWidth();
-	
-}
-
-Paginator.prototype.setScrollThumbWidth = function(){
-
-	this.html.scrollThumb.style.width = this.html.scrollThumb.widthPercent + "%";
-
-	this.html.scrollThumb.widthActual = this.html.scrollThumb.offsetWidth;
-
-	if(this.html.scrollThumb.widthActual < this.html.scrollThumb.widthMin){
-		this.html.scrollThumb.style.width = this.html.scrollThumb.widthMin + 'px';
-	}
-
-	this.html.scrollThumb.xPosMax = this.html.table.offsetWidth - this.html.scrollThumb.widthActual;
-}
-
-Paginator.prototype.moveScrollThumb = function(){
-	this.html.scrollThumb.style.left = this.html.scrollThumb.xPos + "px";
-}
-
-Paginator.prototype.initPageCurrentMark = function(){
-	this.html.pageCurrentMark.widthMin = '3';
-	this.html.pageCurrentMark.widthPercent = 100 / this.inputData.pagesTotal;
-	this.html.pageCurrentMark.widthActual;
-
-	this.setPageCurrentPointWidth();
-	this.movePageCurrentPoint();
-}
-
-Paginator.prototype.setPageCurrentPointWidth = function(){
-	// Try to set width in percents
-	this.html.pageCurrentMark.style.width = this.html.pageCurrentMark.widthPercent + '%';
-
-	// Fix the actual width in px
-	this.html.pageCurrentMark.widthActual = this.html.pageCurrentMark.offsetWidth;
-
-	// If actual width less then minimum which we set
-	if(this.html.pageCurrentMark.widthActual < this.html.pageCurrentMark.widthMin){
-		this.html.pageCurrentMark.style.width = this.html.pageCurrentMark.widthMin + 'px';
-	}
-}
-
-Paginator.prototype.movePageCurrentPoint = function(){
-	if(this.html.pageCurrentMark.widthActual < this.html.pageCurrentMark.offsetWidth){
-		this.html.pageCurrentMark.style.left = (this.inputData.pageCurrent - 1)/this.inputData.pagesTotal * this.html.table.offsetWidth - this.html.pageCurrentMark.offsetWidth/2 + "px";
-	} else {
-		this.html.pageCurrentMark.style.left = (this.inputData.pageCurrent - 1)/this.inputData.pagesTotal * this.html.table.offsetWidth + "px";
-	}
-}
-
-
-
-/*
-	Drag, click and resize events
-*/
 Paginator.prototype.initEvents = function(){
 	var _this = this;
 
-	this.html.scrollThumb.onmousedown = function(e){
+	this.htmlBox.onmouseover = function(e){
+	  if (!e) var e = window.event;
+	  var flag = true;
+	  handle = function(delta){
+		if(_this.paginatorBox && _this.paginatorBox.hasClass('fullsize')) return;
+		if (flag) {
+		  flag = false;
+		  if (!_this.returnOrder)
+			_this.slider.xPos -= _this.pagesSpan/_this.pagesTotal*_this.pagesTable.offsetWidth * delta;
+		  else _this.slider.xPos += _this.pagesSpan/_this.pagesTotal*_this.pagesTable.offsetWidth * delta;
+		  _this.setSlider();
+		  _this.drawPages();
+		}
+	  };
+	}
+	this.htmlBox.onmouseout = function(e){
+	  handle = null;
+	}
+
+	this.slider.onmousedown = function(e){ /* drag */
 		if (!e) var e = window.event;
 		e.cancelBubble = true;
-		if (e.stopPropagation) e.stopPropagation();
-
-		var dx = getMousePosition(e).x - this.xPos;
+//		this.dx = getMousePosition(e).x - this.xPos;
+		this.dx = !_this.returnOrder ?
+		  getMousePosition(e).x - this.xPos :
+		  getMousePosition(e).x - (_this.scrollbar.offsetWidth - this.xPos);
 		document.onmousemove = function(e){
 			if (!e) var e = window.event;
-			_this.html.scrollThumb.xPos = getMousePosition(e).x - dx;
-
-			_this.moveScrollThumb();
+			_this.slider.xPos = !_this.returnOrder ?
+			  getMousePosition(e).x - _this.slider.dx:
+			  _this.scrollbar.offsetWidth - getMousePosition(e).x + _this.slider.dx;
+			_this.setSlider();
 			_this.drawPages();
-			
-			
 		}
 		document.onmouseup = function(){
 			document.onmousemove = null;
@@ -174,142 +129,98 @@ Paginator.prototype.initEvents = function(){
 		_this.disableSelection();
 	}
 
-	this.html.scrollBar.onmousedown = function(e){
+	this.scrollbar.onmousedown = function(e){ /* click */
+		if(_this.paginatorBox && _this.paginatorBox.hasClass('fullsize')) return;
 		if (!e) var e = window.event;
-		if(matchClass(_this.paginatorBox, 'fullsize')) return;
-		
-		_this.html.scrollThumb.xPos = getMousePosition(e).x - getPageX(_this.html.scrollBar) - _this.html.scrollThumb.offsetWidth/2;
-		
-		_this.moveScrollThumb();
+		_this.slider.xPos = !_this.returnOrder ? (getMousePosition(e).x - getPageX(_this.scrollbar) - _this.slider.offsetWidth/2) : (_this.scrollbar.offsetWidth - getMousePosition(e).x + getPageX(_this.scrollbar) - _this.slider.offsetWidth/2);
+		_this.setSlider();
 		_this.drawPages();
-		
-		
 	}
 
-	addEvent(window, 'resize', function(){Paginator.resizePaginator(_this)});
+	addEvent(window, 'resize', resizePaginator);
+
+	document.onkeydown = function(event) {
+		var tagName = event.target.tagName;
+//		if (tagName != 'INPUT' && tagName != 'TEXTAREA' && !event.alt && event.control) {
+
+			if (event.ctrlKey && event.keyCode == 37) {
+				if (_this.currentPage > 1) {
+					window.location.href = _this.baseUrl.replace(/%page%/i, _this.currentPage - 1);
+				}
+			} else if (event.ctrlKey && event.keyCode == 39) {
+				if (_this.currentPage < _this.pagesTotal) {
+					window.location.href = _this.baseUrl.replace(/%page%/i, _this.currentPage + 1);
+				}
+			}
+//		}
+	}
+
+
+}
+
+Paginator.prototype.setSlider = function(){
+	this.slider.style.left = (!this.returnOrder ? this.slider.xPos : this.scrollbar.offsetWidth-this.slider.xPos-this.slider.offsetWidth) + "px";
 }
 
 Paginator.prototype.drawPages = function(){
-	var percentFromLeft = this.html.scrollThumb.xPos/(this.html.table.offsetWidth);
-	var cellFirstValue = Math.round(percentFromLeft * this.inputData.pagesTotal);
-	
+
+	var percentFromLeft = this.slider.xPos/(this.pagesTable.offsetWidth);
+
+	this.firstCellValue = Math.round(percentFromLeft * this.pagesTotal);
 	var html = "";
-
-	if(cellFirstValue < 1){
-		cellFirstValue = 1;
-		this.html.scrollThumb.xPos = 0;
-		this.moveScrollThumb();
-	} else if(cellFirstValue >= this.inputData.pagesTotal - this.inputData.pagesSpan) {
-		cellFirstValue = this.inputData.pagesTotal - this.inputData.pagesSpan + 1;
-		this.html.scrollThumb.xPos = this.html.table.offsetWidth - this.html.scrollThumb.offsetWidth;
-		this.moveScrollThumb();
+	if(this.firstCellValue < 1){
+		this.firstCellValue = 1;
+		this.slider.xPos = 0;
+		this.setSlider();
+	} else if(this.firstCellValue >= this.pagesTotal - this.pagesSpan) {
+		this.firstCellValue = this.pagesTotal - this.pagesSpan + 1;
+		this.slider.xPos = this.pagesTable.offsetWidth - this.slider.offsetWidth;
+		this.setSlider();
 	}
-
-	
-
-	for(var i=0; i<this.html.tdsPages.length; i++){
-		var cellCurrentValue = cellFirstValue + i;
-		if(cellCurrentValue == this.inputData.pageCurrent){
-			html = "<span class='pagstrong'>" + cellCurrentValue + "</span>";
+	for(var i= 0; i < this.pagesCells.length; i++){
+		var currentCellValue = this.firstCellValue + i;
+		if(currentCellValue == this.currentPage){
+			html = "<span class='pagstrong'>" + String(currentCellValue) + "</span>";
 		} else {
-			html = "<a href='" + this.inputData.baseUrl + cellCurrentValue + "'><span>" + cellCurrentValue + "</span></a>";
+			html = "<a href='" + this.baseUrl.replace(/%page%/i,  currentCellValue) + "'><span>" + String(currentCellValue) + "</span></a>";
 		}
-		this.html.tdsPages[i].innerHTML = html;
+		this.pagesCells[!this.returnOrder ? i : this.pagesCells.length - i - 1].innerHTML = html;
 	}
 }
 
-Paginator.prototype.scrollToPageCurrent = function(){
-	this.html.scrollThumb.xPosPageCurrent = (this.inputData.pageCurrent - Math.round(this.inputData.pagesSpan/2))/this.inputData.pagesTotal * this.html.table.offsetWidth;
-	this.html.scrollThumb.xPos = this.html.scrollThumb.xPosPageCurrent;
-	
-	this.moveScrollThumb();
+Paginator.prototype.scrollToCurrentPage = function(){
+	this.slider.xPos = (this.currentPage - Math.round(this.pagesSpan/2))/this.pagesTotal * this.pagesTable.offsetWidth;
+	this.setSlider();
 	this.drawPages();
-	
 }
 
-
+Paginator.prototype.setCurrentPagePoint = function(){
+	if(this.currentPage == 1){
+		this.currentPagePoint.style.left = !this.returnOrder ? 0 : (this.scrollbar.offsetWidth - this.currentPagePoint.offsetWidth) + 'px';
+	} else {
+		this.currentPagePoint.style.left = !this.returnOrder ? this.currentPage/this.pagesTotal * this.pagesTable.offsetWidth : this.scrollbar.offsetWidth - this.currentPage/this.pagesTotal * this.pagesTable.offsetWidth + "px";
+	}
+}
 
 Paginator.prototype.disableSelection = function(){
 	document.onselectstart = function(){
 		return false;
 	}
-	this.html.scrollThumb.focus();	
+	this.slider.focus();
 }
 
 Paginator.prototype.enableSelection = function(){
 	document.onselectstart = function(){
 		return true;
 	}
+	this.slider.blur();
 }
 
-Paginator.resizePaginator = function (paginatorObj){
+resizePaginator = function (){
+	if(typeof pag == 'undefined') return;
 
-	paginatorObj.setPageCurrentPointWidth();
-	paginatorObj.movePageCurrentPoint();
-
-	paginatorObj.setScrollThumbWidth();
-	paginatorObj.scrollToPageCurrent();
-}
-
-function getElementsByClassName(objParentNode, strNodeName, strClassName){
-	var nodes = objParentNode.getElementsByTagName(strNodeName);
-	if(!strClassName){
-		return nodes;	
-	}
-	var nodesWithClassName = [];
-	for(var i=0; i<nodes.length; i++){
-		if(matchClass( nodes[i], strClassName )){
-			nodesWithClassName[nodesWithClassName.length] = nodes[i];
-		}	
-	}
-	return nodesWithClassName;
-}
-
-
-function addClass( objNode, strNewClass ) {
-	replaceClass( objNode, strNewClass, '' );
-}
-
-function removeClass( objNode, strCurrClass ) {
-	replaceClass( objNode, '', strCurrClass );
-}
-
-function replaceClass( objNode, strNewClass, strCurrClass ) {
-	var strOldClass = strNewClass;
-	if ( strCurrClass && strCurrClass.length ){
-		strCurrClass = strCurrClass.replace( /\s+(\S)/g, '|$1' );
-		if ( strOldClass.length ) strOldClass += '|';
-		strOldClass += strCurrClass;
-	}
-	objNode.className = objNode.className.replace( new RegExp('(^|\\s+)(' + strOldClass + ')($|\\s+)', 'g'), '$1' );
-	objNode.className += ( (objNode.className.length)? ' ' : '' ) + strNewClass;
-}
-
-function matchClass( objNode, strCurrClass ) {
-	return ( objNode && objNode.className.length && objNode.className.match( new RegExp('(^|\\s+)(' + strCurrClass + ')($|\\s+)') ) );
-}
-
-
-function addEvent(objElement, strEventType, ptrEventFunc) {
-	if (objElement.addEventListener)
-		objElement.addEventListener(strEventType, ptrEventFunc, false);
-	else if (objElement.attachEvent)
-		objElement.attachEvent('on' + strEventType, ptrEventFunc);
-}
-function removeEvent(objElement, strEventType, ptrEventFunc) {
-	if (objElement.removeEventListener) objElement.removeEventListener(strEventType, ptrEventFunc, false);
-		else if (objElement.detachEvent) objElement.detachEvent('on' + strEventType, ptrEventFunc);
-}
-
-
-function getPageY( oElement ) {
-	var iPosY = oElement.offsetTop;
-	while ( oElement.offsetParent != null ) {
-		oElement = oElement.offsetParent;
-		iPosY += oElement.offsetTop;
-		if (oElement.tagName == 'BODY') break;
-	}
-	return iPosY;
+	pag.setCurrentPagePoint();
+	pag.scrollToCurrentPage();
 }
 
 function getPageX( oElement ) {
@@ -321,7 +232,29 @@ function getPageX( oElement ) {
 	}
 	return iPosX;
 }
+function addEvent(objElement, strEventType, ptrEventFunc) {
+	if (objElement.addEventListener)
+		objElement.addEventListener(strEventType, ptrEventFunc, false);
+	else if (objElement.attachEvent)
+		objElement.attachEvent('on' + strEventType, ptrEventFunc);
+}
+function matchClass( objNode, strCurrClass ) {
+	return ( objNode && objNode.className.length && objNode.className.match( new RegExp('(^|\\s+)(' + strCurrClass + ')($|\\s+)') ) );
+}
 
+function getElementsByClassName(objParentNode, strNodeName, strClassName){
+	var nodes = objParentNode.getElementsByTagName(strNodeName);
+	if(!strClassName){
+		return nodes;
+	}
+	var nodesWithClassName = [];
+	for(var i=0; i<nodes.length; i++){
+		if(matchClass( nodes[i], strClassName )){
+			nodesWithClassName[nodesWithClassName.length] = nodes[i];
+		}
+	}
+	return nodesWithClassName;
+}
 function getMousePosition(e) {
 	if (e.pageX || e.pageY){
 		var posX = e.pageX;
@@ -330,5 +263,32 @@ function getMousePosition(e) {
 		var posX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
 		var posY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
 	}
-	return {x:posX, y:posY}	
+	return {x:posX, y:posY}
 }
+// Основная Функция mousewheel
+function mousewheel(event){
+        var delta = 0;
+        if (!event) event = window.event; // Событие IE.
+        // Установим кроссбраузерную delta
+        if (event.wheelDelta) {
+                // IE, Opera, safari, chrome - кратность дельта равна 120
+                delta = event.wheelDelta/120;
+        } else if (event.detail) {
+                // Mozilla, кратность дельта равна 3
+                delta = -event.detail/3;
+        }
+        // Вспомогательня функция обработки mousewheel
+        if (delta && typeof handle == 'function') {
+                handle(delta);
+                // Отменим текущее событие - событие поумолчанию (скролинг окна).
+                if (event.preventDefault)
+                        event.preventDefault();
+                event.returnValue = false; // для IE
+        }
+}
+
+// Инициализация события mousewheel
+if (window.addEventListener) // mozilla, safari, chrome
+    window.addEventListener('DOMMouseScroll', mousewheel, false);
+// IE, Opera.
+window.onmousewheel = document.onmousewheel = mousewheel;

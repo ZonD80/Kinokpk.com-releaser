@@ -32,7 +32,7 @@ if ($ip)
 		stderr($REL_LANG->say_by_key('result'), "".$REL_LANG->say_by_key('ip_address')." <b>$ip ".$REL_LANG->say_by_key('banned')."</b>");
 	}
 }
-stdhead($REL_LANG->say_by_key('check_ip'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('check_ip'));
 
 ?>
 <h1><?=$REL_LANG->say_by_key('check_ip')?></h1>
@@ -49,5 +49,5 @@ stdhead($REL_LANG->say_by_key('check_ip'));
 </table>
 
 <?
-stdfoot();
+$REL_TPL->stdfoot();
 ?>

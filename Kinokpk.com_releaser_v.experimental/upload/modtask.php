@@ -31,17 +31,17 @@ $action = (string)$_POST["action"];
 
 if (($action == 'ownsupport') && (get_user_class()>=UC_ADMINISTRATOR)) {
 	$supportfor = ($_POST["support"]?htmlspecialchars($_POST["supportfor"]):'');
-				$updateset[] = "supportfor = " . sqlesc($supportfor);
-		sql_query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__, __LINE__);
+	$updateset[] = "supportfor = " . sqlesc($supportfor);
+	sql_query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__, __LINE__);
 	safe_redirect($REL_SEO->make_link('my'),0);
 	stderr($REL_LANG->say_by_key('success'),'Вы успешно сменили себе статус поддержки','success');
-	
+
 }
 elseif ($action == "edituser") {
 	$userid = (int) $_POST["userid"];
 	$CLASS = @mysql_result(sql_query("SELECT class FROM users WHERE id = $userid"),0);
 	if ($CLASS >= get_user_class()) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
-	
+
 	$title = $_POST["title"];
 	$avatar = (int)$_POST["avatar"];
 	$resetb = $_POST["resetb"];
@@ -62,8 +62,7 @@ elseif ($action == "edituser") {
 	$rch = $_POST["ratingchange"];
 	$dch = $_POST['discountchange'];
 	$mpdown = $_POST["downchange"];
-	$support = $_POST["support"]?1:0;
-	$supportfor = htmlspecialchars($_POST["supportfor"]);
+	$supportfor = ($_POST["support"]?htmlspecialchars($_POST["supportfor"]):'');
 	$deluser = $_POST["deluser"];
 
 	if ($ratingtoadd > 0) $updateset[] = 'ratingsum = ratingsum'.($rch=='plus'?'+':'-').$ratingtoadd;
@@ -159,7 +158,7 @@ elseif ($action == "edituser") {
 	$updateset[] = "enabled = " . $enabled;
 	if ($dis_reason) $updateset[] = "dis_reason = ".sqlesc($dis_reason);
 	$updateset[] = "donor = " . sqlesc($donor);
-	if ($support) $updateset[] = "supportfor = " . sqlesc($supportfor);
+	$updateset[] = "supportfor = " . sqlesc($supportfor);
 	//$updateset[] = "support = " . sqlesc($support);
 	$updateset[] = "title = " . sqlesc($title);
 	$updateset[] = "modcomment = " . sqlesc($modcomment);
@@ -176,7 +175,6 @@ elseif ($action == "edituser") {
 		$username = $user["username"];
 		$avatar = $user['avatar'];
 		$email=$user["email"];
-		delete_ipb_user($username);
 		delete_user($userid);
 		@unlink(ROOT_PATH.$avatar);
 		$deluserid=$CURUSER["username"];

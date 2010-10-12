@@ -1,7 +1,0 @@
-missing_form_data=Заполните все поля формы.
-password_mismatch=Пароли не совпадают.
-unable_to_create_account=Невозможно создать аккаунт. Возможно имя пользователя уже занято.
-add_user=Добавить пользователя
-username=Пользователь
-password=Пароль
-repeat_password=Повтор пароля

@@ -18,7 +18,7 @@ if (isset($_GET['deletevote']) && is_valid_id($_GET['vid']) && (get_user_class()
 	$vid = (int)$_GET['vid'];
 
 	sql_query("DELETE FROM polls_votes WHERE vid=$vid");
-	
+
 	$REL_CACHE->clearGroupCache("block-polls");
 	stderr($REL_LANG->say_by_key('success'),"Голос удален");
 }
@@ -53,7 +53,7 @@ if (!is_valid_id($pid)) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->say
 
 
 $id = $pid;
-$poll = sql_query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class,(SELECT SUM(1) FROM pollcomments WHERE poll = $id) AS numcomm FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
+$poll = sql_query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
 $pquestion = array();
 $pstart = array();
 $pexp = array();
@@ -73,7 +73,7 @@ while ($pollarray = mysql_fetch_array($poll)) {
 	$pstart[] = $pollarray['start'];
 	$pexp[] = $pollarray['exp'];
 	$public[] = $pollarray['public'];
-	$comments[] = $pollarray['numcomm'];
+	$comments[] = $pollarray['comments'];
 	$sidvalues[$pollarray['sid']] = $pollarray['value'];
 	$votes[] = array($pollarray['sid'] => array('vid'=>$pollarray['vid'],'userid'=>$pollarray['user'],'username'=>$pollarray['username'],'userclass'=>$pollarray['class']));
 	$sids[] = $pollarray['sid'];
@@ -96,7 +96,7 @@ reset($sids);
 
 
 
-stdhead("Обзор опроса");
+$REL_TPL->stdhead("Обзор опроса");
 print '<div border="1" id="polls" style="width: 937px;">
 		<ul class="polls_title">
 			<li style="margin:0px;"><h1 style="margin:0px; text-align: center;">Опрос № '.$id.'	</h1><h4 style="margin-bottom: 10px;text-align:center;">Открыт: '.mkprettytime($pstart).(!is_null($pexp)?(($pexp > time())?", заканчивается: ".mkprettytime($pexp):", <font color=\"red\">закончен</font>: ".mkprettytime($pexp)):'').'</h4></li>
@@ -159,7 +159,7 @@ foreach ($sidcount as $sidkey => $vsid){
   <input type=\"hidden\" name=\"type\" value=\"$ptype\">".$sidvals[$sidkey];
 
 	else print"<ul><dt class=\"polls_right\">".$sidvals[$sidkey];
-	print"</dt><dt class=\"polls_left\"><img src=\"./themes/$ss_uri/images/bar_left.gif\"><img src=\"./themes/$ss_uri/images/bar.gif\" height=\"12\" width=\"".round($percentpervote*$votecount[$vsid])."%\"><img src=\"./themes/$ss_uri/images/bar_right.gif\">&nbsp;&nbsp;$percent%, голосов:  ".$votecount[$vsid]."<br />".((!$usercode[$vsid])?"Опрос приватный или никто не голосовал":$spbegin.$usercode[$vsid].$spend)."</dt></ul>";
+	print"</dt><dt class=\"polls_left\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_left.gif\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar.gif\" height=\"12\" width=\"".round($percentpervote*$votecount[$vsid])."%\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_right.gif\">&nbsp;&nbsp;$percent%, голосов:  ".$votecount[$vsid]."<br />".((!$usercode[$vsid])?"Опрос приватный или никто не голосовал":$spbegin.$usercode[$vsid].$spend)."</dt></ul>";
 }
 if (((!is_null($pexp) && ($pexp > time())) || is_null($pexp)) && !$voted) $novote=true;
 if ($novote) print"<ul><li><input type=\"submit\" class=\"button\" value=\"Голосовать за этот вариант!\" style=\"margin-top: 2px;\"/></li>";
@@ -177,7 +177,7 @@ print ('</div>');
 
 // POLLCOMMENTS START
 
-$subres = sql_query("SELECT SUM(1) FROM pollcomments WHERE poll = ".$pid);
+$subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = ".$pid." AND type='poll'");
 $subrow = mysql_fetch_array($subres);
 $count = $subrow[0];
 
@@ -185,28 +185,22 @@ $limited = 10;
 
 if (!$count) {
 
-	print("<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">");
+	print ('<div id="newcomment_placeholder">'. "<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">");
 	print("<tr><td class=colhead align=\"left\" colspan=\"2\">");
 	print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев к опросу</div>");
 	print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('polloverview','id',$pid)."#comments\" class=altlink_white>{$REL_LANG->say_by_key('add_comment')}</a></div>");
 	print("</td></tr><tr><td align=\"center\">");
 	print("Комментариев нет. <a href=\"".$REL_SEO->make_link('polloverview','id',$pid)."#comments\">Желаете добавить?</a>");
-	print("</td></tr></table><br />");
+	print("</td></tr></table><br /></div>");
 
 }
 else {
 	list($pagertop, $pagerbottom, $limit) = pager($limited, $count, $REL_SEO->make_link('polloverview','id',$pid)."&", array(lastpagedefault => 1));
 
-	$subres = sql_query("SELECT pc.id, pc.ip, pc.ratingsum, pc.text, pc.user, pc.added, pc.editedby, pc.editedat, u.avatar, u.warned, ".
-                  "u.username, u.title, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM pollcomments AS pc LEFT JOIN users AS u ON pc.user = u.id LEFT JOIN sessions ON pc.user=sessions.uid LEFT JOIN users AS e ON pc.editedby = e.id WHERE poll = " .
-                  "".$id." GROUP BY pc.id ORDER BY pc.id $limit") or sqlerr(__FILE__, __LINE__);
-	$allrows = array();
-
-	while ($subrow = mysql_fetch_array($subres)) {
-		$subrow['subject'] = $pquestion;
-		$subrow['link'] = $REL_SEO->make_link('polloverview','id',$id)."#comm{$subrow['id']}";
-		$allrows[] = $subrow;
-	}
+	$subres = sql_query("SELECT pc.type, pc.id, pc.ip, pc.ratingsum, pc.text, pc.user, pc.added, pc.editedby, pc.editedat, u.avatar, u.warned, ".
+                  "u.username, u.title, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS pc LEFT JOIN users AS u ON pc.user = u.id LEFT JOIN sessions ON pc.user=sessions.uid LEFT JOIN users AS e ON pc.editedby = e.id WHERE pc.toid = " .
+                  "".$id." AND pc.type='poll' GROUP BY pc.id ORDER BY pc.id $limit") or sqlerr(__FILE__, __LINE__);
+		$allrows = prepare_for_commenttable($subres,$pquestion,$REL_SEO->make_link('polloverview','id',$pid));
 
 
 
@@ -221,7 +215,7 @@ else {
 	print($pagertop);
 	print("</td></tr>");
 	print("<tr><td>");
-	commenttable($allrows,"pollcomment");
+	commenttable($allrows);
 	print("</td></tr>");
 	print("<tr><td>");
 	print($pagerbottom);
@@ -229,21 +223,14 @@ else {
 	print("</table>");
 }
 
-
-
-print("<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">");
-print("<tr><td class=colhead align=\"left\" colspan=\"2\">  <a name=comments>&nbsp;</a><b>:: Добавить комментарий к опросу | ".is_i_notified($id,'pollcomments')."</b></td></tr>");
-print("<tr><td width=\"100%\" align=\"center\" >");
-//print("Ваше имя: ");
-//print("".$CURUSER['username']."<p>");
-print ( "<form name=comment method=\"post\" action=\"".$REL_SEO->make_link('pollcomment','action','add')."\">" );
-print ( "<table width=\"100%\"><tr><td align=\"center\">" . textbbcode ( "text") . "</td></tr>" );
-
-print ( "<tr><td  align=\"center\">" );
-print ( "<input type=\"hidden\" name=\"pid\" value=\"$id\"/>" );
-print ( "<input type=\"submit\" value=\"Разместить комментарий\" />" );
-print ( "</td></tr></table></form>" );
-print('</table>');
-stdfoot();
+$REL_TPL->assignByRef('to_id',$pid);
+$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $pid, 'pollcomments' ));
+$REL_TPL->assign('textbbcode',textbbcode('text'));
+$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Poll'));
+$FORM_TYPE = 'pollcomments';
+$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+$REL_TPL->display('commenttable_form.tpl');
+print '</table>';
+$REL_TPL->stdfoot();
 
 ?>

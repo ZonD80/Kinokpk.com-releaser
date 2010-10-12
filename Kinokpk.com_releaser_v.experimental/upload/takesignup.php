@@ -123,7 +123,6 @@ $ret = sql_query("INSERT INTO users (username, passhash, secret, editsecret, not
 implode(",", array_map("sqlesc", array($wantusername, $wantpasshash, $secret, $editsecret, $REL_CONFIG['default_notifs'], $REL_CONFIG['default_emailnotifs'], strtolower($email), $status))).
 		", ". (!$users?UC_SYSOP.", ":"").time().", '{$REL_CONFIG['default_language']}', {$REL_CONFIG['register_timezone']} , ".(int)$inviter.", ".(int)$invitedroot.")");// or sqlerr(__FILE__, __LINE__);
 
-$NEWid = mysql_insert_id();
 if (!$ret) {
 	if (mysql_errno() == 1062)
 	bark($REL_LANG->_('Sorry, but looks like you already registered long time ago. Please <a href="javascript:history.go(-1);">try again</a>.'));
@@ -132,15 +131,19 @@ if (!$ret) {
 
 $id = mysql_insert_id();
 
+if ($REL_CRON['rating_enabled'])
+$msg = $REL_LANG->_('Hello dear new user. You have just registered on our site. Please check <a href="%s">Your rating stats</a> to be happy on our site.<br/><i>Best regards, site team.</i>',$REL_SEO->make_link('myrating'));
+else
+$msg = $REL_LANG->_('Hello dear new user. You have just registered on our site. Feel free to be happy on our site.<br/><i>Best regards, site team.</i>');
 sql_query("INSERT INTO notifs (checkid, type, userid) VALUES ($id,'usercomments',$id)");
+
+write_sys_msg($id,$msg,$REL_LANG->_("Welcome"));
 
 if ($inviter) {
 	sql_query("UPDATE invites SET inviteid=$id WHERE inviter=$inviter AND id=$invid") or sqlerr(__FILE__,__LINE__);
 	write_sys_msg($id,sprintf($REL_LANG->say_by_key('invite_notice'),"<a href=\"".$REL_SEO->make_link('userdetails','id',$inviter,'username',translit($invname))."\">".get_user_class_color($invclass,$invname)."</a>"),$REL_LANG->say_by_key('welcome_back').strip_tags($wantusername));
 	write_sys_msg($inviter,sprintf($REL_LANG->say_by_key('invite_notice_reg'),"<a href=\"".$REL_SEO->make_link('userdetails','id',$id,'username',translit(strip_tags($wantusername)))."\">".get_user_class_color(UC_USER,strip_tags($wantusername))."</a>"),$REL_LANG->say_by_key('invite_system'));
 }
-
-register_ipb_user($wantusername,$_POST['wantpassword'], $email, $gender, $year, $month, $day, $aim, $icq, $website, $yahoo, $msn);
 
 write_log($REL_LANG->_("New user registered (%s)",$wantusername),"tracker");
 
@@ -171,7 +174,7 @@ if($REL_CONFIG['use_email_act'] && $users) {
 
 send_notifs('users');
 safe_redirect($REL_SEO->make_link("my"),3);
-stdhead($REL_LANG->_("Signup successful"));
+$REL_TPL->stdhead($REL_LANG->_("Signup successful"));
 stdmsg($REL_LANG->_("Signup successful"),($REL_CONFIG['use_email_act'] ? sprintf($REL_LANG->say_by_key('confirmation_mail_sent'), htmlspecialchars($email)) : sprintf($REL_LANG->say_by_key('thanks_for_registering'), $REL_CONFIG['sitename']).' '.$REL_LANG->_('Now you will be redirected to <a href="%s">your profile</a> to add additional data for your account.',$REL_SEO->make_link("my"))));
-stdfoot();
+$REL_TPL->stdfoot();
 ?>

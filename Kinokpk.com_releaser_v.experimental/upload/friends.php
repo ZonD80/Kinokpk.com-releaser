@@ -1,25 +1,11 @@
 <?php
-
-/*
- Project: Kinokpk.com releaser
- This file is part of Kinokpk.com releaser.
- Kinokpk.com releaser is based on TBDev,
- originally by RedBeard of TorrentBits, extensively modified by
- Gartenzwerg and Yuna Scatari.
- Kinokpk.com releaser is free software;
- you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
- Kinokpk.com is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- You should have received a copy of the GNU General Public License
- along with Kinokpk.com releaser; if not, write to the
- Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- MA  02111-1307  USA
- Do not remove above lines!
+/**
+ * Friends listing
+ * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
+ * @package Kinokpk.com releaser
+ * @author ZonD80 <admin@kinokpk.com>
+ * @copyright (C) 2008-now, ZonD80, Germany, TorrentsBook.com
+ * @link http://dev.kinokpk.com
  */
 
 require "include/bittorrent.php";
@@ -93,7 +79,7 @@ $class = '';
 
 if ($search != '' || $class) {
 	$querystr = " LEFT JOIN users ON friendid=users.id OR userid=users.id";
-	$query_table = $query['u'] = "users.username LIKE '%" . sqlwildcardesc($search) . "%' AND users.confirmed=1";
+	$query['u'] = "users.username LIKE '%" . sqlwildcardesc($search) . "%' AND users.confirmed=1";
 	if ($search)
 	$q = "search=" . $search;
 }
@@ -103,25 +89,40 @@ if (is_valid_user_class($class)) {
 	$q .= ($q ? "&amp;" : "") . "class=$class";
 }
 
+$state='a';
+
 if (isset($_GET['pending'])) {
-	$pend=true;
+	$state = 'p';
 	$query['p'] = 'friends.confirmed=0';
 	$q .= ($q ? "&amp;" : "") . "pending";
-} else $query['p'] = 'friends.confirmed=1';
+}
+elseif (isset($_GET['online'])) {
+	$state = 'o';
+	$querystr = " LEFT JOIN users ON IF(userid={$CURUSER['id']},friendid=users.id,userid=users.id)";
+	$query['o'] = 'users.last_access>'.(time()-300);
+	$q .= ($q ? "&amp;" : "") . "online";
+} else $query[] = 'friends.confirmed=1';
 
 $query['def'] = "(userid={$CURUSER['id']} OR friendid=$fid)";
 
 $querycount = $querystr.' WHERE '.implode(' AND ',$query);
 $query = $querycount." GROUP BY friends.id";
-stdhead($REL_LANG->say_by_key('users'));
-
+$REL_TPL->stdhead($REL_LANG->say_by_key('users'));
+$res = sql_query("SELECT (SELECT SUM(1) FROM friends WHERE friends.confirmed=1 AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']})), (SELECT SUM(1) FROM friends LEFT JOIN users ON IF(userid={$CURUSER['id']},friendid=users.id,userid=users.id) WHERE users.last_access>".(time()-300)." AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']})), (SELECT SUM(1) FROM friends WHERE friends.confirmed=0 AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']}))") or sqlerr(__FILE__, __LINE__);
+list ($countarr['a'],$countarr['o'],$countarr['p']) = mysql_fetch_array($res);
+$countarr = array_map("intval",$countarr);
+$count = $countarr[$state];
 print("<h1>{$REL_LANG->say_by_key('friends')}</h1>\n");
+//var_dump($state);
 print("<div id=\"tabs\"><ul>
-<li nowrap=\"\" class=\"tab".($pend?'2':'1')."\"><a href=\"".$REL_SEO->make_link('friends')."\"><span>Друзья</span></a></li>
-<li nowrap=\"\" class=\"tab".($pend?'1':'2')."\"><a href=\"".$REL_SEO->make_link('friends','pending','')."\"><span>Ожидает подтверждения</span></a></li>
+<li nowrap=\"\" class=\"tab".($state=='a'?'1':'2')."\"><a href=\"".$REL_SEO->make_link('friends')."\"><span>{$REL_LANG->_("Friends")} ({$countarr['a']})</span></a></li>
+<li nowrap=\"\" class=\"tab".($state=='o'?'1':'2')."\"><a href=\"".$REL_SEO->make_link('friends','online','')."\"><span>{$REL_LANG->_("Online")} ({$countarr['o']})</span></a></li>
+<li nowrap=\"\" class=\"tab".($state=='p'?'1':'2')."\"><a href=\"".$REL_SEO->make_link('friends','pending','')."\"><span>{$REL_LANG->_("Pending")} ({$countarr['p']})</span></a></li>
 </ul></div>\n");
 print("<div class=\"friends_search\" style=\"margin-top:55px;\">");
 print("<form method=\"get\" action=\"".$REL_SEO->make_link('friends')."\">\n");
+if ($state=='o') print '<input type="hidden" name="online" value="1">';
+if ($state=='p') print '<input type="hidden" name="pending" value="1">';
 print($REL_LANG->say_by_key('search')." <input type=\"text\" size=\"30\" name=\"search\" value=\"".$search."\">\n");
 print("<select name=\"class\">\n");
 print("<option value=\"-\">(Все уровни)</option>\n");
@@ -136,9 +137,7 @@ print("<input class=\"button\" type=\"submit\" value=\"{$REL_LANG->say_by_key('g
 print("</form>\n");
 print("</div>\n");
 
-$res = sql_query("SELECT SUM(1) FROM friends$querycount") or sqlerr(__FILE__, __LINE__);
-$count = @mysql_result($res,0);
-if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_friends'),'error'); stdfoot(); die(); }
+if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_friends'),'error'); $REL_TPL->stdfoot(); die(); }
 $perpage = 50;
 list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $_SERVER['PHP_SELF'] . "?".$q);
 
@@ -153,29 +152,29 @@ print ("<br />");
 while ($arr = mysql_fetch_assoc($res)) {
 
 	if ($arr['country'] > 0) {
-	 $country = "&nbsp;<img src=\"pic/flag/$arr[flagpic]\" alt=\"$arr[name]\" title=\"$arr[name]\">\n";
-	 }
-	 else
-	 $country = "";
+	 $country = "&nbsp;<img style=\"border:none;\" src=\"pic/flag/$arr[flagpic]\" alt=\"$arr[name]\" title=\"$arr[name]\">\n";
+	}
+	else
+	$country = "";
 
-	if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" alt=\"Парень\" title=\"Парень\" style=\"margin-left: 4pt\">";
-	elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" alt=\"Девушка\" title=\"Девушка\" style=\"margin-left: 4pt\">";
+	if ($arr["gender"] == "1") $gender = "<img style=\"border:none;\" src=\"pic/male.gif\" alt=\"Парень\" title=\"Парень\" style=\"margin-left: 4pt\">";
+	elseif ($arr["gender"] == "2") $gender = "<img style=\"border:none;\" src=\"pic/female.gif\" alt=\"Девушка\" title=\"Девушка\" style=\"margin-left: 4pt\">";
 	else $gender = "<div align=\"center\"><b>?</b></div>";
 
 	print("<div id=\"relgroups\" class=\"relgroups_table\">
-			<div id=\"relgroups_image\" class=\"relgroups_image\">");
+			<div id=\"relgroups_image\" class=\"relgroups_image\"><a href=\"{$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',$arr['username'])}\">");
 	if($arr["avatar"]){
-		print("<img id=\"photo\" title=".  $arr["username"]." border=\"0\" src=".$arr["avatar"].">");
+		print("<img id=\"photo\" style=\"border:none;\" title=".  $arr["username"]." border=\"0\" src=".$arr["avatar"].">");
 	}else{
-		print("<img id=\"photo\" title=".  $arr["username"]." border=\"0\" src=\"/pic/default_avatar.gif\">");
+		print("<img id=\"photo\" style=\"border:none;\" title=".  $arr["username"]." border=\"0\" src=\"/pic/default_avatar.gif\">");
 	}
-	print("</div>
+	print("</a></div>
 			<div class=\"relgroups_name\">
 				<dl class=\"clearfix\" style=\"align:left;\">
 				<dt>Ник</dt><dd><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',translit($arr["username"]))."\"><b>".get_user_class_color($arr["class"], $arr["username"]).$gender.get_user_icons($arr).$country."</b></a></dd>
 				<dt>Рейтинг</dt><dd>".ratearea($arr['ratingsum'],$arr['friend'],'users', $CURUSER['id'])."</dd>
 				<dt>Уровень</dt><dd>" . get_user_class_name($arr["class"]) . "</dd>
-				<dt>Когда был</dt><dd>".mkprettytime($arr['last_access'])."</dd>
+				<dt>Когда был</dt><dd>".(time()-$arr['last_access']<300?$REL_LANG->_("Online"):mkprettytime($arr['last_access']))."</dd>
 				<dt>Зарегестрирован</dt><dd>".mkprettytime($arr['added'])."</dd>
 				</dl>
 			 </div>
@@ -183,8 +182,8 @@ while ($arr = mysql_fetch_assoc($res)) {
 				<ul  class=\"relgroups_input\">
 					<li><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',translit($arr["username"]))."\">Просмотр</a></li>
 					");
-	if (!$pend)print ("<li><a href=\"".$REL_SEO->make_link('friends','action','deny','id',$arr['id'])."\">".$REL_LANG->say_by_key('delete_from_friends')."</a></li><li><a href=\"".$REL_SEO->make_link('present','id',$arr['friend'])."\"><span>Подарок Другу</span><img src=\"pic/presents/present.gif\" title=\"Подарить подарок\" style=\"margin-top: -6px; border:none; width:12px; height:12px;\" /> </a></li><li>");
-	elseif ($pend && !$arr['init']) print('<li>'.$REL_LANG->say_by_key('friend_pending').'</li>');
+	if ($state<>'p')print ("<li><a href=\"".$REL_SEO->make_link('friends','action','deny','id',$arr['id'])."\">".$REL_LANG->say_by_key('delete_from_friends')."</a></li><li><a href=\"".$REL_SEO->make_link('present','id',$arr['friend'])."\"><span>Подарок Другу</span><img src=\"pic/presents/present.gif\" title=\"Подарить подарок\" style=\"margin-top: -6px; border:none; width:12px; height:12px;\" /> </a></li><li>");
+	elseif ($state=='p' && !$arr['init']) print('<li>'.$REL_LANG->say_by_key('friend_pending').'</li>');
 	else print ("<li><a href=\"".$REL_SEO->make_link('friends','action','confirm','id',$arr['id'])."\">".$REL_LANG->say_by_key('confirm')."</a></li>
 			<li><a href=\"".$REL_SEO->make_link('friends','action','deny','id',$arr['id'])."\">".$REL_LANG->say_by_key('delete_on_friends')."</a></li>
 		  ");
@@ -204,7 +203,7 @@ print("<div class=\"clear\"></div>");
 print ("<p>$pagerbottom</p>\n");
 print('</div></div>');
 
-stdfoot();
+$REL_TPL->stdfoot();
 
 
 ?>

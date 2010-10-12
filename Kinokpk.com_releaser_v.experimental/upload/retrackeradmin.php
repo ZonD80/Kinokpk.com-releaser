@@ -21,7 +21,7 @@ httpauth();
 
 if (get_user_class() < UC_SYSOP) bark("Access denied. You're not SYSOP.");
 if (!isset($_GET['action'])) {
-	stdhead($REL_LANG->say_by_key('panel_name'));
+	$REL_TPL->stdhead($REL_LANG->say_by_key('panel_name'));
 	print("<div algin=\"center\"><h1>{$REL_LANG->say_by_key('panel_name')}</h1></div>");
 	print("<table width=\"100%\" border=\"0\"><tr><td><a href=\"".$REL_SEO->make_link('retrackeradmin','action','add')."\">{$REL_LANG->say_by_key('add_retracker')}</a></td></tr></table>");
 	$rtarray = sql_query("SELECT * FROM retrackers ORDER BY sort ASC");
@@ -30,7 +30,7 @@ if (!isset($_GET['action'])) {
 		print("<tr><td>".$rt['id']."</td><td><input type=\"text\" name=\"sort[".$rt['id']."]\" size=\"4\" value=\"".$rt['sort']."\"></td><td>{$rt['announce_url']}</td><td>{$rt['mask']}</td><td><a href=\"".$REL_SEO->make_link('retrackeradmin','action','edit','id',$rt['id'])."\">E</a> | <a onClick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}')\" href=\"".$REL_SEO->make_link('retrackeradmin','action','delete','id',$rt['id'])."\">D</a></td></tr>");
 	}
 	print("</table><input type=\"submit\" class=\"btn\" value=\"{$REL_LANG->say_by_key('save_order')}\"></form>");
-	stdfoot();
+	$REL_TPL->stdfoot();
 }
 
 elseif ($_GET['action'] == 'saveids') {
@@ -48,9 +48,9 @@ elseif ($_GET['action'] == 'saveids') {
 }
 
 elseif ($_GET['action'] == 'add') {
-	stdhead($REL_LANG->say_by_key('add_retracker'));
+	$REL_TPL->stdhead($REL_LANG->say_by_key('add_retracker'));
 	print("<form action=\"".$REL_SEO->make_link('retrackeradmin','action','saveadd')."\" name=\"savearray\" method=\"post\"><table width=\"100%\"><tr><td class=\"colhead\">{$REL_LANG->say_by_key('announce_url')}</td></tr><tr><td><input type=\"text\" name=\"retracker\" size=\"80\"></td></tr><tr><td class=\"colhead\">{$REL_LANG->say_by_key('subnet_mask')}</td></tr><tr><td><input type=\"text\" name=\"mask\" size=\"15\"></td></tr><tr><td class=\"colhead\">{$REL_LANG->say_by_key('order')}</td></tr><tr><td><input type=\"text\" name=\"sort\" size=\"4\"></td></tr><tr><td><input type=\"submit\" class=\"btn\" value=\"{$REL_LANG->say_by_key('add_retracker')}\"></td></tr></table></form>");
-	stdfoot();
+	$REL_TPL->stdfoot();
 }
 
 elseif ($_GET['action'] == 'delete') {
@@ -67,9 +67,9 @@ elseif ($_GET['action'] == 'edit') {
 	$rtarray = sql_query("SELECT * FROM retrackers WHERE id=".(int)$_GET['id']);
 	list($id,$sort,$announce_url,$mask) = mysql_fetch_array($rtarray);
 
-	stdhead($REL_LANG->say_by_key('editing_retracker'));
+	$REL_TPL->stdhead($REL_LANG->say_by_key('editing_retracker'));
 	print("<form name=\"save\" action=\"".$REL_SEO->make_link('retrackeradmin','action','saveedit')."\" method=\"post\"><table width=\"100%\"><tr><td class=\"colhead\">{$REL_LANG->say_by_key('announce_url')}</td></tr><tr><td><input type=\"hidden\" name=\"id\" value=\"".$id."\"><input type=\"text\" name=\"retracker\" size=\"80\" value=\"".$announce_url."\"></td></tr><tr><td class=\"colhead\">{$REL_LANG->say_by_key('subnet_mask')}</td></tr><tr><td><input type=\"text\" name=\"mask\" size=\"15\" value=\"$mask\"></td></tr><tr><td class=\"colhead\">{$REL_LANG->say_by_key('order')}</td></tr><tr><td><input type=\"text\" name=\"sort\" size=\"4\" value=\"".$sort."\"></td></tr><tr><td><input type=\"submit\" class=\"btn\" value=\"{$REL_LANG->say_by_key('edit')}\"></td></tr></table></form>");
-	stdfoot();
+	$REL_TPL->stdfoot();
 }
 
 elseif ($_GET['action'] == 'saveedit') {

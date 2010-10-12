@@ -30,10 +30,10 @@ dbconn();
 
 //loggedinorreturn();
 
-stdhead("Правила");
+$REL_TPL->stdhead("Правила");
 
-begin_main_frame();
-begin_frame("Для правообладателей");
+$REL_TPL->begin_main_frame();
+$REL_TPL->begin_frame("Для правообладателей");
 print(nl2br('Для того, чтобы сообщить о размещении нелицензионного контента на нашем сайте, отправьте соответствующее письмо на
 <div align="center"><img src="pic/abusemail.gif"/></div>
 <b>ВНИМАНИЕ!</b> Письма, направленные на какие-либо другие ящики внутри домена не рассматриваются.
@@ -47,8 +47,7 @@ print(nl2br('Для того, чтобы сообщить о размещении нелицензионного контента на н
 Релизер был переписан из <b>TBDev YSE PRE RC 6</b>. Конечная версия движка является собственностью команды Kinokpk.com
 Публичная версия данного релизера обсуждается и разрабатывается в <a target="_blank" href="http://dev.kinokpk.com">Уголке разработчика релизера Kinokpk.com</a></div>
 '));
-end_frame();
-
-end_main_frame();
-stdfoot();
+$REL_TPL->end_frame();
+$REL_TPL->end_main_frame();
+$REL_TPL->stdfoot();
 ?>

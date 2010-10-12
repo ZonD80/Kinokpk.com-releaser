@@ -21,11 +21,11 @@ $id = (int) $_GET["id"];
 $type = unesc($_GET["type"]);
 $invite = $_GET["invite"];
 
-stdhead("Приглашения");
+$REL_TPL->stdhead("Приглашения");
 
 function bark($msg) {
 	stdmsg("Ошибка", $msg);
-	stdfoot();
+	$REL_TPL->stdfoot();
 }
 
 if ($id == 0) {
@@ -45,7 +45,7 @@ if ($type == 'new') {
 		tr ("Введите слова с картинки:",recaptcha_get_html($REL_CONFIG['re_publickey']),1,1);
 
 	}
-	
+
 	print (	"<tr class=tableb><td align=center colspan=2><input type=submit value=\"Создать\"></td></tr>".
 	"</form></table>");
 } elseif ($type == 'del') {
@@ -128,6 +128,6 @@ if ($type == 'new') {
 	print("<tr class=tableb><td colspan=7 align=center><form method=get action=\"".$REL_SEO->make_link('invite','id',$id,'type','new')."\"><input type='hidden' name='id' value='$id' /><input type='hidden' name='type' value='new' /><input type=submit value=\"Создать приглашение\"></form></td></tr>");
 	print("</table>");
 }
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

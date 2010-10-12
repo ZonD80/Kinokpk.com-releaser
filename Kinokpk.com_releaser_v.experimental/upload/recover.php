@@ -13,9 +13,6 @@ require "include/bittorrent.php";
 
 dbconn();
 
-
-if ($REL_CONFIG['use_integration'] && $REL_CONFIG['ipb_password_priority']) safe_redirect(" ".$REL_CONFIG['forumurl']."/index.php?act=Reg&CODE=10");
-
 if ($_SERVER["REQUEST_METHOD"] == "POST")
 {
 	if ($REL_CONFIG['use_captcha']) {
@@ -42,33 +39,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 	$hash = md5($sec . $email . $arr["passhash"] . $sec);
 
-	$body = <<<EOD
+	$body = nl2br("
 Вы, или кто-то другой, запросили новый пароль к аккаунту связаному с этим адресом ($email).
 
 Если это были НЕ вы, проигнорируйте это письмо. Пожалуста не отвечайте.
 
 Если вы подтверждаете этот запрос, перейдите по следующей ссылке:
 
-	{$REL_SEO->make_link('recover','confirm','','id',$arr["id"],'secret',$hash)}
+{$REL_SEO->make_link('recover','confirm',1,'id',$arr["id"],'secret',$hash)}
 
 
 После того как вы это сделаете, ваш пароль будет сброшен и новый пароль будет отправлен вам на E-Mail.
 
 --
-	{$REL_CONFIG['sitename']}
-EOD;
+{$REL_CONFIG['sitename']}
+");
 
-	if (sent_mail($arr['email'], $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'],  "{$REL_CONFIG['defaultbaseurl']} восстановление пароля",  wordwrap($body,70))==false) stderr($REL_LANG->say_by_key('error'),"Ошибка при отправке письма");
+if (sent_mail($arr['email'], $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'],  "{$REL_CONFIG['defaultbaseurl']} восстановление пароля",  wordwrap($body,70))==false) stderr($REL_LANG->say_by_key('error'),"Ошибка при отправке письма");
 
-	stderr($REL_LANG->say_by_key('success'), "Подтверждающее письмо было отправлено.\n" .
-		" Через несколько минут (обычно сразу) вам прийдет письмо с дальнейшими указаниями.");
+stderr($REL_LANG->say_by_key('success'), "Подтверждающее письмо было отправлено.\n" .
+		" Через несколько минут (обычно сразу) вам прийдет письмо с дальнейшими указаниями.",'success');
 }
 elseif(isset($_GET['confirm']))
 {
 
 	if (!is_valid_id($_GET["id"]))
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
-		
+
 	$id = (int) $_GET["id"];
 	$md5 = $_GET["secret"];
 
@@ -97,12 +94,11 @@ elseif(isset($_GET['confirm']))
 
 	sql_query("UPDATE users SET secret=" . sqlesc($sec) . ", editsecret='', passhash=" . sqlesc($newpasshash) . " WHERE id=$id AND editsecret=" . sqlesc($arr["editsecret"]));
 
-	//if ($username) change_ipb_password($newpassword,$username);
 
 	if (!mysql_affected_rows())
 	stderr($REL_LANG->say_by_key('error'), "Невозможно обновить данные пользователя. Пожалуста свяжитесь с администратором относительно этой ошибки.");
 
-	$body = <<<EOD
+	$body = nl2br("
 По вашему запросу на восстановление пароля, вы сгенерировали вам новый пароль.
 
 Вот ваши новые данные для этого аккаунта:
@@ -113,17 +109,17 @@ elseif(isset($_GET['confirm']))
 Вы можете войти на сайт тут: {$REL_SEO->make_link('login')}
 
 --
-	{$REL_CONFIG['sitename']}
-EOD;
+{$REL_CONFIG['sitename']}
+");
 
-	$mail_sent = sent_mail($email,$REL_CONFIG['sitename'],$REL_CONFIG['siteemail'], "{$REL_CONFIG['defaultbaseurl']} данные аккаунта", $body);
-	if (!$mail_sent) stderr($REL_LANG->say_by_key('error'),'Mail not sent, configure smtp/sendmail or contact site admin');
-	stderr($REL_LANG->say_by_key('success'), "Новые данные по аккаунту отправлены на E-Mail <b>$email</b>.\n" .
-    "Через несколько минут (обычно сразу) вы получите ваши новые данные.");
+$mail_sent = sent_mail($email,$REL_CONFIG['sitename'],$REL_CONFIG['siteemail'], "{$REL_CONFIG['defaultbaseurl']} данные аккаунта", $body);
+if (!$mail_sent) stderr($REL_LANG->say_by_key('error'),'Mail not sent, configure smtp/sendmail or contact site admin');
+stderr($REL_LANG->say_by_key('success'), "Новые данные по аккаунту отправлены на E-Mail <b>$email</b>.\n" .
+    "Через несколько минут (обычно сразу) вы получите ваши новые данные.",'success');
 }
 else
 {
-	stdhead("Восстановление пароля");
+	$REL_TPL->stdhead("Восстановление пароля");
 	?>
 <form method="post" action="<?=$REL_SEO->make_link('recover');?>">
 <table border="1" cellspacing="0" cellpadding="5">
@@ -154,7 +150,7 @@ else
 	</tr>
 </table>
 	<?
-	stdfoot();
+	$REL_TPL->stdfoot();
 }
 
 ?>

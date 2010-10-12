@@ -20,11 +20,11 @@ loggedinorreturn();
 
 
 //stderr('Загрузка релизов временно отключена','Загрузка новых релизов временно отключена администрацией');
-stdhead($REL_LANG->say_by_key('upload_torrent'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('upload_torrent'));
 $tree = make_tree();
 
 if (!isset($_GET['type'])) {
-	begin_frame("Выберите категорию релиза");
+	$REL_TPL->begin_frame("Выберите категорию релиза");
 	print '<div align="center">
 <form name="upload" action="'.$REL_SEO->make_link('upload').'" method="GET">
 <table border="0" cellspacing="0" cellpadding="5">
@@ -34,18 +34,18 @@ if (!isset($_GET['type'])) {
 </form>
 </div>
 ';
-	end_frame();
-	stdfoot();
+	$REL_TPL->end_frame();
+	$REL_TPL->stdfoot();
 	die();
 }
 
-elseif (!is_valid_id($_GET["type"])) {			stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id')); stdfoot();   exit;}
+elseif (!is_valid_id($_GET["type"])) {			stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id')); $REL_TPL->stdfoot();   exit;}
 
 $type = (int) $_GET['type'];
 
 
 $cat = get_cur_branch($tree,$type);
-if (!$cat) {			stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id')); stdfoot();   exit;}
+if (!$cat) {			stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id')); $REL_TPL->stdfoot();   exit;}
 
 
 if (strlen($CURUSER['passkey']) != 32) {
@@ -78,9 +78,9 @@ function checkname(element,is_sending) {
 	<?
 	//tr($REL_LANG->say_by_key('announce_url'), $announce_urls[0], 1);
 	tr($REL_LANG->say_by_key('torrent_file'), "<input  type=file name=tfile  size=80><br /><input type=\"checkbox\"  name=\"multi\" value=\"1\">&nbsp;{$REL_LANG->say_by_key('multitracker_torrent')}<br /><small>{$REL_LANG->say_by_key('multitracker_torrent_notice')}</small>\n", 1);
-	if (get_user_class()>=UC_UPLOADER)
-		tr($REL_LANG->say_by_key('tiger_hash'),"<input type=\"text\" size=\"60\" maxlength=\"38\" name=\"tiger_hash\" value=\"{$row['tiger_hash']}\"><br/>".$REL_LANG->say_by_key('tiger_hash_notice'),1);
-		
+	if (get_user_class()>=UC_UPLOADER && $REL_CONFIG['use_dc'])
+	tr($REL_LANG->say_by_key('tiger_hash'),"<input type=\"text\" size=\"60\" maxlength=\"38\" name=\"tiger_hash\" value=\"{$row['tiger_hash']}\"><br/>".$REL_LANG->say_by_key('tiger_hash_notice'),1);
+
 	tr($REL_LANG->say_by_key('torrent_name')."<font color=\"red\">*</font>", "<input type=\"text\" name=\"name\" size=\"80\" value=\"Русский / Original (год или диапазон годов) [качество, примечание]\"/><br />(".$REL_LANG->say_by_key('taken_from_torrent').")\n", 1);
 
 	$imagecontent = '<br />';
@@ -104,18 +104,18 @@ function checkname(element,is_sending) {
 		$rgselect.='</select>';
 	}
 	if ($rgselect)
-  		tr($REL_LANG->say_by_key('relgroup'),$rgselect,1);
+	tr($REL_LANG->say_by_key('relgroup'),$rgselect,1);
 
 	$childs = get_childs($tree,$cat['parent_id']);
 	if ($childs) {
 		$chsel='<table width="100%" border="1">';
 		foreach($childs as $child)
-		if ($cat['id'] != $child['id']) $chsel.="<tr><td><input type=\"checkbox\" name=\"type[]\" value=\"{$child['id']}\">&nbsp;{$child['name']}".($REL_CONFIG['use_integration']?"&nbsp;&nbsp;<input type=\"radio\" name=\"forumcat\" value=\"{$child['id']}\">":'')."</td></tr>";
-		$chsel.="</table>".($REL_CONFIG['use_integration']?"<small>{$REL_LANG->say_by_key('forum_selector')}</small>":'');
+		if ($cat['id'] != $child['id']) $chsel.="<tr><td><input type=\"checkbox\" name=\"type[]\" value=\"{$child['id']}\">&nbsp;{$child['name']}</td></tr>";
+		$chsel.="</table>";
 	}
-	tr ($REL_LANG->say_by_key('main_category'),get_cur_position_str($tree,$cat['id']).($REL_CONFIG['use_integration']?"&nbsp;&nbsp;<input type=\"radio\" name=\"forumcat\" value=\"{$cat['id']}\" checked>":''),1);
+	tr ($REL_LANG->say_by_key('main_category'),get_cur_position_str($tree,$cat['id']),1);
 	if ($chsel)
-		tr ($REL_LANG->say_by_key('subcats'),$chsel,1);	
+	tr ($REL_LANG->say_by_key('subcats'),$chsel,1);
 
 
 	if (get_user_class() >= UC_MODERATOR) {
@@ -123,8 +123,7 @@ function checkname(element,is_sending) {
 		tr("Важный", "<input type=\"checkbox\" name=\"sticky\" value=\"1\">Прикрепить этот торрент (всегда наверху)", 1);
 	}
 	tr("Релиз без торрента", "<input type=\"checkbox\" name=\"nofile\" value=\"1\">Этот релиз без торрента ; Размер: <input type=\"text\" name=\"nofilesize\" size=\"20\" /> МБ", 1);
-	tr("<font color=\"red\">АНОНС</font>", "<input type=\"checkbox\" name=\"annonce\" value=\"1\">Это всего-лишь анонс фильма. Ссылки указывать не обязательно,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;но обязательно выложить фильм после анонсирования!", 1);
-	if ($REL_CONFIG['use_integration']) tr("ID темы<br />форума {$REL_CONFIG['forumname']}<br /><br /><font color=\"red\">Будьте внимательны!</font><br /><br /><a href=\"{$REL_CONFIG['forumurl']}/index.php?act=Search\">Искать релиз<br />на форуме</a>", "<input type=\"text\" name=\"topic\" size=\"8\" disabled /><input type=\"checkbox\" onclick=\"document.upload.topic.disabled = false;\" /> - отметить, чтобы ввести ID темы.<hr />Пример: {$REL_CONFIG['forumurl']}/index.php?showtopic=<b>45270</b> | <font color=\"red\">45270</font> - это ID темы<hr /><b>Данная функция используется, когда тема с фильмом <u>уже есть</u> на форуме.</b><br />Данные будут записаны в WIKI секцию топика, название в шапке будет изменено в соответствии с названием релиза.<br />Если поле пустое, то тема создается автоматически.\n",1);
+	tr("<font color=\"red\">АНОНС</font>", "<input type=\"checkbox\" name=\"annonce\" value=\"1\">Это всего-лишь анонс релиза. Ссылки указывать не обязательно,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;но обязательно выложить релиз после анонсирования!", 1);
 	?>
 	<tr>
 		<td align="center" colspan="2"><input type="submit" class="btn button"
@@ -132,8 +131,8 @@ function checkname(element,is_sending) {
 	</tr>
 </table>
 </form>
-<?
+	<?
 
-stdfoot();
+	$REL_TPL->stdfoot();
 
-?>
+	?>

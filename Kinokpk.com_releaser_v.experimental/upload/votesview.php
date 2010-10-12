@@ -37,7 +37,7 @@ if ($_GET[requestid])
 	$perpage = 50;
 	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $_SERVER["PHP_SELF"] ."?" );
 	$res = sql_query("SELECT users.id as userid,users.username, users.ratingsum, users.class, requests.id as requestid, requests.request FROM addedrequests INNER JOIN users ON addedrequests.userid = users.id INNER JOIN requests ON addedrequests.requestid = requests.id WHERE addedrequests.requestid =$requestid $limit") or sqlerr(__FILE__, __LINE__);
-	stdhead("Голосовавшие");
+	$REL_TPL->stdhead("Голосовавшие");
 	$res2 = sql_query("SELECT request FROM requests WHERE id=$requestid");
 	$arr2 = mysql_fetch_assoc($res2);
 
@@ -60,7 +60,7 @@ if ($_GET[requestid])
 		}
 		print("</table>\n");
 	}
-	stdfoot();
+	$REL_TPL->stdfoot();
 }
 
 

@@ -21,29 +21,27 @@ require_once(ROOT_PATH.'include/functions.php');
 $time = time();
 
 // connection closed
-$db = mysql_connect($mysql_host, $mysql_user, $mysql_pass)
-or die ('Not connected : ' . mysql_error());
-mysql_select_db ($mysql_db, $db);
-
-my_set_charset($mysql_charset);
+	/* @var database object */
+	require_once(ROOT_PATH . 'classes/database/database.class.php');
+	$REL_DB = new REL_DB($mysql_host, $mysql_user, $mysql_pass, $mysql_db, $mysql_charset);
 
 
 $cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('in_cleanup','autoclean_interval','max_dead_torrent_time','pm_delete_sys_days','pm_delete_user_days','signup_timeout','ttl_days','announce_interval','delete_votes','rating_freetime','rating_enabled','rating_perleech','rating_perseed','rating_checktime','rating_dislimit','promote_rating','rating_max')");
 
-while ($cronres = mysql_fetch_assoc($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
+while ($cronres = mysql_fetch_assoc($cronrow)) $REL_CRON[$cronres['cron_name']] = $cronres['cron_value'];
 
-if ($CRON['in_cleanup']) die('Cleanup already running');
+if ($REL_CRON['in_cleanup']) die('Cleanup already running');
 sql_query("UPDATE cron SET cron_value=".time()." WHERE cron_name='last_cleanup'");
 
 sql_query("UPDATE cron SET cron_value=1 WHERE cron_name='in_cleanup'");
 
 // Recount torrents now in cronadmin.php
 
-$deadtime = $time - $CRON['announce_interval']*120;
+$deadtime = $time - $REL_CRON['announce_interval']*120;
 //print($deadtime."/".time());
 sql_query("DELETE FROM peers WHERE last_action < $deadtime") or sqlerr(__FILE__,__LINE__);
 
-$deadtime -= $CRON['max_dead_torrent_time'];
+$deadtime -= $REL_CRON['max_dead_torrent_time'];
 
 //sql_query("UPDATE torrents SET visible=0 WHERE visible=1 AND last_action < $deadtime AND filename <> 'nofile'") or sqlerr(__FILE__,__LINE__);
 
@@ -74,17 +72,17 @@ sql_query("UPDATE trackers SET seeders = ".(int)$torrents[$id]['seeders'].", lee
  */
 
 //Удаляем системные прочтенные сообщения старше n дней
-$secs_system = $CRON['pm_delete_sys_days']*86400; // Количество дней
+$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
 $dt_system = time() - $secs_system; // Сегодня минус количество дней
 sql_query("DELETE FROM messages WHERE archived = 0 AND archived_receiver = 0 AND unread = 0 AND added < $dt_system") or sqlerr(__FILE__, __LINE__);
 //Удаляем ВСЕ прочтенные сообщения старше n дней
-$secs_all = $CRON['pm_delete_user_days']*86400; // Количество дней
+$secs_all = $REL_CRON['pm_delete_user_days']*86400; // Количество дней
 $dt_all = time() - $secs_all; // Сегодня минус количество дней
 sql_query("DELETE FROM messages WHERE unread = 0 AND archived = 0 AND archived_receiver = 0 AND added < $dt_all") or sqlerr(__FILE__, __LINE__);
 
 
 // delete unconfirmed users if timeout.
-$deadtime = time() - ($CRON['signup_timeout']*86400);
+$deadtime = time() - ($REL_CRON['signup_timeout']*86400);
 $res = sql_query("SELECT id FROM users WHERE confirmed=0 AND added < $deadtime AND last_login < $deadtime AND last_access < $deadtime") or sqlerr(__FILE__,__LINE__);
 if (mysql_num_rows($res) > 0) {
 	while ($arr = mysql_fetch_array($res)) {
@@ -104,8 +102,8 @@ while ($arr = mysql_fetch_assoc($res)) {
 }
 
 // Update user ratings
-if ($CRON['rating_enabled']) {
-	$useridssql = sql_query("SELECT peers.userid AS id, users.discount FROM peers LEFT JOIN users ON peers.userid=users.id WHERE (".time()."-added)>".($CRON['rating_freetime']*86400)." AND users.class<> ".UC_VIP." AND enabled=1 AND (".time()."-last_checked)>".($CRON['rating_checktime']*60));
+if ($REL_CRON['rating_enabled']) {
+	$useridssql = sql_query("SELECT peers.userid AS id, users.discount FROM peers LEFT JOIN users ON peers.userid=users.id WHERE (".time()."-added)>".($REL_CRON['rating_freetime']*86400)." AND users.class<> ".UC_VIP." AND enabled=1 AND (".time()."-last_checked)>".($REL_CRON['rating_checktime']*60));
 	while ($urow = mysql_fetch_assoc($useridssql)) {
 		$uidsar[] = $urow['id'];
 		$urating[$urow['id']]=array('discount'=>$urow['discount'],'seeding'=>0,'downloaded'=>0);
@@ -126,20 +124,20 @@ if ($CRON['rating_enabled']) {
 		foreach ($urating AS $uid=>$value) {
 			//print($value['discount'].'<br>');
 			if (!$value['downloaded'] && !($value['seeding']+$value['discount'])) continue;
-			elseif ($value['downloaded']>($value['seeding']+$value['discount'])) $rateup = -$CRON['rating_perleech'];
+			elseif ($value['downloaded']>($value['seeding']+$value['discount'])) $rateup = -$REL_CRON['rating_perleech'];
 			else {
 				$upcount = @round(($value['seeding']+$value['discount'])/$value['downloaded']);
 				if (!$upcount) $upcount=1;
-				$rateup = $CRON['rating_perseed']*$upcount;
+				$rateup = $REL_CRON['rating_perseed']*$upcount;
 			}
-			sql_query("UPDATE LOW_PRIORITY users SET ratingsum = CASE WHEN ((ratingsum+$rateup>{$CRON['rating_max']}) AND $rateup>0 AND ratingsum<{$CRON['rating_max']}) THEN {$CRON['rating_max']} WHEN ($rateup>0 AND ratingsum>{$CRON['rating_max']}) THEN ratingsum ELSE ratingsum+$rateup END, last_checked=".time()." WHERE id=$uid");
+			sql_query("UPDATE LOW_PRIORITY users SET ratingsum = CASE WHEN ((ratingsum+$rateup>{$REL_CRON['rating_max']}) AND $rateup>0 AND ratingsum<{$REL_CRON['rating_max']}) THEN {$REL_CRON['rating_max']} WHEN ($rateup>0 AND ratingsum>{$REL_CRON['rating_max']}) THEN ratingsum ELSE ratingsum+$rateup END, last_checked=".time()." WHERE id=$uid");
 		}
 	}
-	sql_query("UPDATE users SET enabled=0, dis_reason='Your rating was too low.' WHERE enabled=1 AND ratingsum<".$CRON['rating_dislimit']);
-	sql_query("UPDATE users SET enabled=1, dis_reason='' WHERE enabled=0 AND dis_reason='Your rating was too low.' AND ratingsum>=".$CRON['rating_dislimit']);
+	sql_query("UPDATE users SET enabled=0, dis_reason='Your rating was too low.' WHERE enabled=1 AND ratingsum<".$REL_CRON['rating_dislimit']);
+	sql_query("UPDATE users SET enabled=1, dis_reason='' WHERE enabled=0 AND dis_reason='Your rating was too low.' AND ratingsum>=".$REL_CRON['rating_dislimit']);
 
 }
-$REL_CONFIGrow = sql_query("SELECT * FROM cache_stats WHERE cache_name IN ('sitename','defaultbaseurl','siteemail','default_language','use_lang','smtptype')");
+$REL_CONFIGrow = sql_query("SELECT * FROM cache_stats WHERE cache_name IN ('sitename','defaultbaseurl','siteemail','default_language','smtptype')");
 
 while ($REL_CONFIGres = mysql_fetch_assoc($REL_CONFIGrow)) $REL_CONFIG[$REL_CONFIGres['cache_name']] = $REL_CONFIGres['cache_value'];
 $REL_CONFIG['lang'] = $REL_CONFIG['default_language'];
@@ -163,34 +161,34 @@ sql_query("INSERT INTO messages (sender, receiver, added, msg, poster) SELECT 0,
 sql_query("UPDATE users SET warned=0, warneduntil = 0, modcomment = CONCAT($modcomment, modcomment) WHERE warned=1 AND warneduntil < ".time()." AND warneduntil <> 0") or sqlerr(__FILE__,__LINE__);
 
 // promote power users
-if ($CRON['rating_enabled']) {
+if ($REL_CRON['rating_enabled']) {
 	$msg = sqlesc("Наши поздравления, вы были авто-повышены до ранга <b>Опытный пользовать</b>.");
 	$subject = sqlesc("Вы были повышены");
 	$modcomment = sqlesc(date("Y-m-d") . " - Повышен до уровня \"".$REL_LANG->say_by_key("class_power_user")."\" системой.\n");
-	sql_query("UPDATE users SET class = ".UC_POWER_USER.", modcomment = CONCAT($modcomment, modcomment) WHERE class = ".UC_USER." AND ratingsum>={$CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
-	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, id, $now, $msg, 0, $subject FROM users WHERE class = ".UC_USER." AND ratingsum>={$CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
+	sql_query("UPDATE users SET class = ".UC_POWER_USER.", modcomment = CONCAT($modcomment, modcomment) WHERE class = ".UC_USER." AND ratingsum>={$REL_CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
+	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, id, $now, $msg, 0, $subject FROM users WHERE class = ".UC_USER." AND ratingsum>={$REL_CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
 
 	// demote power users
-	$msg = sqlesc("Вы были авто-понижены с ранга <b>Опытный пользователь</b> до ранга <b>Пользователь</b> потому-что ваш рейтинг упал ниже <b>+{$CRON['promote_rating']}</b>.");
+	$msg = sqlesc("Вы были авто-понижены с ранга <b>Опытный пользователь</b> до ранга <b>Пользователь</b> потому-что ваш рейтинг упал ниже <b>+{$REL_CRON['promote_rating']}</b>.");
 	$subject = sqlesc("Вы были понижены");
 	$modcomment = sqlesc(date("Y-m-d") . " - Понижен до уровня \"".$REL_LANG->say_by_key("class_user")."\" системой.\n");
-	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, id, $now, $msg, 0, $subject FROM users WHERE class = 1 AND ratingsum<{$CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
-	sql_query("UPDATE users SET class = ".UC_USER.", modcomment = CONCAT($modcomment, modcomment) WHERE class = ".UC_POWER_USER." AND ratingsum<{$CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
+	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, id, $now, $msg, 0, $subject FROM users WHERE class = 1 AND ratingsum<{$REL_CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
+	sql_query("UPDATE users SET class = ".UC_USER.", modcomment = CONCAT($modcomment, modcomment) WHERE class = ".UC_POWER_USER." AND ratingsum<{$REL_CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
 }
 // delete old torrents
-if ($CRON['use_ttl']) {
-	$dt = time() - ($CRON['ttl_days'] * 86400);
+if ($REL_CRON['use_ttl']) {
+	$dt = time() - ($REL_CRON['ttl_days'] * 86400);
 	$res = sql_query("SELECT id, name FROM torrents WHERE last_action < $dt") or sqlerr(__FILE__,__LINE__);
 	while ($arr = mysql_fetch_assoc($res))
 	{
 		deletetorrent($arr['id']);
-		write_log("Торрент $arr[id] ($arr[name]) был удален системой (старше чем {$CRON['ttl_days']} дней)","torrent");
+		write_log("Торрент $arr[id] ($arr[name]) был удален системой (старше чем {$REL_CRON['ttl_days']} дней)","torrent");
 	}
 }
 
 // session update moved to include/functions.php
-if ($CRON['delete_votes']) {
-	$secs = $CRON['delete_votes']*60;
+if ($REL_CRON['delete_votes']) {
+	$secs = $REL_CRON['delete_votes']*60;
 	$dt = time() - $secs;
 	sql_query("DELETE FROM ratings WHERE added < $dt");
 }

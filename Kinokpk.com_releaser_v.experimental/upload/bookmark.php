@@ -14,10 +14,10 @@ dbconn();
 loggedinorreturn();
 
 function bark($msg, $error = true) {
-	global $REL_LANG;
-	stdhead(($error ? $REL_LANG->say_by_key('error') : $REL_LANG->say_by_key('torrent')." ".$REL_LANG->say_by_key('bookmarked')));
-	stdmsg(($error ? $REL_LANG->say_by_key('error') : $REL_LANG->say_by_key('success')), $msg, ($error ? 'error' : 'success'));
-	stdfoot();
+	global $REL_LANG,$REL_TPL;
+	$REL_TPL->stdhead(($error ? $REL_LANG->say_by_key('error') : $REL_LANG->say_by_key('torrent')." ".$REL_LANG->say_by_key('bookmarked')));
+	$REL_TPL->stdmsg(($error ? $REL_LANG->say_by_key('error') : $REL_LANG->say_by_key('success')), $msg, ($error ? 'error' : 'success'));
+	$REL_TPL->stdfoot();
 	exit;
 }
 

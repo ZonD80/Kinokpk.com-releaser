@@ -14,12 +14,56 @@ require_once (ROOT_PATH."include/benc.php");
 dbconn();
 loggedinorreturn();
 
+$action = trim((string)$_GET['a']);
+if (!$action) $action = trim((string)$_POST['a']);
+if ($action=='my') {
+	$r = sql_query ( "SELECT snatched.torrent AS id, torrents.name, users.username AS owner, torrents.added, torrents.owner AS userid FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent LEFT JOIN users ON torrents.owner=users.id WHERE snatched.finished=1 AND snatched.userid = {$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']} GROUP BY id ORDER BY id" ) or sqlerr ( __FILE__, __LINE__ );
+	if (!mysql_num_rows ( $r ))	stderr($REL_LANG->_("Error"),$REL_LANG->_("You have not downloaded any releases yet"));
+	$fileDir = './';
 
-$cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('rating_enabled','rating_perdownload','rating_downlimit','rating_freetime')");
+require_once(ROOT_PATH."classes/zip/Zip.php");
+if (strlen($CURUSER['passkey']) != 32) {
+	$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
+	sql_query("UPDATE users SET passkey=".sqlesc($CURUSER[passkey])." WHERE id=".sqlesc($CURUSER[id]));
+}
+$fileTime = date("D, d M Y H:i:s T");
+$zip = new Zip();
+$zip->setComment($REL_LANG->_("Your downloaded torrents on %s",mkprettytime(time())));
+$retrackers = get_retrackers();
 
-while ($cronres = mysql_fetch_array($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
+	while  ($row = mysql_fetch_assoc($r)) {
+			$fn = "torrents/{$row['id']}.torrent";
+			sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = ".sqlesc($row['id']));
+			$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/announce.php?passkey=".$CURUSER['passkey'];
+$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent={$row['id']} AND tracker<>'localhost'");
+while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
+
+//var_dump($retrackers);
+if ($retrackers) foreach ($retrackers as $announce)
+if (!in_array($announce,$announce_urls_list)) $announce_urls_list[] = $announce;
+put_announce_urls($dict,$announce_urls_list);
+
+$dict['type'] = 'dictionary';
+
+$dict['value']['info'] = bdec_file($fn, (1024*1024));
 
 
+$dict['value']['comment']=bdec(benc_str( $REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name'])))); // change torrent comment  to URL
+$dict['value']['created by']=bdec(benc_str( $row['owner'])); // change created by
+$dict['value']['creation date']=bdec(benc_int($row['added'])); // change created on
+$dict['value']['publisher']=bdec(benc_str( $row['owner'])); // change publisher
+$dict['value']['publisher.utf-8']=bdec(benc_str( $row['owner'])); // change publisher.utf-8
+$dict['value']['publisher-url']=bdec(benc_str( $REL_SEO->make_link('userdetails','id',$row['userid'],'username',$row['owner']))); // change publisher-url
+$dict['value']['publisher-url.utf-8']=bdec(benc_str($REL_SEO->make_link('userdetails','id',$row['userid'],'username',$row['owner']))); // change publisher-url.utf-8
+$zip->addFile(benc($dict), str_replace('/','---',translit($row['name']))."-{$row['id']}-{$_SERVER['HTTP_HOST']}.torrent",$row['added']);//,$row['name']);
+unset($dict);
+unset($announce_urls_list);
+	}
+	$zip->finalize(); // as we are not using getZipData or getZipFile, we need to call finalize ourselves.
+
+$zip->sendZip("torrents-".date('d.m.Y-H.i')."-{$_SERVER['HTTP_HOST']}.zip");
+die();
+}
 if (!is_valid_id($_GET['id'])) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 $readed = isset($_GET['ok']);
@@ -47,17 +91,17 @@ if ($row['freefor']) {
 
 $already_downloaded = @mysql_result(sql_query("SELECT 1 FROM snatched WHERE torrent = $id AND userid = {$CURUSER['id']}"),0);
 
-$rating_enabled = (($CRON['rating_enabled'] && ((time()-$CURUSER['added'])>($CRON['rating_freetime']*86400)) && ($id<>$CURUSER['last_downloaded']) && ($row['userid']<>$CURUSER['id']) && (get_user_class() <> UC_VIP) && !$userfree && !$row['free'] && !$already_downloaded)?true:false);
+$rating_enabled = (($REL_CRON['rating_enabled'] && ((time()-$CURUSER['added'])>($REL_CRON['rating_freetime']*86400)) && ($id<>$CURUSER['last_downloaded']) && ($row['userid']<>$CURUSER['id']) && (get_user_class() <> UC_VIP) && !$userfree && !$row['free'] && !$already_downloaded)?true:false);
 
 
-if ($rating_enabled && ($CURUSER['ratingsum']<$CRON['rating_downlimit'])) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('rating_low'));
+if ($rating_enabled && ($CURUSER['ratingsum']<$REL_CRON['rating_downlimit'])) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('rating_low'));
 
-$currating = $CURUSER['ratingsum']-$CRON['rating_perdownload'];
+$currating = $CURUSER['ratingsum']-$REL_CRON['rating_perdownload'];
 if ($currating>0) $znak='+';
 /* @var $hubs Get dchubs to display or not dchubs link form */
 $hubs = get_retrackers(false,'dchubs');
 
-if (!$readed) stderr($REL_LANG->say_by_key('downloading_torrent'),($rating_enabled?sprintf($REL_LANG->say_by_key('download_notice'),$CRON['rating_perdownload'],$znak.$currating,$CRON['rating_downlimit']).'<br />':'').'<div align="center"><form action="download.php"><input type="hidden" name="id" value="'.$id.'"><input type="hidden" name="ok" value=""><input type="submit" value="'.$REL_LANG->say_by_key('download_torrent').'">&nbsp;<input type="submit" name="magnet" value="'.$REL_LANG->say_by_key('as_magnet').'">'.(($REL_CONFIG['use_dc']&&$hubs&&$row['tiger_hash'])?'&nbsp;<input type="submit" name="dc_magnet" value="'.$REL_LANG->say_by_key('as_dc_magnet').'">':'').'</form></div>'.(!REL_AJAX?sprintf($REL_LANG->say_by_key('to_details'),$id):''),'success');
+if (!$readed) stderr($REL_LANG->say_by_key('downloading_torrent'),($rating_enabled?sprintf($REL_LANG->say_by_key('download_notice'),$REL_CRON['rating_perdownload'],$znak.$currating,$REL_CRON['rating_downlimit']).'<br />':'').'<div align="center"><form action="download.php"><input type="hidden" name="id" value="'.$id.'"><input type="hidden" name="ok" value=""><input type="submit" value="'.$REL_LANG->say_by_key('download_torrent').'">&nbsp;<input type="submit" name="magnet" value="'.$REL_LANG->say_by_key('as_magnet').'">'.(($REL_CONFIG['use_dc']&&$hubs&&$row['tiger_hash'])?'&nbsp;<input type="submit" name="dc_magnet" value="'.$REL_LANG->say_by_key('as_dc_magnet').'">':'').'</form></div>'.(!REL_AJAX?sprintf($REL_LANG->say_by_key('to_details'),$id):''),'success');
 if ($_GET['magnet']) $magnet = true; else $magnet=false;
 if ($_GET['dc_magnet']) $dc_magnet = true; else $dc_magnet=false;
 
@@ -77,7 +121,7 @@ if (!$magnet && !$dc_magnet) {
 }
 
 sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = ".sqlesc($id));
-if ($rating_enabled) sql_query("UPDATE users SET ratingsum = ratingsum-{$CRON['rating_perdownload']}, last_downloaded=$id WHERE id={$CURUSER['id']}");
+if ($rating_enabled) sql_query("UPDATE users SET ratingsum = ratingsum-{$REL_CRON['rating_perdownload']}, last_downloaded=$id WHERE id={$CURUSER['id']}");
 
 if ($dc_magnet) {
 	if (!$row['tiger_hash']) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_tiger'));
@@ -114,13 +158,13 @@ $dict['type'] = 'dictionary';
 $dict['value']['info'] = bdec_file($fn, (1024*1024));
 
 
-$dict['value']['comment']=bdec(benc_str( "{$REL_CONFIG['defaultbaseurl']}/details.php?id=$id")); // change torrent comment  to URL
+$dict['value']['comment']=bdec(benc_str( $REL_SEO->make_link('details','id',$id,'name',translit($row['name'])))); // change torrent comment  to URL
 $dict['value']['created by']=bdec(benc_str( $row['owner'])); // change created by
 $dict['value']['creation date']=bdec(benc_int($row['added'])); // change created on
 $dict['value']['publisher']=bdec(benc_str( $row['owner'])); // change publisher
 $dict['value']['publisher.utf-8']=bdec(benc_str( $row['owner'])); // change publisher.utf-8
-$dict['value']['publisher-url']=bdec(benc_str( "{$REL_CONFIG['defaultbaseurl']}/userdetails.php?id={$row['userid']}")); // change publisher-url
-$dict['value']['publisher-url.utf-8']=bdec(benc_str( "{$REL_CONFIG['defaultbaseurl']}/userdetails.php?id={$row['userid']}")); // change publisher-url.utf-8
+$dict['value']['publisher-url']=bdec(benc_str( $REL_SEO->make_link('userdetails','id',$row['userid'],'username',$row['owner']))); // change publisher-url
+$dict['value']['publisher-url.utf-8']=bdec(benc_str($REL_SEO->make_link('userdetails','id',$row['userid'],'username',$row['owner']))); // change publisher-url.utf-8
 
 //print('BENCODED: <hr />'.(($row['info_blob'])));
 //die($row['info_blob']);
@@ -133,7 +177,7 @@ header ("X-Powered-by: Kinokpk.com releaser - http://www.kinokpk.com - http://de
 header ("Accept-Ranges: bytes");
 header ("Connection: close");
 header ("Content-Transfer-Encoding: binary");
-header ("Content-Disposition: attachment; filename=\"{$_SERVER['HTTP_HOST']}-$id-".translit($row['name']).".torrent\"");
+header ("Content-Disposition: attachment; filename=\"".str_replace('/','---',translit($row['name']))."-{$id}-{$_SERVER['HTTP_HOST']}.torrent\"");
 header ("Content-Type: application/x-bittorrent");
 ob_implicit_flush(true);
 

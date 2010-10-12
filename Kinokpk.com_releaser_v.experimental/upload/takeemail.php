@@ -27,7 +27,7 @@ while ($a = mysql_fetch_assoc($res))
 EOD;
 	sent_mail($a["email"], $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], $subject, $message);
 }
-stdhead($REL_LANG->say_by_key('bulk_email'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('bulk_email'));
 stdmsg($REL_LANG->say_by_key('success'), "".$REL_LANG->say_by_key('mailer_seccessful')." $counter ".$REL_LANG->say_by_key('messages')."");
-stdfoot();
+$REL_TPL->stdfoot();
 ?>

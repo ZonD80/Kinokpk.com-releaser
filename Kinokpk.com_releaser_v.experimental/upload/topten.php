@@ -28,10 +28,10 @@ dbconn();
 
 loggedinorreturn();
 
-stdhead($REL_LANG->say_by_key('topten'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('topten'));
 $res = sql_query("SELECT SUM(1) FROM users") or sqlerr(__FILE__, __LINE__);
 $count = mysql_result($res,0);
-if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); stdfoot(); die(); }
+if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); $REL_TPL->stdfoot(); die(); }
 $perpage = 10;
 list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $_SERVER['PHP_SELF'] . "?".$q);
 
@@ -64,6 +64,6 @@ print("</table>\n");
 print ("<p>$pagerbottom</p>");
 print('</div>');
 
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

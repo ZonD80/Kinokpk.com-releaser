@@ -126,6 +126,11 @@ table.tt td.tt {
 	line-height: 15px;
 }
 
+.sp-body a {
+	font-style: italic;
+	font-weight: bold;
+}
+
 .sp-body {
 	padding: 3px 5px;
 	display: none;

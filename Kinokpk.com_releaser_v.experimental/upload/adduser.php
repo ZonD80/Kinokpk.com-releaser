@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	safe_redirect("../".$REL_SEO->make_link('userdetails','id',$id,'username',$username));
 	die;
 }
-stdhead($REL_LANG->say_by_key('add_user'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('add_user'));
 ?>
 <h1><?=$REL_LANG->say_by_key('add_user');?></h1>
 <form method=post action="<?=$REL_SEO->make_link('adduser')?>">
@@ -62,4 +62,4 @@ stdhead($REL_LANG->say_by_key('add_user'));
 	</tr>
 </table>
 </form>
-<? stdfoot(); ?>
+<? $REL_TPL->stdfoot(); ?>

@@ -67,13 +67,22 @@ list($name,$nofr) = @mysql_fetch_array(sql_query("SELECT name,filename FROM torr
 if ($nofr == 'nofile') die ("Блядь ну хули смотреть? Это не торрент релиз! Данных о торренте нет! <a href='".$REL_SEO->make_link('details','id',$id,'name',translit($name))."'>К описанию релиза</a>");
 elseif (!$nofr) 	stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
-$nof = sql_query("SELECT tracker,lastchecked,state,seeders,leechers FROM trackers WHERE torrent = $id ORDER by lastchecked DESC");
-while (list($tracker,$lastchecked,$state,$seeders,$leechers) = mysql_fetch_array($nof)) {
+$nof = sql_query("SELECT tracker,lastchecked,state,method,remote_method,seeders,leechers,num_failed FROM trackers WHERE torrent = $id ORDER by lastchecked DESC");
+while (list($tracker,$lastchecked,$state,$method,$remote_method,$seeders,$leechers,$num_failed) = mysql_fetch_array($nof)) {
 	if ($tracker=='localhost') {
 		$data[$i]['tracker'] = $REL_CONFIG['defaultbaseurl'];
-		$data[$i]['state'] = 'ok_local';
+		$data[$i]['state'] = 'ok';
+		$data[$i]['method'] = 'local';
+		$data[$i]['remote_method'] = 'N/A';
+		$data[$i]['num_failed'] = 'N/A';
 	}
-	else { $data[$i]['tracker']=$tracker;   $data[$i]['state'] = $state; }
+	else { 
+	$data[$i]['tracker']=$tracker;   
+	$data[$i]['state'] = $state;
+	$data[$i]['method'] = $method;
+	$data[$i]['remote_method'] = $remote_method;
+	$data[$i]['num_failed'] = $num_failed;
+	 }
 
 	$data[$i]['lastchecked'] = get_elapsed_time($lastchecked)." {$REL_LANG->say_by_key('ago')}";
 	$data[$i]['seeders'] = $seeders;
@@ -81,20 +90,20 @@ while (list($tracker,$lastchecked,$state,$seeders,$leechers) = mysql_fetch_array
 	$i++;
 }
 
-stdhead("Данные о торенте");
+$REL_TPL->stdhead("Данные о торенте");
 print("<h1>Данные о торенте</h1>\n");
 print("<div id=\"tabs\"><ul>
 	<li class=\"tab2\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($name))."\"><span>Описание</span></a></li>
 	<li nowrap=\"\" class=\"tab1\"><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name))."\"><span>{$REL_LANG->say_by_key('torrent_info')}</span></a></li>
-	<li nowrap=\"\" class=\"tab2\"><a href=\"".$REL_SEO->make_link('exportrelease','id',$id,'name',translit($row['name']))."\"><span>{$REL_LANG->say_by_key('exportrelease_mname')}</span></a></li>
+	<li nowrap=\"\" class=\"tab2\"><a href=\"".$REL_SEO->make_link('exportrelease','id',$id,'name',translit($name))."\"><span>{$REL_LANG->say_by_key('exportrelease_mname')}</span></a></li>
 	</ul></div>\n <br />");
-print('<table width="100%" style="float:left"><tr><td class="colhead">'.$REL_LANG->say_by_key('tracker').'</td><td class="colhead">Сидов</td><td class="colhead">Личей</td><td class="colhead">Всего</td><td class="colhead">Время проверки</td><td class="colhead">'.$REL_LANG->say_by_key('status').'</td></tr>');
+print('<table width="100%" style="float:left"><tr><td class="colhead">'.$REL_LANG->say_by_key('tracker').'</td><td class="colhead">Сидов</td><td class="colhead">Личей</td><td class="colhead">Всего</td><td class="colhead">Время проверки</td><td class="colhead">'.$REL_LANG->say_by_key('status').'</td><td class="colhead">'.$REL_LANG->_('Method of check').'</td>'.((get_user_class()>=UC_ADMINISTRATOR)?'<td class="colhead">'.$REL_LANG->_('Method of request').'</td><td class="colhead">'.$REL_LANG->_('Amount of fails').'</td>':'').'</tr>');
 if ($data)
 foreach ($data as $tracker)
-print ("<tr><td>".$tracker['tracker']."</td><td>{$tracker['seeders']}</td><td>{$tracker['leechers']}</td><td>".($tracker['seeders']+$tracker['leechers'])."</td><td>{$tracker['lastchecked']}</td><td>".cleanhtml($tracker['state'])."</td></tr>");
+print ("<tr><td>".$tracker['tracker']."</td><td>{$tracker['seeders']}</td><td>{$tracker['leechers']}</td><td>".($tracker['seeders']+$tracker['leechers'])."</td><td>{$tracker['lastchecked']}</td><td>".cleanhtml($tracker['state'])."</td><td>{$tracker['method']}</td>".((get_user_class()>=UC_ADMINISTRATOR)?"<td>{$tracker['remote_method']}</td><td>{$tracker['num_failed']}</td>":'')."</tr>");
 //print('</table>');
 else print ('<tr><td colspan="6" align="center">Данный релиз является анонсом или релизом без торрента</td></tr>');
-end_frame();
+$REL_TPL->end_frame();
 
 
 print('<h3><a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'info','').'">Посмотреть структуру торрент-файла</a> или <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'dllist','').'">Посмотреть списки пиров на сайте</a></h3>');
@@ -163,7 +172,7 @@ if (isset($_GET['info'])) {
 	$fn = "torrents/$id.torrent";
 
 	if (!is_readable($fn)) {
-		stdmsg($REL_LANG->say_by_key('error'),'Невозможно прочитать torrent-файл','error');   stdfoot(); die(); }
+		stdmsg($REL_LANG->say_by_key('error'),'Невозможно прочитать torrent-файл','error');   $REL_TPL->stdfoot(); die(); }
 		?>
 
 <style type="text/css">
@@ -236,7 +245,7 @@ li span.title {
 
 		<?php
 
-		begin_main_frame();
+		$REL_TPL->begin_main_frame();
 
 		$info = bdec_file($fn, (1024*1024));
 
@@ -334,7 +343,7 @@ compactMenu('colapse',false,'');
 
 		<?
 		// Standard html footers
-		end_main_frame();
+	
 }
 elseif (isset($_GET['dllist'])) {
 	$downloaders = array();
@@ -351,6 +360,7 @@ elseif (isset($_GET['dllist'])) {
 	tr("<div id=\"leechers\"></div>".$REL_LANG->say_by_key('details_leeching'), dltable($REL_LANG->say_by_key('details_leeching'), $downloaders, $row), 1);
 	print '</table>';
 }
-stdfoot();
+$REL_TPL->end_main_frame();
+$REL_TPL->stdfoot();
 
 ?>

@@ -50,7 +50,7 @@ list($pagertop, $pagerbottom, $limit) = pager($torrentsperpage, $count, $REL_SEO
 
 $cheaters = sql_query("SELECT p.torrent AS tid, t.name AS tname, p.ip, p.port, p.seeder, p.peer_id, p.userid, u.username, u.class, u.enabled, u.warned, u.donor, u.ratingsum FROM peers AS p INNER JOIN users AS u ON u.id = p.userid INNER JOIN torrents AS t ON t.id = p.torrent WHERE u.enabled = 1 ".$condition." ORDER BY p.last_action DESC $limit") or sqlerr(__FILE__,__LINE__);
 
-stdhead("Статистика пиров");
+$REL_TPL->stdhead("Статистика пиров");
 print($pagertop);
 
 print("<table cellpadding=\"3\" cellspacing=\"0\" width=\"100%\">");
@@ -77,6 +77,6 @@ print("</table>");
 
 print($pagerbottom);
 
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

@@ -9,6 +9,7 @@
 * @link http://dev.kinokpk.com
 */
 
+
 if(!defined('IN_TRACKER') && !defined('IN_ANNOUNCE')) die("Direct access to this page not allowed");
 
 $mysql_host = 'localhost';
@@ -16,13 +17,6 @@ $mysql_user = '';
 $mysql_pass = '';
 $mysql_db = '';
 $mysql_charset = 'CP1251';
-
-$fmysql_host = 'localhost';
-$fmysql_user = '';
-$fmysql_pass = '';
-$fmysql_db = '';
-$fmysql_charset = 'UTF8';
-$fprefix = 'ibf_';
 
 define("COOKIE_SECRET",'');
 ?>

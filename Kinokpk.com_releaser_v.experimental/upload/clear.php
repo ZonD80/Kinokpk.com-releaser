@@ -3,8 +3,8 @@
 require "include/bittorrent.php";
 dbconn();
 
-stdhead();
+$REL_TPL->stdhead();
 
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

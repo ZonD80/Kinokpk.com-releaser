@@ -12,7 +12,7 @@ $resource = $REL_CACHE->get('block-news', 'query');
 if ($resource===false) {
 
 	$resource = array();
-	$resourcerow = sql_query("SELECT news.* , COUNT(newscomments.id) AS numcomm FROM news LEFT JOIN newscomments ON news.id = newscomments.news GROUP BY news.id ORDER BY news.added DESC LIMIT 3") or sqlerr(__FILE__, __LINE__);
+	$resourcerow = sql_query("SELECT * FROM news GROUP BY news.id ORDER BY news.added DESC LIMIT 3") or sqlerr(__FILE__, __LINE__);
 	while ($res = mysql_fetch_array($resourcerow))
 	$resource[] = $res;
 
@@ -30,7 +30,7 @@ if ($resource) {
 				$content .= "[<a href=\"".$REL_SEO->make_link('news','action','edit','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>E</b></a>]";
 				$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
 			}
-			$content .= "".$REL_LANG->say_by_key('comms_2')."".$array['numcomm']." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$array['id'])."#comments\">".$REL_LANG->say_by_key('to_comment')."</a>]</div>";
+			$content .= "".$REL_LANG->say_by_key('comms_2')."".$array['comments']." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$array['id'])."#comments\">".$REL_LANG->say_by_key('to_comment')."</a>]</div>";
 			$content .= "</div></div>";
 			$news_flag = 1;
 		} else {
@@ -41,7 +41,7 @@ if ($resource) {
 				$content .= "[<a href=\"".$REL_SEO->make_link('news','action','edit','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>E</b></a>]";
 				$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
 			}
-			$content .= "".$REL_LANG->say_by_key('comms_2')."".$array['numcomm']." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$array['id'])."\">".$REL_LANG->say_by_key('to_comment')."</a>]</div>";
+			$content .= "".$REL_LANG->say_by_key('comms_2')."".$array['comments']." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$array['id'])."\">".$REL_LANG->say_by_key('to_comment')."</a>]</div>";
 			$content .= "</div></div>";
 		}
 	}

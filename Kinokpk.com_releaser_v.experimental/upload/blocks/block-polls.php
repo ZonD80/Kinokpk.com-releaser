@@ -1,5 +1,5 @@
 <?php
-global $CURUSER, $REL_LANG, $ss_uri, $REL_CACHE, $REL_SEO;
+global $CURUSER, $REL_LANG, $REL_CACHE, $REL_SEO, $REL_CONFIG;
 if (!defined('BLOCK_FILE')) {
 	safe_redirect(" ../".$REL_SEO->make_link('index'));
 	exit;
@@ -36,7 +36,7 @@ if ($CURUSER) {
 
 		$pollres = $REL_CACHE->get('block-polls', 'query');
 		if($pollres===false){
-			$poll = sql_query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class,(SELECT SUM(1) FROM pollcomments WHERE poll = $id) AS numcomm FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
+			$poll = sql_query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
 
 			while ($pollarray = mysql_fetch_array($poll))
 			$pollres[] = $pollarray;
@@ -49,7 +49,7 @@ if ($CURUSER) {
 			$pstart[] = $pollarray['start'];
 			$pexp[] = $pollarray['exp'];
 			$public[] = $pollarray['public'];
-			$comments[] = $pollarray['numcomm'];
+			$comments[] = $pollarray['comments'];
 			$sidvalues[$pollarray['sid']] = $pollarray['value'];
 			$votes[] = array($pollarray['sid'] => array('vid'=>$pollarray['vid'],'userid'=>$pollarray['user'],'username'=>$pollarray['username'],'userclass'=>$pollarray['class']));
 			$sids[] = $pollarray['sid'];
@@ -131,7 +131,7 @@ if ($CURUSER) {
   <input type=\"radio\" name=\"vote\" value=\"$vsid\" />
   <input type=\"hidden\" name=\"type\" value=\"$ptype\" />".$sidvals[$sidkey];
 			else $content .= "<ul><li class=\"polls_r\">".$sidvals[$sidkey];
-			$content .="</li><li class=\"polls_l\"><img src=\"./themes/$ss_uri/images/bar_left.gif\" alt=\"left\" /><img src=\"./themes/$ss_uri/images/bar.gif\" alt=\"center\" height=\"12\" width=\"".round($percentpervote*$votecount[$vsid])."%\" /><img src=\"./themes/$ss_uri/images/bar_right.gif\" alt=\"right\" />&nbsp;&nbsp;$percent%, голосов: ".$votecount[$vsid]."</li></ul>";
+			$content .="</li><li class=\"polls_l\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_left.gif\" alt=\"left\" /><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar.gif\" alt=\"center\" height=\"12\" width=\"".round($percentpervote*$votecount[$vsid])."%\" /><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_right.gif\" alt=\"right\" />&nbsp;&nbsp;$percent%, голосов: ".$votecount[$vsid]."</li></ul>";
 		}
 		if (((!is_null($pexp) && ($pexp > time())) || is_null($pexp)) && !$voted) $novote=true;
 		if ($novote) $content .="<ul class=\"polls_f\"><li><input type=\"submit\" class=\"button\" value=\"√олосовать за этот вариант!\" style=\"margin-top: 2px;\"/></li>";

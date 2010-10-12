@@ -61,7 +61,7 @@ if ($HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST")
 
 }
 
-stdhead($REL_LANG->say_by_key('upd_users_inv_amn'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('upd_users_inv_amn'));
 
 ?>
 
@@ -89,4 +89,4 @@ stdhead($REL_LANG->say_by_key('upd_users_inv_amn'));
 
 </form>
 
-<? stdfoot(); ?>
+<? $REL_TPL->stdfoot(); ?>

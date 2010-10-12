@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 $res = sql_query("SELECT * FROM bannedemails ORDER BY added DESC") or sqlerr(__FILE__, __LINE__);
 
-stdhead("Бан Емайлов");
+$REL_TPL->stdhead("Бан Емайлов");
 
 print("<h1>Список банов</h1>\n");
 
@@ -70,6 +70,6 @@ print("<tr><td colspan=2>Изпользуйте *@email.com чтобы забанить весь домейн</td>
 print("<tr><td colspan=2><input type=\"submit\" value=\"Забанить\" class=\"btn\"></td></tr>\n");
 print("</form>\n</table>\n");
 
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

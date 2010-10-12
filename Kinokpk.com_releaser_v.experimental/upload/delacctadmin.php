@@ -35,12 +35,11 @@ if ($HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST")
 	$avatar = $arr['avatar'];
 	$class = $arr['class'];
 	if ($class >= $CURUSER['class']) stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('cant_dell_acc'));
-	delete_ipb_user($arr["email"]);
 	delete_user($id);
 	@unlink(ROOT_PATH.$avatar);
 	stderr($REL_LANG->say_by_key('success'), "".$REL_LANG->say_by_key('account')." <b>$email</b> ".$REL_LANG->say_by_key('removed')."");
 }
-stdhead($REL_LANG->say_by_key('delete_account'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('delete_account'));
 ?>
 <h1><?=$REL_LANG->say_by_key('delete_account')?></h1>
 <table border=1 cellspacing=0 cellpadding=5>
@@ -57,5 +56,5 @@ stdhead($REL_LANG->say_by_key('delete_account'));
 	</form>
 </table>
 <?
-stdfoot();
+$REL_TPL->stdfoot();
 ?>

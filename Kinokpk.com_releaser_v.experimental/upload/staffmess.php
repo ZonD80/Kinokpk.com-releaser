@@ -17,21 +17,22 @@ httpauth();
 if (get_user_class() < UC_ADMINISTRATOR)
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
-stdhead("Общее сообщение", false);
+$REL_TPL->stdhead("Общее сообщение", false);
 ?>
 <table class=main width=100% border=0 cellspacing=0 cellpadding=0>
 	<tr>
 		<td class=embedded>
 		<div align=center>
-		<form method=post name=message action="<?=$REL_SEO->make_link('takestaffmess');?>"><?
+		<form method=post name=message
+			action="<?=$REL_SEO->make_link('takestaffmess');?>"><?
 
-		if ($_GET["returnto"] || $_SERVER["HTTP_REFERER"])
-		{
-			?> <input type=hidden name=returnto
+			if ($_GET["returnto"] || $_SERVER["HTTP_REFERER"])
+			{
+				?> <input type=hidden name=returnto
 			value=<?=$_GET["returnto"] ? urlencode($_GET["returnto"]) : urlencode($_SERVER["HTTP_REFERER"])?>>
 			<?
-		}
-		?>
+			}
+			?>
 		<table cellspacing=0 cellpadding=5>
 			<tr>
 				<td class="colhead" colspan="2">Общее сообщение всем членам
@@ -81,6 +82,6 @@ stdhead("Общее сообщение", false);
 		</td>
 	</tr>
 </table>
-<?
-		stdfoot();
+					<?
+					$REL_TPL->stdfoot();
 		?>

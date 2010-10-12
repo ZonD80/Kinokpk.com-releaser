@@ -37,6 +37,13 @@ $(function() {
         src: 'pic/imgmiss.gif'
         });
     });
+ 
+ $('#toggle-all').click(
+		   function()
+		   {
+		      $("INPUT[type='checkbox']").attr('checked', $('#toggle-all').is(':checked'));   
+		   }
+		);
 }
 
 function rateit(rid,rtype,rate) {
@@ -75,14 +82,6 @@ function notifyme(cid,id,type,act) {
 return false;
 
 }
-$(function(){
-				
-				$('#toggle-all').click(function(){
-					$('#message input[type=checkbox]').checkBox('toggle');
-					return false;
-				});
-				
-			});
 
 //Get user selection text on page
 function getSelectedText() {
@@ -105,7 +104,40 @@ function quote_comment(nickname) {
 	} else {
 		$("input[name=text]").append(insert);
 	}
+	$.scrollTo("#rel_wysiwyg");
 	}
 	
 }
+
+function delete_comment(id) {
+	sure = confirm(REL_LANG_ARE_YOU_SURE);
+	if (!sure) return false;
+	$.get('comments.php',{action: 'delete', 'cid[]': [id] },function(data){
+		$("#comm"+id).html('<h1>'+data+'</h1>');
+		$("#comm"+id).fadeOut('slow');
+		});
+	return false;
+}
+
+function send_comment(type,to_id) {
+	$("#submit_button").attr('disabled', true);
+	if (tinyMCE) {
+		tinyMCE.triggerSave();
+		content = tinyMCE.activeEditor.getContent();
+	} else content = $("input[name=text]").val();
+	$('<div id="loading" align="center"><img src="pic/loading.gif" border="0"/></div>').insertBefore("#newcomment_placeholder").slideDown('slow');
+	$.post('comments.php?action=add&type='+type,{to_id: to_id, text: content}, function (data) {
+	$('#loading').hide();
+	$('#newcomment_placeholder').slideUp('slow');
+	$('#loading').html(data).slideDown('slow');
+	$('#loading').removeAttr('id');
+	//$("#old").before('<div id="newcomment_placeholder" style="visible:none;"></div>');
+	});
+	if (tinyMCE) {
+		 tinyMCE.activeEditor.setContent('');
+	} else $("input[name=text]").val('');
+	$("#submit_button").removeAttr('disabled');
+	return false;
+}
 var REL_LANG_NO_TEXT_SELECTED = 'Не выбран текст!';
+var REL_LANG_ARE_YOU_SURE = 'Вы верены?';

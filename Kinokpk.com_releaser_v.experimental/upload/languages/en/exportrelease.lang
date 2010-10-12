@@ -1,6 +1,0 @@
-// LANGUAGE FILE: RUSSIAN
-// MODULE: exportrelease.php
-exportrelease_notice=Description
-exportrelease_warning=<b>Warning!</b> At placing of our release on other sites the reference to our site is obligatory!
-exportrelease_mname=Export release to another site
-select_all=Select All

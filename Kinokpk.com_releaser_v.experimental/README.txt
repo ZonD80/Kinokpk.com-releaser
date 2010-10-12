@@ -1,4 +1,9 @@
-TESTING VERSION ONLY
+Kinokpk.com relaseer | EXPERIMENTAL
 
-languages folder is unneeded!
-use langparser.php to parse languages
+TESTING ONLY!
+
+INSTALLATION:
+Import releaser_experimental.sql to your database.
+Do sql-query: UPDATE cache_stats SET cache_value='http://yoursite.com' WHERE cache_name='defaultbaseurl'
+Edit include/secrets.php for your database.
+Have fun!

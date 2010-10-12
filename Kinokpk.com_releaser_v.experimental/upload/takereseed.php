@@ -61,10 +61,10 @@ sql_query("UPDATE torrents SET last_reseed = ".time()." WHERE id = $id") or sqle
 
 safe_redirect($REL_SEO->make_link('details','id',$id,'name',translit($row['name'])),2);
 
-stdhead("Позвать скачавших на торрент $row[name]");
+$REL_TPL->stdhead("Позвать скачавших на торрент $row[name]");
 
 stdmsg("Успешно", "Ваш запрос на призыв скачавших выполнен. Ждите результатов в течение суток, иначе повторите запрос.");
 
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

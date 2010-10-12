@@ -30,7 +30,7 @@ if ($action == 'delete')
 	$returnto = makesafe($_GET["returnto"]);
 
 	sql_query("DELETE FROM news WHERE id=$newsid") or sqlerr(__FILE__, __LINE__);
-	sql_query("DELETE FROM newscomments WHERE news=$newsid") or sqlerr(__FILE__, __LINE__);
+	sql_query("DELETE FROM comments WHERE toid=$newsid AND type='news'") or sqlerr(__FILE__, __LINE__);
 	sql_query("DELETE FROM notifs WHERE type='newscomments' AND checkid=$newsid") or sqlerr(__FILE__, __LINE__);
 
 	$REL_CACHE->clearGroupCache("block-news");
@@ -106,7 +106,7 @@ elseif ($action == 'edit')
 
 		$arr = mysql_fetch_array($res);
 		$returnto = makesafe($_GET['returnto']);
-		stdhead("Редактирование новости");
+		$REL_TPL->stdhead("Редактирование новости");
 		print("<form method=post name=news action=\"".$REL_SEO->make_link('news','action','edit','newsid',$newsid)."\">\n");
 		print("<table border=1 cellspacing=0 cellpadding=5>\n");
 		print("<tr><td class=colhead>Редактирование новости<input type=hidden name=returnto value=$returnto></td></tr>\n");
@@ -118,14 +118,14 @@ elseif ($action == 'edit')
 		print("<tr><td align=center><input type=submit value='Отредактировать'></td></tr>\n");
 		print("</table>\n");
 		print("</form>\n");
-		stdfoot();
+		$REL_TPL->stdfoot();
 		die;
 	}
 }
 
 //   Other Actions and followup    ////////////////////////////////////////////
 
-stdhead("Новости");
+$REL_TPL->stdhead("Новости");
 if ($warning)
 print("<p><font size=-3>($warning)</font></p>");
 print("<form method=post name=news action=\"".$REL_SEO->make_link('news','action','add')."\">\n");
@@ -139,5 +139,5 @@ print("</textarea></td></tr>\n");
 print("<tr><td align=center><input type=submit value='Добавить' class=btn></td></tr>\n");
 print("</table></form><br /><br />\n");
 
-stdfoot();
+$REL_TPL->stdfoot();
 ?>

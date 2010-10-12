@@ -88,7 +88,7 @@ Wellington (GMT +12)');
 
 /**
  * Default redirect function
- * @param string|array $url URL of redirection or array of GET values.
+ * @param string|array $url URL of redirection.
  * <code>
  * safe_redirect('index.php?id=300&view=deleted');
  * </code>
@@ -97,7 +97,7 @@ Wellington (GMT +12)');
  */
 function safe_redirect($url,$timeout = 0) {
 	$url = trim($url);
-	if (REL_AJAX || ob_get_length()) print('
+	/*if (REL_AJAX || ob_get_length())*/ print('
     <script type="text/javascript" language="javascript">
     function Redirect() {
       location.href = "'.addslashes($url).'";
@@ -105,7 +105,7 @@ function safe_redirect($url,$timeout = 0) {
       setTimeout(\'Redirect()\','.($timeout*1000).');
     </script>
 ');
-	else header("Refresh: $timeout; url=$url");
+	//else header("Refresh: $timeout; url=$url");
 	return;
 }
 /**
@@ -117,18 +117,21 @@ function safe_redirect($url,$timeout = 0) {
  */
 
 function ratearea($currating,$currid,$type,$owner_id = 0) {
-	global $CURUSER,$ALREADY_RATED, $REL_LANG, $REL_CONFIG, $REL_SEO;
+	global $CURUSER, $REL_LANG, $REL_CONFIG, $REL_SEO;
 	if ($currating>0) $znak='+';
 	$text='<strong>'.$znak.$currating.'</strong>';
 	if (!$currid || !$CURUSER) return $text;
-	if (!is_array($ALREADY_RATED[$type])) {
-		$ALREADY_RATED[$type]=array();
+	//if (get_user_class()==UC_SYSOP) var_dump($ALREADY_RATED);
+	if (!$_SESSION['already_rated']) {
+		$allowed_types = array('torrents','users','relcomments','pollcomments','newscomments','usercomments','reqcomments','relgroups','rgcomments');
+		foreach  ($allowed_types as $atype) $_SESSION['already_rated'][$atype] = array();
+
 		$res = sql_query("SELECT rid,type FROM ratings WHERE userid={$CURUSER['id']}");
 		while (list($rid,$rtype) = mysql_fetch_array($res)) {
-			$ALREADY_RATED[$rtype][] = $rid;
+			$_SESSION['already_rated'][$rtype][] = $rid;
 		}
 	}
-	if (@in_array($currid,$ALREADY_RATED[$type]) || ($currid==$owner_id))
+	if (@in_array($currid,$_SESSION['already_rated'][$type]) || ($currid==$owner_id))
 	return ('
 	<div style="display:inline;" id="ratearea-'.$currid.'-'.$type.'" class="ratearea">
 		&nbsp;'.$text.'
@@ -148,17 +151,18 @@ function ratearea($currating,$currid,$type,$owner_id = 0) {
  * @return string report area with link to reporting script
  */
 function reportarea($id,$type) {
-	global $CURUSER,$ALREADY_REPORTED, $REL_LANG,$REL_SEO;
+	global $CURUSER, $REL_LANG, $REL_SEO;
 	if (!$id || !$CURUSER) return '';
-	if (!is_array($ALREADY_REPORTED[$type])) {
-		$ALREADY_REPORTED[$type]=array();
+	if (!$_SESSION['already_reported']) {
+		$allowed_types = array ('messages', 'torrents', 'users', 'comments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'relgroups', 'rgcomments');
+		foreach ($allowed_types as $atype) $_SESSION['already_reported'][$atype] = array();
 		$res = sql_query("SELECT reportid,type,motive FROM reports WHERE userid={$CURUSER['id']}");
 		while (list($reportid,$rtype,$motive) = mysql_fetch_array($res)) {
-			$ALREADY_REPORTED[$rtype][$reportid] = $motive;
+			$_SESSION['already_reported'][$rtype][$reportid] = $motive;
 		}
 	}
 	$text='<strong>'.$REL_LANG->say_by_key('you_already_reported').($motive?' '.$REL_LANG->say_by_key('report_reason').$motive:'').'</strong>';
-	if (@array_key_exists($id,$ALREADY_RATED[$type])) return $text;
+	if (@array_key_exists($id,$_SESSION['already_reported'][$type])) return $text;
 	else return ('&nbsp;<div style="display:inline;" id="reportarea-'.$id.'-'.$type.'">[<a class="altlink_white" href="'.$REL_SEO->make_link('report','id',$id,'type',$type).'">'.$REL_LANG->say_by_key('report_it').'</a>]&nbsp;</div>');
 
 }
@@ -182,16 +186,6 @@ function remote_fsize($path)
 			return trim($v[1]);
 		}
 	} else return FALSE;
-}
-
-/**
- * Sets charset to database connection.
- * @param string $charset Charset to be set
- * @return void
- */
-function my_set_charset($charset) {
-	if (!function_exists("mysql_set_charset") || !mysql_set_charset($charset)) mysql_query("SET NAMES $charset");
-	return;
 }
 
 /**
@@ -246,7 +240,7 @@ function makesafe($text) {
  * Generates WYSIWYG code
  */
 function wysiwyg_init() {
-	global $REL_CONFIG, $CURUSER, $ss_uri;
+	global $REL_CONFIG, $CURUSER;
 	define ("WYSIWYG_REQUIRED",true);
 
 	$lang = (($CURUSER['language']=='ua')?'uk':$CURUSER['language']);
@@ -277,271 +271,14 @@ plugins : \'style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inser
    force_br_newlines : true,
    force_p_newlines : false,
    theme : "advanced",
-	content_css : "/themes/'.$ss_uri.'/'.$ss_uri.'.css",
+	content_css : "/themes/'.$REL_CONFIG['ss_uri'].'/'.$REL_CONFIG['ss_uri'].'.css",
     language: "'.$lang.'",
     	mode : "exact",
 	elements : "rel_wysiwyg",
 	template_replace_values : {
 		username : "'.$CURUSER['username'].'"
 	},
-verify_html : true,
-	 valid_elements : ""
-	 +"a[accesskey|charset|class|coords|dir<ltr?rtl|href|hreflang|id|lang|name"
-	 +"|onblur|onclick|ondblclick|onfocus|onkeydown|onkeypress|onkeyup"
-	 +"|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|rel|rev"
-	 +"|shape<circle?default?poly?rect|style|tabindex|title|target|type],"
-	 +"abbr[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"acronym[class|dir<ltr?rtl|id|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"address[class|align|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown"
-	 +"|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover"
-	 +"|onmouseup|style|title],"
-	 +"applet[align<bottom?left?middle?right?top|alt|archive|class|code|codebase"
-	 +"|height|hspace|id|name|object|style|title|vspace|width],"
-	 +"area[accesskey|alt|class|coords|dir<ltr?rtl|href|id|lang|nohref<nohref"
-	 +"|onblur|onclick|ondblclick|onfocus|onkeydown|onkeypress|onkeyup"
-	 +"|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup"
-	 +"|shape<circle?default?poly?rect|style|tabindex|title|target],"
-	 +"base[href|target],"
-	 +"basefont[color|face|id|size],"
-	 +"bdo[class|dir<ltr?rtl|id|lang|style|title],"
-	 +"big[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"blockquote[dir|style|cite|class|dir<ltr?rtl|id|lang|onclick|ondblclick"
-	 +"|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout"
-	 +"|onmouseover|onmouseup|style|title],"
-	 +"body[alink|background|bgcolor|class|dir<ltr?rtl|id|lang|link|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onload|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|onunload|style|title|text|vlink],"
-	 +"br[class|clear<all?left?none?right|id|style|title],"
-	 +"button[accesskey|class|dir<ltr?rtl|disabled<disabled|id|lang|name|onblur"
-	 +"|onclick|ondblclick|onfocus|onkeydown|onkeypress|onkeyup|onmousedown"
-	 +"|onmousemove|onmouseout|onmouseover|onmouseup|style|tabindex|title|type"
-	 +"|value],"
-	 +"caption[align<bottom?left?right?top|class|dir<ltr?rtl|id|lang|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"center[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"cite[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"code[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"col[align<center?char?justify?left?right|char|charoff|class|dir<ltr?rtl|id"
-	 +"|lang|onclick|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown"
-	 +"|onmousemove|onmouseout|onmouseover|onmouseup|span|style|title"
-	 +"|valign<baseline?bottom?middle?top|width],"
-	 +"colgroup[align<center?char?justify?left?right|char|charoff|class|dir<ltr?rtl"
-	 +"|id|lang|onclick|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown"
-	 +"|onmousemove|onmouseout|onmouseover|onmouseup|span|style|title"
-	 +"|valign<baseline?bottom?middle?top|width],"
-	 +"dd[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress|onkeyup"
-	 +"|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"del[cite|class|datetime|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown"
-	 +"|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover"
-	 +"|onmouseup|style|title],"
-	 +"dfn[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"dir[class|compact<compact|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown"
-	 +"|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover"
-	 +"|onmouseup|style|title],"
-	 +"div[align<center?justify?left?right|class|dir<ltr?rtl|id|lang|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"dl[class|compact<compact|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown"
-	 +"|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover"
-	 +"|onmouseup|style|title],"
-	 +"dt[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress|onkeyup"
-	 +"|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"em/i[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"fieldset[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"font[class|color|dir<ltr?rtl|face|id|lang|size|style|title],"
-	 +"form[accept|accept-charset|action|class|dir<ltr?rtl|enctype|id|lang"
-	 +"|method<get?post|name|onclick|ondblclick|onkeydown|onkeypress|onkeyup"
-	 +"|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|onreset|onsubmit"
-	 +"|style|title|target],"
-	 +"frame[class|frameborder|id|longdesc|marginheight|marginwidth|name"
-	 +"|noresize<noresize|scrolling<auto?no?yes|src|style|title],"
-	 +"frameset[class|cols|id|onload|onunload|rows|style|title],"
-	 +"h1[align<center?justify?left?right|class|dir<ltr?rtl|id|lang|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"h2[align<center?justify?left?right|class|dir<ltr?rtl|id|lang|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"h3[align<center?justify?left?right|class|dir<ltr?rtl|id|lang|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"h4[align<center?justify?left?right|class|dir<ltr?rtl|id|lang|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"h5[align<center?justify?left?right|class|dir<ltr?rtl|id|lang|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"h6[align<center?justify?left?right|class|dir<ltr?rtl|id|lang|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"head[dir<ltr?rtl|lang|profile],"
-	 +"hr[align<center?left?right|class|dir<ltr?rtl|id|lang|noshade<noshade|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|size|style|title|width],"
-	 +"html[dir<ltr?rtl|lang|version],"
-	 +"iframe[align<bottom?left?middle?right?top|class|frameborder|height|id"
-	 +"|longdesc|marginheight|marginwidth|name|scrolling<auto?no?yes|src|style"
-	 +"|title|width],"
-	 +"img[align<bottom?left?middle?right?top|alt|border|class|dir<ltr?rtl|height"
-	 +"|hspace|id|ismap<ismap|lang|longdesc|name|onclick|ondblclick|onkeydown"
-	 +"|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover"
-	 +"|onmouseup|src|style|title|usemap|vspace|width],"
-	 +"input[accept|accesskey|align<bottom?left?middle?right?top|alt"
-	 +"|checked<checked|class|dir<ltr?rtl|disabled<disabled|id|ismap<ismap|lang"
-	 +"|maxlength|name|onblur|onclick|ondblclick|onfocus|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|onselect"
-	 +"|readonly<readonly|size|src|style|tabindex|title"
-	 +"|type<button?checkbox?file?hidden?image?password?radio?reset?submit?text"
-	 +"|usemap|value],"
-	 +"ins[cite|class|datetime|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown"
-	 +"|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover"
-	 +"|onmouseup|style|title],"
-	 +"isindex[class|dir<ltr?rtl|id|lang|prompt|style|title],"
-	 +"kbd[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"label[accesskey|class|dir<ltr?rtl|for|id|lang|onblur|onclick|ondblclick"
-	 +"|onfocus|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout"
-	 +"|onmouseover|onmouseup|style|title],"
-	 +"legend[align<bottom?left?right?top|accesskey|class|dir<ltr?rtl|id|lang"
-	 +"|onclick|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"li[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress|onkeyup"
-	 +"|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style|title|type"
-	 +"|value],"
-	 +"link[charset|class|dir<ltr?rtl|href|hreflang|id|lang|media|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|rel|rev|style|title|target|type],"
-	 +"map[class|dir<ltr?rtl|id|lang|name|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"menu[class|compact<compact|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown"
-	 +"|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover"
-	 +"|onmouseup|style|title],"
-	 +"meta[content|dir<ltr?rtl|http-equiv|lang|name|scheme],"
-	 +"noframes[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"noscript[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"object[align<bottom?left?middle?right?top|archive|border|class|classid"
-	 +"|codebase|codetype|data|declare|dir<ltr?rtl|height|hspace|id|lang|name"
-	 +"|onclick|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|standby|style|tabindex|title|type|usemap"
-	 +"|vspace|width|allowfullscreen],"
-	 +"ol[class|compact<compact|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown"
-	 +"|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover"
-	 +"|onmouseup|start|style|title|type],"
-	 +"optgroup[class|dir<ltr?rtl|disabled<disabled|id|label|lang|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"option[class|dir<ltr?rtl|disabled<disabled|id|label|lang|onclick|ondblclick"
-	 +"|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout"
-	 +"|onmouseover|onmouseup|selected<selected|style|title|value],"
-	 +"p[align<center?justify?left?right|class|dir<ltr?rtl|id|lang|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"param[id|name|type|value|valuetype<DATA?OBJECT?REF],"
-	 +"pre/listing/plaintext/xmp[align|class|dir<ltr?rtl|id|lang|onclick|ondblclick"
-	 +"|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout"
-	 +"|onmouseover|onmouseup|style|title|width],"
-	 +"q[cite|class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"s[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress|onkeyup"
-	 +"|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"samp[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"script[charset|defer|language|src|type],"
-	 +"select[class|dir<ltr?rtl|disabled<disabled|id|lang|multiple<multiple|name"
-	 +"|onblur|onclick|ondblclick|onfocus|onkeydown|onkeypress|onkeyup"
-	 +"|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|size|style"
-	 +"|tabindex|title],"
-	 +"small[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"span[align|class|class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown"
-	 +"|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover"
-	 +"|onmouseup|style|title],"
-	 +"strike[class|class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown"
-	 +"|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover"
-	 +"|onmouseup|style|title],"
-	 +"strong/b[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"style[dir<ltr?rtl|lang|media|title|type],"
-	 +"sub[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"sup[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title],"
-	 +"table[align<center?left?right|bgcolor|border|cellpadding|cellspacing|class"
-	 +"|dir<ltr?rtl|frame|height|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|rules"
-	 +"|style|summary|title|width],"
-	 +"tbody[align<center?char?justify?left?right|char|class|charoff|dir<ltr?rtl|id"
-	 +"|lang|onclick|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown"
-	 +"|onmousemove|onmouseout|onmouseover|onmouseup|style|title"
-	 +"|valign<baseline?bottom?middle?top],"
-	 +"td[abbr|align<center?char?justify?left?right|axis|bgcolor|char|charoff|class"
-	 +"|colspan|dir<ltr?rtl|headers|height|id|lang|nowrap<nowrap|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|rowspan|scope<col?colgroup?row?rowgroup"
-	 +"|style|title|valign<baseline?bottom?middle?top|width],"
-	 +"textarea[accesskey|class|cols|dir<ltr?rtl|disabled<disabled|id|lang|name"
-	 +"|onblur|onclick|ondblclick|onfocus|onkeydown|onkeypress|onkeyup"
-	 +"|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|onselect"
-	 +"|readonly<readonly|rows|style|tabindex|title],"
-	 +"tfoot[align<center?char?justify?left?right|char|charoff|class|dir<ltr?rtl|id"
-	 +"|lang|onclick|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown"
-	 +"|onmousemove|onmouseout|onmouseover|onmouseup|style|title"
-	 +"|valign<baseline?bottom?middle?top],"
-	 +"th[abbr|align<center?char?justify?left?right|axis|bgcolor|char|charoff|class"
-	 +"|colspan|dir<ltr?rtl|headers|height|id|lang|nowrap<nowrap|onclick"
-	 +"|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown|onmousemove"
-	 +"|onmouseout|onmouseover|onmouseup|rowspan|scope<col?colgroup?row?rowgroup"
-	 +"|style|title|valign<baseline?bottom?middle?top|width],"
-	 +"thead[align<center?char?justify?left?right|char|charoff|class|dir<ltr?rtl|id"
-	 +"|lang|onclick|ondblclick|onkeydown|onkeypress|onkeyup|onmousedown"
-	 +"|onmousemove|onmouseout|onmouseover|onmouseup|style|title"
-	 +"|valign<baseline?bottom?middle?top],"
-	 +"title[dir<ltr?rtl|lang],"
-	 +"tr[abbr|align<center?char?justify?left?right|bgcolor|char|charoff|class"
-	 +"|rowspan|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title|valign<baseline?bottom?middle?top],"
-	 +"tt[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress|onkeyup"
-	 +"|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"u[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress|onkeyup"
-	 +"|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style|title],"
-	 +"ul[class|compact<compact|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown"
-	 +"|onkeypress|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover"
-	 +"|onmouseup|style|title|type],"
-	 +"var[class|dir<ltr?rtl|id|lang|onclick|ondblclick|onkeydown|onkeypress"
-	 +"|onkeyup|onmousedown|onmousemove|onmouseout|onmouseover|onmouseup|style"
-	 +"|title]",';
+verify_html : true,';
 	if (get_user_class() >= UC_ADMINISTRATOR) {
 		$return .= 'theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
 theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
@@ -555,11 +292,11 @@ theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|
 theme_advanced_buttons4 : "'./*insertlayer,moveforward,movebackward,absolute,|,styleprops,|,*/'cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,'./*template,*/'blockquote,'./*pagebreak,*/'.|,spoiler,stamps,graffiti,kinopoisk,reltemplates",
   invalid_elements: "script,embed,iframe",
 ';
-	} else $return .= 'theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
-theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup'./*,help,code*/',|,insertdate,inserttime,preview,|,forecolor,backcolor",
-theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
-theme_advanced_buttons4 : "'./*insertlayer,moveforward,movebackward,absolute,|,styleprops,|,*/'cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,'./*template,*/'blockquote,'./*pagebreak,*/'.|,spoiler,stamps,graffiti,kinopoisk,reltemplates",
+	} else $return .= 'theme_advanced_buttons1 : "newdocument,removeformat,|,bold,italic,underline,strikethrough,|,link,unlink,image,|,forecolor,hr,emotions,|,fullscreen,cite,blockquote,|,spoiler,stamps,graffiti,kinopoisk,reltemplates",
   invalid_elements: "script,embed,iframe",
+      theme_advanced_buttons2 : "", 
+    theme_advanced_buttons3 : "",
+  theme_advanced_disable : "bullist,numlist,outdent,indent,undo,redo,anchor,cleanup,help,code,sub,sup,charmap,visualaid",
 ';
 	$return .= '
 		theme_advanced_toolbar_location : "top",
@@ -585,7 +322,7 @@ theme_advanced_buttons4 : "'./*insertlayer,moveforward,movebackward,absolute,|,s
  */
 function textbbcode($name, $content="") {
 
-	return '<textarea id="rel_wysiwyg" class="rel_wysiwyg" name="'.$name.'" cols="120" rows="10">'.$content.'</textarea>'.wysiwyg_init();
+	return '<textarea id="rel_wysiwyg" class="rel_wysiwyg" name="'.$name.'" cols="100" rows="10">'.$content.'</textarea>'.wysiwyg_init();
 }
 
 /**
@@ -596,7 +333,7 @@ function textbbcode($name, $content="") {
 function delete_user($id) {
 	global $CURUSER, $REL_SEO;
 	sql_query("DELETE FROM users WHERE id = $id");
-	sql_query("DELETE FROM usercomments WHERE userid=$id") or sqlerr(__FILE__, __LINE__);
+	sql_query("DELETE FROM comments WHERE toid=$id AND type='user'") or sqlerr(__FILE__, __LINE__);
 	sql_query("DELETE FROM notifs WHERE type='usercomments' AND checkid=$id") or sqlerr(__FILE__, __LINE__);
 	sql_query("DELETE FROM messages WHERE receiver = $id OR sender = $id") or sqlerr(__FILE__,__LINE__);
 	sql_query("DELETE FROM friends WHERE userid = $id") or sqlerr(__FILE__,__LINE__);
@@ -630,16 +367,12 @@ function get_row_count($table, $suffix = "")
  * @param string $text Content of a message, e.g. body
  * @param string $div Div to be displayed, default 'success'
  * @param boolean $htmlstrip Strip html? Defalut false
+ * @todo Deprecate
  * @return void
  */
 function stdmsg($heading = '', $text = '', $div = 'success', $htmlstrip = false) {
-	if ($htmlstrip) {
-		$heading = strip_tags(trim($heading));
-		$text = strip_tags(trim($text));
-	}
-	print("<table class=\"main\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td class=\"embedded\">\n");
-	print("<div class=\"$div\">".($heading ? "<b>$heading</b><br />" : "")."$text</div></td></tr></table>\n");
-	return;
+	global $REL_TPL;
+	$REL_TPL->stdmsg($heading,$text,$div,$htmlstrip);
 }
 
 /**
@@ -650,14 +383,11 @@ function stdmsg($heading = '', $text = '', $div = 'success', $htmlstrip = false)
  * @param boolean $htmlstrip Strip html? Defalut false
  * @return void
  * @see stdmsg()
+ * @todo Deprecate
  */
 function stderr($heading = '', $text = '', $div ='error', $htmlstrip = false) {
-	if ($_GET['ajax'] || REL_AJAX) { headers(true); die ('<div align="center">'.$heading.': '.$text.'</div>'); }
-	stdhead();
-	stdmsg($heading, $text, $div, $htmlstrip);
-	stdfoot();
-	die;
-	return;
+	global $REL_TPL;
+	$REL_TPL->stderr($heading,$text,$div,$htmlstrip);
 }
 
 /**
@@ -771,7 +501,7 @@ function encode_spoiler_from($text) {
 }
 
 /**
- * Parses html code using cleanhtml, get images and pages system
+ * Parses html code using cleanhtml
  * @param string $text Text to be processed
  * @return string The html code
  * @see cleanhtml()
@@ -781,26 +511,7 @@ function format_comment($text,$nospoiler = false) {
 	global $REL_CONFIG, $REL_CACHE, $bb,$html, $REL_LANG, $REL_SEO;
 
 	$text = cleanhtml($text);
-	if (!$bb) $bb = $REL_CACHE->get('pages','bb');
-	if (!$html) $html =$REL_CACHE->get('pages','html');
 
-	if (($bb===false) || ($html===false)) {
-		$bb = array();
-		$html=array();
-		$row = sql_query("SELECT id,tags,name FROM pages WHERE indexed=1") or die(mysql_error());
-		while ($res = mysql_fetch_assoc($row)) {
-			if (!empty($res['tags'])) { $tags = explode(',',$res['tags']);
-			foreach ($tags as $word) {
-				$bb[] = "#".trim($word)."#";
-				$html[] = "<a href=\"".$REL_SEO->make_link('pagedetails','id',$res['id'],'name',translit($res['name']))."\">$word</a>";
-			}
-			}
-		}
-		$REL_CACHE->set('pages','bb',$bb);
-		$REL_CACHE->set('pages','html',$html);
-	}
-
-	if($bb) $text = preg_replace($bb,$html,$text);
 	while (preg_match("#\[spoiler\](.*?)\[/spoiler\]#si", $text))
 	if ($nospoiler) $text = preg_replace("#\[spoiler\](.*?)\[/spoiler\]#si", "<i>{$REL_LANG->_("Spoiler")}</i><br/>\\1", $text);
 	else
@@ -821,7 +532,7 @@ function format_comment($text,$nospoiler = false) {
 function get_user_class() {
 	global $CURUSER;
 
-	return is_valid_user_class($CURUSER['class'])?$CURUSER['class']:0;
+	return is_valid_user_class($CURUSER['class'])?$CURUSER['class']:-1;
 }
 
 /**
@@ -999,41 +710,28 @@ function rusdate($num,$type){
 }
 
 /**
- * Preforms a sql query and writes query and time to statistics
+ * Just alias to $REL_DB->sql_query();
  * @param string $query Query to be performed
  * @return resource Mysql resource
+ * @todo Deprecate this shit!
  */
 function sql_query($query) {
-	global $queries, $query_stat, $querytime;
-	$queries++;
-	$query_start_time = microtime(true); // Start time
-	$result = mysql_query($query);
-	$query_end_time = microtime(true); // End time
-	$query_time = ($query_end_time - $query_start_time);
-	$querytime = $querytime + $query_time;
-	//$query_time = substr($query_time, 0, 8);
-	$query_stat[] = array("seconds" => $query_time, "query" => $query);
-	return $result;
+	global $REL_DB;
+	return $REL_DB->query($query);
 }
 
 /**
  * Connects to database
- * @param boolean $lightmode Begin user session or not. Default false
+ * @param boolean $lightmode Does not begin user session or not. Default false
  * @see user_session()
  * @see userlogin()
  */
 function dbconn($lightmode = false) {
-	global $mysql_host, $mysql_user, $mysql_pass, $mysql_db, $mysql_charset, $REL_CONFIG, $REL_CACHE, $CURUSER, $REL_DATABASE, $REL_SEO, $REL_LANG;
+	global $mysql_host, $mysql_user, $mysql_pass, $mysql_db, $mysql_charset, $REL_CONFIG, $REL_CACHE, $CURUSER, $REL_DB, $REL_SEO, $REL_LANG, $REL_CRON, $REL_TPL;
 
-	$REL_DATABASE = @mysql_connect($mysql_host, $mysql_user, $mysql_pass);
-
-	if (!$REL_DATABASE)
-	die("[" . mysql_errno() . "] dbconn: mysql_connect: " . mysql_error());
-
-	mysql_select_db($mysql_db)
-	or die("dbconn: mysql_select_db: " + mysql_error());
-
-	my_set_charset($mysql_charset);
+	/* @var database object */
+	require_once(ROOT_PATH . 'classes/database/database.class.php');
+	$REL_DB = new REL_DB($mysql_host, $mysql_user, $mysql_pass, $mysql_db, $mysql_charset);
 
 	// configcache init
 
@@ -1054,10 +752,19 @@ function dbconn($lightmode = false) {
 	$REL_CONFIG['lang'] = substr(trim((string)$_COOKIE['lang']),0,2);
 	if (!$REL_CONFIG['lang']) $REL_CONFIG['lang'] = $REL_CONFIG['default_language'];
 	//configcache init end
+	$cronrow = sql_query("SELECT * FROM cron");
+	/* @var array cron array init */
+	while ($cronres = mysql_fetch_array($cronrow))
+	$REL_CRON[$cronres['cron_name']] = $cronres['cron_value'];
+
 	/* @var object links parser/adder/changer for seo */
 	require_once(ROOT_PATH . 'classes/seo/seo.class.php');
 	$REL_SEO = new REL_SEO();
 	if (!$lightmode) userlogin();
+
+	require_once(ROOT_PATH . 'classes/template/template.class.php');
+	/* @var REL_TPL template class */
+	$REL_TPL = new REL_TPL($REL_CONFIG);
 
 	gzip();
 
@@ -1068,7 +775,6 @@ function dbconn($lightmode = false) {
 	 * @var constant Copyright of Kinokpk.com releaser
 	 */
 	define ("TBVERSION", ($REL_CONFIG['yourcopy']?str_replace("{datenow}",date("Y"),$REL_CONFIG['yourcopy']).". ":"")."Powered by <a class=\"copyright\" target=\"_blank\" href=\"http://www.kinokpk.com\">Kinokpk.com</a> <a class=\"copyright\" target=\"_blank\" href=\"http://dev.kinokpk.com\">releaser</a> ".RELVERSION." &copy; 2008-".date("Y").".");
-	register_shutdown_function("mysql_close");
 
 	return;
 }
@@ -1078,7 +784,7 @@ function dbconn($lightmode = false) {
  * @return void
  */
 function userlogin() {
-	global $REL_LANG, $REL_CONFIG, $REL_CACHE, $REL_LANG;
+	global $REL_LANG, $REL_CONFIG, $REL_CACHE, $REL_LANG, $CURUSER, $REL_CRON;
 	unset($GLOBALS["CURUSER"]);
 	/* @var object language system */
 	require_once(ROOT_PATH . 'classes/lang/lang.class.php');
@@ -1132,10 +838,6 @@ function userlogin() {
 		}
 		$REL_CONFIG['ss_uri'] = $row['uri'];
 		$REL_LANG = new REL_LANG($REL_CONFIG);
-		
-		/* $cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('rating_enabled','rating_dislimit')");
-
-		while ($cronres = mysql_fetch_array($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];    */
 		headers(true);
 		die($REL_LANG->say_by_key('disabled').$row['dis_reason'].(($row['dis_reason']=='Your rating was too low.')?$REL_LANG->say_by_key('disabled_rating'):'').$REL_LANG->say_by_key('contact_admin'));
 
@@ -1168,11 +870,13 @@ function userlogin() {
 	sql_query("UPDATE LOW_PRIORITY users SET ".implode(", ", $updateset)." WHERE id=" . $row["id"]);// or die(mysql_error());
 	$row['ip'] = $ip;
 
-	$override = (int)$_COOKIE['override_class'];
-	if ($row['class'] >= UC_ADMINISTRATOR && $override<$row['class'] && $override && $override>=0)
-	$row['class'] = $override;
+	if (isset($_COOKIE['override_class'])) {
+		$override = (int)$_COOKIE['override_class'];
+		if ($row['class'] >= UC_ADMINISTRATOR && $override<$row['class'] && $override>=0)
+		$row['class'] = $override;
+	}
 	/* @var array Not full yet array of variables of current user
-	 * @see stdhead()
+	 * @see $REL_TPL->stdhead()
 	 */
 	$GLOBALS["CURUSER"] = $row;
 	$REL_LANG = new REL_LANG($REL_CONFIG);
@@ -1217,7 +921,7 @@ function get_server_load() {
  * @return void
  */
 function user_session() {
-	global $CURUSER, $REL_CONFIG;
+	global $CURUSER, $REL_CONFIG, $REL_CRON;
 
 	$ip = getip();
 	$url = htmlspecialchars($_SERVER['REQUEST_URI']);
@@ -1236,28 +940,95 @@ function user_session() {
 	$sid = session_id();
 	//	$where = array();
 	$updateset = array();
-	if ($sid)
-	/*	$where[] = "sid = ".sqlesc($sid);
-	 elseif ($uid)
-	 $where[] = "uid = $uid";
-	 else
-	 $where[] = "ip = ".sqlesc($ip);*/
-	//sql_query("DELETE FROM sessions WHERE ".implode(" AND ", $where));
-	$ctime = time();
-	$agent = htmlspecialchars($_SERVER["HTTP_USER_AGENT"]);
-	$updateset[] = "sid = ".sqlesc($sid);
-	$uid = (int)$uid;
-	$updateset[] = "uid = ".$uid;
-	$updateset[] = "username = ".sqlesc($username);
-	$class = (int)$class;
-	$updateset[] = "class = ".$class;
-	$updateset[] = "ip = ".sqlesc($ip);
-	$updateset[] = "time = ".$ctime;
-	$updateset[] = "url = ".sqlesc($url);
-	$updateset[] = "useragent = ".sqlesc($agent);
-	if (count($updateset))
-	//	sql_query("UPDATE sessions SET ".implode(", ", $updateset)." WHERE ".implode(" AND ", $where)) or sqlerr(__FILE__,__LINE__);
-	sql_query("INSERT INTO sessions (sid, uid, username, class, ip, time, url, useragent) VALUES (".implode(", ", array_map("sqlesc", array($sid, $uid, $username, $class, $ip, $ctime, $url, $agent))).") ON DUPLICATE KEY UPDATE ".implode(", ", $updateset)) or sqlerr(__FILE__,__LINE__);
+	if ($sid) {
+		/*	$where[] = "sid = ".sqlesc($sid);
+		 elseif ($uid)
+		 $where[] = "uid = $uid";
+		 else
+		 $where[] = "ip = ".sqlesc($ip);*/
+		//sql_query("DELETE FROM sessions WHERE ".implode(" AND ", $where));
+		$ctime = time();
+		$agent = htmlspecialchars($_SERVER["HTTP_USER_AGENT"]);
+		$updateset[] = "sid = ".sqlesc($sid);
+		$uid = (int)$uid;
+		$updateset[] = "uid = ".$uid;
+		$updateset[] = "username = ".sqlesc($username);
+		$class = (int)$class;
+		$updateset[] = "class = ".$class;
+		$updateset[] = "ip = ".sqlesc($ip);
+		$updateset[] = "time = ".$ctime;
+		$updateset[] = "url = ".sqlesc($url);
+		$updateset[] = "useragent = ".sqlesc($agent);
+		if (count($updateset))
+		//	sql_query("UPDATE sessions SET ".implode(", ", $updateset)." WHERE ".implode(" AND ", $where)) or sqlerr(__FILE__,__LINE__);
+		sql_query("INSERT INTO sessions (sid, uid, username, class, ip, time, url, useragent) VALUES (".implode(", ", array_map("sqlesc", array($sid, $uid, $username, $class, $ip, $ctime, $url, $agent))).") ON DUPLICATE KEY UPDATE ".implode(", ", $updateset)) or sqlerr(__FILE__,__LINE__);
+	}
+	if ($CURUSER) {
+
+		$CURUSER['access'] = get_user_class();
+
+		$allowed_types = array ('torrents', 'relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments','forumcomments','friends');//,'seeding','leeching','downloaded');
+		if (get_user_class() >= UC_MODERATOR) {
+			$allowed_types_moderator = array('users', 'reports', 'unchecked');
+			$allowed_types = array_merge($allowed_types,$allowed_types_moderator);
+		}
+		$allowed_types=array_merge(array('unread', 'inbox', 'outbox'),array_intersect($allowed_types,explode(',',$CURUSER['notifs'])));
+
+		$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
+		$dt_system = time() - $secs_system; // Сегодня минус количество дней
+		$secs_all = $REL_CRON['pm_delete_user_days']*86400; // Количество дней
+		$dt_all = time() - $secs_all; // Сегодня минус количество дней
+
+		foreach ($allowed_types as $type) {
+			if ($type=='unread'){
+				$addition = "location=1 AND receiver={$CURUSER['id']} AND unread=1 AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table='messages'; $noadd=true;
+			}
+			elseif ($type=='inbox'){
+				$addition = "location=1 AND receiver={$CURUSER['id']} AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table='messages'; $noadd=true;
+			}
+			elseif ($type=='outbox'){
+				$addition = "saved=1 AND sender={$CURUSER['id']} AND IF(archived_receiver<>1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table = 'messages'; $noadd=true;
+			}
+			elseif ($type=='unchecked'){
+				$addition = 'moderatedby=0'; $table = 'torrents'; $noadd=true;
+			}
+			elseif ($type=='reports') $noadd=true;
+			elseif ($type=='friends') {
+				$noadd=true; $addition = "friendid={$CURUSER['id']} AND confirmed=0";
+			}
+			elseif (in_array($type,array('relcomments','pollcomments','newscomments',
+			'usercomments','reqcomments','rgcomments','forumcomments'))) {
+			$addition = " AND type = '".str_replace('comments','',$type)."'"; $table = 'comments';
+			}
+
+			//case 'seeding' : $addition = "seeder=1 AND userid={$CURUSER['id']}"; $table= 'peers'; $noadd=true; break;
+			// case 'leeching' : $addition = "seeder=0 AND userid={$CURUSER['id']}"; $table= 'peers'; $noadd=true; break;
+			// case 'downloaded' : $addition = "snatched.finished=1 AND torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid={$CURUSER['id']}"; $table = 'peers'; $noadd=true; break;
+
+			$noselect = @implode(',',@array_map("intval",$_SESSION['visited_'.$type]));
+
+			$string = ($noselect?'id NOT IN ('.$noselect.') AND ':'').($noadd?'':"added>".$CURUSER['last_login']).$addition;
+
+			$sql_query[]="(SELECT GROUP_CONCAT(id) FROM ".($table?$table:$type).($string?" WHERE $string":'').') AS '.$type;
+			unset($addition);
+			unset($table);
+			unset($noadd);
+			unset($string);
+			unset($noselect);
+		}
+		//if (get_user_class()==UC_SYSOP&&$_GET['debug']) {print '<pre>'; print_r($_SESSION); die();}
+		if ($sql_query) {
+			$sql_query = "SELECT ".implode(', ', $sql_query);
+
+			//die($sql_query);
+			$notifysql = sql_query($sql_query);
+			$notifs = mysql_fetch_assoc($notifysql);
+			foreach ($notifs as $type => $value) if ($value) $CURUSER[$type] = explode(',', $value);
+			//$notifs = array_combine($allowed_types,explode(',',$notifs));
+			//foreach ($notifs as $name => $value) $CURUSER[$name] = $value;
+		}
+
+	}
 	return;
 }
 
@@ -1628,203 +1399,52 @@ function ajaxcheck() {
 	return;
 }
 
+function run_cronjobs() {
+	global $REL_CRON,$REL_SEO;
+	if ($REL_CRON['cron_is_native']) {
+		$time = time();
+		if (((($time-$REL_CRON['last_cleanup'])>$REL_CRON['autoclean_interval']) && !$REL_CRON['in_cleanup'])) print '<img width="0px" height="0px" alt="" title="" src="'.$REL_SEO->make_link('cleanup').'"/>';
+		if (!$REL_CRON['remotecheck_disabled'] && (($time-$REL_CRON['last_remotecheck'])>$REL_CRON['remotecheck_interval'])) print '<img width="0px" height="0px" alt="" title="" src="'.$REL_SEO->make_link('remote_check').'"/>';
+	}
+}
 /**
- * Outputs theme header and builds current user variables for notification system
- * @param string $title Title addition
- * @param string $addition <head> tag additon, for example javascript file or css stylesheet link
- * @return void
+ * Generates debug
  */
-function stdhead($title = "", $descradd = '', $keywordsadd = "") {
+function debug() {
+	global $CURUSER, $REL_LANG, $REL_CONFIG, $REL_CRON, $REL_SEO,$REL_TPL, $REL_DB, $tstart;
 
-	global $CURUSER, $FUNDS, $REL_CONFIG, $ss_uri, $REL_LANG, $CRON, $REL_SEO;
+	if (($REL_CONFIG['debug_mode']) && ($CURUSER['class'] >= UC_SYSOP)) {
+		//var_dump($REL_DB->query);
+		$REL_TPL->assignByRef('query',$REL_DB->query);
+		//$REL_TPL->assignByRef('tstart',$tstart);
+		$seconds = (microtime(true) - $tstart);
+		$display_debug=true;
 
-	$row = unserialize($REL_CONFIG['siteonline']);
+		$phptime = 		$seconds - $REL_DB->query[0]['seconds'];
+		$query_time = 	$REL_DB->query[0]['seconds'];
+		$percentphp = 	number_format(($phptime/$seconds) * 100, 2);
+		$percentsql = 	number_format(($query_time/$seconds) * 100, 2);
+		$REL_TPL->assignByRef('REL_CRON',$REL_CRON);
+		$REL_TPL->assign('PAGE_GENERATED',((get_user_class()>=UC_SYSOP)?sprintf($REL_LANG->say_by_key("page_generated"), $seconds, count($REL_DB->query), $percentphp, $percentsql):''));
+	} else $display_debug=false;
+	$REL_TPL->assign('DEBUG',$display_debug);
+	//var_dump($display_debug);
+}
 
-	if ($row["onoff"] !=1){
-		$my_siteoff = 1;
-		$my_siteopenfor = $row['class_name'];
-	}
-	//$row["onoff"] = 1;//АВАРИЙНЫЙ ВХОД: Раскомментировать строку, если не можете войти !!!
-	headers(REL_AJAX);
-
-	if (($row["onoff"] !=1) && (!$CURUSER)){
-		die((!REL_AJAX?"<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset={$REL_LANG->say_by_key('language_charset')}\" /><title>{$REL_CONFIG['sitename']} :: Under construction/Сайт Закрыт!</title></head>":'')."<div id=\"pagecontent\">
-        <table width='100%' height='100%' style='border: 8px ridge #FF0000'><tr><td align='center'>
-        <h1 style='color: #CC3300;'>".$row['reason']."</h1>
-        <h1 style='color: #CC3300;'>
-        Пожалуйста, зайдите позже...</h1>
-        <br /><center><form method='post' action='".$REL_SEO->make_link('takesiteofflogin')."'>
-        <table border='1' cellspacing='1' id='table1' cellpadding='3' style='border-collapse: collapse'>
-        <tr><td colspan='2' align='center' bgcolor='#CC3300'>
-        <font color='#FFFFFF'><b>Вход для обслуживающего персонала:</b></font></td></tr>
-        <tr><td><b>Имя:</b></td>
-        <td><input type='text' size=20 name='username'></td></tr><tr>
-        <td><b>Пароль:</b></td>
-        <td><input type='password' size=20 name='password'></td>
-        </tr><tr>
-        <td colspan='2' align='center'>
-        <input type='submit' value='Войти!'></td>
-        </tr></table>
-        </form></center>
-        </td></tr></table></div>");
-	}
-	elseif (($row["onoff"] !=1) and (($CURUSER["class"] < $row["class"]) && ($CURUSER["id"] != 1))){
-
-		die((!REL_AJAX?"<title>{$REL_CONFIG['sitename']} | Under construction/Сайт Закрыт!</title>":'')."<div id=\"pagecontent\">
-        <table width='100%' height='100%' style='border: 8px ridge #FF0000'><tr><td align='center'>
-        <h1 style='color: #CC3300;'>".$row['reason']."</h1>
-        <h1 style='color: #CC3300;'>
-        Пожалуйста, зайдите позже...</h1></td></tr></table></div>");
-	}
-
-	$title =  $title." | ".$REL_CONFIG['sitename'];
-
-	if (isset($_GET['styleid']) && $CURUSER) {
-		if (is_valid_id($_GET['styleid'])) {
-			$styleid = $_GET['styleid'];
-			sql_query("UPDATE users SET stylesheet = $styleid WHERE id=" . $CURUSER["id"]) or sqlerr(__FILE__, __LINE__);
-			safe_redirect(" {$REL_CONFIG['defaultbaseurl']}/");
-			//$CURUSER["stylesheet"] = $styleid;
-		} else stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
-	}
-	$ss_uri = $REL_CONFIG['ss_uri'];
-	$REL_CONFIG['ss_uri'] = "themes/$ss_uri/";
-
-	if ($CURUSER) {
-		// GET GLOBALS FOR USER
-		$allowed_types = array ('unread', 'inbox', 'outbox', 'torrents', 'comments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments', 'pages', 'pagecomments','friends');//,'seeding','leeching','downloaded');
-		if (get_user_class() >= UC_MODERATOR) {
-			$allowed_types_moderator = array('users', 'reports', 'unchecked');
-			$allowed_types = array_merge($allowed_types,$allowed_types_moderator);
-		}
-
-		$cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('pm_delete_sys_days','pm_delete_user_days')");
-
-		while ($cronres = mysql_fetch_assoc($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
-		$secs_system = $CRON['pm_delete_sys_days']*86400; // Количество дней
-		$dt_system = time() - $secs_system; // Сегодня минус количество дней
-		$secs_all = $CRON['pm_delete_user_days']*86400; // Количество дней
-		$dt_all = time() - $secs_all; // Сегодня минус количество дней
-
-		foreach ($allowed_types as $type) {
-			switch ($type) {
-				case 'unread' :  $addition = "location=1 AND receiver={$CURUSER['id']} AND unread=1 AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table='messages'; $noadd=true; break;
-				case 'inbox' :  $addition = "location=1 AND receiver={$CURUSER['id']} AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table='messages'; $noadd=true; break;
-				case 'outbox' : $addition = "saved=1 AND sender={$CURUSER['id']} AND IF(archived_receiver<>1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table = 'messages'; $noadd=true; break;
-				case 'unchecked' : $addition = 'moderatedby=0'; $table = 'torrents'; $noadd=true; break;
-				case 'reports' : $noadd=true; break;
-				case 'friends' : $noadd=true; $addition = "friendid={$CURUSER['id']} AND confirmed=0"; break;
-				case 'pages' : $addition = " AND class <= ".get_user_class(); break;
-				//case 'seeding' : $addition = "seeder=1 AND userid={$CURUSER['id']}"; $table= 'peers'; $noadd=true; break;
-				// case 'leeching' : $addition = "seeder=0 AND userid={$CURUSER['id']}"; $table= 'peers'; $noadd=true; break;
-				// case 'downloaded' : $addition = "snatched.finished=1 AND torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid={$CURUSER['id']}"; $table = 'peers'; $noadd=true; break;
-			}
-			$noselect = @implode(',',@array_map("intval",$_SESSION['visited_'.$type]));
-
-			$string = ($noselect?'id NOT IN ('.$noselect.') AND ':'').($noadd?'':"added>".$CURUSER['last_login']).$addition;
-
-			$sql_query[]="(SELECT GROUP_CONCAT(id) FROM ".($table?$table:$type).($string?" WHERE $string":'').') AS '.$type;
-			unset($addition);
-			unset($table);
-			unset($noadd);
-		}
-		$sql_query = "SELECT ".implode(', ', $sql_query);
-
-		//die($sql_query);
-		$notifysql = sql_query($sql_query);
-		$notifs = mysql_fetch_assoc($notifysql);
-		foreach ($notifs as $type => $value) if ($value) $CURUSER[$type] = explode(',', $value);
-		//$notifs = array_combine($allowed_types,explode(',',$notifs));
-		//foreach ($notifs as $name => $value) $CURUSER[$name] = $value;
-
-	}
-
-	if (!REL_AJAX) print('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
-<meta name="Description" content="'.$descradd.' '.$REL_CONFIG['description'].'" />
-<meta name="Keywords" content="'.$keywordsadd.' '.$REL_CONFIG['keywords'].'" />
-<base href="'.$REL_CONFIG['defaultbaseurl'].'/" />
-<!--Тоже любишь смотреть исходники HTML? Знаешь еще и PHP/MySQL? обратись к админам, наверняка для тебя есть местечко в нашей команде http://www.kinokpk.com/staff.php -->
-<title>'.$title.'</title>
-<link rel="stylesheet" href="themes/'.$ss_uri.'/'.$ss_uri.'.css" type="text/css"/>
-<link rel="stylesheet" href="css/features.css" type="text/css"/>
-<link rel="stylesheet" href="css/jquery.jgrowl.css" type="text/css"/>
-<link rel="stylesheet" href="css/jquery.facebox.css" type="text/css"/>
-<link rel="stylesheet" href="css/link/jquery.linkselect.style.select.css" type="text/css"/>
-<!--[if IE]>
-<link rel="stylesheet" href="css/features_ie.css" type="text/css"/>
-<![endif]-->
-<link rel="alternate" type="application/rss+xml" title="RSS" href="'.$REL_SEO->make_link('rss').'" />
-<link rel="alternate" type="application/atom+xml" title="Atom" href="'.$REL_SEO->make_link('atom').'" />
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<script language="javascript" type="text/javascript" src="js/resizer.js"></script>'
-	.((!$CURUSER || ($CURUSER['extra_ef']))?'
-<!--<script language="javascript" type="text/javascript" src="js/snow.js"></script>-->':'').
-'<script language="javascript" type="text/javascript" src="js/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.history.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.cookie.js"></script>
-<script language="javascript" type="text/javascript" src="js/facebox.min.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.jgrowl_minimized.js"></script>
-<script language="javascript" type="text/javascript" src="js/coding.js"></script>
-<script language="javascript" type="text/javascript" src="js/blocks.js"></script>
-<script language="javascript" type="text/javascript" src="js/features.js"></script>
-<script language="javascript" type="text/javascript" src="js/swfobject.js"></script>
-<script language="javascript" type="text/javascript" src="js/paginator3000.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.bgiframe.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.linkselect.js"></script>
-'.$addition);
-	?>
-<script type="text/javascript"><!--
-reformal_wdg_domain    = "torrentsbook";
-reformal_wdg_mode    = 0;
-reformal_wdg_title   = "TorrentsBook.com - Первый Социальный Торрент Трекер";
-reformal_wdg_ltitle  = "";
-reformal_wdg_lfont   = "";
-reformal_wdg_lsize   = "";
-reformal_wdg_color   = "#121212";
-reformal_wdg_bcolor  = "#516683";
-reformal_wdg_tcolor  = "#FFFFFF";
-reformal_wdg_align   = "right";
-reformal_wdg_charset = "windows-1251";
-reformal_wdg_waction = 0;
-reformal_wdg_vcolor  = "#9FCE54";
-reformal_wdg_cmline  = "#E0E0E0";
-reformal_wdg_glcolor  = "#105895"
-reformal_wdg_tbcolor  = "#FFFFFF"
-//-->
-</script>
-
-<script type="text/javascript"
-	language="JavaScript" src="http://widget.reformal.ru/tab5.js"></script>
-<noscript><a href="http://torrentsbook.reformal.ru">TorrentsBook.com -
-Первый Социальный Торрент Трекер feedback </a> <a
-	href="http://reformal.ru"><img src="http://reformal.ru/i/logo.gif" /></a></noscript>
-<!--[if lte IE 7]>
-<font color="red" size="5">Тебя приветствуют твои предки, %username%! Похоже, ты используешь Internet Explorer, над которым мы смеялись еще в лохматые годы. Мы, твои предки, %username%, предлагаем тебе <a href="http://ie.yandex.ru/">обновиться до самой свежей версии</a>, дабы получать вселенское удовольствие от использования этого прекрасного и милого сайта. Спасибо!</font>
-<![endif]-->
-	<?php
-	if (get_user_class() == UC_SYSOP) {
-		if ($row['onoff'] != 1) print('<div align="center"><font color="red" size="20">ADMIN WARNING: SITE IS CLOSED FOR MAINTENANCE!</font></div>');
-	}
-	require_once(ROOT_PATH."themes/" . $ss_uri . "/template.php");
-	require_once(ROOT_PATH."themes/" . $ss_uri . "/stdhead.php");
-
-	return;
+function generate_post_javascript() {
+	if (defined("WYSIWYG_REQUIRED") && !defined("NO_WYSIWYG"))
+	print '<script language="javascript" type="text/javascript">
+	$(document).ready(
+		function(){
+			wysiwygjs();
+		});
+</script>';
 }
 
 /**
- * Outputs theme footer and debug info
- * @return void
+ * Closes old sessions
  */
-function stdfoot() {
-	global $CURUSER, $ss_uri, $REL_LANG, $queries, $tstart, $query_stat, $querytime, $REL_CONFIG, $CRON, $REL_SEO;
-
-	if (defined("WYSIWYG_REQUIRED") && !defined("NO_WYSIWYG"))
-	print '<script language="javascript" type="text/javascript">wysiwygjs();</script>';
-	// rating warning
-	print generate_ratio_popup_warning();
+function close_sessions() {
 	// close old sessions
 	$secs = 1 * 3600;
 	$time = time();
@@ -1834,31 +1454,6 @@ function stdfoot() {
 		sql_query("UPDATE users SET last_login={$upd['time']} WHERE id={$upd['uid']}") or sqlerr(__FILE__,__LINE__);
 	}
 	sql_query("DELETE FROM sessions WHERE time < $dt") or sqlerr(__FILE__,__LINE__);
-	/// end
-	$cronrow=sql_query("SELECT * FROM cron WHERE cron_name IN ('last_cleanup','in_cleanup','in_remotecheck','num_cleaned','num_checked','remotecheck_disabled','last_remotecheck','autoclean_interval','remotecheck_interval')");
-	while ($cronres = mysql_fetch_assoc($cronrow)) $CRON[$cronres['cron_name']]=$cronres['cron_value'];
-
-	require_once(ROOT_PATH."themes/" . $ss_uri . "/stdfoot.php");
-
-	print("<div id=\"debug\">");
-
-	if (((($time-$CRON['last_cleanup'])>$CRON['autoclean_interval']) && !$CRON['in_cleanup'])) print '<img width="0px" height="0px" alt="" title="" src="'.$REL_SEO->make_link('cleanup').'"/>';
-	if (!$CRON['remotecheck_disabled'] && (($time-$CRON['last_remotecheck'])>$CRON['remotecheck_interval'])) print '<img width="0px" height="0px" alt="" title="" src="'.$REL_SEO->make_link('remote_check').'"/>';
-	if (($REL_CONFIG['debug_mode']) && count($query_stat) && ($CURUSER['class'] >= UC_SYSOP)) {
-		foreach ($query_stat as $key => $value) {
-			print("<div class=\"debug_text\">[".($key+1)."] => <b>".$value["seconds"]."</b> [$value[query]]</div>\n");
-		}
-		print '<div class="debug_text_second">'.sprintf($REL_LANG->say_by_key('all_db_q'),$querytime)."<br />";
-		if (!$CRON['in_cleanup']) print $REL_LANG->say_by_key('cleanup_not_running').'<br />';
-		if ($CRON['remotecheck_disabled']) print $REL_LANG->say_by_key('remotecheck_disabled').'<br />'; elseif  (!$CRON['in_remotecheck']) print $REL_LANG->say_by_key('remotecheck_not_running'); else print $REL_LANG->say_by_key('remotecheck_is_running'); print '<br />';
-		print sprintf($REL_LANG->say_by_key('num_cleaned'),$CRON['num_cleaned'])."<br />";
-		print sprintf($REL_LANG->say_by_key('num_checked'),$CRON['num_checked'])."<br />";
-		print $REL_LANG->say_by_key('last_cleanup').' '.mkprettytime($CRON['last_cleanup'],true,true)." (".get_elapsed_time($CRON['last_cleanup'])." {$REL_LANG->say_by_key('ago')})<br />";
-		print $REL_LANG->say_by_key('last_remotecheck').' '.mkprettytime($CRON['last_remotecheck'],true,true)." (".get_elapsed_time($CRON['last_remotecheck'])." {$REL_LANG->say_by_key('ago')})</div><br />";
-		print('<div align="center"><font color="red"><b>'.$REL_LANG->say_by_key('in_debug').'</b></font></div><br />');
-	}
-	if (!REL_AJAX) print('</div></div></body></html>');
-	return;
 }
 
 
@@ -1869,7 +1464,7 @@ function stdfoot() {
 function generate_notify_array()
 {
 	global $CURUSER,$REL_LANG,$REL_SEO;
-	
+
 	$allowed_types = explode(',',$CURUSER['notifs']);
 	$return['total'] = 0;
 	$return['notifs'] = array();
@@ -1894,15 +1489,11 @@ function generate_notify_array()
  * @return void|string HTML code with javascript
  */
 function generate_ratio_popup_warning($blockmode = false) {
-	global $CURUSER, $CRON, $REL_LANG;
+	global $CURUSER, $REL_CRON, $REL_LANG, $REL_SEO;
 
 	if (!$CURUSER) return;
-	if (!$CRON['rating_freetime'] || !isset($CRON['rating_enabled'])) {
-		$cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('rating_freetime','rating_enabled')");
 
-		while ($cronres = mysql_fetch_array($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
-	}
-	if (!$CRON['rating_enabled']) return;
+	if (!$REL_CRON['rating_enabled']) return;
 	if ($_COOKIE['denynotifs'] && !$blockmode) return;
 	if (!$CURUSER['downloaded_rel'] && !$CURUSER['seeding']) {
 		$query = sql_query("SELECT (SELECT SUM(1) FROM peers WHERE seeder=1 AND userid={$CURUSER['id']}) AS seeding, (SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE snatched.finished=1 AND torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid={$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']}) AS downloaded");
@@ -1912,11 +1503,13 @@ function generate_ratio_popup_warning($blockmode = false) {
 		$CURUSER['downloaded_rel'] = (int)$downloaded;
 	}
 
-	if ($CURUSER['seeding'] && ((time()-$CURUSER['added'])>($CRON['rating_freetime']*86400)) && (get_user_class()<>UC_VIP) && $CURUSER['downloaded_rel'] && (($CURUSER['seeding']+$CURUSER['discount'])<$CURUSER['downloaded_rel'])) {
-		
+	if ($CURUSER['seeding'] && ((time()-$CURUSER['added'])>($REL_CRON['rating_freetime']*86400)) && (get_user_class()<>UC_VIP) && $CURUSER['downloaded_rel'] && (($CURUSER['seeding']+$CURUSER['discount'])<$CURUSER['downloaded_rel'])) {
+
 		$znak = (($CURUSER['ratingsum']>0)?'+':'');
 
 		$output = ($blockmode?'<hr/>':'').sprintf($REL_LANG->say_by_key('ratio_down'),$znak.$CURUSER['ratingsum']);
+		$output .= "<br/><br/>{$REL_LANG->_("How to increase rating? Just start seeding!")}<br/>".$REL_LANG->_('You can download all previous releases in one ZIP-archive without rating decrease<br/><a href="%s">View downloaded releases</a> or <a href="%s">Download ZIP-archive with torrents</a>',$REL_SEO->make_link('userhistory','id',$CURUSER['id'],'type','downloaded'),$REL_SEO->make_link('download','a','my'));
+		$output .= "<br/><p style=\"text-align:right;\">{$REL_LANG->_('Go to <a href="%s">My rating stats</a> or <a href="%s">exchange rating to discount</a>',$REL_SEO->make_link('myrating'),$REL_SEO->make_link('myrating','discount',1))}</p>";
 		return ($blockmode?$output:'<script type="text/javascript" language="javascript">$.jGrowl("'.addslashes($output).'", { header: "'.addslashes($REL_LANG->say_by_key('ratio_warning')).'", sticky:true });</script>');
 
 	} else return;
@@ -1987,10 +1580,11 @@ function loggedinorreturn() {
  */
 function deletetorrent($id) {
 	global $CURUSER, $REL_SEO;
-	sql_query("DELETE FROM notifs WHERE checkid = $id AND type='comments'") or sqlerr(__FILE__,__LINE__);
+	sql_query("DELETE FROM notifs WHERE checkid = $id AND type='relcomments'") or sqlerr(__FILE__,__LINE__);
 	sql_query("DELETE FROM torrents WHERE id = $id");
 	sql_query("DELETE FROM bookmarks WHERE id = $id");
-	foreach(explode(".","snatched.peers.files.comments.trackers") as $x)
+	sql_query("DELETE FROM comments WHERE toid = $id AND type='rel'");
+	foreach(explode(".","snatched.peers.files.trackers") as $x)
 	sql_query("DELETE FROM $x WHERE torrent = $id");
 	@unlink("torrents/$id.torrent");
 	write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".get_user_class_color($CURUSER['class'],$CURUSER['username'])."</a> deleted torrent with id $id (system message)",'system_functions');
@@ -2005,7 +1599,7 @@ function deletetorrent($id) {
  * @param array $opts array of options. Default array(0)
  * @return array Array to be used in requested script
  */
-function pager($rpp, $count, $href, $opts = array()) {
+function pager($rpp=25, $count, $href, $opts = array()) {
 	global $REL_LANG;
 	$pages = ceil($count / $rpp);
 
@@ -2033,35 +1627,17 @@ function pager($rpp, $count, $href, $opts = array()) {
 		$pagipage = $page ;
 		$start = ($page -1) * $rpp;
 	}
-
-
-	if ( fuckIE() ) {
-		$pagerr ='<div align="center"><div class="paginator" id="paginator1"></div>
-	<div class="paginator_pages">'.sprintf($REL_LANG->say_by_key('pager_text'),$count,$pages,$rpp,($start+1),((($start+$rpp)>$count)?$count:($start+$rpp))).'</div>
-	<script type="text/javascript">
-	window.onload = function(){
-		pag1 = new Paginator(\'paginator1\', '.$pages.', 15, "'. ($pagipage ) .'", "'.$href.'page=");
-		pag2 = new Paginator(\'pag2\', '.$pages.', 15, "'. ($pagipage ) .'", "'.$href.'page=");
-		Paginator.resizePaginator(pag1);
-		Paginator.resizePaginator(pag2);
-	}
-	</script>';
-
-		$pagerre ='<div align="center"><div id="dataa">
-	<div class="paginator" id="pag2"></div>
-	<div class="paginator_pages">'.sprintf($REL_LANG->say_by_key('pager_text'),$count,$pages,$rpp,($start+1),((($start+$rpp)>$count)?$count:($start+$rpp))).'</div>';
-	} else {
-
+	if ($pages>1) {
 		$pagerr ='<div align="center"><div class="paginator" id="paginator1"></div>
 	<div class="paginator_pages">'.sprintf($REL_LANG->say_by_key('pager_text'),$count,$pages,$rpp,($start+1),((($start+$rpp)>$count)?$count:($start+$rpp))).'</div>
 				<script type="text/javascript">
 		pag1 = new Paginator(\'paginator1\', '.$pages.', 15, "'. ($pagipage ) .'", "'.$href.'page=");
 	</script>';
 
-		$pagerre ='<div align="center"><div class="paginator" id="pag2"></div>
+		$pagerre ='<div align="center"><div class="paginator" id="paginator2"></div>
 	<div class="paginator_pages">'.sprintf($REL_LANG->say_by_key('pager_text'),$count,$pages,$rpp,($start+1),((($start+$rpp)>$count)?$count:($start+$rpp))).'</div>
 				<script type="text/javascript">
-		pag2 = new Paginator(\'pag2\', '.$pages.', 15, "'. ($pagipage ) .'", "'.$href.'page=");
+		pag2 = new Paginator(\'paginator2\', '.$pages.', 15, "'. ($pagipage ) .'", "'.$href.'page=");
 	</script></div>';
 	}
 	return array($pagerr, $pagerre, "LIMIT $start,$rpp");
@@ -2079,76 +1655,71 @@ function fuckIE() {
 }
 
 /**
- * General function to display comment tables
- * @param array $rows associative array of rows
- * @param string $redaktor script whitch handlers comment table (without .php extention)
- * @return void
+ * Clears caches for blocks (comments)
+ * @param string $type Type of comments
  */
-function commenttable($rows, $redaktor = "comment") {
-	global $CURUSER, $REL_CONFIG, $REL_LANG, $REL_SEO;
+function clear_comment_caches($type) {
+	global $REL_CACHE;
+	$clearcache = array();
+	if ($type=='newscomments') $clearcache[] = 'block-news';
+	elseif ($type=='pollcomments') $clearcache[] = 'block-polls';
+	elseif ($type=='reqcomments') $clearcache[] = 'block-req';
+	elseif ($type=='relcomments') {
+		$clearcache[] ='block-indextorrents';
+		$clearcache[] = 'block-comments';
+	}
+	foreach ($clearcache as $cachevalue) $REL_CACHE->clearGroupCache($cachevalue);
+}
+/**
+ * Prepares data to use in commenttable
+ * @param MySQL resource $subres Resource of MySQL query
+ * @param string $subject Subject of all comments (optional)
+ * @param string $link Link to commented instance (optional)
+ * @return array Prepared array
+ * @see commenttable()
+ */
+function prepare_for_commenttable($subres,$subject='',$link='') {
+	global $CURUSER,$REL_SEO, $CURUSER;
+	$allrows = array();
+	$allowed_links = array (/*'unread' => $REL_SEO->make_link('message','action','viewmessage','id',''), */'comments' => $REL_SEO->make_link('details','id','%s'), 'forum' => $REL_SEO->make_link('forum','a','viewtopic','id','%s'), 'poll' => $REL_SEO->make_link('polloverview','id','%s'), 'news' => $REL_SEO->make_link('newsoverview','id','%s'), 'user' => $REL_SEO->make_link('userdetails','id','%s'), 'req' => $REL_SEO->make_link('requests','id','%s'), 'rg' => $REL_SEO->make_link('relgroups','id','%s'), 'rgnews' => $REL_SEO->make_link('rgnewsoverview','id','%s'));
 
-	$count = 0;
-	if (get_user_class()>=UC_MODERATOR)
-	print "<form method=\"get\" action=\"{$REL_SEO->make_link($redaktor)}\">";
-	foreach ($rows as $row)	{
-		if ($row["last_access"] > (time() - 300)) {
-			$online = "online";
-			$online_text = $REL_LANG->_("Online");
-		} else {
-			$online = "offline";
-			$online_text = $REL_LANG->_("Offline");
+	while ( $row = mysql_fetch_array ( $subres ) ) {
+		$visited_type = $row['type'].'comments';
+		if ($row['last_access']>(time()-300)) $row['userstate'] = 'online'; else $row['userstate'] = 'offline';
+		if (strlen($row['subject'])>70) $row['subject'] = substr($row['subject'],0,67).'...';
+		if ($row['user']) {
+			$row['ratearea']['comment'] = ratearea($row['ratingsum'],$row['id'],$row['type'],(($CURUSER['id']==$row['user'])?$row['id']:0));
+			$row['ratearea']['user'] = ratearea($row['urating'],$row['user'],'users',$CURUSER['id']);
 		}
-		print("<div id=\"comm{$row['id']}\"><table class=maibaugrand width=100% border=1 cellspacing=0 cellpadding=3>");
-		print("<tr><td class=colhead align=\"left\" colspan=\"2\" height=\"24\">");
-
-		if (isset($row["username"]))
-		{
-			$title = $row["title"];
-			if ($title == ""){
-				$title = get_user_class_name($row["class"]);
-			}else{
-				$title = htmlspecialchars($title);
-			}
-			print("<img src=\"pic/button_".$online.".gif\" alt=\"".$online_text."\" title=\"".$online_text."\" style=\"position: relative; top: 2px;\" border=\"0\" height=\"14\">"
-			." <a href=\"".$REL_SEO->make_link('userdetails','id',$row['user'],'username',translit($row['username']))."\" class=altlink_white><b>". get_user_class_color($row["class"], $row["username"]) . "</b></a> ".get_user_icons($row).
-			ratearea($row['urating'],$row['user'],'users',$CURUSER['id']).":&nbsp;Re (<a href=\"{$row['link']}\">{$row['id']}</a>): ".((strlen($row['subject'])>70)?makesafe(substr($row['subject'],0,67).'...'):makesafe($row['subject']))."<span style=\"float: right\"><small>{$REL_LANG->say_by_key('rate_comment')}</small> ".ratearea($row['ratingsum'],$row['id'],$redaktor.'s',(($CURUSER['id']==$row['user'])?$row['id']:0))."</span>");
-
-		} else {
-			print("<i>{$REL_LANG->_("Anonym")}</i>:&nbsp;Re (<a href=\"{$row['link']}\">{$row['id']}</a>): ".((strlen($row['subject'])>70)?makesafe(substr($row['subject'],0,67).'...'):makesafe($row['subject']))."\n");
-		}
-
+		$row['reportarea'] = reportarea($row['id'],$row['type']);
+		$row['text'] = format_comment($row['text']);
 		$avatar = ($CURUSER["avatars"] ? htmlspecialchars($row["avatar"]) : "");
 		if (!$avatar){$avatar = "pic/default_avatar.gif"; }
-		$text = format_comment($row["text"]);
-
-		if ($row["editedby"]) {
-			//$res = mysql_fetch_assoc(sql_query("SELECT * FROM users WHERE id = $row[editedby]")) or sqlerr(__FILE__,__LINE__);
-			$text .= "<p><font size=1 class=small>{$REL_LANG->_("Last edited by")} <a href=\"".$REL_SEO->make_link('userdetails','id',$row['editedby'],'username', translit($row['editedbyname']))."\"><b>$row[editedbyname]</b></a> ".mkprettytime($row['editedat'])." (".get_elapsed_time($row['editedat'],false)." {$REL_LANG->say_by_key('ago')})</font></p>\n";
-	 }
-		print("</td></tr>");
-		print("<tr valign=top>\n");
-		print("<td style=\"padding: 0px; width: 5%;\" align=\"center\"><img src=\"$avatar\" width=\"50px\" title=\"{$REL_LANG->_("Avatar")}\"></td>\n");
-		print("<td width=100% class=text>");
-		//print("<span style=\"float: right\"><a href=\"#top\"><img title=\"Top\" src=\"pic/top.gif\" alt=\"Top\" border=\"0\" width=\"15\" height=\"13\"></a></span>");
-		if (!isset($REL_CONFIG['low_comment_hide'])) $REL_CONFIG['low_comment_hide'] = 0;
-		print(($row['ratingsum']<$REL_CONFIG['low_comment_hide']?"<div align=\"center\"><i>{$REL_LANG->_("This comment is too bad to show it to you")}</i></div>".(get_user_class()>=UC_MODERATOR?$REL_LANG->_("You are viewing as moderator:<br/>").$text:''):$text)."</td>\n");
-		print("</tr>\n");
-		print("<tr><td class=colhead align=\"center\" colspan=\"2\">");
-		print"<div style=\"float: left; width: auto;\">"
-		.($CURUSER ? "[<a href=\"javascript:quote_comment('{$row['username']}');\" class=\"altlink_white\">{$REL_LANG->_("Quote selected")}</a>] [<a href=\"".$REL_SEO->make_link($redaktor,'action','quote','cid',$row['id'])."\" class=\"altlink_white\">{$REL_LANG->_("Quote")}</a>]" : "")
-		.($row["user"] == $CURUSER["id"] || get_user_class() >= UC_MODERATOR ? " [<a href=\"".$REL_SEO->make_link($redaktor, 'action', 'edit','cid',$row['id'])."\" class=\"altlink_white\">{$REL_LANG->_("Edit")}</a>]" : "")
-		.(get_user_class() >= UC_MODERATOR ? " [<a href=\"".$REL_SEO->make_link($redaktor, 'action','delete','cid[]',$row['id'])."\" onClick=\"return confirm('{$REL_LANG->_("Are you sure?")}')\" class=\"altlink_white\">{$REL_LANG->_("Delete")}</a>]" : "")
-		.(get_user_class() >= UC_MODERATOR ? " IP: ".($row["ip"] ? "<a href=\"".$REL_SEO->make_link('usersearch','ip',$row['ip'])."\" class=\"altlink_white\">".$row["ip"]."</a>" : $REL_LANG->_("Unknown") ) : "")
-		.reportarea($row['id'],$redaktor.'s')."</div>";
-
-		print("<div align=\"right\" nowrap><small>".mkprettytime($row["added"])."</small>".(get_user_class()>=UC_MODERATOR?"<input type=\"checkbox\" name=\"cid[]\" value=\"{$row['id']}\">":'')."</td></tr>");
-		print("</table><br /></div>");
-		// set that instance was visited
-		set_visited($redaktor.'s',$row['id']);
+		$row['avatar'] = $avatar;
+		set_visited($visited_type,$row['id']);
+		if ($subject) $row['subject'] = $subject;
+		if ($link) $row['link'] = $link; else {
+			$row['link'] = sprintf($allowed_links[$row['type']],$row['toid']);
+		}
+		$allrows [] = $row;
 	}
-	if (get_user_class()>=UC_MODERATOR)
-	print "<div align=\"right\"><input type=\"hidden\" name=\"action\" value=\"delete\"><input type=\"submit\" value=\"{$REL_LANG->_("Delete")}\" onClick=\"return confirm('{$REL_LANG->_("Are you sure?")}')\"></div></form>";
-	return;
+	return $allrows;
+}
+/**
+ * General function to display comment tables
+ * @param array $rows associative array of rows
+ * @param boolean $fetch Do not output data to browser, only fetch
+ * @param string $custom_tpl Custom template to use, default commenttable.tpl
+ * @return void|string
+ */
+function commenttable($rows,$fetch = false, $custom_tpl='commenttable.tpl') {
+	global $CURUSER, $REL_CONFIG, $REL_LANG, $REL_SEO, $REL_TPL;
+
+	$IS_MODERATOR = (get_user_class()>=UC_MODERATOR);
+	$REL_TPL->assignByRef('IS_MODERATOR',$IS_MODERATOR);
+	$REL_TPL->assign('rows',$rows);
+	if ($fetch) return $REL_TPL->fetch($custom_tpl);
+	$REL_TPL->display($custom_tpl);
 }
 
 
@@ -2277,100 +1848,102 @@ function linkcolor($num) {
 	return "green";
 }
 
-
 /**
- * Prints pages table
- * @param array $res Array to be processed
+ * @param MySQL resource $res Resource of sql query
+ * @return array Array to be used in torrenttable
+ * @see torrenttable()
  */
-function pagetable($res) {
-	global $tree, $CURUSER, $REL_LANG,$REL_SEO;
-	if (!$tree) $tree = make_pages_tree(get_user_class());
+function prepare_for_torrenttable($res) {
+	global $tree, $REL_LANG, $REL_CONFIG, $REL_SEO, $CURUSER;
+	//if (get_user_class()==UC_SYSOP) var_dump($CURUSER);
+	if (!$tree) $tree = make_tree();
+	$resarray = array();
+	$REL_CONFIG['pron_cats'] = explode(',',$REL_CONFIG['pron_cats']); //pron
+	$seocats = $REL_SEO->assoc_cats();
 
-	$owned = $moderator = 0;
-	if (get_user_class() >= UC_MODERATOR)
-	$owned = $moderator = 1;
-	elseif ($CURUSER["id"] == $row["owner"])
-	$owned = 1;
-	global $CURUSER, $REL_CONFIG, $REL_LANG;
+	while ($resvalue = mysql_fetch_array($res)) {
+		$chsel = array();
+		$cats = explode(',',$resvalue['category']);
+		$catq= array_shift($cats);
+		$resvalue['cat_seo'] = $seocats[$catq];
+		$catq = get_cur_branch($tree,$catq);
+		$childs = get_childs($tree,$catq['parent_id']);
+		if ($childs) {
+			foreach($childs as $child)
+			if (($catq['id'] != $child['id']) && in_array($child['id'],$cats)) $chsel[]="<a href=\"".$REL_SEO->make_link("browse","cat",$child['id'])."\">".makesafe($child['name'])."</a>";
+			$resvalue['cat_names'] = get_cur_position_str($tree,$catq['id']).($chsel && is_array($chsel)?', '.implode(', ',$chsel):'');
+			//$resarray[$resvalue['id']] = $resvalue;
+		} else $resvalue['cat_names'] = get_cur_position_str($tree,$catq['id']);
+
+		if ($resvalue['sticky']&&!$st_used) {$resvalue['label'] = $REL_LANG->_("Sticky"); $st_used=true;}
 
 
-	print("<tr>\n");
+		if ($resvalue['rgid']) $rgcontent = ($resvalue['rgimage']?"<img style=\"border:none;\" title=\"{$REL_LANG->_("Release of group")} {$resvalue['rgname']}\" src=\"{$resvalue['rgimage']}\"/>":$resvalue['rgname']);
 
-	print ('<td class="colhead" align="center"><a href="'.$REL_SEO->make_link('pageupload').'">Создать свою
-страницу</a></td>
-</tr>
-<tr>
-	<td>
-	<table style="width: 100%;">
-		<tr>
-			<td class="colhead" align="left" style="width: 60%;">Название /
-			Информация о странице</td>
-			<td class="colhead" align="center" style="width: 5%;">Комм.</td>
-			<td class="colhead" align="center" style="width: 10%;">Автор</td>');
-	if (get_user_class() >= UC_MODERATOR) {
-		print("<td class=\"colhead\" align=\"center\" style=\"width:90px;\">Индексируется</td>");
-		print("<td class=\"colhead\" align=\"center\" style=\"width:131px;\">Запрет комментов</td>");
+		if ((get_user_class()<UC_MODERATOR) && !$resvalue['relgroup_allowed'] && $resvalue['rgid']) {
+			$resvalue['name'] = $REL_LANG->say_by_key('relgroup_release').'&nbsp;'.$rgcontent;
+			$resvalue['images'] = 'pic/privaterg.gif';
+		}
+
+		///////// pron
+		$pron=false;
+		if ($REL_CONFIG['pron_cats'] && !$CURUSER['pron'] && $resvalue['category']) {
+			$resvalue['category'] = explode(',',$resvalue['category']);
+			foreach ($resvalue['category'] as $category)
+			if (in_array($category,$REL_CONFIG['pron_cats'])) $pron=true;
+		}
+		if ($pron) { $resvalue['images'] = $REL_CONFIG['defaultbaseurl'].'/pic/nopron.gif';  $resvalue['name'] = $REL_LANG->say_by_key('xxx_release'); }
+
+
+		if(!$resvalue['sticky']) {
+			$timestr = time()+$CURUSER['timezone']*3600;
+			if ($resvalue['added']>(strtotime('today 00:00:00',$timestr))&&!$td_used) {
+				$resvalue['label'] = $REL_LANG->_("Today");
+				$td_used=true;
+			}
+			elseif ($resvalue['added']<(strtotime('yesterday 00:00:00',$timestr))&&!$lyd_used) { $yd_used = true; $lyd_used = true;
+			$resvalue['label'] = $REL_LANG->_("Later than yesterday");
+
+			}
+			elseif ($resvalue['added']<(strtotime('today 00:00:00',$timestr))&&!$yd_used) {
+				$resvalue['label'] = $REL_LANG->_("Yesterday");	$yd_used = true;
+			}
+		}
+		$resvalue['month_added'] = mkprettymonth($resvalue["added"]);
+		$resvalue['new'] = (@in_array($resvalue['id'],$CURUSER['torrents']));
+		if ($resvalue['images']) {
+			$resvalue['images'] = explode(',',$resvalue['images']);
+			$resvalue['images'] = array_shift($resvalue['images']);
+		}
+		//		print("<td align=center><nobr>" . str_replace(" ", "<br />", $resvalue["added"]) . "</nobr></td>\n");
+		$ttl = ($REL_CONFIG['ttl_days']*24) - floor((time() - ($resvalue["last_action"])) / 3600);
+		if ($ttl == 1) $ttl .= " {$REL_LANG->_("hour")}"; else $ttl .= " {$REL_LANG->_("hours")}";
+		$resvalue['ttl']=$ttl;
+		$resvalue['size']= str_replace(" ", "", mksize($resvalue["size"]));
+		if ($resvalue["filename"] != 'nofile') {
+			if ($resvalue["seeders"]) {
+				if ($resvalue["leechers"]) $ratio = $resvalue["seeders"] / $resvalue["leechers"]; else $ratio = 1;
+				$resvalue['seed_col'].=("<b><a href=\"".$REL_SEO->make_link("torrent_info","id",$resvalue['id'],"name",translit($resvalue['name']))."\"><font color=" .
+				get_slr_color($ratio) . ">" . number_format($resvalue["seeders"]) . "</font></a></b>");
+			}
+			else
+			$resvalue['seed_col'].=($REL_LANG->say_by_key('no'));
+
+			$resvalue['seed_col'].=("|");
+
+			if ($resvalue["leechers"]) {
+				$resvalue['seed_col'].=("<b><a href=\"".$REL_SEO->make_link("torrent_info","id",$resvalue['id'],"name",translit($resvalue['name']))."\">" .
+				number_format($resvalue["leechers"]) . ($peerlink ? "</a>" : "") .
+				   "</b>");
+			}
+			else
+			$resvalue['seed_col'].=($REL_LANG->say_by_key('no'));
+		} else $resvalue['seed_col'].=("<b>N/A</b>\n");
+
+		$resarray[$resvalue['id']] = $resvalue;
 	}
-	print("</tr>
-		</table>
-	</td>
-</tr></tr>\n");
+	return $resarray;
 
-	print("<tbody id=\"highlighted\">");
-
-
-	foreach ($res as $row) {
-		$id = $row["id"];
-		print("<tr".($row["sticky"] ? " class=\"highlight\"" : "").">\n");
-		?>
-
-<td>
-<table width="100%">
-
-
-<?php
-//print("<td class=\"colhead\" align=\"center\">".'Создатель'."333333333</td>\n");
-
-/*if (get_user_class() >= UC_MODERATOR) {
- print("<td class=\"colhead\" align=\"center\" style=\"width:5%\">Индексируется</td>");
- print("<td class=\"colhead\" align=\"center\" style=\"width:5%\">Запрет комментов</td>");
- }*/
-
-print('<tr><td colspan="13" align="left"><div class="page_cat">'.$row['cat_names'].'</div></td></tr><tr>');///ТЭГИ
-//print("")
-print("<td align=\"left\" width=\"60%\">".($row["sticky"] ? "Важная: " : "")."<a class=\"browselink\" href=\"".$REL_SEO->make_link('pagedetails'));//ВАЖНО
-print("id=$id");
-print("\"><b>{$row['name']}</b></a>".(@in_array($id,$CURUSER['pages'])?"&nbsp;<img title=\"{$REL_LANG->say_by_key('new')}\" src=\"pic/new.png\"/>":'')."&nbsp;\n");//имя
-
-if ($owned)
-print("<a href=\"".$REL_SEO->make_link('pageedit','id',$row['id'])."\"><img border=\"0\" src=\"pic/pen.gif\" alt=\"".$REL_LANG->say_by_key('edit')."\" title=\"".$REL_LANG->say_by_key('edit')."\" /></a>\n");
-
-print("<br /><i>".mkprettytime($row["added"])."</i> &nbsp;&nbsp;");//ВРЕМЯ
-
-print("</td>\n");
-
-if (!$row["comments"])
-print("<td align=\"center\" style=\"width:5%\">" . $REL_LANG->say_by_key('no') . "</td>\n");
-else {
-	print("<td align=\"center\" style=\"width:5%\"><b><a href=\"".$REL_SEO->make_link('pagedetails','id',$row['id'],'name',translit($row['name']))."#startcomments\">" . $row["comments"] . "</a></b></td>\n");
-}
-
-print("<td align=\"center\" style=\"width:10%\">" . (isset($row["username"]) ? ("<a href=\"".$REL_SEO->make_link('userdetails','id',$row['owner'],'username',translit($row['username']))."\"><b>" . get_user_class_color($row["class"], $row["username"]) . "</b></a>") : "<i>{$REL_LANG->say_by_key('from_system')}</i>") . "</td>\n");
-if (get_user_class() >= UC_MODERATOR) {
-	print("<td align=\"center\" style=\"width:90px;\">".($row['indexed']?"<font color=\"red\"><b>{$REL_LANG->say_by_key('yes')}</b></font>":"<font color=\"green\"><b>{$REL_LANG->say_by_key('no')}</b></font>")."</td>\n");//индексация
-	print("<td align=\"center\" style=\"width:130px\">".($row['denycomments']?"<b>{$REL_LANG->say_by_key('yes')}</b>":"<b>{$REL_LANG->say_by_key('no')}</b>")."</td>\n");//запрет комментов
-
-}
-print("</tr></table>\n");
-print('</td></tr>');
-
-	}
-
-	print("</tbody>");
-
-	//print("</table>\n");
-
-	return;
 }
 /**
  * General function to display table of torrents
@@ -2379,181 +1952,12 @@ print('</td></tr>');
  * @return void
  */
 function torrenttable($res, $variant = "index") {
-	global $CURUSER, $REL_CONFIG, $REL_SEO, $REL_LANG, $tree;
+	global $CURUSER, $REL_CONFIG, $REL_SEO, $REL_LANG, $tree, $REL_TPL;
 	if (!$tree) $tree = make_tree();
-
-	$owned = $moderator = false;
-	if (get_user_class() >= UC_MODERATOR)
-	$owned = $moderator = true;
-	elseif ($CURUSER["id"] == $row["owner"])
-	$owned = true;
-
-	print("<tr>\n");
-
-	?>
-	<td class="colhead" align="center"><?=$REL_LANG->say_by_key('added');?></td>
-	<td class="colhead" align="left"><?=$REL_LANG->say_by_key('name');?></td>
-	<?
-
-	if ($variant == "mytorrents")
-	print("<td class=\"colhead\" align=\"center\">".$REL_LANG->say_by_key('visible')."</td>\n");
-
-
-	?>
-
-	<td class="colhead" align="center"><?=$REL_LANG->say_by_key('comments');?></td>
-	<? if ($REL_CONFIG['use_ttl']) {
-		?>
-	<td class="colhead" align="center"><?=$REL_LANG->say_by_key('ttl');?></td>
-	<?
-	}
-	?>
-	<td class="colhead" align="center"><?=$REL_LANG->say_by_key('size');?></td>
-
-	<td class="colhead" align="center"><?=$REL_LANG->say_by_key('seeders');?>|<?=$REL_LANG->say_by_key('leechers');?></td>
-	<?
-
-
-	if ((get_user_class() >= UC_MODERATOR) && $variant == "index") {
-		print("<td class=\"colhead\" align=\"center\">".$REL_LANG->say_by_key('uploadeder')."</td>\n");
-		print("<td class=\"colhead\" align=\"center\" style=\"width: 50px;\">{$REL_LANG->_("Changed")}</td>");
-		print("<td class=\"colhead\" align=\"center\" style=\"width: 60px;\">{$REL_LANG->_("Checked")}</td>");
-		print("<td class=\"colhead\" align=\"center\" style=\"width: 50px;\">{$REL_LANG->_("Banned")}</td>");
-		print("<td class=\"colhead\" align=\"center\" style=\"width: 15px;\">{$REL_LANG->_("Hide")}</td>");
-	}
-
-	if ($variant == "bookmarks")
-	print("<td class=\"colhead\" align=\"center\">".$REL_LANG->say_by_key('delete')."</td>\n");
-
-	print("</tr>\n");
-
-	print("<tbody id=\"highlighted\">");
-
-	foreach ($res as $row) {
-		if ($row['sticky']&&!$st_used) {
-			print "<tr><td colspan=\"".(get_user_class()>=UC_MODERATOR?'10':'6')."\" align=\"left\">{$REL_LANG->_("Sticky")}</td></tr>"; $st_used=true;}
-
-
-
-			if ($row['rgid']) $rgcontent = ($row['rgimage']?"<img style=\"border:none;\" title=\"Релиз группы {$row['rgname']}\" src=\"{$row['rgimage']}\"/>":$row['rgname']);
-
-			if ((get_user_class()<UC_MODERATOR) && !$row['relgroup_allowed'] && $row['rgid']) {
-				$row['name'] = $REL_LANG->say_by_key('relgroup_release').'&nbsp;'.$rgcontent;
-				$row['images'] = 'pic/privaterg.gif';
-			}
-			$id = $row["id"];
-			print("<tr".($row["sticky"]? " class=\"highlight\"" : "").">\n");
-			print("<td align=\"center\" style=\"padding: 0pc\" class='releas'>");
-			/*время */
-			print("<div class='drel'><i>".mkprettymonth($row["added"])."</i></div> &nbsp&nbsp");
-			if(!$row['sticky'])
-			if ($row['added']>strtotime('today')&&!$td_used) {
-				print "<span class='yellow' coslpan=\"".(get_user_class()>=UC_MODERATOR?'10':'6')."\" align=\"left\">{$REL_LANG->_("Today")}</span>";
-				$td_used=true;
-			}
-			elseif ($row['added']<strtotime('today')&&!$yd_used) {
-				print "<span class='green' coslpan=\"".(get_user_class()>=UC_MODERATOR?'10':'6')."\" align=\"left\">{$REL_LANG->_("Yesterday")}</span>";
-				$yd_used = true;
-			}
-			$dispname = $row["name"];
-			$thisisfree = ($row[free] ? "<img src=\"pic/freedownload.gif\" title=\"".$REL_LANG->say_by_key('golden')."\" alt=\"".$REL_LANG->say_by_key('golden')."\"/>" : "");
-			print("<td align=\"left\">".($row["sticky"] ? "Важный: " : "")."
-		<div class=\"name_browse\"><a class=\"download\"  href=\"".$REL_SEO->make_link("download","id",$id,"name",translit($row['name']))."\" onclick=\"javascript:$.facebox({ajax:'".$REL_SEO->make_link("download","id",$id,"name",translit($row['name']))."'}); return false;\"><img src=\"pic/download.gif\" border=\"0\" alt=\"".$REL_LANG->say_by_key('download')."\" title=\"".$REL_LANG->say_by_key('download')."\"/></a><a href=\"".$REL_SEO->make_link("details","id",$id,"name",translit($row['name']))."
-		\"><b>$dispname</b></a>".(@in_array($id,$CURUSER['torrents'])?"&nbsp;<img title=\"{$REL_LANG->say_by_key('new')}\" src=\"pic/new.png\"/>":'')."</div>\n");
-
-			if ($CURUSER["id"] == $row["owner"] || get_user_class() >= UC_MODERATOR)
-			$owned = 1;
-			else
-			$owned = 0;
-
-			if ($owned)
-			print("<small><a id='descr' href=\"".$REL_SEO->make_link("edit","id",$row['id'])."\"><img border=\"0\" src=\"pic/pen.gif\" alt=\"".$REL_LANG->say_by_key('edit')."\" title=\"".$REL_LANG->say_by_key('edit')."\" /></a></small>\n");
-
-
-			if ($variant != "bookmarks" && $CURUSER)
-			print("<small><a href=\"".$REL_SEO->make_link("bookmark","torrent",$row['id'],"name",translit($row['name']))."\"><img border=\"0\" src=\"pic/bookmark.gif\" alt=\"".$REL_LANG->say_by_key('bookmark_this')."\" title=\"".$REL_LANG->say_by_key('bookmark_this')."\" /></a></small>\n");
-
-			if ($row['images']) {
-				$row['images'] = explode(',',$row['images']);
-				$image = array_shift($row['images']);
-
-				if ($image)
-				print("<div class=\"cat_pic\"><small><a href=\"javascript:$.facebox({image:'$image'});\"><img border=\"0\" src=\"pic/poster.gif\" alt=\"".$REL_LANG->say_by_key('poster')."\" title=\"".$REL_LANG->say_by_key('poster')."\" /></a></small></div>");
-			}
-			if (isset($row["cat_names"]))
-			print('<div class="cat_name" ><small>'.$row['cat_names'].'</small></div>');
-			print("\n");
-
-
-
-
-			print("</td>\n");
-
-			if ($variant == "mytorrents") {
-				print("<td align=\"right\">");
-				if (!$row["visible"])
-				print("<font color=\"red\"><b>".$REL_LANG->say_by_key('no')."</b></font>");
-				else
-				print("<font color=\"green\">".$REL_LANG->say_by_key('yes')."</font>");
-				print("</td>\n");
-			}
-			if (!$row["comments"])
-			print("<td align=\"right\">" . $row["comments"] . "</td>\n");
-			else {
-				print("<td align=\"right\"><b><a href=\"".$REL_SEO->make_link("details","id",$id,"name",translit($row['name'])."#comments")."\">" . $row["comments"] . "</a></b></td>\n");
-			}
-
-			//		print("<td align=center><nobr>" . str_replace(" ", "<br />", $row["added"]) . "</nobr></td>\n");
-			$ttl = ($REL_CONFIG['ttl_days']*24) - floor((time() - ($row["last_action"])) / 3600);
-			if ($ttl == 1) $ttl .= " час"; else $ttl .= "&nbsp;часов";
-			if ($REL_CONFIG['use_ttl'])
-			print("<td align=\"center\">$ttl</td>\n");
-			print("<td align=\"center\">" . str_replace(" ", "", mksize($row["size"])) . "</td>\n");
-			//		print("<td align=\"right\">" . $row["views"] . "</td>\n");
-			//		print("<td align=\"right\">" . $row["hits"] . "</td>\n");
-
-			print("<td align=\"center\" nowrap>");
-			if ($row["filename"] != 'nofile') {
-				if ($row["seeders"]) {
-					if ($row["leechers"]) $ratio = $row["seeders"] / $row["leechers"]; else $ratio = 1;
-					print("<b><a href=\"".$REL_SEO->make_link("torrent_info","id",$id,"name",translit($row['name']))."\"><font color=" .
-					get_slr_color($ratio) . ">" . number_format($row["seeders"]) . "</font></a></b>");
-				}
-				else
-				print($REL_LANG->say_by_key('no'));
-
-				print("|");
-
-				if ($row["leechers"]) {
-					print("<b><a href=\"".$REL_SEO->make_link("torrent_info","id",$id,"name",translit($row['name']))."\">" .
-					number_format($row["leechers"]) . ($peerlink ? "</a>" : "") .
-				   "</b>");
-				}
-				else
-				print($REL_LANG->say_by_key('no'));
-			} else print("<b>N/A</b>\n");
-			print("</td>");
-			if ((get_user_class() >= UC_MODERATOR) && $variant == "index") {
-				print("<td align=\"center\">" . (isset($row["username"]) ? ("<a href=\"".$REL_SEO->make_link("userdetails","id",$row['owner'],"username",translit($row['username']))."\"><b>" . get_user_class_color($row["class"], htmlspecialchars_uni($row["username"])) . "</b></a>") : "<i>(unknown)</i>") . "</td>\n");
-				print("<td align=\"center\" style=\"width: 50px;\">".(!$row['moderated']?"<font color=\"green\"><b>{$REL_LANG->say_by_key('no')}</b></font>":"<font color=\"red\"><b>{$REL_LANG->say_by_key('yes')}</b></font>")."</td>\n");
-				print("<td align=\"center\" style=\"width: 60px;\">".(!$row['moderatedby']?"<font color=\"red\"><b>{$REL_LANG->say_by_key('no')}</b></font>":"
-<a href=\"".$REL_SEO->make_link("userdetails","id",$row['moderatedby'],"username",translit($row['modname']))."\">".get_user_class_color($row['modclass'],$row['modname'])."</a>")."</td>");
-				print("<td align=\"center\" style=\"width: 50px;\">".(!$row['banned']?"<font color=\"green\"><b>{$REL_LANG->say_by_key('no')}</b></font>":"<font color=\"red\"><b>{$REL_LANG->say_by_key('yes')}</b></font>")."</td>\n");
-				print("<td align=\"center\" style=\"width: 15px;\">".($row['visible']?"<font color=\"green\"><b>{$REL_LANG->say_by_key('no')}</b></font>":"<font color=\"red\"><b>{$REL_LANG->say_by_key('yes')}</b></font>")."</td>\n");
-
-			}
-			if ($variant == "bookmarks")
-			print ("<td align=\"center\"><input type=\"checkbox\" name=\"delbookmark[]\" value=\"" . $row['bookmarkid'] . "\" /></td>");
-
-			print("</tr>\n");
-
-	}
-
-	print("</tbody>");
-
-	//print("</table>\n");
-
-	return $rows;
+	$REL_TPL->assign('TABLE_VARIANT',$variant);
+	$REL_TPL->assign('res',$res);
+	$REL_TPL->assign('IS_MODERATOR',(get_user_class() >= UC_MODERATOR));
+	$REL_TPL->display('torrenttable.tpl');
 }
 
 /**
@@ -2636,6 +2040,23 @@ function assoc_cats($type='categories') {
 }
 
 /**
+ * Associates categories with its ids with full data
+ * @param string $type Table to take categories
+ * @return array Array of categories, keys are ids, values are categories' data
+ */
+function assoc_full_cats($type='categories') {
+	global $REL_CACHE;
+	$cats = $REL_CACHE->get('trees','cat_assoc_full_'.$type);
+	if ($cats===false) {
+		$cats=array();
+		$catsrow = sql_query("SELECT * FROM $type ORDER BY sort ASC");
+		while ($catres= mysql_fetch_assoc($catsrow)) $cats[$catres['id']]=$catres;
+		$REL_CACHE->set('trees','cat_assoc_full_'.$type,$cats);
+	}
+	return $cats;
+}
+
+/**
  * Sends comment notifications to PM or/and Email. This is a part of notification system
  * @param int $id id of notification subject
  * @param string $page link to page with notification subject
@@ -2644,7 +2065,7 @@ function assoc_cats($type='categories') {
  */
 function send_comment_notifs($id,$page,$type) {
 	global $REL_LANG, $CURUSER;
-	
+
 	$subject = sqlesc($REL_LANG->say_by_key('new_comment'));
 	$msg = sqlesc(sprintf($REL_LANG->say_by_key('comment_notice_'.$type),$page));
 	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
@@ -2662,7 +2083,7 @@ function send_comment_notifs($id,$page,$type) {
  */
 function send_notifs($type,$text = '',$id = 0) {
 	global $REL_LANG, $CURUSER, $REL_CONFIG, $REL_SEO;
-	
+
 	$subject = sqlesc($REL_LANG->say_by_key('new_'.$type));
 	$msg = sqlesc($REL_LANG->say_by_key('notice_'.$type).$text."<hr/ ><a href=\"".$REL_SEO->make_link($REL_CONFIG['defaultbaseurl'])."\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->_('You can always configure your notifications in <a href="%s">notification settings</a> of your account.',$REL_SEO->make_link("mynotifs","settings"))}</div>");
 	//	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
@@ -2684,17 +2105,6 @@ function is_i_notified($id,$type) {
 }
 
 /**
- * Makes pages tree.
- * @param int $class_access minimal class to be accessed to these pages. Default 0 e.g. 'all'
- * @param unknown_type $class_edit minimal class to be accessed to edit these pages, default NULL e.g. 'all'
- * @return array Tree array
- */
-function make_pages_tree($class_access = 0, $class_edit = NULL) {
-	//print("WHERE class <= $class_access".(isset($class_edit)?" AND class_edit <= $class_edit":''));
-	return make_tree('pagescategories',"WHERE class <= $class_access".(isset($class_edit)?" AND class_edit <= $class_edit":''));
-}
-
-/**
  * Makes tree of elemants
  * @param string $table Table to be used to make tree
  * @param unknown_type $condition Condition to be added to sql query whitch making a tree
@@ -2709,7 +2119,7 @@ function &make_tree($table='categories',$condition='')
 	if ($tree === false) {
 		$tree = array();
 
-		$query = sql_query('SELECT id,parent_id,name,image FROM '.$table.($condition?' '.$condition:'').' ORDER BY sort ASC') or die(mysql_error());
+		$query = sql_query('SELECT * FROM '.$table.($condition?' '.$condition:'').' ORDER BY sort ASC') or sqlerr(__FILE__,__LINE__);
 		if (!$query) return $tree;
 
 		$nodes = array();
@@ -2811,14 +2221,29 @@ function get_childs($tree, $tid) {
 
 }
 
+function get_top_parent($tree,$tid, $type='categories') {
+	global $REL_DB;
+	$return = $REL_CACHE->get('trees',"top_parent_$type_".$tid);
+	if ($return==false) {
+		foreach ($tree as $branch) {
+			if (in_array($tid,get_full_childs_ids($tree, $branch['id'], $type))) {
+				$return = $brach['id'];
+			}
+		}
+		$REL_CACHE->set('trees',"top_parent_$type_".$tid,$return);
+	}
+	return $return;
+}
+
 /**
  * Gets array of ids of ALL children of branch
  * @param array $tree Tree to be processed
  * @param int $tid id of processing branch
+ * @param string $type type of tree
  * @param array $array already processed ids, used only in recursion
  * @param boolean $recurs is function running recursive? default false, used only in recursion
  * @param int $level level of processing tree, used only in recursion
- * @return array|boolean Array of ids of ALL children of branch, id of a branch if there are no children and false if category does note exist
+ * @return array|boolean Array of ids of ALL children of branch, id of a branch if there are no children and false if category does not exist
  */
 function get_full_childs_ids($tree, $tid, $type='categories', &$array = array(), &$recurs = false, &$level = 0) {
 	global $REL_CACHE;
@@ -2989,5 +2414,5 @@ define ("BETA_NOTICE", "\n<br />This isn't complete release of source!");
  * Kinokpk.com releaser's version
  * @var string
  */
-define("RELVERSION","Experimental alpha (3.25)");
+define("RELVERSION","3.30 alpha 2");
 ?>

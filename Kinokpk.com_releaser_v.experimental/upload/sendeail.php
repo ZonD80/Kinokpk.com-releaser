@@ -38,7 +38,7 @@ if (!$CURUSER) {
 	}
 }
 
-stdhead($REL_LANG->say_by_key('send_email_admin'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('send_email_admin'));
 ?>
 
 <?php
@@ -52,28 +52,28 @@ $subj = htmlspecialchars((string)$_POST['subj']);
 if(!validemail($visitormail))
 {
 	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('check_address'), error);
-	stdfoot();
+	$REL_TPL->stdfoot();
 	die();
 }
 
 if(empty($subj))
 {
 	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_subject'), error);
-	stdfoot();
+	$REL_TPL->stdfoot();
 	die();
 }
 
 if(empty($visitor))
 {
 	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_name_sender'), error);
-	stdfoot();
+	$REL_TPL->stdfoot();
 	die();
 }
 
 if(empty($notes))
 {
 	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_text_message'), error);
-	stdfoot();
+	$REL_TPL->stdfoot();
 	die();
 
 }
@@ -98,7 +98,8 @@ stdmsg($REL_LANG->say_by_key('thanks'), $REL_LANG->say_by_key('message_sent'));
 ?>
 <br />
 <br />
-<center><a href="<?=$REL_SEO->make_link('index');?>"> <?=$REL_LANG->say_by_key('home')?> </a></center>
+<center><a href="<?=$REL_SEO->make_link('index');?>"> <?=$REL_LANG->say_by_key('home')?>
+</a></center>
 <?
-stdfoot();
+$REL_TPL->stdfoot();
 ?>

@@ -16,8 +16,8 @@ if (get_user_class() < UC_ADMINISTRATOR) stderr($REL_LANG->say_by_key('error'), 
 
 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 
-	stdhead($REL_LANG->say_by_key('cleaning_cache'));
-	begin_frame($REL_LANG->say_by_key('select_cache'));
+	$REL_TPL->stdhead($REL_LANG->say_by_key('cleaning_cache'));
+	$REL_TPL->begin_frame($REL_LANG->say_by_key('select_cache'));
 
 	print '<form action="'.$REL_SEO->make_link('clearcache').'" method="POST" id="message"><table width="100%"><tr><td class="colhead">'.$REL_LANG->say_by_key('name_cache').'</td><td class="colhead">'.$REL_LANG->say_by_key('select_all').'<input type="checkbox" title="'.$REL_LANG->say_by_key('mark_all').'" value="'.$REL_LANG->say_by_key('mark_all').'" id="toggle-all"></td></tr>';
 	if ($handle = opendir(ROOT_PATH.'cache')) {
@@ -29,9 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 		closedir($handle);
 	}
 	print('<tr><td colspan="2"><input type="submit" value="'.$REL_LANG->say_by_key('clean').'"></td></tr></table></form>');
-	end_frame();
+	$REL_TPL->end_frame();
 
-	stdfoot();
+	$REL_TPL->stdfoot();
 
 } else {
 

@@ -90,13 +90,13 @@ function get_retrackers($all = false, $table = 'retrackers') {
  */
 function dict_get($d, $k, $t) {
 	if ($d["type"] != "dictionary")
-	bark("not a dictionary");
+	print("not a dictionary");
 	$dd = $d["value"];
 	if (!isset($dd[$k]))
 	return;
 	$v = $dd[$k];
 	if ($v["type"] != $t)
-	bark("invalid dictionary entry type");
+	print("invalid dictionary entry type");
 	return $v["value"];
 }
 
@@ -108,7 +108,7 @@ function dict_get($d, $k, $t) {
  */
 function dict_check($d, $s) {
 	if ($d["type"] != "dictionary")
-	bark("not a dictionary");
+	print("not a dictionary");
 	$a = explode(":", $s);
 	$dd = $d["value"];
 	$ret = array();
@@ -119,10 +119,10 @@ function dict_check($d, $s) {
 			$t = $m[2];
 		}
 		if (!isset($dd[$k]))
-		bark("dictionary is missing key(s)");
+		print("dictionary is missing key(s)");
 		if (isset($t)) {
 			if ($dd[$k]["type"] != $t)
-			bark("invalid entry in dictionary");
+			print("invalid entry in dictionary");
 			$ret[] = $dd[$k]["value"];
 		}
 		else
@@ -400,7 +400,7 @@ function getUrlPort($urlInfo) {
  * @return string String to be used in remote tracker statistics
  */
 function check_fail($result) {
-	if ($result['value']['failure reason']['value']) return 'failed:'.$result['value']['failure reason']['value'].'_'; else return 'ok_';
+	if ($result['value']['failure reason']['value']) return 'failed:'.$result['value']['failure reason']['value']; else return 'ok';
 }
 
 /**
@@ -439,7 +439,7 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 	$scheme = $urlInfo['scheme'];
 
 	if ($http_port === 0)
-	return array('tracker' => $http_host, 'state' => 'failed:no_port_detected_'.$method);
+	return array('tracker' => $http_host, 'state' => 'failed:no_port_detected', 'method' => $method, 'remote_method' => 'N/A');
 	else
 	$http_port = ':' . $http_port;
 
@@ -464,15 +464,52 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 	//'Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2',
 	)
 	);
+	$req_uri = $scheme.'://'.$http_host.$http_port.$http_path.($http_params ? '?'.$http_params : '');
+	
+	if ( function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1 ) {
+		$context = @stream_context_create($opts);
+		$result = @file_get_contents($req_uri , false, $context);
+		$remote_method = 'file';
+	}
+	elseif ( function_exists('curl_init') ) {
+		if ($ch = @curl_init()) {
+			@curl_setopt($ch, CURLOPT_URL, $req_uri);
+			@curl_setopt($ch, CURLOPT_PORT, $http_port);
+			@curl_setopt($ch, CURLOPT_HEADER, false);
+			@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			@curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			@curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+			@curl_setopt($ch, CURLOPT_BUFFERSIZE, 1000);
+			@curl_setopt($ch, CURLOPT_USERAGENT, 'uTorrent/1820');
 
-	$context = @stream_context_create($opts);
-	$result = @file_get_contents($scheme.'://'.$http_host.$http_port.$http_path.($http_params ? '?'.$http_params : ''), false, $context);
-
+			$result = @curl_exec($ch);
+			@curl_close($ch);
+		}
+		$remote_method = 'curl';
+	} 	elseif ( function_exists('fsockopen') ){
+		if ($fp = fsockopen($http_host, preg_replace("#[\D]#i", "", $http_port), $errno, $errstr, 10)) {
+			$h  = "GET ".$http_path.($http_params ? '?'.$http_params : '')." HTTP/1.0\r\n";
+			$h .= "Host: {$http_host}\r\n";
+			$h .= "Connection: close\r\n";
+			$h .= "User-Agent: uTorrent/1820\r\n\r\n";
+			fputs($fp, $h);
+			$buff = '';
+			while (!feof($fp)) {
+				$buff .= fgets($fp, 128);
+			}
+			fclose($fp);
+			if ($buff) {
+				$data = explode("\r\n\r\n", $buff);
+				$result = $data[1];
+			}
+		}
+		$remote_method = 'socket';
+	}
 	if (!$result)
 	{
 		if ($method=='scrape')
 		return get_remote_peers($urlorig, $info_hash, "announce"); else
-		return array('tracker' => $http_host, 'state' => 'failed:no_benc_result_or_timeout_'.$method);
+		return array('tracker' => $http_host, 'state' => 'failed:no_benc_result_or_timeout', 'method' => $method, 'remote_method' => $remote_method);
 
 	}
 
@@ -481,19 +518,19 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 	$resulttemp=$result;
 	$result = @bdec($result);
 
-	if (!is_array($result)) return array('tracker' => $http_host, 'state' => 'failed:unable_to_bdec:'.$resulttemp.'_'.$method);
+	if (!is_array($result)) return array('tracker' => $http_host, 'state' => 'failed:unable_to_bdec:'.$resulttemp, 'method' => $method, 'remote_method' => $remote_method);
 	unset($resulttemp);
 	//    print('<pre>'); var_dump($result);
 	if ($method == 'scrape') {
 
 		if ($result['value']['files']['value']) {
 			$peersarray = @array_shift($result['value']['files']['value']);
-			return array('tracker' => $http_host, 'seeders' => $peersarray['value']['complete']['value'], 'leechers' => $peersarray['value']['incomplete']['value'], 'state' => check_fail($result).$method);
+			return array('tracker' => $http_host, 'seeders' => $peersarray['value']['complete']['value'], 'leechers' => $peersarray['value']['incomplete']['value'], 'state' => check_fail($result), 'method' => $method, 'remote_method' => $remote_method);
 		} else return get_remote_peers($urlorig, $info_hash, "announce");
 	}
 
 	if($method == 'announce') {
-		return array('tracker' => $http_host, 'seeders' => (is_array($result['value']['peers']['value'])?count($result['value']['peers']['value']):(strlen($result['value']['peers']['value'])/6)), 'leechers' => 0, 'state'=> check_fail($result).$method);
+		return array('tracker' => $http_host, 'seeders' => (is_array($result['value']['peers']['value'])?count($result['value']['peers']['value']):(strlen($result['value']['peers']['value'])/6)), 'leechers' => 0, 'state'=> check_fail($result), 'method' => $method, 'remote_method' => $remote_method);
 	}
 
 }

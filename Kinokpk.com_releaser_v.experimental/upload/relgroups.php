@@ -41,15 +41,15 @@ if (!$id) {
 	if (!$rgarray) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroups'));
 	//var_dump($memarray);
 	/* $ownres = sql_query("SELECT id,username,class FROM users WHERE id IN(".implode(',',($memarray?array_merge($uidsarray,$memarray):$uidsarray)).")") or sqlerr(__FILE__,__LINE__);
-	 while ($owner = mysql_fetch_array($ownres)) {
-	 if (in_array($owner['id'],$uidsarray))
-	 $owners[$owner['id']] = "<a href=\"userdetails.php?id={$owner['id']}\">".get_user_class_color($owner['class'],$owner['username'])."</a>";
-	 else
-	 $members[$owner['id']] = "<a href=\"userdetails.php?id={$owner['id']}\">".get_user_class_color($owner['class'],$owner['username'])."</a>";
+	while ($owner = mysql_fetch_array($ownres)) {
+	if (in_array($owner['id'],$uidsarray))
+	$owners[$owner['id']] = "<a href=\"userdetails.php?id={$owner['id']}\">".get_user_class_color($owner['class'],$owner['username'])."</a>";
+	else
+	$members[$owner['id']] = "<a href=\"userdetails.php?id={$owner['id']}\">".get_user_class_color($owner['class'],$owner['username'])."</a>";
 
-	 }*/
-	stdhead($REL_LANG->say_by_key('relgroups'));
-	begin_frame($REL_LANG->say_by_key('relgroups'));
+	}*/
+	$REL_TPL->stdhead($REL_LANG->say_by_key('relgroups'));
+	$REL_TPL->begin_frame($REL_LANG->say_by_key('relgroups'));
 	print("<table width=\"100%\">");
 	foreach ($rgarray as $row) {
 		/*   $rgown=array();
@@ -75,15 +75,16 @@ if (!$id) {
 		 */
 		?>
 
-<div id="relgroups" class="relgroups_table">
-<div id="relgroups_image" class="relgroups_image"><img
+<div class="relgroups_table">
+<div class="relgroups_image"><img
 	src="<?=$row['image']?>" title="<?=makesafe($row['name'])?>" /><? $REL_LANG->say_by_key('no_image')?>
 </div>
 <div class="relgroups_name">
 <dl class="clearfix">
 	<dt>Название</dt>
-	<dd class="result_name"><a href="<?=$REL_SEO->make_link('relgroups','id',$row['id']);?>"><?=makesafe($row['name']).($row['private']?' (Приватная)':'') ?></a></dd>
-	<?php if ($row['page_pay'] || $row['private']) {?>
+	<dd class="result_name"><a
+		href="<?=$REL_SEO->make_link('relgroups','id',$row['id']);?>"><?=makesafe($row['name']).($row['private']?' (Приватная)':'') ?></a></dd>
+		<?php if ($row['page_pay'] || $row['private']) {?>
 	<dt>Подписано</dt>
 	<dd><?=(int)$row['users']?> человек</dd>
 	<dt>Информация о подписке</dt>
@@ -93,7 +94,7 @@ if (!$id) {
 	<dd><?=makesafe($row['spec'])?></dd>
 </dl>
 </div>
-<div id="input" class="relgroups_input">
+<div class="relgroups_input">
 
 <ul class="relgroups_input">
 	<li><a href="<?=$REL_SEO->make_link('relgroups','id',$row['id']);?>">Просмотр</a></li>
@@ -117,8 +118,8 @@ if (!$id) {
 
 	}
 	print('</table>');
-	end_frame();
-	stdfoot();
+	$REL_TPL->end_frame();
+	$REL_TPL->stdfoot();
 }
 else {
 	$res = sql_query("SELECT relgroups.*, (SELECT SUM(1) FROM rg_subscribes WHERE rgid=$id) AS users, (SELECT 1 FROM rg_subscribes WHERE rgid=$id AND userid={$CURUSER['id']}) AS relgroup_allowed, (SELECT SUM(1) FROM torrents WHERE relgroup=$id) AS releases FROM relgroups WHERE id=$id GROUP BY id") or sqlerr(__FILE__,__LINE__);
@@ -130,26 +131,27 @@ else {
 
 	if(!$action) {
 
-		stdhead(sprintf($REL_LANG->say_by_key('relgroup_title'),$row['name'],$row['spec']));
+		$REL_TPL->stdhead(sprintf($REL_LANG->say_by_key('relgroup_title'),$row['name'],$row['spec']));
 
 		if ($row['owners']||$row['members']) {
-		$ownersres = sql_query("SELECT id, username, class FROM users WHERE id IN(".$row['owners'].($row['members']?','.$row['members']:'').")") or sqlerr(__FILE__,__LINE__);
-		if ($row['members']) $row['members'] = explode(',',$row['members']);
-			
-		while($ownersrow = mysql_fetch_assoc($ownersres)) if ($row['members'] && in_array($ownersrow['id'],$row['members'])) $members[$ownersrow['id']] = "<a href=\"".$REL_SEO->make_link('userdetails','id',$ownersrow['id'],'username',translit($ownersrow['username']))."\">".get_user_class_color($ownersrow['class'],$ownersrow['username'])."</a>"; else $owners[$ownersrow['id']] = "<a href=\"".$REL_SEO->make_link('userdetails','id',$ownersrow['id'],'username',translit($ownersrow['username']))."\">".get_user_class_color($ownersrow['class'],$ownersrow['username'])."</a>";
+			$ownersres = sql_query("SELECT id, username, class FROM users WHERE id IN(".$row['owners'].($row['members']?','.$row['members']:'').")") or sqlerr(__FILE__,__LINE__);
+			if ($row['members']) $row['members'] = explode(',',$row['members']);
+				
+			while($ownersrow = mysql_fetch_assoc($ownersres)) if ($row['members'] && in_array($ownersrow['id'],$row['members'])) $members[$ownersrow['id']] = "<a href=\"".$REL_SEO->make_link('userdetails','id',$ownersrow['id'],'username',translit($ownersrow['username']))."\">".get_user_class_color($ownersrow['class'],$ownersrow['username'])."</a>"; else $owners[$ownersrow['id']] = "<a href=\"".$REL_SEO->make_link('userdetails','id',$ownersrow['id'],'username',translit($ownersrow['username']))."\">".get_user_class_color($ownersrow['class'],$ownersrow['username'])."</a>";
 
-		$I_OWNER = (in_array($CURUSER['id'],explode(',',$row['owners']))||(get_user_class()>=UC_ADMINISTRATOR));
+			$I_OWNER = (in_array($CURUSER['id'],explode(',',$row['owners']))||(get_user_class()>=UC_ADMINISTRATOR));
 		}
 		if ($owners) //die($REL_LANG->say_by_key('error_no_onwers'));
 		$ownersview = implode(', ',$owners); else $ownersview = $REL_LANG->say_by_key('from_system');
-		
+
 		if ($members) $membersview = implode(', ',$members); else $membersview=$REL_LANG->say_by_key('no');
 		// print('<table width="100%">');
 		?>
 
 <div id="relgroups_header" class="relgroups_header">
 <div align="center"><?=makesafe($row['name']) ?>&nbsp;&nbsp;<?   print(ratearea($row['ratingsum'],$row['id'],'relgroups',($I_OWNER?$row['id']:0))."");?></div>
-<div align="right" style="margin-top: -22px;"><a href="<?=$REL_SEO->make_link('relgroups');?>"><img
+<div align="right" style="margin-top: -22px;"><a
+	href="<?=$REL_SEO->make_link('relgroups');?>"><img
 	src="/themes/kinokpk/images/strelka.gif" border="0"
 	title="Вернуться к просмотру групп"
 	style="margin-top: 5px; margin-right: 5px;" /></a></div>
@@ -253,15 +255,15 @@ else {
 <?php }
 	}?>
 <div id="box_left" class="box_left" style="margin-top: 9px;">
-<h3 class="box_right_left"><span>Обсуждение последних релизов</span></h3>
-	<?print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"".$REL_SEO->make_link('rgnews','id',$id)."\">{$REL_LANG->say_by_key('create')}</a>" : "").'</div>');
+<h3 class="box_right_left"><span>Обсуждение последних новостей</span></h3>
+	<?print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"".$REL_SEO->make_link('rgnews','id',$id)."\"></a>" : "").'</div>');
 
 	$resource = $REL_CACHE->get('relgroups-'.$id, 'newsquery');
 
 	if ($resource===false) {
 
 		$resource = array();
-		$resourcerow = sql_query("SELECT rgnews.* , COUNT(rgnewscomments.id) AS numcomm FROM rgnews LEFT JOIN rgnewscomments ON rgnewscomments.rgnews = rgnews.id WHERE rgnews.relgroup=$id GROUP BY rgnews.id ORDER BY rgnews.added DESC LIMIT 3") or sqlerr(__FILE__, __LINE__);
+		$resourcerow = sql_query("SELECT * FROM rgnews WHERE rgnews.relgroup=$id ORDER BY rgnews.added DESC LIMIT 3") or sqlerr(__FILE__, __LINE__);
 		while ($res = mysql_fetch_array($resourcerow))
 		$resource[] = $res;
 
@@ -279,7 +281,7 @@ else {
 					$content .= "[<a href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link('relgroups', 'id',$id))."\"><b>E</b></a>]";
 					$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link('relgroups', 'id',$id))."\"><b>D</b></a>] ";
 				}
-				$content .= "Комментариев: ".$array['numcomm']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."#comments\">Комментировать</a>]</div>";
+				$content .= "Комментариев: ".$array['comments']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."#comments\">Комментировать</a>]</div>";
 				$content .= "</div></div>";
 				$news_flag = 1;
 			} else {
@@ -290,7 +292,7 @@ else {
 					$content .= "[<a href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link('relgroups', 'id',$id))."\"><b>E</b></a>]";
 					$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link('relgroups', 'id',$id))."\"><b>D</b></a>] ";
 				}
-				$content .= "Комментариев: ".$array['numcomm']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."\">Комментировать</a>]</div>";
+				$content .= "Комментариев: ".$array['comments']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."\">Комментировать</a>]</div>";
 				$content .= "</div></div>";
 			}
 		}
@@ -309,85 +311,62 @@ else {
 	style="margin-top: 9px; margin-bottom: 5px;">
 <h3 class="box_right_left"><span>Комментарии к Группе</span><? print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></a></h3>
 	<?php
-	begin_frame();
+	$REL_TPL->begin_frame();
 
-	$count = get_row_count("rgcomments","WHERE relgroup=$id");
+	$count = get_row_count("comments","WHERE toid=$id AND type='rg'");
 
 	$limited = 10;
 
 	if (!$count) {
-		print("<table id=\"comments-table\" class=\"rgcomm\" cellspacing=\"0\" cellPadding=\"5\">");
+		
+		print('<div id="newcomment_placeholder">'."<table id=\"comments-table\" class=\"rgcomm\" cellspacing=\"0\" cellPadding=\"5\">");
 		print("<tr><td class=colhead align=\"left\" colspan=\"2\">");
 		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев | <b><u>Новости комментируются отдельно</u></b></div>");
 		print("<div align=\"right\">Добавить комментарий</div>");
 		print("</td></tr><tr><td align=\"center\">");
 		print("Комментариев нет. Желаете добавить?");
-		print("</td></tr></table>");
+		print("</td></tr></table></div>");
 
 	}
 	else {
 		list($pagertop, $pagerbottom, $limit) = pager($limited, $count, $REL_SEO->make_link('relgroups','id',$id)."&",array('lastpagedefault' => 1));
 
-		$subres = sql_query("SELECT c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
-												  "u.username, u.title, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM rgcomments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE relgroup = " .
-												  "$id GROUP BY c.id ORDER BY c.id $limit") or sqlerr(__FILE__, __LINE__);
-		$allrows = array();
-		while ($subrow = mysql_fetch_array($subres)) {
-			$subrow['subject'] = $row['name'];
-			$subrow['link'] = $REL_SEO->make_link('relgroups','id',$id)."#comm{$subrow['id']}";
-			$allrows[] = $subrow;
-		}
+		$subres = sql_query("SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
+												  "u.username, u.title, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .
+												  "$id AND c.type='rg' GROUP BY c.id ORDER BY c.id $limit") or sqlerr(__FILE__, __LINE__);
+			$allrows = prepare_for_commenttable($subres,$row['name'],$REL_SEO->make_link('relgroups','id',$id));
 
 
 		print("<table id=\"comments-table\" class=\"rgcomm\" cellspacing=\"0\" cellPadding=\"5\">");
-		print("<tr><td class=\"colhead_rgcomm\" align=\"center\">");
-		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев | <b><u>Новости комментируются отдельно</u></b></div>");
+		print("<tr>
+					<td class=\"colhead_rgcomm\" align=\"center\">");
+					print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев | <b><u>Новости комментируются отдельно</u></b></div>");
 		print("<div align=\"right\"><b>{$REL_LANG->say_by_key('add_comment')}</b></div>");
-		print("</td></tr>");
+			print("</td>
+			</tr>");
 
 		print("<tr><td>");
 		print($pagertop);
 		print("</td></tr>");
 		print("<tr><td>");
-		commenttable($allrows,'rgcomment');
+		commenttable($allrows);
 		print("</td></tr>");
 		print("<tr><td>");
 
 		print($pagerbottom);
 		print("</td></tr>");
-		print("</table>");
+	//	print("</table>");
 
 	}
 
-	print ( "<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">" );
-	print("<tr><td class=colhead align=\"left\" colspan=\"2\">  <div id=\"comments\"></div><b>::{$REL_LANG->say_by_key('add_comment')} к релиз группе | ".is_i_notified($id,'rgcomments')."</b></td></tr>");
-	print ( "<tr><td width=\"100%\" align=\"center\" >" );
-	//print("Ваше имя: ");
-	//print("".$CURUSER['username']."<p>");
-	print ( "<form name=comment method=\"post\" action=\"".$REL_SEO->make_link('rgcomment','action','add')."\">" );
-	print ( "<table width=\"100%\"><tr><td align=\"center\">" . textbbcode ( "text") . "</td></tr>" );
+$REL_TPL->assignByRef('to_id',$id);
+$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'rgcomments' ));
+$REL_TPL->assign('textbbcode',textbbcode('text'));
+$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release group'));
+$FORM_TYPE = 'rgcomments';
+$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+$REL_TPL->display('commenttable_form.tpl');
 
-	print ( "<tr><td  align=\"center\">" );
-	print ( "<input type=\"hidden\" name=\"uid\" value=\"$id\"/>" );
-	print ( "<input type=\"submit\" class=\"btn button\" style=\"margin-top:5px;\" value=\"Разместить комментарий\" />" );
-	print ( "</td></tr></table></form>" );
-
-
-	/*
-	 print("<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">");
-	 print("<tr><td class=colhead align=\"left\" colspan=\"2\">  <div id=\"comments\"></div><b>::{$REL_LANG->say_by_key('add_comment')} к релиз группе | ".is_i_notified($id,'rgcomments')."</b></td></tr>");
-	 print("<tr><td id=\"comments1\"  class=\"edittd\" align=\"center\" style=\" overflow:hidden; height:385px;\"");
-	 print ( "<form name=comment method=\"post\" action=\"rgcomment.php?action=add\">" );
-	 print ( "<table width=\"100%\"><tr><td align=\"center\">" . textbbcode ( "text") . "</td></tr>" );
-
-	 print ( "<tr><td  align=\"center\">" );
-	 print ( "<input type=\"hidden\" name=\"uid\" value=\"$id\"/>" );
-	 print ( "<input type=\"submit\" class=\"btn button\" style=\"margin-top:5px;\" value=\"Разместить комментарий\" />" );
-	 print ( "</td></tr></table></form>" );
-
-	 print('</td></tr></table>');
-	 //print("</tr></table>");
-	 */
 	print("</table>");
 
 	?></div>
@@ -405,7 +384,7 @@ else {
 	if ($resource===false) {
 
 		$resource = array();
-		$resourcerow = sql_query("SELECT rgnews.* , SUM(1) AS numcomm FROM rgnews LEFT JOIN rgnewscomments ON rgnewscomments.rgnews = rgnews.id WHERE rgnews.relgroup=$id GROUP BY rgnews.id ORDER BY rgnews.added DESC LIMIT 3") or sqlerr(__FILE__, __LINE__);
+		$resourcerow = sql_query("SELECT * FROM rgnews WHERE rgnews.relgroup=$id ORDER BY rgnews.added DESC LIMIT 3") or sqlerr(__FILE__, __LINE__);
 		while ($res = mysql_fetch_array($resourcerow))
 		$resource[] = $res;
 
@@ -423,7 +402,7 @@ else {
 					$content .= "[<a href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link(substr($_SERVER['PHP_SELF'], 0, (strlen($_SERVER['PHP_SELF']) - 1), 'id',$id)))."\"><b>E</b></a>]";
 					$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link(substr($_SERVER['PHP_SELF'], 0, (strlen($_SERVER['PHP_SELF']) - 1), 'id',$id)))."\"><b>D</b></a>] ";
 				}
-				$content .= "Комментариев: ".$array['numcomm']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."#comments\">Комментировать</a>]</div>";
+				$content .= "Комментариев: ".$array['comments']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."#comments\">Комментировать</a>]</div>";
 				$content .= "</div></div>";
 				$news_flag = 1;
 			} else {
@@ -434,7 +413,7 @@ else {
 					$content .= "[<a href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link("relgroups.php", 'id',$id))."\"><b>E</b></a>]";
 					$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link("relgroups","id",$id))."\"><b>D</b></a>] ";
 				}
-				$content .= "Комментариев: ".$array['numcomm']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."\">Комментировать</a>]</div>";
+				$content .= "Комментариев: ".$array['comments']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."\">Комментировать</a>]</div>";
 				$content .= "</div></div>";
 			}
 		}
@@ -444,10 +423,10 @@ else {
 		$content .= "<div align=\"center\"><h3>".$REL_LANG->say_by_key('no_news')."</h3></div>\n";
 		$content .= "</td></tr></table>";
 
-		end_frame();
+		$REL_TPL->end_frame();
 	}
 	print '</table>';
-	stdfoot();
+	$REL_TPL->stdfoot();
 	}
 	elseif ($action=='suggest') {
 		//die('fuck!');
@@ -470,7 +449,7 @@ else {
 
 		else {
 			if ($invitecode) {
-				$check = @mysql_result(sql_query("SELECT 1 FROM rg_invites WHERE invite=".sqlesc($invitecode)));
+				$check = @mysql_result(sql_query("SELECT 1 FROM rg_invites WHERE invite=".sqlesc($invitecode)),0);
 				if (!$check)
 				stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_invite_code'));
 				sql_query("DELETE FROM invites WHERE invite=".sqlesc($invitecode));
@@ -484,7 +463,7 @@ else {
 
 			safe_redirect($REL_SEO->make_link('relgroups','id',$id),1);
 			stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('success_invite'),'success');
-				
+
 		}
 	}
 	elseif ($action=='deny') {
@@ -499,16 +478,16 @@ else {
 		if (!$row['private']) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('subscribe_unneeded'));
 		if ($_SERVER['REQUEST_METHOD']<>'POST') {
 
-			stdhead($REL_LANG->say_by_key('invite_code')." \"{$row['name']}\"");
-			begin_frame($REL_LANG->say_by_key('invite_code')." \"{$row['name']}\"");
+			$REL_TPL->stdhead($REL_LANG->say_by_key('invite_code')." \"{$row['name']}\"");
+			$REL_TPL->begin_frame($REL_LANG->say_by_key('invite_code')." \"{$row['name']}\"");
 			$invsql = sql_query("SELECT invite,time_invited FROM rg_invites WHERE rgid=$id AND inviter={$CURUSER['id']}");
 			print ("<table width=\"100%\"><tr><td class=\"colhead\">{$REL_LANG->say_by_key('invite_code')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('invite_added')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('invite_per')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('invite_link')}</td></tr>");
 			while ($invite = mysql_fetch_assoc($invsql)) {
-				print ("<tr><td><strong>{$invite['invite']}</strong></td><td>".mkprettytime($invite['time_invited'])."</td><td>".mkprettytime($invite['time_invited']+($row['subscribe_length']*86400))."</td><td><input type=\"text\" value=\"{$REL_CONFIG['defaultbaseurl']}/".$REL_SEO->make_link('relgroups','id',$id,'action','suggest','invitecode',$invite['invite'])."\" onclick=\"javascript:this.select();\"></td></tr>");
+				print ("<tr><td><strong>{$invite['invite']}</strong></td><td>".mkprettytime($invite['time_invited'])."</td><td>".($row['subscribe_length']?mkprettytime($invite['time_invited']+($row['subscribe_length']*86400)):$REL_LANG->say_by_key('lifetime'))."</td><td><input type=\"text\" value=\"{$REL_SEO->make_link('relgroups','id',$id,'action','suggest','invitecode',$invite['invite'])}\" onclick=\"javascript:this.select();\"></td></tr>");
 			}
 			print ('</table><div align="center"><form action="'.$REL_SEO->make_link('relgroups','id',$id,'action','invite').'" method="POST"><input type="submit" value="'.$REL_LANG->say_by_key('create_invite').'"></form></div>');
-			end_frame();
-			stdfoot();
+			$REL_TPL->end_frame();
+			$REL_TPL->stdfoot();
 			die();
 		} else {
 			if (!isset($_GET['ok'])) {

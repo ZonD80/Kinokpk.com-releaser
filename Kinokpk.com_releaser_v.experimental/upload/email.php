@@ -30,11 +30,12 @@ httpauth();
 
 if (get_user_class() < UC_ADMINISTRATOR)
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
-stdhead($REL_LANG->say_by_key('bulk_email'));
-begin_frame($REL_LANG->say_by_key('bulk_email'), "70", true);
+$REL_TPL->stdhead($REL_LANG->say_by_key('bulk_email'));
+$REL_TPL->begin_frame($REL_LANG->say_by_key('bulk_email'), "70", true);
 
 ?>
-<form method=post name=message action="<?=$REL_SEO->make_link('takeemail')?>">
+<form method=post name=message
+	action="<?=$REL_SEO->make_link('takeemail')?>">
 <table>
 	<TR>
 		<TD colspan="2" style="border: 0">&nbsp;<?=$REL_LANG->say_by_key('subject')?>
@@ -51,6 +52,6 @@ begin_frame($REL_LANG->say_by_key('bulk_email'), "70", true);
 </table>
 </form>
 <?
-end_frame();
-stdfoot();
+$REL_TPL->end_frame();
+$REL_TPL->stdfoot();
 ?>

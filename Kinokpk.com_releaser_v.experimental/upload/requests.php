@@ -45,7 +45,7 @@ if ($action == 'new') {
 		safe_redirect($REL_SEO->make_link('requests','id',$id));
 		die;
 	}
-	stdhead("Сделать запрос");
+	$REL_TPL->stdhead("Сделать запрос");
 
 	print("<h1>Сделать запрос</h1><p>Чтобы посмотреть свои запросы, нажмите <a href=\"".$REL_SEO->make_link('viewrequests','requestorid',$CURUSER['id'])."\">здесь</a></p>\n<br />\n");
 	?>
@@ -56,8 +56,9 @@ if ($action == 'new') {
 	</tr>
 	<tr>
 		<td align=left>
-		<form method="get" action="<?=$REL_SEO->make_link('browse');?>"><input type="text" name="search"
-			size="40" value="<?= htmlspecialchars($searchstr) ?>" />&nbsp;в&nbsp<?php
+		<form method="get" action="<?=$REL_SEO->make_link('browse');?>"><input
+			type="text" name="search" size="40"
+			value="<?= htmlspecialchars($searchstr) ?>" />&nbsp;в&nbsp<?php
 			print(gen_select_area('cat',$tree,(int)$_GET['cat'])."<input type=\"submit\" value=\"Искать!\">");
 			print("</form>");
 			print("</td></tr></table>");
@@ -75,7 +76,7 @@ if ($action == 'new') {
 			print("<tr><td align=center colspan=2><input type=submit value=\"Готово!\">\n");
 			print("</form>\n");
 			print("</table>\n");
-			stdfoot();
+			$REL_TPL->stdfoot();
 			die;
 }
 if ($action == 'edit') {
@@ -109,7 +110,7 @@ if ($action == 'edit') {
 		if (get_user_class() < UC_MODERATOR)
 		stderr("Ошибка!", "Вы не владелец данного запроса.");
 	}
-	stdhead("Редактирование запроса \"" . $row["request"] . "\"");
+	$REL_TPL->stdhead("Редактирование запроса \"" . $row["request"] . "\"");
 	if (!$row)
 	die();
 	$where = "WHERE userid = " . $CURUSER["id"] . "";
@@ -128,7 +129,7 @@ if ($action == 'edit') {
 	print("</form>\n");
 	print("</table>\n");
 
-	stdfoot();
+	$REL_TPL->stdfoot();
 
 	die;
 }
@@ -146,7 +147,7 @@ if ($action=='reset')
 
 		$REL_CACHE->clearGroupCache("block-req");
 
-		stderr($REL_LANG->say_by_key('success'),"Запрос номер $requestid был успешно сброшен.");
+		stderr($REL_LANG->say_by_key('success'),"Запрос номер $requestid был успешно сброшен.",'success');
 	}
 	else
 	stderr($REL_LANG->say_by_key('error'),"Извините, но вы не можете сбросить данные этого запроса");
@@ -169,15 +170,13 @@ if ($action=='filled')
 	$msg = "Ваш запрос, <a href=\"".$REL_SEO->make_link('requests','id',$requestid)."\"><b>" . $arr['request'] . "</b></a> был выполнен пользователем <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER["id"],'username', translit($CURUSER["username"]))."\"><b>" . $CURUSER["username"] . "</b></a>. Вы можете скачать его <a href=" . $filledurl. "><b>тут</b></a>. Пожалуйста не забудьте сказать спасибо. Если это не то, что вы просили или по каким-то причинам вас не устраивает исполнение, то нажмите <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$requestid)."\">здесь</a>.";
 	$subject = "Ваш запрос выполнен";
 	sql_query ("UPDATE requests SET filled = " . sqlesc($filledurl) . ", filledby = $CURUSER[id] WHERE id = " . sqlesc($requestid)) or sqlerr(__FILE__, __LINE__);
-	$cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('rating_perrequest','rating_enabled')");
-	while ($cronres = mysql_fetch_array($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
 
-	if ($CRON['rating_enabled']) sql_query("UPDATE users SET ratingsum=ratingsum+{$CRON['rating_perrequest']} WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__,__LINE__);
+	if ($REL_CRON['rating_enabled']) sql_query("UPDATE users SET ratingsum=ratingsum+{$REL_CRON['rating_perrequest']} WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__,__LINE__);
 
 	$REL_CACHE->clearGroupCache("block-req");
 
 	sql_query("INSERT INTO messages (poster, sender, receiver, added, msg, location, subject) VALUES(0, 0, $arr[userid], '" . time() . "', " . sqlesc($msg) . ", 1, " . sqlesc($subject) . ")") or sqlerr(__FILE__, __LINE__);
-	stderr($REL_LANG->say_by_key('success'),"Запрос номер $requestid был успешно выполнен с <a href=\"$filledurl\">$filledurl</a>. Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$arr['userid'],'username',translit($arr['username']))."\"><b>$arr[username]</b></a> автоматически получит об этом сообщение. Если вы сделали ошибку при указании адреса выполненного запроса, то пожалуйста отмените свое выполнение нажав <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$requestid)."\">здесь</a>.");
+	stderr($REL_LANG->say_by_key('success'),"Запрос номер $requestid был успешно выполнен с <a href=\"$filledurl\">$filledurl</a>. Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$arr['userid'],'username',translit($arr['username']))."\"><b>$arr[username]</b></a> автоматически получит об этом сообщение. Если вы сделали ошибку при указании адреса выполненного запроса, то пожалуйста отмените свое выполнение нажав <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$requestid)."\">здесь</a>.",'success');
 }
 
 if ($action == 'vote')
@@ -197,7 +196,7 @@ if ($action == 'vote')
 
 		$REL_CACHE->clearGroupCache("block-req");
 
-		stderr("Ваш голос принят", "<p>Ваш голос был принят</p><p>Вернуться к <a href=\"".$REL_SEO->make_link('viewrequests')."\"><b>списку</b></a></p>");
+		stderr("Ваш голос принят", "<p>Ваш голос был принят</p><p>Вернуться к <a href=\"".$REL_SEO->make_link('viewrequests')."\"><b>списку</b></a></p>",'success');
 	}
 }
 
@@ -212,7 +211,7 @@ stderr ($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 $s = $num["request"];
 
-stdhead("Детали запроса \"$s\"");
+$REL_TPL->stdhead("Детали запроса \"$s\"");
 
 print("<table width=\"600\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
 print("<tr><td class=\"colhead\" colspan=\"2\">Детали запроса \"$s\"</td></tr>");
@@ -240,7 +239,7 @@ if ($num["filled"] == '')
 if (get_user_class() >= UC_MODERATOR || $CURUSER["id"] == $num["userid"])
 print("<tr><td align=left>Опции</td><td width=50% align=left><a OnClich=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('viewrequests','delreq[]',$id)."\">".$REL_LANG->say_by_key('delete')."</a> <b>|</b> <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$id)."\">Сбросить выполнение</a>  <b>|</b>  <a href=\"".$REL_SEO->make_link('requests','action','edit','id',$id)."\">".$REL_LANG->say_by_key('edit')."</a></center></td></tr>");
 
-$subres = sql_query("SELECT SUM(1) FROM reqcomments WHERE request = $id");
+$subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = $id AND type='req'");
 $subrow = mysql_fetch_array($subres);
 $count = $subrow[0];
 print("</table>");
@@ -248,37 +247,20 @@ print("</table>");
 print("<p><a name=\"startcomments\"></a></p>\n");
 
 if (!$count) {
-	print("<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">");
+	print('<div id="newcomment_placeholder">'."<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">");
 	print("<tr><td class=colhead align=\"left\" colspan=\"2\">");
 	print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев ".is_i_notified($id,'reqcomments')."</div>");
 	print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('requests','id',$id)."#comments\">Добавить комментарий</a></div>");
 	print("</td></tr><tr><td align=\"center\">");
 	print("Комментариев нет. <a href=\"".$REL_SEO->make_link('requests','id',$id)."#comments\">Желаете добавить?</a>");
-	print("</td></tr></table><br />");
+	print("</td></tr></table><br /></div>");
 
-	print("<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">");
-	print("<tr><td class=colhead align=\"left\" colspan=\"2\">  <a name=comments>&nbsp;</a><b>:: Без комментариев</b></td></tr>");
-	print ( "<tr><td width=\"100%\" align=\"center\" >" );
-	//print("Ваше имя: ");
-	//print("".$CURUSER['username']."<p>");
-	print ( "<form name=\"comment\" method=\"post\" action=\"".$REL_SEO->make_link('reqcomment','action','add')."\">" );
-	print ( "<table width=\"100%\"><tr><td align=\"center\">" . textbbcode ( "text") . "</td></tr>" );
-
-	print ( "<tr><td  align=\"center\">" );
-	print ( "<input type=\"hidden\" name=\"tid\" value=\"$id\"/>" );
-	print ( "<input type=\"submit\" value=\"Разместить комментарий\" />" );
-	print ( "</td></tr></table></form>" );
 } else {
 	list($pagertop, $pagerbottom, $limit) = pager(20, $count, $REL_SEO->make_link('requests','id',$id)."&", array(lastpagedefault => 1));
-	$subres = sql_query("SELECT c.id, c.ip, c.text, c.ratingsum, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
-		"u.username, u.title, u.class, u.donor, u.ratingsum AS urating, u.enabled, s.time AS last_access, e.username AS editedbyname FROM reqcomments c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.request = " .
-		"$id GROUP BY c.id ORDER BY c.id $limit") or sqlerr(__FILE__, __LINE__);
-	$allrows = array();
-	while ($subrow = mysql_fetch_array($subres)) {
-		$subrow['subject'] = $s;
-		$subrow['link'] = $REL_SEO->make_link('requests','id',$id)."#comm{$subrow['id']}";
-		$allrows[] = $subrow;
-	}
+	$subres = sql_query("SELECT c.type, c.id, c.ip, c.text, c.ratingsum, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
+		"u.username, u.title, u.class, u.donor, u.ratingsum AS urating, u.enabled, s.time AS last_access, e.username AS editedbyname FROM comments c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .
+		"$id AND c.type='req' GROUP BY c.id ORDER BY c.id $limit") or sqlerr(__FILE__, __LINE__);
+		$allrows = prepare_for_commenttable($subres, $s,$REL_SEO->make_link('requests','id',$id));
 	print("<table class=main cellSpacing=\"0\" cellPadding=\"5\" width=\"100%\" >");
 	print("<tr><td class=\"colhead\" align=\"center\" >");
 	print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>");
@@ -289,30 +271,24 @@ if (!$count) {
 	print($pagertop);
 	print("</td></tr>");
 	print("<tr><td>");
-	commenttable($allrows, "reqcomment");
+	commenttable($allrows);
 	print("</td></tr>");
 	print("<tr><td>");
 	print($pagerbottom);
 	print("</td></tr>");
 	print("</table>");
-
-	print("<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">");
-	print("<tr><td class=colhead align=\"left\" colspan=\"2\">  <a name=comments>&nbsp;</a><b>:: Добавить комментарий к запросу</b></td></tr>");
-	print("<tr><td width=\"100%\" align=\"center\" >");
-	//print("Ваше имя: ");
-	//print("".$CURUSER['username']."<p>");
-	print("<form name=comment method=\"post\" action=\"".$REL_SEO->make_link('reqcomment','action','add')."\">");
-	print("<center><table border=\"0\"><tr><td class=\"clear\">");
-	print("<div align=\"center\">". textbbcode("text") ."</div>");
-	print("</td></tr></table></center>");
-	print("</td></tr><tr><td  align=\"center\" colspan=\"2\">");
-	print("<input type=\"hidden\" name=\"tid\" value=\"$id\"/>");
-	print("<input type=\"submit\" class=btn value=\"Разместить комментарий\" />");
-	print("</td></tr></form></table>");
-
 }
+$REL_TPL->assignByRef('to_id',$id);
+$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'reqcomments' ));
+$REL_TPL->assign('textbbcode',textbbcode('text'));
+$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Request'));
+$FORM_TYPE = 'reqcomments';
+$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+$REL_TPL->display('commenttable_form.tpl');
+print '</table>';
+
 //print($commentbar);
-stdfoot();
+$REL_TPL->stdfoot();
 die;
 
 ?>

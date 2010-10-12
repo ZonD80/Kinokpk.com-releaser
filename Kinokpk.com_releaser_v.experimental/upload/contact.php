@@ -25,7 +25,7 @@ require_once("include/bittorrent.php");
 define("IN_CONTACT",true);
 dbconn();
 
-stdhead($REL_LANG->say_by_key('form_contact'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('form_contact'));
 
 ?>
 <br />
@@ -93,5 +93,5 @@ stdhead($REL_LANG->say_by_key('form_contact'));
 	value="<?php echo $CURUSER[username] ?>" /> <input type="hidden"
 	name="visitormail" value="<?php echo $CURUSER[email] ?>" /> <? } ?></form>
 	<?
-	stdfoot();
+	$REL_TPL->stdfoot();
 	?>

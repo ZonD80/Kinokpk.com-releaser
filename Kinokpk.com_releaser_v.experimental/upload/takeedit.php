@@ -19,7 +19,7 @@ require_once("include/benc.php");
 
 $id = (int) $_POST['id'];
 if (!$id) $id = (int) $_GET['id'];
-$res = sql_query("SELECT torrents.id, torrents.name, torrents.owner, torrents.info_hash, torrents.filename, torrents.images, torrents.topic_id, torrents.modcomm, torrents.moderated, torrents.moderatedby, torrents.descr FROM torrents WHERE torrents.id = $id");
+$res = sql_query("SELECT torrents.id, torrents.name, torrents.owner, torrents.info_hash, torrents.filename, torrents.images, torrents.modcomm, torrents.moderated, torrents.moderatedby, torrents.descr FROM torrents WHERE torrents.id = $id");
 $row = mysql_fetch_array($res);
 if (!$row)
 stderr($REL_LANG->say_by_key("error"),$REL_LANG->say_by_key("invalid_id"));
@@ -31,14 +31,10 @@ if (isset($_GET['checkonly'])) {
 
 
 	if (get_user_class() < UC_MODERATOR) die($REL_LANG->say_by_key('error').': '.$REL_LANG->say_by_key('invalid_id'));
-	
+
 	$id = (int) $_GET['id'];
 
-
-	$clearcache = array('block-indextorrents','browse-normal','browse-cat');
-
-	foreach ($clearcache as $cachevalue)
-	$REL_CACHE->clearGroupCache($cachevalue);
+	$REL_CACHE->clearGroupCache('block-indextorrents');
 
 	if ($row['moderatedby']) {
 		sql_query("UPDATE torrents SET moderatedby=0 WHERE id=$id");
@@ -48,23 +44,22 @@ if (isset($_GET['checkonly'])) {
 		sql_query("UPDATE torrents SET moderatedby={$CURUSER['id']}, moderated=1 WHERE id=$id");
 		// send notifs
 		if (!$row['moderated']) {
-			$CRON['rating_perrelease'] = @mysql_result(sql_query("SELECT cron_value FROM cron WEHRE cron_name='rating_perrelease'"),0);
-			 sql_query("UPDATE users SET ratingsum = ratingsum + {$CRON['rating_perrelease']} WHERE id={$row['owner']}");
+			sql_query("UPDATE users SET ratingsum = ratingsum + {$REL_CRON['rating_perrelease']} WHERE id={$row['owner']}");
 			$bfooter = <<<EOD
 Чтобы посмотреть релиз, перейдите по этой ссылке:
 
-			{$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
+{$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
 
 EOD;
-			$descr = format_comment($row['descr']).nl2br($bfooter);
-			send_notifs('torrents',format_comment($descr),$CURUSER['id']);
+$descr = format_comment($row['descr']).nl2br($bfooter);
+send_notifs('torrents',format_comment($descr),$CURUSER['id']);
 		}
 
 		die($REL_LANG->say_by_key('checked_by').'<a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username'])).'">'.get_user_class_color(get_user_class(),$CURUSER['username']).'</a> <a onclick="return ajaxcheck();" href="'.$REL_SEO->make_link('takeedit','checkonly','','id',$id).'">'.$REL_LANG->say_by_key('uncheck').'</a>'.$return);
 	}
 } elseif(isset($_POST['add_trackers'])) {
-		if (get_user_class() < UC_UPLOADER) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_deined'));
-	
+	if (get_user_class() < UC_UPLOADER) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_deined'));
+
 	if (!isset($_POST['trackers'])) stderr($REL_LANG->say_by_key('error'),'Не все поля заполнены');
 	$POSTtrackers = explode("\n",trim((string)$_POST['trackers']));
 	if (!$POSTtrackers) stderr($REL_LANG->say_by_key('error'), 'Ошибка обработки трекеров');
@@ -91,21 +86,21 @@ EOD;
 			$peers = get_remote_peers($tracker, $row['info_hash'],'announce');
 			$reason[$tracker] = makesafe($peers['state']);
 			if (preg_match('/ok_/',$peers['state'])) {
-				sql_query("INSERT INTO trackers (tracker,torrent) VALUES ('$tracker',$id)") or sqlerr(__FILE__,__LINE__);
+				sql_query("INSERT INTO trackers (tracker,torrent) VALUES (".sqlesc(strip_tags($tracker)).",$id)");// or sqlerr(__FILE__,__LINE__);
 				sql_query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", lastchecked=".time().", state='".mysql_real_escape_string($peers['state'])."' WHERE torrent=$id AND tracker='$tracker'") or sqlerr(__FILE__,__LINE__);
 				$state[$tracker] = 'added';
 			} else $state[$tracker] = 'failed';
 		}
 	}
-	stdhead($REL_LANG->say_by_key('add_announce_urls'));
-	
+	$REL_TPL->stdhead($REL_LANG->say_by_key('add_announce_urls'));
+
 	print ('<table width="100%"><tr><td class="colhead">'.$REL_LANG->say_by_key('tracker').'</td><td class="colhead">'.$REL_LANG->say_by_key('status').'</td></tr>');
 	foreach ($state AS $tracker => $status) {
 		print ("<tr><td>$tracker</td><td>{$REL_LANG->say_by_key('tracker_'.$status)}{$reason[$tracker]}</td></tr>");
 	}
 	print "</table>";
 	stdmsg($REL_LANG->say_by_key('success'),'<h1><a href="'.$REL_SEO->make_link('details','id', $row['id'] ,'name',translit($row['name'])).'">'.$REL_LANG->say_by_key('back_to_details').'</a>');
-	stdfoot();
+	$REL_TPL->stdfoot();
 	write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">{$CURUSER['username']}</a> отредактировал трекера торрента с ID <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\">$id</a>",'torrent');
 	die();
 }
@@ -140,8 +135,8 @@ if ($_POST['nofile']) {} else {
 	$update_torrent = true;
 	$tiger_hash = trim((string)$_POST['tiger_hash']);
 	if ((!preg_match("/[^a-zA-Z0-9]/",$tiger_hash) || (strlen($tiger_hash)<>38)) && $tiger_hash) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_tiger_hash'));
-	$updateset[] = "tiger_hash = ".sqlesc($tiger_hash); 	
-	}
+	$updateset[] = "tiger_hash = ".sqlesc($tiger_hash);
+}
 
 if (($row["filename"] == 'nofile') && (get_user_class() == UC_UPLOADER)) $tedit = 1; else $tedit = 0;
 
@@ -289,7 +284,7 @@ if ($update_torrent) {
 	if ($update_torrent) sql_query("INSERT INTO trackers (torrent,tracker) VALUES ($id,'localhost')");
 	// Insert remote trackers //
 	if ($anarray) {
-		foreach ($anarray as $anurl) sql_query("INSERT INTO trackers (torrent,tracker) VALUES ($id,".sqlesc($anurl).")");
+		foreach ($anarray as $anurl) sql_query("INSERT INTO trackers (torrent,tracker) VALUES ($id,".sqlesc(strip_tags($anurl)).")");
 	}
 	// trackers insert end
 	$nf = count($filelist);
@@ -356,7 +351,7 @@ if(get_user_class() >= UC_MODERATOR) {
 
 if ((get_user_class() >= UC_UPLOADER) && isset($_POST['approve'])) {
 	if (!$row['moderated']) {
-					 sql_query("UPDATE users SET ratingsum = ratingsum + {$CRON['rating_perrelease']} WHERE id={$row['owner']}");
+		sql_query("UPDATE users SET ratingsum = ratingsum + {$REL_CRON['rating_perrelease']} WHERE id={$row['owner']}");
 	}
 	$updateset[] = "moderated = 1";
 	$updateset[] = "moderatedby = ".$CURUSER["id"];
@@ -365,11 +360,11 @@ if ((get_user_class() >= UC_UPLOADER) && isset($_POST['approve'])) {
 		$bfooter = <<<EOD
 Чтобы посмотреть релиз, перейдите по этой ссылке:
 
-		{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
+{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
 
 EOD;
-		$descr = format_comment($row['descr']).nl2br($bfooter);
-		send_notifs('torrents',format_comment($descr),$CURUSER['id']);
+$descr = format_comment($row['descr']).nl2br($bfooter);
+send_notifs('torrents',format_comment($descr),$CURUSER['id']);
 	}
 } else $updateset[] = "moderatedby = 0";
 
@@ -389,86 +384,7 @@ if ($_POST['upd']) $updateset[] = "added = '" . time() . "'";
 sql_query("UPDATE torrents SET " . join(",", $updateset) . " WHERE id = $id");
 if (mysql_errno() == 1062) stderr($REL_LANG->say_by_key('error'),'Torrent already uploaded!'); elseif (mysql_errno()) sqlerr(__FILE__,__LINE__);
 
-$clearcache = array('block-indextorrents','browse-normal','browse-cat');
-
-foreach ($clearcache as $cachevalue)
-$REL_CACHE->clearGroupCache($cachevalue);
-
-
-if ($REL_CONFIG['use_integration']) {
-	/// IPB INTEGRATION ///// EDIT WIKI CONTAINER ////////////
-
-	if ($image <> '') $image = "<div align=\"center\"><a href=\"$image\" target=\"_blank\"><img alt=\"Постер для фильма (кликните для просмотра полного изображения)\" src=\"$image\" width=\"240\" border=\"0\" class=\"linked-image\" /></a></div><br />"; else
-	$image = "<div align=\"center\"><img src=\"{$REL_CONFIG['defaultbaseurl']}/pic/noimage.gif\" border=\"0\" class=\"linked-image\" /></div><br />";
-
-	if (!empty($_POST['topic'])) {
-		if (is_valid_id($_POST['topic'])) {
-			$topicid =  (int) $_POST['topic'];
-			sql_query("UPDATE torrents SET topic_id =".$topicid." WHERE id =".$id);
-			$topicedit = 1;
-		} else stderr($REL_LANG->say_by_key("error"),$REL_LANG->say_by_key("invalid_id"));
-	}  else {
-		$topicid = $row['topic_id'];
-	}
-
-
-	if ($topicid <> 0) {
-		$forumdesc = $image;
-		$tree=make_tree();
-		$cats = explode(',',$_POST['type']);
-		$cat= array_shift($cats);
-		$cat = get_cur_branch($tree,$cat);
-		$childs = get_childs($tree,$cat['parent_id']);
-		if ($childs) {
-			foreach($childs as $child)
-			if (($cat['id'] != $child['id']) && in_array($child['id'],$cats)) $chsel[]=makesafe($child['name']);
-		}
-
-		$forumdesc .= "<table width=\"100%\" border=\"1\"><tr><td valign=\"top\"><b>Тип (жанр):</b></td><td>".get_cur_position_str($tree,$cat['id']).(is_array($chsel)?', '.implode(', ',$chsel):'')."</td></tr><tr><td><b>Название:</b></td><td>$name</td></tr>";
-		$forumdesc .= "<tr><td valign=\"top\"><b>".$REL_LANG->say_by_key('description').":</b></td><td>".format_comment($descr)."</td></tr>";
-
-
-		$isnofilesize = sql_query("SELECT filename,size FROM torrents WHERE id = $id");
-		$isnofilesize = mysql_fetch_array($isnofilesize);
-		$topicfooter = "<tr><td valign=\"top\"><b>Размер файла:</b></td><td>".round($isnofilesize['size']/1024/1024)." МБ</td></tr>";
-
-		$topicfooter .= "<tr><td valign=\"top\"><b>".(($isnofilesize['filename'] != 'nofile')?"Торрент {$REL_CONFIG['defaultbaseurl']}:":"Релиз {$REL_CONFIG['defaultbaseurl']}:")."</b></td><td><div align=\"center\">[<span style=\"color:#FF0000\"><a href=\"{$REL_CONFIG['defaultbaseurl']}/".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\">Посмотреть этот релиз на {$REL_CONFIG['defaultbaseurl']}</a></span>]</div></td></tr></table>";
-
-		$forumdesc .= $topicfooter;
-
-		// connecting to IPB DB
-		forumconn();
-		//connection opened
-
-		$postid = sql_query("SELECT topic_firstpost FROM ".$fprefix."topics WHERE tid=".$topicid);
-		$postid = mysql_result($postid,0);
-
-		sql_query("UPDATE ".$fprefix."topics SET title = ".sqlesc($name)." WHERE tid=".$topicid);
-
-
-		if ($REL_CONFIG['exporttype'] == "wiki")
-		sql_query("UPDATE ".$fprefix."posts SET wiki = ".sqlesc($forumdesc).", post = '---' WHERE pid=".$postid);
-		else
-		sql_query("UPDATE ".$fprefix."posts SET post = ".sqlesc($forumdesc)." WHERE pid=".$postid);
-
-		if ($topicedit) {
-			$cutplus = strpos($name,"+");
-			if ($cutplus === false)
-			$topicname = $name;
-			else $topicname = substr($name,0,$cutplus);
-			if (!empty($_POST['source'])) $dsql = ", description = ".sqlesc(htmlspecialchars($_POST['source'])); else $dsql = '';
-			$topic = sql_query("UPDATE ".$fprefix."topics SET title = ".sqlesc($topicname).$dsql." WHERE tid =".$topicid);
-
-		}
-
-
-		// closing IPB DB connection
-		relconn();
-		// connection closed
-
-	}
-	//////////////////////END/////////////////////////////////////
-}
+$REL_CACHE->clearGroupCache('block-indextorrents');
 
 write_log("Торрент '$name' был отредактирован пользователем $CURUSER[username]\n","torrent");
 

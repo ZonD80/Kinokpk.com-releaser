@@ -38,14 +38,14 @@ $allowed_types = array(
 );
 
 if(empty($_FILES['avatar']['tmp_name'])) {
-	stdhead($REL_LANG->say_by_key('upload_avatar'));
+	$REL_TPL->stdhead($REL_LANG->say_by_key('upload_avatar'));
 	//  var_dump($_FILES);
 	print '<div class="friends_search">';
 	print '<table width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td class="block" width="100%" align="center" valign="middle"><strong>'.$REL_LANG->say_by_key('upload_avatar').'</strong></td></tr></table>';
 	print "<br /><form method=post action=\"".$REL_SEO->make_link('avatarup')."\" enctype=\"multipart/form-data\">".$REL_LANG->say_by_key('select_avatar')." : <input type=\"file\" name=\"avatar\">
 <input type=submit value=".$REL_LANG->say_by_key('upload')." ></form><br /><br /><center><font color=green>(".sprintf($REL_LANG->say_by_key('hint'), number_format(round($maxfilesize/1024,2)), number_format($max_image_width), number_format($max_image_height)).")</font></center>";
 	print'</div><br />';
-//	stdfoot();
+	//	$REL_TPL->stdfoot();
 }
 else {
 	$size = @GetImageSize($_FILES['avatar']['tmp_name']);
@@ -70,15 +70,6 @@ else {
 		$pathav = "avatars/".$CURUSER["id"].substr($_FILES['avatar']['name'], strripos($_FILES['avatar']['name'], '.'));
 		sql_query("UPDATE users SET avatar = '".$pathav."' WHERE id = " . $CURUSER["id"])or sqlerr(__FILE__,__LINE__);
 
-		if ($REL_CONFIG['use_integration']) {
-			forumconn();
-
-			$check = sql_query("SELECT id FROM ".$fprefix."members WHERE name=".sqlesc($CURUSER['username']))  or die(mysql_error());
-
-			if(!@mysql_result($check,0)) $ipbid = 0; else $ipbid=mysql_result($check,0);
-			if ($ipbid) sql_query("UPDATE ".$fprefix."member_extra SET avatar_type = 'url', avatar_size = '".$size[0]."x".$size[1]."', avatar_location = '".$REL_CONFIG['defaultbaseurl']."/".$pathav."'  WHERE id = " . $ipbid)or sqlerr(__FILE__,__LINE__);
-			relconn();
-		}
 		stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('succes_upload')." ".$CURUSER["id"].substr($_FILES['avatar']['name'], strripos($_FILES['avatar']['name'], '.'))."".sprintf($REL_LANG->say_by_key('file_size'), number_format(round($_FILES['avatar']['size']/1024,2))),'success');
 	}
 }

@@ -51,8 +51,8 @@ require_once(ROOT_PATH.'classes/bans/ipcheck.class.php');
 
 require_once(ROOT_PATH . 'include/blocks.php');
 
-// IPB Integration functions
-require_once(ROOT_PATH . 'include/functions_integration.php');
+// old,compatibility,deprecated functions and function aliases
+//require_once(ROOT_PATH . 'include/functions_deprecated.php');
 
 // IN AJAX MODE?
 

@@ -17,8 +17,8 @@ loggedinorreturn();
 
 if (get_user_class() < UC_MODERATOR) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 
-stdhead("Повторяющиеся IP пользователей");
-begin_frame("Повторяющиеся IP пользователей:",true);
+$REL_TPL->stdhead("Повторяющиеся IP пользователей");
+$REL_TPL->begin_frame("Повторяющиеся IP пользователей:",true);
 
 $res = sql_query("SELECT SUM(1) AS dupl, ip FROM users WHERE enabled = 1 AND ip <> '' AND ip <> '127.0.0.0' GROUP BY ip ORDER BY dupl DESC, ip") or sqlerr(__FILE__, __LINE__);
 print("<table width=\"100%\"><tr align=center><td class=colhead width=90>Пользователь</td>
@@ -61,6 +61,6 @@ while($ras = mysql_fetch_assoc($res)) {
 }
 
 print ('</table>');
-end_frame();
-stdfoot();
+$REL_TPL->end_frame();
+$REL_TPL->stdfoot();
 ?>

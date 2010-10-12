@@ -14,15 +14,15 @@ loggedinorreturn();
 
 httpauth();
 
-stdhead($REL_LANG->_('Administrator control panel'));
-begin_main_frame();
+$REL_TPL->stdhead($REL_LANG->_('Administrator control panel'));
+$REL_TPL->begin_main_frame();
 
 
 if (get_user_class() >= UC_SYSOP) {
-	begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For owners")); ?>
+	$REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For owners")); ?>
 <table width=100% cellspacing=10 align=center>
 	<tr>
-		<td><a href="<?=$REL_SEO->make_link('siteonoff');?>"><?=$REL_LANG->_("On/Off the site");?></a></td>
+		<td><small>Я ебаный кролик! А ты?</small></td>
 		<td><a href="<?=$REL_SEO->make_link('blocksadmin');?>"><?=$REL_LANG->_("Blocks administration");?></a></td>
 		<td><a href="<?=$REL_SEO->make_link('templatesadmin');?>"><?=$REL_LANG->_("Skins administration");?></a></td>
 		<td><a href="<?=$REL_SEO->make_link('configadmin');?>"><b><?=$REL_LANG->_("Global settings");?></b></a></td>
@@ -34,18 +34,17 @@ if (get_user_class() >= UC_SYSOP) {
 		<td><a href="<?=$REL_SEO->make_link('countryadmin');?>"><?=$REL_LANG->_("Countries and flags");?></a></td>
 	</tr>
 	<tr>
+		<td><a href="<?=$REL_SEO->make_link('dchubsadmin');?>"><?=$REL_LANG->_("DC Hubs administration");?></a></td>
 		<td><a href="<?=$REL_SEO->make_link('retrackeradmin');?>"><?=$REL_LANG->_("Retracker administration");?></a></td>
 		<td><a href="<?=$REL_SEO->make_link('cronadmin');?>"><b><?=$REL_LANG->_("Sheduled jobs administration");?></b></a></td>
 		<td><a href="<?=$REL_SEO->make_link('langadmin');?>"><?=$REL_LANG->_("Language tools");?></a></td>
-
-		<td><a href="<?=$REL_SEO->make_link('pagescategory');?>"><?=$REL_LANG->_("Categories for pages");?></a></td>
 	</tr>
 </table>
-	<? end_frame();
+	<? $REL_TPL->end_frame();
 }
 
 if (get_user_class() >= UC_ADMINISTRATOR) { ?>
-<? begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For administrators")); ?>
+<? $REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For administrators")); ?>
 <table width=100% cellspacing=10 align=center>
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('unco');?>"><?=$REL_LANG->_("Unconfirmed users");?></a></td>
@@ -66,16 +65,18 @@ if (get_user_class() >= UC_ADMINISTRATOR) { ?>
 		<td><a href="<?=$REL_SEO->make_link('reltemplatesadmin');?>"><?=$REL_LANG->_("Release's templates adminsitration");?></a></td>
 	</tr>
 	<tr>
-		<td colspan="4"><a href="<?=$REL_SEO->make_link('news');?>"><?=$REL_LANG->_("Add a news");?></a> | <a
-			href="<?=$REL_SEO->make_link('newsarchive');?>"><?=$REL_LANG->_("View all news");?></a></td>
+		<td><a href="<?=$REL_SEO->make_link('news');?>"><?=$REL_LANG->_("Add a news");?></a>
+		| <a href="<?=$REL_SEO->make_link('newsarchive');?>"><?=$REL_LANG->_("View all news");?></a></td>
+		<td colspan="3"><a href="<?=$REL_SEO->make_link('recountadmin');?>"><?=$REL_LANG->_("Recount/sync database values");?></a></td>
+		
 
 	</tr>
 </table>
-<? end_frame();
+<? $REL_TPL->end_frame();
 }
 
 if (get_user_class() >= UC_MODERATOR) { ?>
-<? begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For moderators")); ?>
+<? $REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For moderators")); ?>
 
 
 <table width=100% cellspacing=3>
@@ -104,8 +105,8 @@ if (get_user_class() >= UC_MODERATOR) { ?>
 	</tr>
 	<tr>
 		<td colspan="4" class=embedded>
-		<form method=get action="<?=$REL_SEO->make_link('users')?>"><?=$REL_LANG->_("Search");?>: <input type=text size=30
-			name=search> <select name=class>
+		<form method=get action="<?=$REL_SEO->make_link('users')?>"><?=$REL_LANG->_("Search");?>:
+		<input type=text size=30 name=search> <select name=class>
 			<option value='-'><?=$REL_LANG->_("Select");?></option>
 			<?php
 			for ($i=0;;$i++) {
@@ -124,8 +125,8 @@ if (get_user_class() >= UC_MODERATOR) { ?>
 </table>
 
 			<?php
-			end_frame();
+			$REL_TPL->end_frame();
 }
-end_main_frame();
-stdfoot();
+$REL_TPL->end_main_frame();
+$REL_TPL->stdfoot();
 ?>

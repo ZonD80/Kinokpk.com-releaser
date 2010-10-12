@@ -91,64 +91,20 @@ $row = mysql_fetch_array($res);
 $count = $row[0];
 
 
-list($pagertop, $pagerbottom, $limit) = pager($REL_CONFIG['torrentsperpage'], $count, $REL_SEO->make_link('browse').'?'.$addparam);
+list($pagertop, $pagerbottom, $limit) = pager($REL_CONFIG['torrentsperpage'], $count, $REL_SEO->make_link('browse').$addparam);
 
-$query = "SELECT torrents.id, torrents.last_action,".($modview?" torrents.moderated, torrents.moderatedby, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, torrents.visible, torrents.banned,":'')." torrents.category, torrents.images, torrents.free, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.numfiles, torrents.filename, torrents.sticky, torrents.owner, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed, " .
-        "users.username, users.class FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id LEFT JOIN users ON torrents.owner = users.id".($where?" WHERE $where":'')." ORDER BY torrents.sticky DESC, torrents.added DESC $limit";
+$query = "SELECT torrents.id, torrents.comments, torrents.freefor, torrents.last_action,".($modview?" torrents.moderated, torrents.moderatedby, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, torrents.visible, torrents.banned,":'')." torrents.category, torrents.images, torrents.free, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.numfiles, torrents.filename, torrents.sticky, torrents.owner, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed, " .
+        "users.username, users.class, SUM(trackers.seeders) AS seeders, SUM(trackers.leechers) AS leechers FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id LEFT JOIN users ON torrents.owner = users.id LEFT JOIN trackers ON torrents.id=trackers.torrent".($where?" WHERE $where":'')." GROUP BY torrents.id ORDER BY torrents.sticky DESC, torrents.added DESC $limit";
 $res = sql_query($query) or sqlerr(__FILE__,__LINE__);
 
-$seocats = $REL_SEO->assoc_cats();
-while ($resvalue = mysql_fetch_array($res)) {
-	$chsel = array();
-	$cats = explode(',',$resvalue['category']);
-	$catq= array_shift($cats);
-	$resvalue['cat_seo'] = $seocats[$catq];
-	$catq = get_cur_branch($tree,$catq);
-	$childs = get_childs($tree,$catq['parent_id']);
-	if ($childs) {
-		foreach($childs as $child)
-		if (($catq['id'] != $child['id']) && in_array($child['id'],$cats)) $chsel[]="<a href=\"".$REL_SEO->make_link("browse","cat",$child['id'])."\">".makesafe($child['name'])."</a>";
-		$resvalue['cat_names'] = get_cur_position_str($tree,$catq['id']).($chsel && is_array($chsel)?', '.implode(', ',$chsel):'');
-		//$resarray[$resvalue['id']] = $resvalue;
-	} else $resvalue['cat_names'] = get_cur_position_str($tree,$catq['id']);
-	$resarray[$resvalue['id']] = $resvalue;
-}
+
+	$resarray = prepare_for_torrenttable($res);
 
 if (!$resarray) stderr($REL_LANG->say_by_key('error'),"Ничего не найдено. <a href=\"javascript: history.go(-1)\">Назад</a>");
 
-$ids = array_keys($resarray);
-$ids = implode(",",$ids);
+$REL_TPL->stdhead($REL_LANG->say_by_key('browse'));
 
-$rqueryarray = array();
-
-$rquery = sql_query("SELECT torrents.id, category, comments, freefor, SUM(trackers.seeders) AS seeders, SUM(trackers.leechers) AS leechers FROM torrents LEFT JOIN trackers ON torrents.id=trackers.torrent WHERE torrents.id IN ($ids) GROUP BY torrents.id");
-
-$REL_CONFIG['pron_cats'] = explode(',',$REL_CONFIG['pron_cats']); //pron
-
-while ($rres = mysql_fetch_array($rquery)) $rqueryarray[$rres['id']] = $rres;
-foreach ($resarray as $key => $value) {
-	///////// pron
-	$pron=false;
-	if ($REL_CONFIG['pron_cats'] && !$CURUSER['pron'] && $rqueryarray[$key]['category']) {
-		$rqueryarray[$key]['category'] = explode(',',$rqueryarray[$key]['category']);
-		foreach ($rqueryarray[$key]['category'] as $category)
-		if (in_array($category,$REL_CONFIG['pron_cats'])) $pron=true;
-	}
-	if ($pron) { $resarray[$key]['images'] = $REL_CONFIG['defaultbaseurl'].'/pic/nopron.gif';  $resarray[$key]['name'] = $REL_LANG->say_by_key('xxx_release'); }
-	///////// pron
-	$resarray[$key]['seeders'] = $rqueryarray[$key]['seeders'];
-	$resarray[$key]['leechers'] = $rqueryarray[$key]['leechers'];
-	$resarray[$key]['comments'] = $rqueryarray[$key]['comments'];
-	$resarray[$key]['freefor'] = ($rqueryarray[$key]['freefor']?explode(',',$rqueryarray[$key]['freefor']):NULL);
-}
-
-
-
-
-stdhead($REL_LANG->say_by_key('browse'));
-
-
-begin_frame('Список релизов '.($modview?'[<a href="'.$REL_SEO->make_link('browse','unchecked','').'">Показать непроверенные релизы отдельно</a>]':''));
+$REL_TPL->begin_frame('Список релизов '.($modview?'[<a href="'.$REL_SEO->make_link('browse','unchecked','').'">Показать непроверенные релизы отдельно</a>]':''));
 
 
 
@@ -159,7 +115,7 @@ while($rgarrayrow = mysql_fetch_assoc($rgarrayres)) {
 }
 
 if ($rgarray) {
-	$rgselect = '&nbsp;'.$REL_LANG->say_by_key('relgroup').': <select style="width: 120px;" class="linkselect" name="relgroup"><option value="0">('.$REL_LANG->say_by_key('choose').')</option>';
+	$rgselect = '<span class="browse_relgroup">'.$REL_LANG->say_by_key('relgroup').':</span> <select style="width: 120px;" name="relgroup"><option value="0">'.$REL_LANG->say_by_key('choose').'</option>';
 	foreach ($rgarray as $rgid=>$rgname) $rgselect.='<option   value="'.$rgid.'"'.(($relgroup==$rgid)?" selected=\"1\"":'').'>'.$rgname."</option>\n";
 	$rgselect.='</select>';
 }
@@ -168,30 +124,31 @@ if ($rgarray) {
 
 print("<div class=\"friends_search\">
 <form class='formbr' action=\"".$REL_SEO->make_link('browse')."\" method=\"get\">".'
-<input type="text" name="search" size="30" style="margin-right: 10px;"/>
+<input type="text" class="browse_search" name="search" size="30" style="margin-right: 10px;"/>
 '.gen_select_area('cat',$tree,$cat, true).'<br />
 <div class="brel">
 '.$rgselect.'
-</div>
+
 <input class="button" type="submit" size="40" value="'.$REL_LANG->say_by_key('search').'!" />
+</div>
 </form>
 <div class="clear"></div>
 <!-- Google Search -->
 <form action="http://www.google.com/cse">
     <input name="cx" value="008925083164290612781:gpt7xhlrdou" type="hidden" />
-    <input name="ie" value="utf-8" type="hidden" />
+    <input name="ie" value="windows-1251" type="hidden" />
     <input name="q" size="43" type="text" />
     <input name="sa" class="button" value="Поиск Google!" type="submit" />
 </form>
 <!-- Google Search -->
 </div>
 ');
-end_frame();
+$REL_TPL->end_frame();
 
 if (isset($cleansearchstr)){
-begin_frame($REL_LANG->say_by_key('search_results_for')." \"" . $cleansearchstr . "\"\n");
+	$REL_TPL->begin_frame($REL_LANG->say_by_key('search_results_for')." \"" . $cleansearchstr . "\"\n");
 }else{
-begin_frame('Релизы');
+	$REL_TPL->begin_frame('Релизы');
 }
 
 print("<div id=\"releases-table\">");
@@ -206,16 +163,10 @@ print("<div id=\"releases-table\">");
 
 
 if ($count) {
-
-	print("<table align=\"center\" cellspacing=\"0\" cellpadding=\"5\" width=\"100%\">");
-	print("<tr><td class=\"index\" colspan=\"12\">");
-	print($pagertop);
-	print("</td></tr>");
+	print("<p>$pagertop</p>");
 	$returnto = urlencode(basename($_SERVER["REQUEST_URI"]));
 	torrenttable($resarray, "index", $returnto);
-	print("<tr><td class=\"index\" colspan=\"12\">");
-	print($pagerbottom);
-	print("</td></tr>");
+	print("<p>$pagerbottom</p>");
 }
 else {
 	if (isset($cleansearchstr)) {
@@ -228,14 +179,9 @@ else {
 	}
 }
 
-end_frame();
-stdfoot();
+print ('</div>');
+
+$REL_TPL->end_frame();
+$REL_TPL->stdfoot();
 
 ?>
-<script language="JavaScript">
-<!--
-$(document).ready(function () {
-	 $('.blocks_r').hide();
-});
-//-->
-</script>

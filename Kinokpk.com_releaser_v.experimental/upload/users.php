@@ -38,12 +38,12 @@ if (is_valid_user_class($class)) {
 if ($query) $query = " WHERE ".$query;
 
 
-stdhead($REL_LANG->say_by_key('users'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('users'));
 
 
 if ((get_user_class () >= UC_MODERATOR) && $_GET['act']) {
 	if ($_GET['act'] == "users") {
-		begin_frame("Пользователи с рейтингом ниже 0");
+		$REL_TPL->begin_frame("Пользователи с рейтингом ниже 0");
 
 		echo '<table width="100%" border="0" align="center" cellpadding="2" cellspacing="0">';
 		echo "<tr><td class=colhead align=left>Пользователь</td><td class=colhead>Рейтинг</td><td class=colhead>IP</td><td class=colhead>Зарегистрирован</td><td class=colhead>Последний раз был на трекере</td>"/*<td class=colhead>Скачанно</td><td class=colhead>Раздает</td>*/."</tr>";
@@ -52,18 +52,18 @@ if ((get_user_class () >= UC_MODERATOR) && $_GET['act']) {
 		$result = sql_query ("SELECT users.id,users.username,users.class,users.ratingsum,users.added,users.last_access,users.ip"/*, (SELECT SUM(1) FROM peers WHERE seeder=1 AND userid=users.id) AS seeding, (SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE snatched.finished=1 AND torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid=users.id AND snatched.userid<>torrents.owner) AS downloaded*/." FROM users WHERE ratingsum<0 AND enabled = 1 ORDER BY ratingsum DESC");
 		while ($row = mysql_fetch_array($result)) {
 			$records = true;
-				$ratio = ratearea($row['ratingsum'],$row['id'],'users', $CURUSER['id']);
-				echo "<tr><td><a href=\"".$REL_SEO->make_link('userdetails','id',$row["id"],'username',translit($row["username"]))."\"><b>".$row["username"]."</b></a></td><td><strong>".$ratio."</strong></td><td>".$row["ip"]."</td><td>".mkprettytime($row["added"])."</td><td>".mkprettytime($row["last_access"])." (".get_elapsed_time($row["last_access"],false)." {$REL_LANG->say_by_key('ago')})</td>"/*<td>".(int)$row['downloaded']."</td><td>".(int)$row['seeding']."</td>*/."</tr>";
+			$ratio = ratearea($row['ratingsum'],$row['id'],'users', $CURUSER['id']);
+			echo "<tr><td><a href=\"".$REL_SEO->make_link('userdetails','id',$row["id"],'username',translit($row["username"]))."\"><b>".$row["username"]."</b></a></td><td><strong>".$ratio."</strong></td><td>".$row["ip"]."</td><td>".mkprettytime($row["added"])."</td><td>".mkprettytime($row["last_access"])." (".get_elapsed_time($row["last_access"],false)." {$REL_LANG->say_by_key('ago')})</td>"/*<td>".(int)$row['downloaded']."</td><td>".(int)$row['seeding']."</td>*/."</tr>";
 
 
-				} 
-				if (!$records) stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error');
-				
+		}
+		if (!$records) stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error');
+
 		echo "</table>";
-		end_frame(); }
+		$REL_TPL->end_frame(); }
 
 		elseif ($_GET['act'] == "last") {
-			begin_frame("Последние пользователи");
+			$REL_TPL->begin_frame("Последние пользователи");
 
 			echo '<table width="100%" border="0" align="center" cellpadding="2" cellspacing="0">';
 			echo "<tr><td class=colhead align=left>Пользователь</td><td class=colhead>Рейтинг</td><td class=colhead>IP</td><td class=colhead>Зарегистрирован</td><td class=colhead>Последний&nbsp;раз&nbsp;был&nbsp;на&nbsp;трекере</td></tr>";
@@ -71,17 +71,17 @@ if ((get_user_class () >= UC_MODERATOR) && $_GET['act']) {
 			$result = sql_query ("SELECT * FROM users WHERE enabled = 1 AND confirmed=1 ORDER BY added DESC LIMIT 100");
 			while($row = mysql_fetch_array($result)) {
 				$records = true;
-					$ratio = ratearea($row['ratingsum'],$row['id'],'users', $CURUSER['id']);
-					echo "<tr><td><a href=\"".$REL_SEO->make_link('userdetails','id',$row["id"],'username',translit($row["username"]))."\"><b>".$row["username"]."</b></a></td><td><strong>".$ratio."</strong></td><td>".$row["ip"]."</td><td>".mkprettytime($row["added"])."</td><td>".mkprettytime($row["last_access"])."</td></tr>";
+				$ratio = ratearea($row['ratingsum'],$row['id'],'users', $CURUSER['id']);
+				echo "<tr><td><a href=\"".$REL_SEO->make_link('userdetails','id',$row["id"],'username',translit($row["username"]))."\"><b>".$row["username"]."</b></a></td><td><strong>".$ratio."</strong></td><td>".$row["ip"]."</td><td>".mkprettytime($row["added"])."</td><td>".mkprettytime($row["last_access"])."</td></tr>";
 
 
-				} 
-				if (!$records) stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error');
+			}
+			if (!$records) stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error');
 			echo "</table>";
-			end_frame(); }
+			$REL_TPL->end_frame(); }
 
 			elseif ($_GET['act'] == "banned") {
-				begin_frame("Забаненые пользователи");
+				$REL_TPL->begin_frame("Забаненые пользователи");
 
 				echo '<table width="100%" border="0" align="center" cellpadding="2" cellspacing="0">';
 				echo "<tr><td class=colhead align=left>Пользователь</td><td class=colhead>Рейтинг</td><td class=colhead>IP</td><td class=colhead>Зарегистрирован</td><td class=colhead>Последний раз был</td></tr>";
@@ -95,15 +95,15 @@ if ((get_user_class () >= UC_MODERATOR) && $_GET['act']) {
 					} while($row = mysql_fetch_array($result));
 				} else {print "<tr><td colspan=7>Извините, записей не обнаружено!</td></tr>";}
 				echo "</table>";
-				end_frame(); }
+				$REL_TPL->end_frame(); }
 
 }
 elseif (!isset($_GET['act'])) {
 
 	print("<h1>Пользователи</h1>\n");
 	print("<div class=\"friends_search\">");
-	print("<form method=\"get\" action=\"".$REL_SEO->make_link('users')."\">\n");
-	print($REL_LANG->say_by_key('search')." <input type=\"text\" size=\"30\" name=\"search\" value=\"".$search."\">\n");
+	print("<form method=\"get\" style='margin-bottom: 20px;' action=\"".$REL_SEO->make_link('users')."\">\n");
+	print("<span class='browse_users'>".$REL_LANG->say_by_key('search')."<input type=\"text\" size=\"30\" name=\"search\" value=\"".$search."\"></span> \n");
 	print("<select name=\"class\">\n");
 	print("<option value=\"-\">(Все уровни)</option>\n");
 	for ($i = 0;;++$i) {
@@ -113,13 +113,13 @@ elseif (!isset($_GET['act'])) {
 		break;
 	}
 	print("</select>\n");
-	print("<input type=\"submit\" class=\"button\" style=\"margin-top:-5px\" value=\"{$REL_LANG->say_by_key('go')}\">\n");
+	print("<input type=\"submit\" class=\"button\" style=\"margin-top:5px\" value=\"{$REL_LANG->say_by_key('go')}\">\n");
 	print("</form>\n");
 	print("</div\n");
 
 	$res = sql_query("SELECT SUM(1) FROM users$query") or sqlerr(__FILE__, __LINE__);
 	$count = mysql_result($res,0);
-	if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); stdfoot(); die(); }
+	if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); $REL_TPL->stdfoot(); die(); }
 	$perpage = 50;
 	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "users.php?".($q?$q.'&amp;':''));
 
@@ -130,7 +130,7 @@ elseif (!isset($_GET['act'])) {
 
 	print ('<div id="users-table">');
 	print ("<p>$pagertop</p>");
-	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
+	print("<table cellspacing=\"0\" cellpadding=\"5\" border=\"1\" style=\"width: 964px;\">\n");
 	print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td></tr>\n");
 	while ($arr = mysql_fetch_assoc($res)) {
 		if ($arr['country'] > 0) {
@@ -153,6 +153,6 @@ elseif (!isset($_GET['act'])) {
 	print('</div></div>');
 
 }
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

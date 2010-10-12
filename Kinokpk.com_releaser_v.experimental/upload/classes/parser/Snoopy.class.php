@@ -157,7 +157,7 @@ class Snoopy
 						// no proxy, send only the path
 						$this->_httprequest($path, $fp, $URI, $this->_httpmethod);
 					}
-						
+
 					$this->_disconnect($fp);
 
 					if($this->_redirectaddr)
@@ -309,7 +309,7 @@ class Snoopy
 						// no proxy, send only the path
 						$this->_httprequest($path, $fp, $URI, $this->_submit_method, $this->_submit_type, $postdata);
 					}
-						
+
 					$this->_disconnect($fp);
 
 					if($this->_redirectaddr)
@@ -319,7 +319,7 @@ class Snoopy
 						{
 							if(!preg_match("|^".$URI_PARTS["scheme"]."://|", $this->_redirectaddr))
 							$this->_redirectaddr = $this->_expandlinks($this->_redirectaddr,$URI_PARTS["scheme"]."://".$URI_PARTS["host"]);
-								
+
 							// only follow redirect if it's on this site, or offsiteok is true
 							if(preg_match("|^http://".preg_quote($this->host)."|i",$this->_redirectaddr) || $this->offsiteok)
 							{
@@ -350,7 +350,7 @@ class Snoopy
 							break;
 						}
 					}
-						
+
 				}
 				else
 				{
@@ -478,7 +478,7 @@ class Snoopy
 			}
 			else
 			$this->results = $this->_stripform($this->results);
-				
+
 			return true;
 		}
 		else
@@ -1053,7 +1053,7 @@ class Snoopy
 
 		for($currentHeader = 0; $currentHeader < count($result_headers); $currentHeader++)
 		{
-				
+
 			// if a header begins with Location: or URI:, set the redirect
 			if(preg_match("/^(Location: |URI: )/i",$result_headers[$currentHeader]))
 			{

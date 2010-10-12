@@ -30,22 +30,22 @@ function get_user_class_color($class, $username)
 	switch ($class)
 	{
 		case UC_SYSOP:
-			return "<span style=\"color:#0F6CEE\" title=\"".$REL_LANG->_('Owner')."\">" . $username . "</span>";
+			return "<span  title=\"".$REL_LANG->_('Owner')."\">" . $username . "</span>";/*style=\"color:#0F6CEE\"*/
 			break;
 		case UC_ADMINISTRATOR:
-			return "<span style=\"color:green\" title=\"".$REL_LANG->_('Administrator')."\">" . $username . "</span>";
+			return "<span  title=\"".$REL_LANG->_('Administrator')."\">" . $username . "</span>";/*style=\"color:green\"*/
 			break;
 		case UC_MODERATOR:
-			return "<span style=\"color:#00cccc\" title=\"".$REL_LANG->_('Moderator')."\">" . $username . "</span>";
+			return "<span  title=\"".$REL_LANG->_('Moderator')."\">" . $username . "</span>";/*style=\"color:#00cccc\"*/
 			break;
 		case UC_UPLOADER:
-			return "<span style=\"color:orange\" title=\"".$REL_LANG->_('Releaser')."\">" . $username . "</span>";
+			return "<span  title=\"".$REL_LANG->_('Releaser')."\">" . $username . "</span>"; /*style=\"color:orange\"*/
 			break;
 		case UC_VIP:
 			return "<span style=\"color:#9C2FE0\" title=\"".$REL_LANG->_('VIP')."\">" . $username . "</span>";
 			break;
 		case UC_POWER_USER:
-			return "<span style=\"color:#D21E36\" title=\"".$REL_LANG->_('Power user')."\">" . $username . "</span>";
+			return "<span  title=\"".$REL_LANG->_('Power user')."\">" . $username . "</span>"; /*style=\"color:#D21E36\"*/
 			break;
 		case UC_USER:
 			return "<span title=\"".$REL_LANG->_('User')."\">" . $username . "</span>";
@@ -53,7 +53,7 @@ function get_user_class_color($class, $username)
 		case UC_GUEST:
 			return "<i>{$REL_LANG->_('Guest')}</i>";
 			break;
-		 
+				
 	}
 	return "$username";
 }
@@ -79,7 +79,7 @@ function get_user_class_name($class) {
 		case UC_ADMINISTRATOR: return $REL_LANG->_('Administrator');
 
 		case UC_SYSOP: return $REL_LANG->_('Owner');
-		
+
 		case UC_GUEST: return $REL_LANG->_('Guest');
 	}
 	return "";

@@ -26,10 +26,10 @@ if(is_array($_POST["delmp"])) {
 	$res=sql_query($do);
 	safe_redirect($REL_SEO->make_link('spam'));
 } else {
-	stdhead($REL_LANG->say_by_key('error'));
+	$REL_TPL->stdhead($REL_LANG->say_by_key('error'));
 	print("<div class='error'><b>".$REL_LANG->say_by_key('not_chosen_message')."</b></div>");
 	print("<center><INPUT TYPE='button' VALUE='".$REL_LANG->say_by_key('back')."' onClick=\"history.go(-1)\"></center>");
-	stdfoot();
+	$REL_TPL->stdfoot();
 	die;
 }
 ?>

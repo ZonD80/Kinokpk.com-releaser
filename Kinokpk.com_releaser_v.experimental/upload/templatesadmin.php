@@ -17,8 +17,8 @@ if (get_user_class() < UC_SYSOP) stderr($REL_LANG->say_by_key('error'),$REL_LANG
 httpauth();
 
 if (!isset($_GET['action'])) {
-	stdhead("Админка шкурок");
-	begin_frame("Администрация шкурок");
+	$REL_TPL->stdhead("Админка шкурок");
+	$REL_TPL->begin_frame("Администрация шкурок");
 	$res = sql_query("SELECT * FROM stylesheets ORDER BY id DESC");
 	print('<div align="center"><a href="'.$REL_SEO->make_link('templatesadmin','action','add').'">Добавить новый шаблон в базу</a></div>');
 	print('<table width="100%" border="1"><tr><td class="colhead">ID</td><td class="colhead">URI</td><td class="colhead">Название</td><td class="colhead">Редактировать</td></tr>');
@@ -27,18 +27,18 @@ if (!isset($_GET['action'])) {
 	}
 	print("</table>");
 
-	end_frame();
-	stdfoot();
+	$REL_TPL->end_frame();
+	$REL_TPL->stdfoot();
 }
 
 elseif ($_GET['action'] == 'add') {
-	stdhead("Админка шкурок: добавление новой шкурки");
-	begin_frame("Новая шкурка");
+	$REL_TPL->stdhead("Админка шкурок: добавление новой шкурки");
+	$REL_TPL->begin_frame("Новая шкурка");
 	print('<table width="400px"><form action="'.$REL_SEO->make_link('templatesadmin','action','saveadd').'" method="POST">
     <tr><td>URI</td><td><input type="text" size="20" name="uri"></td></tr>
     <tr><td>Название</td><td><input type="text" size="20" name="name"></td></tr><tr><td><input type="submit" value="Добавить"></td></tr></form></table>');
-	end_frame();
-	stdfoot();
+	$REL_TPL->end_frame();
+	$REL_TPL->stdfoot();
 }
 
 elseif ($_GET['action'] == 'saveadd') {
@@ -63,13 +63,13 @@ elseif ($_GET['action'] == 'edit') {
 	$row = mysql_fetch_array($res);
 	if (!$row) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
-	stdhead("Админка шкурок: редактирование шкурки");
-	begin_frame("Редактор шкурки");
+	$REL_TPL->stdhead("Админка шкурок: редактирование шкурки");
+	$REL_TPL->begin_frame("Редактор шкурки");
 	print('<table width="400px"><form action="'.$REL_SEO->make_link('templatesadmin','action','saveedit','id',$id).'" method="POST">
     <tr><td>URI</td><td><input type="text" size="20" name="uri" value="'.$row['uri'].'"></td></tr>
     <tr><td>Название</td><td><input type="text" size="20" name="name" value="'.$row['name'].'"></td></tr><tr><td><input type="submit" value="Отредактировать"></td></tr></form></table>');
-	end_frame();
-	stdfoot();
+	$REL_TPL->end_frame();
+	$REL_TPL->stdfoot();
 
 }
 

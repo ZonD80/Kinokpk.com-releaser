@@ -17,7 +17,7 @@ if (! is_valid_id ( $_GET ['id'] ))
 stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 $id = ( int ) $_GET ["id"];
 
-$res = sql_query ("SELECT torrents.category, torrents.free, torrents.ratingsum, torrents.descr, SUM(trackers.seeders) AS seeders, SUM(trackers.leechers) AS leechers, torrents.banned, torrents.info_hash, torrents.tiger_hash, torrents.topic_id, torrents.filename, torrents.last_action AS lastseed, torrents.name, torrents.owner, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.ismulti, torrents.numfiles, torrents.images, torrents.online, torrents.moderatedby, torrents.freefor, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, users.username, users.ratingsum AS userrating, users.class, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed FROM torrents LEFT JOIN users ON torrents.owner = users.id LEFT JOIN trackers ON torrents.id=trackers.torrent LEFT JOIN relgroups ON torrents.relgroup=relgroups.id WHERE torrents.id = $id GROUP BY torrents.id" ) or sqlerr ( __FILE__, __LINE__ );
+$res = sql_query ("SELECT torrents.category, torrents.free, torrents.ratingsum, torrents.descr, SUM(trackers.seeders) AS seeders, SUM(trackers.leechers) AS leechers, torrents.banned, torrents.info_hash, torrents.tiger_hash, torrents.filename, torrents.last_action AS lastseed, torrents.name, torrents.owner, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.ismulti, torrents.numfiles, torrents.images, torrents.online, torrents.moderatedby, torrents.freefor, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, users.username, users.ratingsum AS userrating, users.class, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed FROM torrents LEFT JOIN users ON torrents.owner = users.id LEFT JOIN trackers ON torrents.id=trackers.torrent LEFT JOIN relgroups ON torrents.relgroup=relgroups.id WHERE torrents.id = $id GROUP BY torrents.id" ) or sqlerr ( __FILE__, __LINE__ );
 $row = mysql_fetch_array ( $res );
 $owned = $moderator = 0;
 if (get_user_class () >= UC_MODERATOR)
@@ -32,7 +32,7 @@ else {
 
 	if ((get_user_class()<UC_MODERATOR) && !$row['relgroup_allowed'] && $row['rgid']) stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('private_release_access_denied'),$rgcontent));
 
-	stdhead ( $row ["name"]." - {$REL_LANG->say_by_key('torrent_details')}" );
+	$REL_TPL->stdhead( $row ["name"]." - {$REL_LANG->say_by_key('torrent_details')}" );
 
 	if ($CURUSER ["id"] == $row ["owner"] || get_user_class () >= UC_MODERATOR || ($row ["filename"] == "nofile" && (get_user_class () == UC_UPLOADER)))
 	$owned = 1;
@@ -104,26 +104,26 @@ else {
 	if ($CURUSER) {
 		if (! $row ["visible"])
 		$OUT .= "<strong>{$REL_LANG->say_by_key('visible')}:</strong> <b>" . $REL_LANG->say_by_key('no') . "</b> (" . $REL_LANG->say_by_key('dead') . ")"."<br/>";
-	if ($row ['filename'] != 'nofile')
-	$OUT .= "<strong>{$REL_LANG->say_by_key('seeder')}:</strong> {$REL_LANG->say_by_key('seeder_last_seen')} " . get_elapsed_time ( $row ["lastseed"] ) . " " . $REL_LANG->say_by_key('ago')."<br/>";
+		if ($row ['filename'] != 'nofile')
+		$OUT .= "<strong>{$REL_LANG->say_by_key('seeder')}:</strong> {$REL_LANG->say_by_key('seeder_last_seen')} " . get_elapsed_time ( $row ["lastseed"] ) . " " . $REL_LANG->say_by_key('ago')."<br/>";
 
-	$OUT .= "<strong>{$REL_LANG->say_by_key('size')}:</strong> ". mksize ( $row ["size"] ) . " (" . number_format ( $row ["size"] ) . " " . $REL_LANG->say_by_key('bytes') . ")"."<br/>";
+		$OUT .= "<strong>{$REL_LANG->say_by_key('size')}:</strong> ". mksize ( $row ["size"] ) . " (" . number_format ( $row ["size"] ) . " " . $REL_LANG->say_by_key('bytes') . ")"."<br/>";
 
-	$OUT .= "<strong>{$REL_LANG->say_by_key('added')}:</strong> ". mkprettytime ( $row ["added"] )."<br/>";
-	$OUT .= "<strong>{$REL_LANG->say_by_key('views')}:</strong> ". $row ["views"]."<br/>";
+		$OUT .= "<strong>{$REL_LANG->say_by_key('added')}:</strong> ". mkprettytime ( $row ["added"] )."<br/>";
+		$OUT .= "<strong>{$REL_LANG->say_by_key('views')}:</strong> ". $row ["views"]."<br/>";
 
-	if ($row ['filename'] != 'nofile') {
-		$OUT .= "<strong>{$REL_LANG->say_by_key('hits')}:</strong> {$row ["hits"]}"."<br/>";
-		$OUT .= "<strong>{$REL_LANG->say_by_key('snatched')}:</strong> {$row ["times_completed"]} " . $REL_LANG->say_by_key('times')."<br/>";
+		if ($row ['filename'] != 'nofile') {
+			$OUT .= "<strong>{$REL_LANG->say_by_key('hits')}:</strong> {$row ["hits"]}"."<br/>";
+			$OUT .= "<strong>{$REL_LANG->say_by_key('snatched')}:</strong> {$row ["times_completed"]} " . $REL_LANG->say_by_key('times')."<br/>";
+		}
+		$keepget = "";
+		$uprow = (isset ( $row ["username"] ) ? ("<a href='userdetails.php?id=" . $row ["owner"] . "'>" . get_user_class_color ( $row ['class'], $row ["username"] ) . "</a>") : "<i>Аноним</i>");
+
+
+		$OUT .= "<strong>Выложил:</strong>  $uprow $spacer ". ratearea ( $row ['userrating'], $row ['owner'], 'users' ,$CURUSER['id'])."<br/>";
+		$OUT .= "<strong>{$REL_LANG->say_by_key('vote')} за релиз:</strong> $spacer".ratearea ( $row ['ratingsum'], $id, 'torrents',(($row['owner']==$CURUSER['id'])?$id:0) )."<br/>";
 	}
-	$keepget = "";
-	$uprow = (isset ( $row ["username"] ) ? ("<a href='userdetails.php?id=" . $row ["owner"] . "'>" . get_user_class_color ( $row ['class'], $row ["username"] ) . "</a>") : "<i>Аноним</i>");
 
-
-	$OUT .= "<strong>Выложил:</strong>  $uprow $spacer ". ratearea ( $row ['userrating'], $row ['owner'], 'users' ,$CURUSER['id'])."<br/>";
-	$OUT .= "<strong>{$REL_LANG->say_by_key('vote')} за релиз:</strong> $spacer".ratearea ( $row ['ratingsum'], $id, 'torrents',(($row['owner']==$CURUSER['id'])?$id:0) )."<br/>";
-	}
-	
 	if ($row ['images']) {
 		$images = explode ( ',', $row ['images'] );
 			
@@ -143,19 +143,14 @@ else {
 
 	print ( '<tr><td colspan="2"><table width="100%"><tr><td style="vertical-align: top;">' . ($imgcontent ? $imgcontent : '<img src="pic/noimage.gif"/>') . (! empty ( $imgspoiler ) ? sprintf($spbegin,"{$REL_LANG->say_by_key('screens')} ({$REL_LANG->say_by_key('view')})") . $imgspoiler . $spend : '') . '</td><td style="vertical-align: top; text-align:left; width:100%">'.($row['online']?$row['online'].'<hr />':'') .$OUT.'<hr/>'. format_comment ( $row ['descr'] ) . '</td></tr></table></td></tr>' );
 
-	if ($REL_CONFIG ['use_integration'] && $row['topic_id']) {
-		tr ( "Релиз на форуме {$REL_CONFIG['forumname']}", "<a href=\"{$REL_CONFIG['forumurl']}/index.php?showtopic=" . $row ['topic_id'] . "\">{$REL_CONFIG['forumurl']}/index.php?showtopic=" . $row ['topic_id'] . "</a>", 1 );
-		$topicid = $row ['topic_id'];
-	}
-
 	if (! $CURUSER) {
 		print ( "</table>\n" );
-		stdfoot ();
+		$REL_TPL->stdfoot();
 		die ();
 	}
-		if ($moderator)
+	if ($moderator)
 	tr ( $REL_LANG->say_by_key('banned'), (! $row ["banned"] ? $REL_LANG->say_by_key('no') : $REL_LANG->say_by_key('yes')) );
-	
+
 	if ($row["ismulti"]) {
 		if (!$_GET["filelist"])
 		tr($REL_LANG->say_by_key('files')."<br /><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']),'filelist',1)."$keepget#filelist\" class=\"sublink\">[".$REL_LANG->say_by_key('open_list')."]</a>", $row["numfiles"] . " ".$REL_LANG->say_by_key('files_l'), 1);
@@ -240,7 +235,7 @@ return no_ajax;
 <a href=\"".$REL_SEO->make_link('browse','cat',$row['category'])."\">Все релизы этой категории</a></div>" );
 
 }
-$subres = sql_query ( "SELECT SUM(1) FROM comments WHERE torrent = $id" );
+$subres = sql_query ( "SELECT SUM(1) FROM comments WHERE toid = $id AND type='rel'" );
 $subrow = mysql_fetch_array ( $subres );
 $count = $subrow [0];
 
@@ -248,31 +243,25 @@ $limited = 10;
 
 if (! $count) {
 
-	print ( "<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">" );
+	print ('<div id="newcomment_placeholder">'. "<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">" );
 	print ( "<tr><td class=\"colhead\" align=\"left\" colspan=\"2\">" );
 	print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев {$REL_CONFIG['defaultbaseurl']}</div>" );
 	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\" class=\"altlink_white\">Добавить комментарий</a></div>" );
 	print ( "</td></tr><tr><td align=\"center\">" );
 	print ( "Комментариев нет. <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\">Желаете добавить?</a>" );
-	print ( "</td></tr></table><br />" );
+	print ( "</td></tr></table><br /></div>");
 
 } else {
 	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, $REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."&amp;",array ('lastpagedefault' => 1 ) );
 
-	$subres = sql_query ( "SELECT c.id, c.post_id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE torrent = " . "$id GROUP BY c.id ORDER BY c.id $limit" ) or sqlerr ( __FILE__, __LINE__ );
-	$allrows = array ();
-
-	while ( $subrow = mysql_fetch_array ( $subres ) ) {
-		$subrow['subject'] = $row['name'];
-		$subrow['link'] = $REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comm{$subrow['id']}";
-		$allrows [] = $subrow;
-	}
+	$subres = sql_query ( "SELECT c.id, c.type, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = " . "$id AND c.type='rel' GROUP BY c.id ORDER BY c.id $limit" ) or sqlerr ( __FILE__, __LINE__ );
+	$allrows = prepare_for_commenttable($subres,$row['name'],$REL_SEO->make_link('details','id',$id,'name',translit($row['name'])));
 
 
 	print ( "<table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
 	print ( "<tr><td class=\"colhead\" align=\"center\" >" );
 	print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>" );
-	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\" class=\"altlink_white\">{$REL_LANG->say_by_key('add_comment')}</a></div>" );
+	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\" class=\"altlink_white\">{$REL_LANG->_('Add comment to %s','релизу')}</a></div>" );
 	print ( "</td></tr>" );
 
 	print ( "<tr><td>" );
@@ -288,22 +277,16 @@ if (! $count) {
 }
 
 
-print ( "<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">" );
-print ( "<tr><td class=colhead align=\"left\" colspan=\"2\">  <div id=\"comments\"></div><b>:: {$REL_LANG->say_by_key('add_comment')} к релизу | " . is_i_notified ( $id, 'comments' ) . "</b></td></tr>" );
-print ( "<tr><td width=\"100%\" align=\"center\" >" );
-//print("Ваше имя: ");
-//print("".$CURUSER['username']."<p>");
-print ( "<form name=\"comment\" method=\"post\" action=\"".$REL_SEO->make_link('comment','action','add')."\">" );
-print ( "<tr><td align=\"center\">" . textbbcode ( "text") . "</td></tr>" );
-
-print ( "<tr><td  align=\"center\">" );
-print ( "<input type=\"hidden\" name=\"tid\" value=\"$id\"/>" );
-print ( "<input type=\"submit\" value=\"Разместить комментарий\" />" );
-print ( "</td></tr></table></form>" );
-
+$REL_TPL->assignByRef('to_id',$id);
+$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'relcomments' ));
+$REL_TPL->assign('textbbcode',textbbcode('text'));
+$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release'));
+$FORM_TYPE = 'relcomments';
+$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+$REL_TPL->display('commenttable_form.tpl');
 print '</table>';
 sql_query ( "UPDATE torrents SET views = views + 1 WHERE id = $id" );
 set_visited('torrents',$id);
-stdfoot ();
+$REL_TPL->stdfoot();
 
 ?>

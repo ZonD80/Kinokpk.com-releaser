@@ -1,5 +1,5 @@
 <?php
-global $REL_LANG, $ss_uri, $REL_CONFIG, $REL_CACHE, $REL_SEO;
+global $REL_LANG, $REL_CONFIG, $REL_CACHE, $REL_SEO;
 if (!defined('BLOCK_FILE')) {
 	safe_redirect(" ../".$REL_SEO->make_link('index'));
 	exit;
@@ -97,8 +97,8 @@ $content .= "<table width=\"100%\" class=\"main\" border=\"0\" cellspacing=\"0\"
 <tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('browse','dead','')."\">Мертвых релизов</a></td><td align=\"right\">".($dead?number_format($dead):$REL_LANG->say_by_key('no'))."</td></tr>
 <tr><td class=\"rowhead\"><a href= \"".$REL_SEO->make_link('peers')."\">".$REL_LANG->say_by_key('tracker_peers')."</a></td><td align=\"right\">".number_format($peers)."</td></tr>";
 if (isset($peers)) {
-	$content .= "<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('peers','view','seeders')."\">".$REL_LANG->say_by_key('tracker_seeders')."</a>&nbsp;&nbsp; <img src=\"./themes/$ss_uri/images/arrowup.gif\" alt=\"Раздает\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".number_format($seeders+$block_online['seeders'])."</td></tr>
-<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('peers','view','leechers')."\">".$REL_LANG->say_by_key('tracker_leechers')."</a>&nbsp;&nbsp;<img src=\"./themes/$ss_uri/images/arrowdown.gif\" alt=\"Качает\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".number_format($leechers+$block_online['leechers'])."</td></tr>
+	$content .= "<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('peers','view','seeders')."\">".$REL_LANG->say_by_key('tracker_seeders')."</a>&nbsp;&nbsp; <img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/arrowup.gif\" alt=\"Раздает\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".number_format($seeders+$block_online['seeders'])."</td></tr>
+<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('peers','view','leechers')."\">".$REL_LANG->say_by_key('tracker_leechers')."</a>&nbsp;&nbsp;<img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/arrowdown.gif\" alt=\"Качает\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".number_format($leechers+$block_online['leechers'])."</td></tr>
 <tr><td class=\"rowhead\">Размер релизов</td><td align=\"right\">$total_size</td></tr>
 <tr><td class=\"rowhead\">".$REL_LANG->say_by_key('tracker_seed_peer')."</td><td align=\"right\">$ratio</td></tr>";
 }

@@ -3,7 +3,7 @@ require "include/bittorrent.php";
 dbconn();
 
 loggedinorreturn();
-stdhead($REL_LANG->say_by_key('test_port'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('test_port'));
 if ($CURUSER) {
 	$ip = $CURUSER['ip'];
 
@@ -34,5 +34,5 @@ if ($CURUSER) {
 		print ("</table>");
 	}
 }
-stdfoot ();
+stdfoot();
 ?>

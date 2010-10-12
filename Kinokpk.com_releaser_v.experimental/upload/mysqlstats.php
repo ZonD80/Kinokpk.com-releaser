@@ -106,7 +106,7 @@ function localisedDate($timestamp = -1, $format = '')
 ////////////////////// END FUNCTION LIST /////////////////////////////////////
 
 
-stdhead("Статистка Mysql");
+$REL_TPL->stdhead("Статистка Mysql");
 echo '<h2>'."\n".'Статус базы данных (MYSQL)'."\n".'</h2><br />'."\n";
 
 $res = @sql_query('SHOW STATUS') or Die(mysql_error());
@@ -371,4 +371,4 @@ $row = mysql_fetch_row($res);
 	</li>
 	<? } ?>
 </ul>
-	<? stdfoot(); ?>
+	<? $REL_TPL->stdfoot(); ?>

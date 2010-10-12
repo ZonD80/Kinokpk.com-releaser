@@ -49,7 +49,7 @@ if (!$max_total) {
 
 if ($total>$max_total) {
 	$REL_CACHE->set('block-online','total',$total);
-	$REL_CACHE->set('block-online','time',time()); 
+	$REL_CACHE->set('block-online','time',time());
 	$max_time = time();
 	$max_total = $total;
 }

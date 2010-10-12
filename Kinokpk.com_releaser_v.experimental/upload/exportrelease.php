@@ -20,7 +20,7 @@ if (!is_valid_id($_GET['id'])) stderr($REL_LANG->say_by_key('error'), $REL_LANG-
 
 $id = (int) $_GET['id'];
 
-$res = sql_query("SELECT torrents.banned, torrents.topic_id, torrents.name, torrents.descr, torrents.size, torrents.id, torrents.images, torrents.category FROM torrents WHERE torrents.id = $id")
+$res = sql_query("SELECT torrents.banned, torrents.name, torrents.descr, torrents.size, torrents.id, torrents.images, torrents.category FROM torrents WHERE torrents.id = $id")
 or sqlerr(__FILE__, __LINE__);
 $row = mysql_fetch_array($res);
 
@@ -50,7 +50,7 @@ $formvalue .= "<b>Размер:</b> ".mksize($row['size'])."<br />";
 
 $formvalue .= "<div align=\"center\">Оригинал релиза на <a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\">{$REL_CONFIG['sitename']}</a></b></div>";
 
-stdhead($REL_LANG->say_by_key('exportrelease_mname'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('exportrelease_mname'));
 
 print('<script type="text/javascript">
 function SelectAll(){
@@ -60,19 +60,18 @@ function SelectAll(){
 }
 </script>');
 
-begin_main_frame();
+$REL_TPL->begin_main_frame();
 print("<div id=\"tabs\"><ul>
 	<li class=\"tab2\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\"><span>Описание</span></a></li>
 	<li nowrap=\"\" class=\"tab2\"><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($row['name']))."\"><span>{$REL_LANG->say_by_key('torrent_info')}</span></a></li>
 	<li nowrap=\"\" class=\"tab1\"><a href=\"".$REL_SEO->make_link('exportrelease','id',$id,'name',translit($row['name']))."\"><span>{$REL_LANG->say_by_key('exportrelease_mname')}</span></a></li>
 	</ul></div>\n <br />");
-begin_frame($REL_LANG->say_by_key('exportrelease_notice'));
+$REL_TPL->begin_frame($REL_LANG->say_by_key('exportrelease_notice'));
 
 print('<div align="center"><textarea name="exportform" rows="20" cols="100" id="exportform" wrap="soft" readonly>'.$formvalue.'</textarea><br />'.$REL_LANG->say_by_key('exportrelease_warning').'<br /><a href="javascript://" onClick="javascript:SelectAll();">'.$REL_LANG->say_by_key('select_all').'</a></div>');
 
-end_frame();
-end_main_frame();
-
-stdfoot();
+$REL_TPL->end_frame();
+$REL_TPL->end_main_frame();
+$REL_TPL->stdfoot();
 
 ?>

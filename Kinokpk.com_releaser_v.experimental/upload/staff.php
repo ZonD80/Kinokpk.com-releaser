@@ -12,8 +12,8 @@
 require "include/bittorrent.php";
 dbconn();
 loggedinorreturn();
-stdhead("Администрация");
-begin_main_frame();
+$REL_TPL->stdhead("Администрация");
+$REL_TPL->begin_main_frame();
 
 // Get current datetime
 $dt = time() - 300;
@@ -42,7 +42,7 @@ while ($arr = mysql_fetch_assoc($res))
 		$col[$arr['class']]=0;
 	}
 }
-begin_frame("Администрация");
+$REL_TPL->begin_frame("Администрация");
 ?>
 <table width=100% cellspacing=0>
 	<tr>
@@ -83,7 +83,7 @@ begin_frame("Администрация");
 	<?php } ?>
 </table>
 	<?
-	end_frame();
+	$REL_TPL->end_frame();
 
 	// LIST ALL FIRSTLINE SUPPORTERS
 	// Search User Database for Firstline Support and display in alphabetical order
@@ -97,7 +97,7 @@ begin_frame("Администрация");
 "<td class=embedded><img src=pic/flag/$arr[flagpic] title=$arr[name] border=0 width=19 height=12></td>".
 "<td class=embedded>".htmlspecialchars($arr['supportfor'])."</td></tr>\n";
 	}
-	begin_frame("Первая линия поддержки");
+	$REL_TPL->begin_frame("Первая линия поддержки");
 	?>
 
 <table width=100% cellspacing=0>
@@ -131,10 +131,10 @@ begin_frame("Администрация");
 	</tr>
 </table>
 		<?
-		end_frame();
+		$REL_TPL->end_frame();
 
 		?>
 		<?
-		end_main_frame();
-		stdfoot();
-?>
+		$REL_TPL->end_main_frame();
+		$REL_TPL->stdfoot();
+		?>

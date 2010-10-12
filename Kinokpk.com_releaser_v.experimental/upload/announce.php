@@ -41,8 +41,8 @@ err('Invalid passkey (' . strlen($passkey) . " - $passkey)");
 $ip = getip();
 //$announce_wait = 30;
 foreach(array('num want', 'numwant', 'num_want') as $k) {
-		$rsize = (int) $_GET[$k];
-		break;
+	$rsize = (int) $_GET[$k];
+	break;
 }
 
 if ($rsize>50) $rsize = 50;
@@ -103,13 +103,13 @@ $updateset = array();
 $snatch_updateset = array();
 if ($event == 'stopped') {
 
-		mysql_query('DELETE FROM peers WHERE '.$selfwhere) or sqlerr(__FILE__,__LINE__);
-		if (mysql_affected_rows()) {
-			if ($self['seeder'])
-			$trupdateset[] = 'seeders = IF(seeders > 0, seeders - 1, 0)';
-			else
-			$trupdateset[] = 'leechers = IF(leechers > 0, leechers - 1, 0)';
-		}
+	mysql_query('DELETE FROM peers WHERE '.$selfwhere) or sqlerr(__FILE__,__LINE__);
+	if (mysql_affected_rows()) {
+		if ($self['seeder'])
+		$trupdateset[] = 'seeders = IF(seeders > 0, seeders - 1, 0)';
+		else
+		$trupdateset[] = 'leechers = IF(leechers > 0, leechers - 1, 0)';
+	}
 }
 if (($event == 'completed' || !$left) && !$SNcompleted) {
 	$snatch_updateset[] = "completedat = $time";
@@ -141,7 +141,7 @@ if ($ret) {
 	$trupdateset[] = 'leechers = leechers + 1';
 }
 else {
-	mysql_query("UPDATE LOW_PRIORITY peers SET port = $port, ip = '$ip', seeder = $seeder, last_action=$time WHERE $selfwhere") or sqlerr(__FILE__,__LINE__);	
+	mysql_query("UPDATE LOW_PRIORITY peers SET port = $port, ip = '$ip', seeder = $seeder, last_action=$time WHERE $selfwhere") or sqlerr(__FILE__,__LINE__);
 }
 if ($seeder) {
 	$updateset[] = 'visible = 1';

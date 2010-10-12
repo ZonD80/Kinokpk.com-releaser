@@ -56,13 +56,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	stderr($REL_LANG->say_by_key('error'), "Письмо не может быть отправлено. Пожалуйтса, попробуйте позже.");
 }
 
-stdhead("Отправить e-mail");
+$REL_TPL->stdhead("Отправить e-mail");
 ?>
 <table border=1 cellspacing=0 cellpadding=5>
 	<tr>
 		<td class=colhead colspan=2>Отправить e-mail пользователю <?=$username;?></td>
 	</tr>
-	<form method=post action="<?=$REL_SEO->make_link('email-gateway','id',$id)?>">
+	<form method=post
+		action="<?=$REL_SEO->make_link('email-gateway','id',$id)?>">
 	<tr>
 		<td class=rowhead>Ваше имя</td>
 		<td><input type=text name=from size=80 value=<?=$CURUSER["username"]?>
@@ -91,4 +92,4 @@ stdhead("Отправить e-mail");
 виден получателю, для предотвращния обмана.<br />
 Убедитесь что вы ввели правильны e-mail адрес если вы ожидаете ответа.</font>
 </p>
-<? stdfoot(); ?>
+<? $REL_TPL->stdfoot(); ?>

@@ -12,9 +12,9 @@
 
 require_once("include/bittorrent.php");
 function bark($msg) {
-	stdhead();
+	$REL_TPL->stdhead();
 	stdmsg($REL_LANG->say_by_key('error'), $msg);
-	stdfoot();
+	$REL_TPL->stdfoot();
 	exit;
 }
 dbconn();

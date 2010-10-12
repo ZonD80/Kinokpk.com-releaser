@@ -26,7 +26,7 @@ if ($users >= $REL_CONFIG['maxusers'])
 stderr($REL_LANG->say_by_key('error'), sprintf($REL_LANG->say_by_key('signup_users_limit'), number_format($REL_CONFIG['maxusers'])));
 }
 if (!$_POST["agree"]) {
-	stdhead("Правила трекера");
+	$REL_TPL->stdhead("Правила трекера");
 	?>
 <form method="post" action="<?=$REL_SEO->make_link('signup')?>">
 <div align="center">
@@ -34,7 +34,7 @@ if (!$_POST["agree"]) {
 <table cellpadding="4" cellspacing="0" border="0" style="width: 100%"
 	class="tableinborder">
 	<tr>
-		<td class="tablea"><?=$REL_LANG->_("To proceed registration you must agreee the following terms:");?></td>
+		<td class="tablea"><?=$REL_LANG->_("To proceed registration you must agreee the following terms");?>:</td>
 	</tr>
 	<tr>
 		<td class="tablea"
@@ -74,11 +74,11 @@ if (!$_POST["agree"]) {
 </div>
 </form>
 	<?
-	stdfoot();
+	$REL_TPL->stdfoot();
 	die;
 }
 
-stdhead($REL_LANG->say_by_key('signup_signup'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('signup_signup'));
 
 ?>
 <span style="color: red; font-weight: bold;"><?=$REL_LANG->say_by_key('signup_use_cookies');?></span>
@@ -136,6 +136,6 @@ stdmsg($REL_LANG->_("Attention"), $REL_LANG->_("Only invite registrations are al
 </form>
 
 	<?php
-	stdfoot();
+	$REL_TPL->stdfoot();
 
-?>
+	?>

@@ -25,18 +25,18 @@ if (is_array($_GET["delt"]))
 
 		$REL_CACHE->clearGroupCache("block-cen");
 		stderr($REL_LANG->say_by_key('success'), $REL_LANG->say_by_key('ban_uninstalled'));
-		stdfoot();
+		$REL_TPL->stdfoot();
 		die;
 	}
 	else  {
 		stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_permission_prohibitions'));
-		stdfoot();
+		$REL_TPL->stdfoot();
 		die;
 	}
 }
 
 
-stdhead($REL_LANG->say_by_key('ban_releases'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('ban_releases'));
 
 if (get_user_class() >= UC_MODERATOR) $moder=1;
 
@@ -55,6 +55,6 @@ while ($row = mysql_fetch_array($res)) {
 print("</table>");
 if ($moder)
 print("<div align=\"center\">[<a href=\"".$REL_SEO->make_link('censoredtorrents','action','new')."\"><b>".$REL_LANG->say_by_key('add_ban')."</b></a>]</div>");
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

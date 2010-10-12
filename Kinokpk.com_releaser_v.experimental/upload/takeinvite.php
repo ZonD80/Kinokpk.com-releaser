@@ -7,9 +7,9 @@ dbconn();
 loggedinorreturn();
 
 function bark($msg) {
-	stdhead();
+	$REL_TPL->stdhead();
 	stdmsg($REL_LANG->say_by_key('error'), $msg);
-	stdfoot();
+	$REL_TPL->stdfoot();
 	die;
 }
 
@@ -41,7 +41,7 @@ if (!validemail($email)) stderr($REL_LANG->say_by_key('error'),'Email адрес введ
 $res = sql_query("SELECT 1 FROM users WHERE email='$email'");
 $check = @mysql_result($res,0);
 if ($check) stderr($REL_LANG->say_by_key('error'),'Такой email уже зарегестрирован!');
- 
+
 $subject = "Приглашение на {$REL_CONFIG['sitename']}";
 $body = "Ваш друг или подруга с ником {$CURUSER['username']} пригласили вас зарегестрироваться на {$REL_CONFIG['sitename']}<br/>
 Для регистрации пройдите по этой ссылке:

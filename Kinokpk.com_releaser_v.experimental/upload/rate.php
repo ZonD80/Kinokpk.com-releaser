@@ -19,7 +19,7 @@ $rid = (int)$_GET['id'];
 $type = (string)$_GET['type'];
 
 
-$allowed_types = array('torrents','users','comments','pollcomments','newscomments','usercomments','reqcomments','relgroups','rgcomments','pages','pagecomments');
+$allowed_types = array('torrents','users','comments','pollcomments','newscomments','usercomments','reqcomments','relgroups','rgcomments');
 
 /**
  * Checks that user cannot change himself ratings
@@ -29,9 +29,9 @@ $allowed_types = array('torrents','users','comments','pollcomments','newscomment
  */
 function check_myself($id,$type) {
 	global $CURUSER;
-	if (preg_match('/comments/',$type)) $check = @mysql_result(sql_query("SELECT 1 FROM $type WHERE user = {$CURUSER['id']} AND id = $id"),0);
+	if (preg_match('/comments/',$type)) $check = @mysql_result(sql_query("SELECT 1 FROM comments WHERE user = {$CURUSER['id']} AND id = $id"),0);
 	elseif($type=='users') $check = (($id==$CURUSER['id'])?1:0);
-	elseif (($type=='torrents')||($type=='pages')) $check = @mysql_result(sql_query("SELECT 1 FROM $type WHERE owner = {$CURUSER['id']} AND id = $id"),0);
+	elseif ($type=='torrents') $check = @mysql_result(sql_query("SELECT 1 FROM $type WHERE owner = {$CURUSER['id']} AND id = $id"),0);
 	elseif ($type=='relgroups') $check = @mysql_result(sql_query("SELECT 1 FROM relgroups WHERE FIND_IN_SET({$CURUSER['id']},owners) OR FIND_IN_SET({$CURUSER['id']},members)"));
 	if ($check) return false; else return true;
 }
@@ -50,9 +50,10 @@ if (!$voted) {
 	sql_query("INSERT INTO ratings (rid,userid,type,added) VALUES ($rid,{$CURUSER['id']},'$type',".time().")");
 	sql_query("UPDATE $type SET ratingsum=ratingsum$act WHERE id=$rid");
 	sql_query("UPDATE users SET ratingsum=ratingsum$act WHERE id=(SELECT user FROM $type WHERE id=$rid)");
-		stderr($REL_LANG->say_by_key('rating'),$REL_LANG->say_by_key('voted'),'success');
+	$_SESSION['already_rated'][$type][] = $rid;
+	stderr($REL_LANG->say_by_key('rating'),$REL_LANG->say_by_key('voted'),'success');
 } else {
 
-		stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('already_rated'));
+	stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('already_rated'));
 }
 ?>

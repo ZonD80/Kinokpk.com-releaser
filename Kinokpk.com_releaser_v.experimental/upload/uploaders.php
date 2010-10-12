@@ -12,7 +12,7 @@
 require_once "include/bittorrent.php";
 dbconn();
 
-stdhead("Аплоадеры");
+$REL_TPL->stdhead("Аплоадеры");
 
 loggedinorreturn();
 
@@ -39,9 +39,9 @@ if ($CURUSER['class'] >= UC_MODERATOR)
 		print "<td class=colhead>Отправить ЛС</td>";
 		print "</tr>";
 
-while (list($id,$username,$added,$ratingsum,$donor,$warned,$enabled,$lastadded,$numtorrents) = mysql_fetch_array($result)) {
+		while (list($id,$username,$added,$ratingsum,$donor,$warned,$enabled,$lastadded,$numtorrents) = mysql_fetch_array($result)) {
 
-		
+
 
 			$ratio = ratearea($ratingsum,$id,'users',$CURUSER['id']);
 
@@ -69,6 +69,6 @@ while (list($id,$username,$added,$ratingsum,$donor,$warned,$enabled,$lastadded,$
 else
 stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

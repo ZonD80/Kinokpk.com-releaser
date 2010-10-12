@@ -26,7 +26,7 @@ if ($_POST['delete'] && $_POST['reports']) {
 }
 //
 
-stdhead("Просмотр жалоб на раздачи");
+$REL_TPL->stdhead("Просмотр жалоб на раздачи");
 
 $count = get_row_count("report");
 if (!$count) {
@@ -59,13 +59,14 @@ if (!$count) {
 <h1>Поступившие жалобы на раздачи</h1>
 </center>
 <div align=center>
-<form action="<?=$REL_SEO->make_link('viewreport');?>" method="post"><input type="hidden"
-	name="deleteall" value="deleteall"> <input type="submit"
+<form action="<?=$REL_SEO->make_link('viewreport');?>" method="post"><input
+	type="hidden" name="deleteall" value="deleteall"> <input type="submit"
 	value="Удалить все жалобы" onClick="return confirm('Вы уверены?')"></form>
 </div>
 <br />
 
-<form action="<?=$REL_SEO->make_link('viewreport');?>" method="post" name="form1">
+<form action="<?=$REL_SEO->make_link('viewreport');?>" method="post"
+	name="form1">
 <table border="0" cellspacing="0" width="100%" cellpadding="3">
 	<tr>
 		<td class=colhead>
@@ -148,6 +149,6 @@ if (!$count) {
 </form>
 
 	<?
-	stdfoot();
+	$REL_TPL->stdfoot();
 
 	?>

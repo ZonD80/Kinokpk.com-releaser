@@ -50,7 +50,7 @@ if ($action == 'new') {
 		safe_redirect($REL_SEO->make_link('censoredtorrents','id',$id));
 		die;
 	}
-	stdhead("Запретить релиз");
+	$REL_TPL->stdhead("Запретить релиз");
 
 	print("<h1>Запретить релиз</h1><p>Запрет релиза выполняетя по обращению правообладателя и действует до тех пор, пока показ фильма не закончится в кинотеатрах</p>\n<br />\n");
 
@@ -64,7 +64,7 @@ if ($action == 'new') {
 	print("<tr><td align=center colspan=2><input type=submit value=\"Запретить\">\n");
 	print("</form>\n");
 	print("</table>\n");
-	stdfoot();
+	$REL_TPL->stdfoot();
 	die;
 }
 
@@ -76,7 +76,7 @@ $num = mysql_fetch_array($res);
 
 $s = $num["name"];
 
-stdhead("Детали запрета \"$s\"");
+$REL_TPL->stdhead("Детали запрета \"$s\"");
 
 print("<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
 print("<tr><td class=\"colhead\" colspan=\"2\">Детали запрета \"$s\"</td></tr>");
@@ -87,6 +87,6 @@ if (get_user_class() >= UC_MODERATOR || $CURUSER["id"] == $num["userid"])
 print("<tr><td align=left>Опции</td><td width=50% align=left><a href=\"".$REL_SEO->make_link('viewcensoredtorrents','delt[]',$id)."\">".$REL_LANG->say_by_key('delete')."</a> | <a href=\"".$REL_SEO->make_link('viewcensoredtorrents')."\">Все запреты</a></td></tr>");
 print("</table>");
 
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

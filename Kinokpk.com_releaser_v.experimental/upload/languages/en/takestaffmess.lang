@@ -1,9 +1,0 @@
-error=Error
-break_attempt=Possible breakin attempt
-enter_message=Please enter a message!
-enter_subject=Please enter the subject!
-select_classes=Select 1 or more classes to send the message.
-mass_mailing=Mass mailing from the user
-success=Successfully
-send=Send
-messages=messages.

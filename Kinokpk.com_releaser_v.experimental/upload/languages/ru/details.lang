@@ -1,9 +1,0 @@
-screens=Скриншоты, кадры
-not_yet_checked=<font color="red">Этот релиз еще <b>НЕ</b> проверен модератором</font>
-checked_by=<font color="green">Этот релиз <b>был проверен</b> </font>
-check=Проверить
-uncheck=Отменить проверку
-include_remote=, исключая %s %s на удаленных трекерах
-number_release=ID релиза:
-present_to_friend=<img border="0" src="pic/presents/present.gif" title="Подарить торрент другу!"/>&nbsp; Подарить торрент другу!
-private_release_access_denied=Это релиз <strong>приватной</strong> группы %s, чтобы посмотреть информацию об этом релизе вы должны состоять в подписчиках этой группы. Получить подписку можно <a href="relgroups.php">На странице Релиз-Групп</a>

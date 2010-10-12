@@ -1,28 +1,13 @@
 <?php
-
-/*
- Project: Kinokpk.com releaser
- This file is part of Kinokpk.com releaser.
- Kinokpk.com releaser is based on TBDev,
- originally by RedBeard of TorrentBits, extensively modified by
- Gartenzwerg and Yuna Scatari.
- Kinokpk.com releaser is free software;
- you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
- Kinokpk.com is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- You should have received a copy of the GNU General Public License
- along with Kinokpk.com releaser; if not, write to the
- Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- MA  02111-1307  USA
- Do not remove above lines!
+/**
+ * Polls archive
+ * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
+ * @package Kinokpk.com releaser
+ * @author ZonD80 <admin@kinokpk.com>
+ * @copyright (C) 2008-now, ZonD80, Germany, TorrentsBook.com
+ * @link http://dev.kinokpk.com
  */
-
-require "include/bittorrent.php";
+require_once("include/bittorrent.php");
 dbconn();
 
 loggedinorreturn();
@@ -32,22 +17,16 @@ $spend = "</div></div>";
 
 $count = get_row_count("polls");
 
-$addparam = $_SERVER['QUERY_STRING'];
-
-if ($addparam != "")
-$addparam = $addparam . "&" . $pagerlink;
-else
-$addparam = $pagerlink;
-list($pagertop, $pagerbottom, $limit) = pager(5, $count, $REL_SEO->make_link('pollsarchive')."?" . $addparam);
+list($pagertop, $pagerbottom, $limit) = pager(5, $count, $REL_SEO->make_link('pollsarchive') . $addparam);
 
 $pollsrow = sql_query("SELECT id FROM polls ORDER BY id DESC $limit");
 
-stdhead("Архив опросов");
+$REL_TPL->stdhead("Архив опросов");
 
 print('<table width="100%" border="1"><tr><td>'.$pagertop.'</td></tr>');
 while (list($id) = mysql_fetch_array($pollsrow)) {
 
-	$poll = sql_query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class,(SELECT SUM(1) FROM pollcomments WHERE poll = $id) AS numcomm FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
+	$poll = sql_query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
 	$pquestion = array();
 	$pstart = array();
 	$pexp = array();
@@ -61,13 +40,13 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 	$votecount = array();
 	$usercode = array();
 	$comments = array();
-	 
+
 	while ($pollarray = mysql_fetch_array($poll)) {
 		$pquestion[] = $pollarray['question'];
 		$pstart[] = $pollarray['start'];
 		$pexp[] = $pollarray['exp'];
 		$public[] = $pollarray['public'];
-		$comments[] = $pollarray['numcomm'];
+		$comments[] = $pollarray['comments'];
 		$sidvalues[$pollarray['sid']] = $pollarray['value'];
 		$votes[] = array($pollarray['sid'] => array('vid'=>$pollarray['vid'],'userid'=>$pollarray['user'],'username'=>$pollarray['username'],'userclass'=>$pollarray['class']));
 		$sids[] = $pollarray['sid'];
@@ -140,7 +119,7 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 		if ($vsid == $voted)
 		print("<b>".$sidvals[$sidkey]." - ваш голос</b>");
 		else print($sidvals[$sidkey]);
-		print("</td><td><img src=\"./themes/$ss_uri/images/bar_left.gif\"><img src=\"./themes/$ss_uri/images/bar.gif\" height=\"12\" width=\"".round($percentpervote*$votecount[$vsid])."%\"><img src=\"./themes/$ss_uri/images/bar_right.gif\">$percent%, голосов: ".$votecount[$vsid]."<br />".((!$usercode[$vsid])?"Опрос приватный или никто не голосовал":$spbegin.$usercode[$vsid].$spend)."</td></tr>");
+		print("</td><td><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_left.gif\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar.gif\" height=\"12\" width=\"".round($percentpervote*$votecount[$vsid])."%\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_right.gif\">$percent%, голосов: ".$votecount[$vsid]."<br />".((!$usercode[$vsid])?"Опрос приватный или никто не голосовал":$spbegin.$usercode[$vsid].$spend)."</td></tr>");
 	}
 	print('<tr><td>Опрос находится в архиве, голосования запрещены</td>');
 	print("<td align=\"center\"><h1>Всего голосов: $tvotes, Комментариев: $comments</h1><br />[<a href=\"".$REL_SEO->make_link('polloverview','id',$id)."\"><b>Подробнее/Список комментариев</b></a>]</td></tr>");
@@ -148,6 +127,6 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 	print ('</table></td></tr>');
 }
 print('<tr><td>'.$pagerbottom.'</td></tr></table>');
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

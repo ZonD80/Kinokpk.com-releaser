@@ -29,11 +29,12 @@ $perpage = 50;
 
 list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $REL_SEO->make_link('spam') . $addparam);
 
-stdhead("ЛС пользователей");
+$REL_TPL->stdhead("ЛС пользователей");
 
 ?>
 
-<form method="post" action="<?=$REL_SEO->make_link('take-delmp');?>" name="form1" id="message">
+<form method="post" action="<?=$REL_SEO->make_link('take-delmp');?>"
+	name="form1" id="message">
 
 <table border="1" cellspacing="1" cellpadding="1" width="100%">
 	<tr>
@@ -53,7 +54,8 @@ stdhead("ЛС пользователей");
 		<td class=colhead align=center>Содержание</td>
 		<td class=colhead align=center>Дата</td>
 		<td class=colhead>
-		<center><INPUT type="checkbox" title="Выбрать все" value="Выбрать все" id="toggle-all"></center>
+		<center><INPUT type="checkbox" title="Выбрать все" value="Выбрать все"
+			id="toggle-all"></center>
 		</td>
 	</tr>
 	<tr>
@@ -103,8 +105,8 @@ stdhead("ЛС пользователей");
 		if ($where && $count){
 			?>
 		<tr>
-			<td colspan="5"><a href="<?=$REL_SEO->make_link('spam');?>">Вернуться к общему списку
-			сообщений</a></td>
+			<td colspan="5"><a href="<?=$REL_SEO->make_link('spam');?>">Вернуться
+			к общему списку сообщений</a></td>
 		</tr>
 		<?}?>
 
@@ -120,6 +122,6 @@ stdhead("ЛС пользователей");
 </table>
 </form>
 <br />
-<?
-stdfoot();
+		<?
+		$REL_TPL->stdfoot();
 ?>

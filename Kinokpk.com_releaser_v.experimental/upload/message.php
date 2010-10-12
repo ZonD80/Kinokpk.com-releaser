@@ -45,7 +45,7 @@ if ($action == "viewmailbox") {
 	// Start Page
 
 
-	stdhead ( $mailbox_name );
+	$REL_TPL->stdhead( $mailbox_name );
 
 	?>
 
@@ -93,12 +93,9 @@ if ($action == "viewmailbox") {
 	</TR>
 	<?
 
-	$cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('pm_delete_sys_days','pm_delete_user_days')");
-
-	while ($cronres = mysql_fetch_assoc($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
-	$secs_system = $CRON['pm_delete_sys_days']*86400; // Количество дней
+	$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
 	$dt_system = time() - $secs_system; // Сегодня минус количество дней
-	$secs_all = $CRON['pm_delete_user_days']*86400; // Количество дней
+	$secs_all = $REL_CRON['pm_delete_user_days']*86400; // Количество дней
 	$dt_all = time() - $secs_all; // Сегодня минус количество дней
 
 	if ($mailbox != PM_SENTBOX) {
@@ -150,7 +147,7 @@ if ($action == "viewmailbox") {
 				echo ("<TR>\n<TD><IMG src=\"pic/pn_inbox.gif\" alt=\"" . $REL_LANG->say_by_key('mail_read') . "\"></TD>\n");
 			}
 			$msgtext = strip_tags($row['msg']);
-			$msgtext = "<small>".(strlen($msgtext)>70?substr($msgtext,0,70).'...':$msgtext)."</small>";
+			$msgtext = "<small>".(strlen($msgtext)>70?'...'.substr($msgtext,-70):$msgtext)."</small>";
 			echo ("<TD><A href=\"".$REL_SEO->make_link('message','action','viewmessage','id',$row ['id'])."\">" . $subject . "</A><br/>$msgtext</TD>\n");
 			if ($mailbox != PM_SENTBOX) {
 				echo ("<TD>$username</TD>\n");
@@ -161,9 +158,9 @@ if ($action == "viewmailbox") {
 
 			echo ("<TD>" . (($row ['archived']) ? "<font color=\"red\">Да</font>" : "Нет") . "</TD>\n");
 			if ($row ['sender'] == 0)
-			$pm_del = $CRON ['pm_delete_sys_days'];
+			$pm_del = $REL_CRON ['pm_delete_sys_days'];
 			else
-			$pm_del = $CRON ['pm_delete_user_days'];
+			$pm_del = $REL_CRON ['pm_delete_user_days'];
 
 			echo ("<TD>" . (($row ['archived']) ? "N/A" : ($pm_del - round ( (time () - $row ['added']) / 86400 )) . " дня(ей)</TD>\n"));
 			echo ("<TD><INPUT type=\"checkbox\" name=\"messages[]\" title=\"" . $REL_LANG->say_by_key('mark') . "\" value=\"" . $row ['id'] . "\" id=\"checkbox_tbl_" . $row ['id'] . "\"></TD>\n</TR>\n");
@@ -196,7 +193,7 @@ if ($action == "viewmailbox") {
 	<?=$REL_LANG->say_by_key('mail_unread_desc');?><br />
 <img src="pic/pn_inbox.gif" alt="Прочитанные" /> <?=$REL_LANG->say_by_key('mail_read_desc');?></div>
 	<?
-	stdfoot ();
+	$REL_TPL->stdfoot();
 } // конец просмотр почтового ящика
 
 
@@ -258,7 +255,7 @@ elseif ($action == "viewmessage") {
 	} else
 	sql_query ( "UPDATE messages SET unread=0 WHERE id=" . sqlesc ( $pm_id ) . " AND receiver=" . sqlesc ( $CURUSER ['id'] ) . " LIMIT 1" );
 	// Display message
-	stdhead ( "Личное Сообщение (Тема: $subject)" );
+	$REL_TPL->stdhead( "Личное Сообщение (Тема: $subject)" );
 	?>
 <TABLE width="100%" border="0" cellpadding="4" cellspacing="0">
 
@@ -292,7 +289,7 @@ elseif ($action == "viewmessage") {
 </TABLE>
 		<?
 		set_visited('messages',$pm_id);
-		stdfoot ();
+		$REL_TPL->stdfoot();
 } // конец просмотр тела сообщения
 
 
@@ -332,7 +329,7 @@ elseif ($action == "sendmessage") {
 		// End of Change
 	}
 
-	stdhead ( "Отсылка сообщений", false );
+	$REL_TPL->stdhead( "Отсылка сообщений", false );
 	?>
 <script language="JavaScript">
 <!--
@@ -410,7 +407,7 @@ for(j=0; j<required.length; j++) {
 	</tr>
 </table>
 				<?
-				stdfoot ();
+				$REL_TPL->stdfoot();
 } // конец посылка сообщения
 
 
@@ -549,7 +546,7 @@ elseif ($action == 'takemessage') {
 		die ();
 	} else {
 		safe_redirect($REL_SEO->make_link('message'),2);
-		stderr ( $REL_LANG->say_by_key('success'), "Сообщение было успешно отправлено!" );
+		stderr ( $REL_LANG->say_by_key('success'), $REL_LANG->_("Message was successfuly sent") ,'success');
 	}
 
 } // конец прием посланного сообщения
@@ -564,7 +561,7 @@ elseif ($action == 'mass_pm') {
 	$n_pms = ( int ) $_POST ['n_pms'];
 	$pmees = htmlspecialchars ( $_POST ['pmees'] );
 
-	stdhead ( "Отсылка сообщений", false );
+	$REL_TPL->stdhead( "Отсылка сообщений", false );
 	?>
 <table class=main border=0 cellspacing=0 cellpadding=0>
 	<tr>
@@ -618,7 +615,7 @@ elseif ($action == 'mass_pm') {
 	</tr>
 </table>
 			<?php
-			stdfoot ();
+			$REL_TPL->stdfoot();
 
 } //конец массовая рассылка
 
@@ -659,7 +656,7 @@ elseif ($action == 'takemass_pm') {
 		}
 	}
 	safe_redirect($REL_SEO->make_link('message'),3);
-	stderr ( $REL_LANG->say_by_key('success'), (($n_pms > 1) ? "$n сообщений из $n_pms было" : "Сообщение было") . " успешно отправлено!" . ($l ? " $l комментарий(ев) в профиле " . (($l > 1) ? "были" : " был") . " обновлен!" : "") );
+	stderr ( $REL_LANG->say_by_key('success'), (($n_pms > 1) ? "$n сообщений из $n_pms было" : "Сообщение было") . " успешно отправлено!" . ($l ? " $l комментарий(ев) в профиле " . (($l > 1) ? "были" : " был") . " обновлен!" : ""), 'success' );
 } //конец прием сообщений из массовой рассылки
 
 
@@ -740,8 +737,8 @@ elseif ($action == "moveordel") {
 		}
 		// Проверяем, были ли помечены сообщения
 
-			safe_redirect($REL_SEO->make_link('message','action','viewmailbox','box',$pm_box));
-			exit ();
+		safe_redirect($REL_SEO->make_link('message','action','viewmailbox','box',$pm_box));
+		exit ();
 
 	} elseif ($_POST ["archive"]) {
 		//архивируем одно сообщение
@@ -806,7 +803,7 @@ elseif ($action == "forward") {
 
 		$subject = "Fwd(1): ".makesafe($message ['subject']);
 		else $subject = preg_replace("/^Fwd\(([0-9]+)\)\:/e","'Fwd('.(\\1+1).'):'",makesafe($message ['subject']));
-		
+
 		$from = $message ['sender'];
 		$orig = $message ['receiver'];
 
@@ -824,7 +821,7 @@ elseif ($action == "forward") {
 
 		$body = "Оригинальное сообщение:<hr /><blockquote>" . format_comment ( $message ['msg'] . "</blockquote><cite>{$from2['username']}</cite><hr /><br /><br />" );
 
-		stdhead ( $subject );
+		$REL_TPL->stdhead( $subject );
 		?>
 
 <FORM action="<?=$REL_SEO->make_link('message')?>" method="post"><INPUT
@@ -856,13 +853,15 @@ elseif ($action == "forward") {
 		<TD><?=( textbbcode ( "msg" ) );?></TD>
 	</TR>
 	<TR>
-		<TD colspan="2" align="center">Сохранить сообщение <INPUT type="checkbox" name="save" value="1" <?=$CURUSER ['savepms'] ? " checked" : ""?>>&nbsp;<INPUT
+		<TD colspan="2" align="center">Сохранить сообщение <INPUT
+			type="checkbox" name="save" value="1"
+			<?=$CURUSER ['savepms'] ? " checked" : ""?>>&nbsp;<INPUT
 			type="submit" value="Переслать"></TD>
 	</TR>
 </TABLE>
 </FORM>
 			<?
-			stdfoot ();
+			$REL_TPL->stdfoot();
 	}
 
 	else {
@@ -977,10 +976,3 @@ elseif ($action == "deletemessage") {
 }
 //else stderr("Access Denied.","Unknown action");
 ?>
-<script language="JavaScript">
-<!--
-$(document).ready(function () {
-	$('td').children('blockquote').addClass('quote1');
-})
-//-->
-</script>

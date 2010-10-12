@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 $res = sql_query("SELECT bans.*, users.username, users.class FROM bans LEFT JOIN users ON bans.user = users.id ORDER BY id DESC") or sqlerr(__FILE__, __LINE__);
 
-stdhead("Баны по IP");
+$REL_TPL->stdhead("Баны по IP");
 
 if (mysql_num_rows($res) == 0)
 print("<p align=\"center\"><b>".$REL_LANG->say_by_key('nothing_found')."</b></p>\n");
@@ -83,6 +83,6 @@ print("<tr><td class=\"row1\" align=\"center\" colspan=\"2\"><input type=\"submi
 print('</table>');
 print("</form>\n");
 
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

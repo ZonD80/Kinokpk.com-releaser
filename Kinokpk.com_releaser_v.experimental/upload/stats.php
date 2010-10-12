@@ -15,7 +15,7 @@ loggedinorreturn();
 if (get_user_class() < UC_MODERATOR)
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
-stdhead("Статистика");
+$REL_TPL->stdhead("Статистика");
 ?>
 
 <STYLE TYPE="text/css" MEDIA=screen>
@@ -33,7 +33,7 @@ a.colheadlink:hover {
 </STYLE>
 
 <?php
-begin_main_frame();
+$REL_TPL->begin_main_frame();
 
 $res = sql_query("SELECT SUM(1) FROM torrents") or sqlerr(__FILE__, __LINE__);
 $n = mysql_fetch_row($res);
@@ -67,7 +67,7 @@ if (mysql_num_rows($res) == 0)
 stdmsg("Извините", "Нет заливающих.");
 else
 {
-	begin_frame("Статистика заливающих", True);
+	$REL_TPL->begin_frame("Статистика заливающих", True);
 	print("<table width=\"100%\"><tr>\n
 	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder','uploader','catorder',$catorder)."\" class=colheadlink>Заливающий</a></td>\n
 	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','lastul','uploader','catorder',$catorder)."\" class=colheadlink>Последняя заливка</a></td>\n
@@ -86,7 +86,7 @@ else
 		print("<td align=right>" . ($n_peers > 0?number_format(100 * $uper['n_p']/$n_peers,1)."%":"---") . "</td></tr>\n");
 	}
 	print('</table>');
-	end_frame();
+	$REL_TPL->end_frame();
 }
 
 if ($n_tor == 0)
@@ -106,7 +106,7 @@ else
 	FROM categories as c LEFT JOIN torrents as t ON t.category = c.id LEFT JOIN peers as p
 	ON t.id = p.torrent GROUP BY c.id ORDER BY $orderby") or sqlerr(__FILE__, __LINE__);
 
-	begin_frame("Активность категорий", True);
+	$REL_TPL->begin_frame("Активность категорий", True);
 	print("<table width=\"100%\" border=\"1\">
 	<tr><td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder',$uporder,'catorder','category')."\" class=colheadlink>Категория</a></td>
 	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder',$uporder,'catorder','lastul')."\" class=colheadlink>Последняя заливка</a></td>
@@ -124,10 +124,9 @@ else
 		print("<td align=right>" . ($n_peers > 0?number_format(100 * $cat['n_p']/$n_peers,1)."%":"---") . "</td>\n");
 	}
 	print ('</table>');
-	end_frame();
+	$REL_TPL->end_frame();
 }
-
-end_main_frame();
-stdfoot();
+$REL_TPL->end_main_frame();
+$REL_TPL->stdfoot();
 die;
 ?>

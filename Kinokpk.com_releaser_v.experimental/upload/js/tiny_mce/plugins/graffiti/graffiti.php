@@ -21,7 +21,7 @@ if(isset($_FILES['Filedata']))
 				imagecopyresized($newImage, $origImage, 0, 0, 0, 0, 272, 136, $fImageData[0], $fImageData[1]);
 				imagepng($newImage, ROOT_PATH."graffities/" . $file_name);
 			}
-			              $_SESSION['graffiti_session'] = "emptyString";
+			$_SESSION['graffiti_session'] = "emptyString";
 		}
 	}
 }
@@ -42,8 +42,11 @@ $imgcode = md5(microtime()+rand(0,100));
 <script type="text/javascript" src="js/graffiti.js"></script>
 <script type="text/javascript" src="/js/swfobject.js"></script>
 </head>
-<body style="display: none"><?php if (!$done) {?>
-<div id="graffiti" style="text-align: center; width: 100%; margin: auto;">Graffiti loading...</div>
+<body>
+<?php if (!$done) {?>
+<div id="graffiti"
+	style="text-align: center; width: 100%; margin: auto;">Graffiti
+loading...</div>
 <script type="text/javascript">
 //<![CDATA[
 
@@ -69,7 +72,6 @@ $imgcode = md5(microtime()+rand(0,100));
 
 //]]>
 </script>
-</div>
 <?php } else print '<script type="text/javascript">GraffitiDialog.insert(\''.$CURUSER['id'].'-'.$imgcode.'.png\');</script>'; ?>
 </body>
 </html>

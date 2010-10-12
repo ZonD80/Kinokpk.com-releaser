@@ -31,10 +31,7 @@ $curowner = mysql_result($curowner,0);
 if ($curowner != 0) {
 	sql_query("UPDATE torrents SET owner=0, orig_owner = ".$curowner." WHERE id = ".$id);
 
-	$clearcache = array('block-indextorrents','browse-normal','browse-tags','browse-cat');
-
-	foreach ($clearcache as $cachevalue)
-	$REL_CACHE->clearGroupCache($cachevalue);
+	$REL_CACHE->clearGroupCache('block-indextorrents');
 	print('<html>
 <head>
 <title>'.$REL_LANG->say_by_key('anonymous_release').'</title>
@@ -51,10 +48,8 @@ elseif ($curowner == 0) {
 	$origowner = mysql_fetch_array($origowner);
 	sql_query("UPDATE torrents SET owner = ".$origowner['id'].", orig_owner = 0 WHERE id = ".$id);
 
-	$clearcache = array('block-indextorrents','browse-normal','browse-tags','browse-cat');
 
-	foreach ($clearcache as $cachevalue)
-	$REL_CACHE->clearGroupCache($cachevalue);
+	$REL_CACHE->clearGroupCache('block-indextorrents');
 	print('<html>
 <head>
 <title>'.$REL_LANG->say_by_key('make_anonymous').'</title>

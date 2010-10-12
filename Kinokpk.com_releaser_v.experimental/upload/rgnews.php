@@ -31,7 +31,7 @@ $to_group = " <a href=\"".$REL_SEO->make_link('relgroups','id',$id,'name',transl
 if ($owners) {
 	$owners = explode(',',$owners);
 
-if (!@in_array($CURUSER['id'],$owners) && (get_user_class()<UC_ADMINISTRATOR)) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroup_owner'));
+	if (!@in_array($CURUSER['id'],$owners) && (get_user_class()<UC_ADMINISTRATOR)) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroup_owner'));
 }
 //   Delete rgnews Item    //////////////////////////////////////////////////////
 
@@ -44,7 +44,7 @@ if ($action == 'delete')
 	$returnto = strip_tags($_SERVER['HTTP_REFERER']);
 
 	sql_query("DELETE FROM rgnews WHERE id=$rgnewsid") or sqlerr(__FILE__, __LINE__);
-	sql_query("DELETE FROM rgnewscomments WHERE rgnews=$rgnewsid") or sqlerr(__FILE__, __LINE__);
+	sql_query("DELETE FROM comments WHERE toid=$rgnewsid AND type='rgnews'") or sqlerr(__FILE__, __LINE__);
 	sql_query("DELETE FROM notifs WHERE type='rgnewscomments' AND checkid=$rgnewsid") or sqlerr(__FILE__, __LINE__);
 
 	$REL_CACHE->clearCache('relgroups-'.$id, 'newsquery');
@@ -122,7 +122,7 @@ elseif ($action == 'edit')
 	else
 	{
 		$returnto = strip_tags($_SERVER['HTTP_REFERER']);
-		stdhead("Редактирование новости $rgname");
+		$REL_TPL->stdhead("Редактирование новости $rgname");
 		print("<form method=post name=rgnews action=\"".$REL_SEO->make_link('rgnews','action','edit','newsid',$rgnewsid,'id',$id)."\">\n");
 		print("<table border=1 cellspacing=0 cellpadding=5>\n");
 		print("<tr><td class=colhead>Редактирование новости $rgname</td></tr>\n");
@@ -134,14 +134,14 @@ elseif ($action == 'edit')
 		print("<tr><td align=center><input type=submit value='Отредактировать'></td></tr>\n");
 		print("</table>\n");
 		print("<input type=\"hidden\" name=\"returnto\" value=\"returnto\"/></form>\n");
-		stdfoot();
+		$REL_TPL->stdfoot();
 		die;
 	}
 }
 
 //   Other Actions and followup    ////////////////////////////////////////////
 
-stdhead("Новости $rgname");
+$REL_TPL->stdhead("Новости $rgname");
 if ($warning)
 print("<p>($warning)</p>");
 print("<form method=post name=rgnews action=\"".$REL_SEO->make_link('rgnews','action','add','id',$id)."\">\n");
@@ -155,6 +155,6 @@ print("</textarea></td></tr>\n");
 print("<tr><td align=center><input type=submit value='{$REL_LANG->say_by_key('go')}' class=btn></td></tr>\n");
 print("</table></form><br /><br />\n");
 
-stdfoot();
+$REL_TPL->stdfoot();
 die;
 ?>

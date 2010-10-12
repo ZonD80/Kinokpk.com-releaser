@@ -79,11 +79,35 @@ class REL_LANG {
 			$res = sql_query("SELECT lkey,lvalue FROM languages WHERE ltranslate='$language'");
 			while ($row = mysql_fetch_assoc($res))
 			$this->lang[$language][$row['lkey']] = $row['lvalue'];
-			if (!$this->lang[$language]) print ("ERROR: no language ($language). <a href=\"".$REL_SEO->make_link('setlang','l','en')."\">Switch to English (default)</a>.".(get_user_class()>=UC_SYSOP?" Or you can <a href=\"".$REL_SEO->make_link('langadmin','import')."\">Import a language file</a>":''));
+			if (!$this->lang[$language]) {
+				print ("ERROR: no language ($language). <a href=\"".$REL_SEO->make_link('setlang','l','en')."\">Switch to English (default)</a>.".(get_user_class()>=UC_SYSOP?" Or you can <a href=\"".$REL_SEO->make_link('langadmin','import')."\">Import a language file</a>":''));
+				$this->lang[$language] = array();
+			}
 			$REL_CACHE->set('languages',$language,$this->lang[$language]);
-			$this->lang[$language] = array();
 		}
 
+	}
+
+	/**
+	 * Parses language file into associative array
+	 * @param string $file File to be userd
+	 * @param string $language Language to be used
+	 */
+	private function parse_langfile($file,$language='en') {
+		global $REL_SEO;
+		if (@in_array($file,$this->parsed_langs[$language])) return;
+		if ($language<>'en') $this->parse_langfile($file,'en');
+		$parse = @file(ROOT_PATH."languages/$language/$file.lang",FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
+		if (!$parse) die ("FATAL ERROR: no language ($language) for option $file. <a href=\"".$REL_SEO->make_link('setlang','l','en')."\">Switch to English (default)</a>.");
+		foreach ($parse as $string) {
+			$cut = strpos($string,'=');
+			if (!$cut) continue;
+			$key = substr($string,0,$cut);
+			$value = substr($string,$cut+1,strlen($string));
+			if ($this->lang[$language][$key]) $value = "*REDECLARATED_KEY:$key* $value";
+			$this->lang[$language][$key] = $value;
+		}
+		$this->parsed_langs[$language][] = $file;
 	}
 
 
@@ -109,6 +133,25 @@ class REL_LANG {
 			if (!mysql_errno()) $return['words'][] = "$key : $value";
 		}
 		return $return;
+	}
+
+	public function export_langfile($lang) {
+		global $REL_CONFIG;
+		header("Content-type: text/plain");
+		header("Content-Disposition: attachment;filename=laguage_$lang.txt");
+		header("Content-Transfer-Encoding: binary");
+		header('Pragma: no-cache');
+		header('Expires: 0');
+		print "// Kinokpk.com releaser ".RELVERSION." language tools\n";
+		if (!$this->lang[$lang]) {
+			$this->load($lang);
+			if (!$this->lang[$lang])
+			die ("ERROR: No lang to export ($lang)");
+		}
+		foreach ($this->lang[$lang] as $key => $value) {
+			print "$key=$value\n";
+		}
+		die("// langfile ($lang) from {$REL_CONFIG['defaultbaseurl']} created at ".date('d/m/Y H:i:s'));
 	}
 
 	/**

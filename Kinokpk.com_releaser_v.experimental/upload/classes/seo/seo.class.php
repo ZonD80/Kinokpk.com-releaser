@@ -19,7 +19,7 @@ class REL_SEO {
 		$script = $dest;
 		unset($linkar[0]);
 		if ($linkar) {
-		/*	if ($script=='browse') { unset($dest); }
+			/*if ($script=='browse') { unset($dest); }
 			elseif ($script=='details') {
 				$dest='';
 			}
@@ -31,7 +31,7 @@ class REL_SEO {
 			foreach ($linkar as $place => $param) {
 				if ($place % 2 == 0) continue;
 				//if (isset($linkar[$place+1])) {
-			/*	if ($script=='browse') {
+				/*if ($script=='browse') {
 						if ($param=='cat') {
 							$cats = $this->assoc_cats();
 							$dest.="{$cats[$linkar[$place+1]]}/";
@@ -49,8 +49,11 @@ class REL_SEO {
 							$dest.='releases/unchecked';
 						}
 					}
-					elseif (($script<>'download')&&($script<>'details')&&($script<>'torrent_info')&&($script<>'exportrelease'))
-					*/$destar[] = "$param={$linkar[$place+1]}";
+					elseif(($script=='download')&&$param=='a') {
+						$dest = 'download.php?a=my';
+					}
+					elseif (($script<>'download')&&($script<>'details')&&($script<>'torrent_info')&&($script<>'exportrelease'))*/
+					$destar[] = "$param={$linkar[$place+1]}";
 					/*else {
 						if ($param=='catname') $dest.="{$linkar[$place+1]}/";
 						elseif ($param=='id') $dest.="{$linkar[$place+1]}/";
@@ -67,12 +70,12 @@ class REL_SEO {
 		elseif ($script=='recover') $dest = 'lostpassword';
 		elseif ($script=='logout') $dest = 'byebye';
 		elseif ($script=='signup') $dest = 'welcome';
-		elseif ($script=='browse') $dest = 'releases';
-		elseif ($script=='rules')  $dest = 'pagedetails.php?id=32';
-		elseif ($script=='providers') $dest = 'pagedetails.php?id=33';
-		elseif ($script=='press') $dest = 'pagedetails.php?id=47';
-		elseif ($script=='privacy') $dest = 'pagedetails.php?id=49';
-		elseif ($script=='faq') $dest = 'pagedetails.php?id=48';*/
+		elseif ($script=='browse') $dest = 'releases';*/
+		elseif ($script=='rules')  $dest = '#';
+		elseif ($script=='providers') $dest = '#';
+		elseif ($script=='press') $dest = '#';
+		elseif ($script=='privacy') $dest = '#';
+		elseif ($script=='faq') $dest = '#';
 		else $dest .='.php?';
 		return $REL_CONFIG['defaultbaseurl'].'/'.addslashes($dest);
 	}

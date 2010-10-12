@@ -16,17 +16,17 @@ dbconn();
 if ($CURUSER)
 stderr($REL_LANG->say_by_key('error'), "Вы уже вошли на {$REL_CONFIG['sitename']}!");
 
-stdhead("Вход");
+$REL_TPL->stdhead("Вход");
 
 $returnto = strip_tags(trim((string)$_GET['returnto']));
 
 if ($returnto)
-	if (!$_GET["nowarn"]) {
-		$error = "<table style=\"margin: 0 auto\"><tr class=\"error_login\"><td colspan=\"2\" style=\"border:none\"><img src=\"pic/attention_login.gif\" alt=\"attention\"/></td><td colspan=\"2\" style=\"border:none; vertical-align: middle;\">{$REL_LANG->_("Sorry, but the page you required can only be accessed by <b>logged in users</b>.<br />Please log in to the system, and we will reditect you to this page after this.")}</td></tr></table>";
-		//print("<h1>Не авторизированы!</h1>\n");
-		//print("<p><b>Ошибка:</b> Страница, которую вы пытаетесь посмотреть, доступна только зарегистрированым.</p>\n");
-	}
-	
+if (!$_GET["nowarn"]) {
+	$error = "<table style=\"margin: 0 auto\"><tr class=\"error_login\"><td colspan=\"2\" style=\"border:none\"><img src=\"pic/attention_login.gif\" alt=\"attention\"/></td><td colspan=\"2\" style=\"border:none; vertical-align: middle;\">{$REL_LANG->_("Sorry, but the page you required can only be accessed by <b>logged in users</b>.<br />Please log in to the system, and we will reditect you to this page after this.")}</td></tr></table>";
+	//print("<h1>Не авторизированы!</h1>\n");
+	//print("<p><b>Ошибка:</b> Страница, которую вы пытаетесь посмотреть, доступна только зарегистрированым.</p>\n");
+}
+
 if (isset($error)) {
 	echo $error;
 }
@@ -43,7 +43,8 @@ if (isset($error)) {
 		<td style="border: none; vertical-align: middle;" class="rowhead"><?=$REL_LANG->_("E-mail or nickname");?>:</td>
 		<td align="left" style="border: none; vertical-align: bottom;"
 			width="275px"><input style="border: 1px solid gray" name="email"
-			value="<?=$REL_LANG->_("E-mail or nickname");?>" type="text" class="searchtextbox"
+			value="<?=$REL_LANG->_("E-mail or nickname");?>" type="text"
+			class="searchtextbox"
 			onblur="if(this.value=='') this.value='<?=$REL_LANG->_("E-mail or nickname");?>';"
 			onfocus="if(this.value=='<?=$REL_LANG->_("E-mail or nickname");?>') this.value='';" /></td>
 	</tr>
@@ -67,13 +68,12 @@ if (isset($returnto))
 print("<input type=\"hidden\" name=\"returnto\" value=\"" . ($returnto) . "\" />\n");
 
 ?></form>
-<p><?=$REL_LANG->_('If you forgot your password, try to recover it on <a href="%s">Password recovery page</a></p><p>You did not register yet? You can <a href="%s">Register now!</a></p>',$REL_SEO->make_link("recover"),$REL_SEO->make_link("signup"))?>
+<?=$REL_LANG->_('<p>If you forgot your password, try to recover it on <a href="%s">Password recovery page</a></p><p>You did not register yet? You can <a href="%s">Register now!</a></p>',$REL_SEO->make_link("recover"),$REL_SEO->make_link("signup"))?>
 <?php if ($REL_CONFIG['use_email_act'])
 print '<p>'.$REL_LANG->_('If you did not receive confirmation letter, you can <a href="%s">Resend</a> it.',$REL_SEO->make_link("signup","resend")).'</p>';
-?>
-</div>
+?></div>
 <?
 
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

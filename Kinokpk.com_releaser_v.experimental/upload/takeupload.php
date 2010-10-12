@@ -195,8 +195,10 @@ $image = @array_shift($image);
 
 // FORUMDESC will be used in email notifs
 if (!$image) $forumdesc = "<div align=\"center\"><img src=\"{$REL_CONFIG['defaultbaseurl']}/pic/noimage.gif\" border=\"0\" class=\"linked-image\" /></div><br />";
-if ($image) $forumdesc = "<div align=\"center\"><a href=\"$image\" target=\"_blank\"><img alt=\"Постер для фильма (кликните для просмотра полного изображения)\" src=\"$image\" border=\"0\" class=\"linked-image\" /></a></div><br />";
-
+if ($image) $forumdesc = "<div align=\"center\"><a href=\"$image\" target=\"_blank\"><img alt=\"Постер для релиза (кликните для просмотра полного изображения)\" src=\"$image\" border=\"0\" class=\"linked-image\" /></a></div><br />";
+	$catssql= sql_query("SELECT name FROM categories WHERE id IN ($catsstr)");
+	while (list($catname) = mysql_fetch_array($catssql)) $forumcats[]=$catname;
+	$forumcats = implode(', ',$forumcats);
 $forumdesc .= "<table width=\"100%\" border=\"1\"><tr><td valign=\"top\"><b>Тип (жанр):</b></td><td>".$forumcats."</td></tr><tr><td><b>Название:</b></td><td>" . sqlesc($torrent) ."</td></tr>";
 
 
@@ -256,15 +258,10 @@ if ($_POST['nofile']) {
 
 	// Insert remote trackers //
 	if ($anarray) {
-		foreach ($anarray as $anurl) sql_query("INSERT INTO trackers (torrent,tracker) VALUES ($id,".sqlesc($anurl).")");
+		foreach ($anarray as $anurl) sql_query("INSERT INTO trackers (torrent,tracker) VALUES ($id,".sqlesc(strip_tags($anurl)).")");
 	}
 	// trackers insert end
 
-	//DEFINE category for EMAIL notifs & forum
-	$forumcat['relid'] = array_shift($_POST['type']);
-	$forumcatsql = sql_query("SELECT name,forum_id,disable_export FROM categories WHERE id={$forumcat['relid']}");
-	list($forumcat['name'],$forumcat['forumid'],$export_disabled) = mysql_fetch_array($forumcatsql);
-	// cats end
 
 	// making forum desc
 	$forumdesc .= "<tr><td valign=\"top\"><b>".$REL_LANG->say_by_key('description').":</b></td><td>".format_comment($descr)."</td></tr>";
@@ -276,12 +273,7 @@ if ($_POST['nofile']) {
 	$forumdesc .=$topicfooter;
 	// end
 
-
-	$clearcache = array('block-indextorrents','browse-normal','browse-cat');
-
-	foreach ($clearcache as $cachevalue)
-	$REL_CACHE->clearGroupCache($cachevalue);
-	$REL_CACHE->clearCache('system','cat_tags');
+	$REL_CACHE->clearGroupCache('block-indextorrents');
 
 	sql_query("INSERT INTO notifs (checkid, userid, type) VALUES ($id, $CURUSER[id], 'comments')") or sqlerr(__FILE__,__LINE__);
 	@sql_query("DELETE FROM files WHERE torrent = $id");
@@ -307,56 +299,50 @@ if ($_POST['nofile']) {
 Внимание! Это сообщение отправлено автоматически, и релиз может быть еще не проверен модератором и может быть удален!
 Название: $torrent
 Размер файла: $forumsize
-Категория: {$forumcat['name']}
+Категория: {$forumcats}
 Залил: {$CURUSER['username']}
 
 Информация о Релизе:
 -------------------------------------------------------------------------------
-$forumdesc
+	$forumdesc
 -------------------------------------------------------------------------------
 EOD;
 
-$bfooter = <<<EOD
+	$bfooter = <<<EOD
 Чтобы посмотреть релиз, перейдите по этой ссылке:
 
-{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}
+	{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}
 
 EOD;
 
-$body .= $bfooter;
-$descr .= nl2br($bfooter);
+	$body .= $bfooter;
+	$descr .= nl2br($bfooter);
 
 
-if (get_user_class() < UC_UPLOADER) {
-	write_sys_msg($CURUSER['id'],sprintf($REL_LANG->say_by_key('uploaded_body'),"<a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($torrent))."\">$torrent</a>"),$REL_LANG->say_by_key('uploaded'));
-	send_notifs('unchecked',nl2br($body),$CURUSER['id']);
-} else {
-	send_notifs('torrents',format_comment($descr),$CURUSER['id']);
-}
-// safe_redirect(" $REL_CONFIG['defaultbaseurl']/details.php?id=$id");
+	if (get_user_class() < UC_UPLOADER) {
+		write_sys_msg($CURUSER['id'],sprintf($REL_LANG->say_by_key('uploaded_body'),"<a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($torrent))."\">$torrent</a>"),$REL_LANG->say_by_key('uploaded'));
+		send_notifs('unchecked',nl2br($body),$CURUSER['id']);
+	} else {
+		send_notifs('torrents',format_comment($descr),$CURUSER['id']);
+	}
 
 
-$cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('rating_enabled','rating_perrelease')");
+	$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/".$REL_SEO->make_link('announce','passkey',$CURUSER['passkey']);
+	$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
+	while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
 
-while ($cronres = mysql_fetch_array($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
+	$retrackers = get_retrackers();
+	//var_dump($retrackers);
+	if ($retrackers) foreach ($retrackers as $announce)
+	if (!in_array($announce,$announce_urls_list)) $announce_urls_list[] = $announce;
 
+	$link = make_magnet($infohash,makesafe($torrent),$announce_urls_list);
 
-$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/".$REL_SEO->make_link('announce','passkey',$CURUSER['passkey']);
-$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
-while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
-
-$retrackers = get_retrackers();
-//var_dump($retrackers);
-if ($retrackers) foreach ($retrackers as $announce)
-if (!in_array($announce,$announce_urls_list)) $announce_urls_list[] = $announce;
-
-$link = make_magnet($infohash,makesafe($torrent),$announce_urls_list);
-
-if ($CRON['rating_enabled']) { $msg = sprintf($REL_LANG->say_by_key('upload_notice'),$CRON['rating_perrelease'],$id,$link); }
-else $msg = sprintf($REL_LANG->say_by_key('upload_notice_norating'),$id,$link);
+	if ($REL_CRON['rating_enabled']) { $msg = sprintf($REL_LANG->say_by_key('upload_notice'),$REL_CRON['rating_perrelease'],$id,$link); }
+	else $msg = sprintf($REL_LANG->say_by_key('upload_notice_norating'),$id,$link);
 
 
+	safe_redirect($REL_SEO->make_link('details','id',$id,'name',$torrent),3);
+	stderr($REL_LANG->say_by_key('uploaded'),$msg.($anarray?"<img src=\"".$REL_SEO->make_link('remote_check','id',$id)."\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
 
-stderr($REL_LANG->say_by_key('uploaded'),$msg.($anarray?"<img src=\"".$REL_SEO->make_link('remote_check','id',$id)."\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
-
-?>
+	?>

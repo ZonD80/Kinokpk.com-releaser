@@ -13,7 +13,7 @@ dbconn ();
 loggedinorreturn ();
 
 if (get_user_class () < UC_MODERATOR) {
-	stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied') );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied') );
 }
 
 //Удалить все жалобы
@@ -35,7 +35,7 @@ if ($_POST ['delete'] && $_POST ['reports']) {
 //
 
 
-stdhead ( "Просмотр жалоб" );
+$REL_TPL->stdhead ( "Просмотр жалоб" );
 
 $count = get_row_count ( "reports" );
 if (! $count) {
@@ -49,14 +49,16 @@ if (! $count) {
 <h1>Поступившие жалобы</h1>
 </center>
 <div align=center>
-<form id="message" action="<?=$REL_SEO->make_link('reports');?>" method="post"><input
-	type="hidden" name="deleteall" value="deleteall"> <input type="submit"
-	value="Удалить все жалобы" onClick="return confirm('Вы уверены?')"></form>
+<form id="message" action="<?=$REL_SEO->make_link('reports');?>"
+	method="post"><input type="hidden" name="deleteall" value="deleteall">
+<input type="submit" value="Удалить все жалобы"
+	onClick="return confirm('Вы уверены?')"></form>
 </div>
 <br />
 
-<form id="message" action="<?=$REL_SEO->make_link('reports');?>" method="post" name="form1"><input
-	type="hidden" value="moveordel" name="action" />
+<form id="message" action="<?=$REL_SEO->make_link('reports');?>"
+	method="post" name="form1"><input type="hidden" value="moveordel"
+	name="action" />
 <table border="0" cellspacing="0" width="100%" cellpadding="3">
 	<tr>
 		<td class=colhead>
@@ -82,7 +84,8 @@ if (! $count) {
 	if ($empty) {
 
 		$res = sql_query ( "SELECT reports.*,users.username,users.class FROM reports LEFT JOIN users ON reports.userid=users.id ORDER BY added DESC" ) or sqlerr ( __FILE__, __LINE__ );
-			$allowed_types = array ('messages' => $REL_SEO->make_link('message','action','viewmessage','id',''), 'torrents' => $REL_SEO->make_link('details','id',''), 'users' => $REL_SEO->make_link('userdetails','id',''), 'comments' => $REL_SEO->make_link('comment','action','edit','cid',''), 'pollcomments' => $REL_SEO->make_link('pollcomment','action','edit','cid',''), 'newscomments' => $REL_SEO->make_link('newscomment','action','edit','cid',''), 'usercomments' => $REL_SEO->make_link('usercomment','action','edit','cid', ''), 'reqcomments' => $REL_SEO->make_link('reqcomment','action','edit','cid',''), 'relgroups' => $REL_SEO->make_link('relgroups','id',''), 'rgcomments' => $REL_SEO->make_link('rgcomment','action','edit','cid',''), 'pages' => $REL_SEO->make_link('pagedetails','id',''), 'pagecomments' => $REL_SEO->make_link('pagecomment','action','edit','cid',''));
+		$allowed_types = array ('messages' => $REL_SEO->make_link('message','action','viewmessage','id',''), 'torrents' => $REL_SEO->make_link('details','id',''), 'users' => $REL_SEO->make_link('userdetails','id',''), 'rel' => $REL_SEO->make_link('comments','action','edit','cid',''), 'poll' => $REL_SEO->make_link('comments','action','edit','cid',''), 'news' => $REL_SEO->make_link('comments','action','edit','cid',''), 'user' => $REL_SEO->make_link('comments','action','edit','cid', ''), 'req' => $REL_SEO->make_link('comments','action','edit','cid',''), 'relgroups' => $REL_SEO->make_link('relgroups','id',''), 'rg' => $REL_SEO->make_link('comments','action','edit','cid',''), 'forum' => $REL_SEO->make_link('comments','action','edit','cid',''));
+		$display_types = array ('messages' => $REL_LANG->_('PM'), 'torrents' => $REL_LANG->_('Release'), 'users' => $REL_LANG->_('Users'), 'rel' => $REL_LANG->_('Comments'), 'poll' => $REL_LANG->_('Pollcomments'), 'news' => $REL_LANG->_('Newscomments'), 'user' => $REL_LANG->_('Usercomments'), 'req' => $REL_LANG->_('Reqcomments'), 'relgroups' => $REL_LANG->_('Release Groups'), 'rg' => $REL_LANG->_('Rgcomments'), 'forum' => $REL_LANG->_('Forumcomments'));
 		
 		while ( $row = mysql_fetch_array ( $res ) ) {
 
@@ -90,7 +93,7 @@ if (! $count) {
 			$toid = $row ["reportid"];
 			$userid = $row ["userid"];
 			$motive = $row ["motive"];
-			$type = $row ['type'];
+			$type = $display_types[$row ['type']];
 
 			$added = mkprettytime ( $row ["added"] ) . ' (' . get_elapsed_time ( $row ['added'], false ) . " {$REL_LANG->say_by_key('ago')})";
 
@@ -104,7 +107,7 @@ if (! $count) {
 			print ( "<tr>
         <td align='center'>$added</td>
         <td><b><a target='_blank' href='".$REL_SEO->make_link('userdetails','id',$userid,'username',translit($username))."'>" . get_user_class_color ( $userclass, $username ) . "</a></b></td>
-        <td><a href=\"{$allowed_types[$type]}$toid\">$type [$toid]</a></td>
+        <td><a href=\"{$allowed_types[$row ['type']]}$toid\">$type [$toid]</a></td>
         <td>$motive</td>
         <td align='center'>
         <INPUT type=\"checkbox\" name=\"reports[]\" title=\"Выбрать\" value=\"" . $reportid . "\"></td></tr>" );
@@ -127,6 +130,6 @@ if (! $count) {
 </form>
 
 	<?
-	stdfoot();
+	$REL_TPL->stdfoot();
 
 	?>

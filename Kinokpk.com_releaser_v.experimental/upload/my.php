@@ -14,7 +14,7 @@ dbconn();
 
 loggedinorreturn();
 
-stdhead($REL_LANG->say_by_key('my_my'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('my_my'));
 
 
 if ($_GET["emailch"])
@@ -36,31 +36,12 @@ print("<h1>".$REL_LANG->say_by_key('my_mail_updated')."</h1>\n");
 
 <div id="my_table">
 <h2><?=$REL_LANG->say_by_key('account_settings')?></h2>
-<link rel="stylesheet"
-	href="css/link/jquery.linkselect.style.select.css" type="text/css" />
-<script language="javascript" type="text/javascript"
-	src="js/jquery.bgiframe.js"></script> <script language="javascript"
-	type="text/javascript" src="js/jquery.linkselect.js"></script> <script
-	type="text/javascript">
+
+	<script	type="text/javascript">
 	<!--//
 	// on DOM ready
 	
-	$(document).ready(function (){
-		$("#country").linkselect({
-			change: function (li, value, text){
-				$('<div>' + value + ' | ' + text + '</div>').appendTo("#change_log");
-			}
-		});
 	
-		$("select.linkselect").linkselect({
-			change: function(li, value, text){
-				if( window.console ) console.log(value);
-	  	}
-		});
-
-				
-	});
-
 	function switchCSS(style){
 		var bFound = false, bMatch, style = style.toLowerCase();
 		$("link[title]").each(function (i){
@@ -113,8 +94,8 @@ if (get_user_class() >= UC_ADMINISTRATOR) {
 	print('<div class="clickable">Добавить себя в поддержку (для администраторов и выше)</div></div><div class="sp-body" style="background: none;">');
 	//print('<div class="clickable">Добавить себя в поддержку (для администраторов и выше)</div>');
 	print('<div width="100%" id="category" style="margin:10px 0px;">');
-		
-		
+
+
 	$supportfor = makesafe ( $CURUSER ["supportfor"] );
 
 	print ('<div style="padding: 5px;">
@@ -134,7 +115,7 @@ if (get_user_class() >= UC_ADMINISTRATOR) {
 			</form>
 		</div>\n" );
 	//	$spend = "</div></div>";
-		print('</div></div>');
+	print('</div></div>');
 }
 print ('<form id="myform" method="post" action="'.$REL_SEO->make_link('takeprofedit').'">');
 div($REL_LANG->_('Nickname'),"<input type=\"text\"  name=\"username\" size=\"40\" maxlength=\"40\" value=\"" . htmlspecialchars($CURUSER["username"]) . "\" /> ", 1,'my_title','my_web');
@@ -316,6 +297,6 @@ div("Пароль еще раз", "<input type=\"password\" name=\"passagain\" size=\"50\" /
 </div>
 <?
 //print("<p><a href=users.php><b>Найти пользователя/Список пользователей</b></a></p>");
-stdfoot();
+$REL_TPL->stdfoot();
 
 ?>

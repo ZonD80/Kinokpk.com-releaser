@@ -42,7 +42,7 @@ logincookie($id, $row["passhash"],$row['language']);
 
 safe_redirect($REL_SEO->make_link("my"),3);
 stdmsg($REL_LANG->_("Signup successful"),($REL_CONFIG['use_email_act'] ? sprintf($REL_LANG->say_by_key('confirmation_mail_sent'), htmlspecialchars($email)) : sprintf($REL_LANG->say_by_key('thanks_for_registering'), $REL_CONFIG['sitename']).' '.$REL_LANG->_('Now you will be redirected to <a href="%s">your profile</a> to add additional data for your account.',$REL_SEO->make_link("my"))));
-stdfoot();
+$REL_TPL->stdfoot();
 
 
 ?>

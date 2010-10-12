@@ -58,17 +58,17 @@ if ($email != $CURUSER["email"]) {
 $username = trim((string)$_POST['username']);
 
 if ($username<>$CURUSER['username']) {
-if (strlen($username) > 12)
-bark($REL_LANG->_('Sorry, but your username is too big. It must be < 12 symbols. Please <a href="javascript:history.go(-1);">try again</a>.'));
+	if (strlen($username) > 12)
+	bark($REL_LANG->_('Sorry, but your username is too big. It must be < 12 symbols. Please <a href="javascript:history.go(-1);">try again</a>.'));
 
-if (!validusername($username))
-bark($REL_LANG->_('Sorry, but you entered invalid username. Allowed characters are: a-Z0-9_. Please <a href="javascript:history.go(-1);">try again</a>.'));
+	if (!validusername($username))
+	bark($REL_LANG->_('Sorry, but you entered invalid username. Allowed characters are: a-Z0-9_. Please <a href="javascript:history.go(-1);">try again</a>.'));
 
-$check = @mysql_result(sql_query("SELECT 1 FROM users WHERE username=".sqlesc($username)),0);
-if ($check)
-bark($REL_LANG->_('Sorry, but this username is already in use. Please <a href="javascript:history.go(-1);">try again</a> and select another.'));
+	$check = @mysql_result(sql_query("SELECT 1 FROM users WHERE username=".sqlesc($username)),0);
+	if ($check)
+	bark($REL_LANG->_('Sorry, but this username is already in use. Please <a href="javascript:history.go(-1);">try again</a> and select another.'));
 
-$updateset[] = "username = ".sqlesc($username);
+	$updateset[] = "username = ".sqlesc($username);
 }
 $acceptpms = (string) $_POST["acceptpms"];
 $deletepms = ($_POST["deletepms"] ? 1 : 0);
@@ -134,10 +134,10 @@ bark("Жаль, Ваш skype слишком длинный  (Макс - 20)");
 $updateset[] = "skype = " . sqlesc(htmlspecialchars($skype));
 
 $privacy = (string)$_POST['privacy'];
- if ($privacy != "normal" && $privacy != "low" && $privacy != "strong")
- bark($REL_LANG->_("Privacy level is unknown"));
+if ($privacy != "normal" && $privacy != "highest" && $privacy != "strong")
+bark($REL_LANG->_("Privacy level is unknown"));
 
- $updateset[] = "privacy = '$privacy'";
+$updateset[] = "privacy = '$privacy'";
 
 $website = unesc($_POST["website"]);
 $updateset[] = "website = " . sqlesc(htmlspecialchars($website));
@@ -168,12 +168,12 @@ if ($changedemail) {
 Если вы НЕ совершали действий, указанных в этом письме, то проигнорируйте это письмо.
 
 Если вы действительно хотите изменить e-mail, то проследуйте по следующей ссылке:
-	{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('confirmemail','id',$CURUSER['id'],'confirmcode',$hash,'email',$obemail)}
+{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('confirmemail','id',$CURUSER['id'],'confirmcode',$hash,'email',$obemail)}
 
 EOD;
 
-	sent_mail($email, $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], "{$REL_CONFIG['defaultbaseurl']} подтверждение изменения профиля", $body);
-	$string.= "<br /><h2>".$REL_LANG->say_by_key('my_mail_sent')."</h2>";
+sent_mail($email, $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], "{$REL_CONFIG['defaultbaseurl']} подтверждение изменения профиля", $body);
+$string.= "<br /><h2>".$REL_LANG->say_by_key('my_mail_sent')."</h2>";
 }
 
 sql_query("UPDATE users SET " . implode(",", $updateset) . " WHERE id = " . $CURUSER["id"]) or sqlerr(__FILE__,__LINE__);

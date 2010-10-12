@@ -21,7 +21,7 @@ httpauth();
 
 if (get_user_class() < UC_SYSOP) bark("Access denied. You're not SYSOP.");
 if (!isset($_GET['action'])) {
-	stdhead("Админка штампов и печатей");
+	$REL_TPL->stdhead("Админка штампов и печатей");
 	print("<div algin=\"center\"><h1>Админка штампов</h1></div>");
 	print("<table width=\"100%\" border=\"0\"><tr><td><a href=\"".$REL_SEO->make_link('stampadmin','action','add')."\">Добавить штамп</a></td></tr></table>");
 	$stamparray = sql_query("SELECT * FROM stamps ORDER BY id ASC");
@@ -30,7 +30,7 @@ if (!isset($_GET['action'])) {
 		print("<tr><td>".$stamp['id']."</td><td><img src=\"pic/stamp/".$stamp['image']."\"></td><td><input type=\"text\" name=\"sort[".$stamp['id']."]\" size=\"4\" value=\"".$stamp['sort']."\"></td><td>".get_user_class_name($stamp['class'])."</td><td><a href=\"".$REL_SEO->make_link('stampadmin','action','edit','id',$stamp['id'])."\">E</a> | <a onClick=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('stampadmin','action','delete','id',$stamp['id'])."\">D</a></td></tr>");
 	}
 	print("</table><input type=\"submit\" class=\"btn\" value=\"Сохранить порядок отображения\"></form>");
-	stdfoot();
+	$REL_TPL->stdfoot();
 }
 
 elseif ($_GET['action'] == 'saveids') {
@@ -48,7 +48,7 @@ elseif ($_GET['action'] == 'saveids') {
 }
 
 elseif ($_GET['action'] == 'add') {
-	stdhead("Добавление штампа");
+	$REL_TPL->stdhead("Добавление штампа");
 	print("<form action=\"".$REL_SEO->make_link('stampadmin','action','saveadd')."\" name=\"savearray\" method=\"post\"><table width=\"100%\"><tr><td class=\"colhead\">Картинка (имя файла)</td></tr><tr><td><input type=\"text\" name=\"image\" size=\"80\"></td></tr><tr><td class=\"colhead\">Сортировка (порядок положения)</td></tr><tr><td><input type=\"text\" name=\"sort\" size=\"4\"></td></tr><tr><td class=\"colhead\">Класс доступа</td></tr><tr><td>
   <select size=\"1\" name=\"class\">
 <option value=\"6\">Только Директорат</option>
@@ -59,7 +59,7 @@ elseif ($_GET['action'] == 'add') {
 <option value=\"1\">Продвинутые и выше</option>
 <option value=\"0\">Пользователи и выше</option>
 </select></td></tr><tr><td><input type=\"submit\" class=\"btn\" value=\"Добавить\"></td></tr></table></form>");
-	stdfoot();
+	$REL_TPL->stdfoot();
 }
 
 elseif ($_GET['action'] == 'delete') {
@@ -76,7 +76,7 @@ elseif ($_GET['action'] == 'edit') {
 	$stamparray = sql_query("SELECT * FROM stamps WHERE id=".$_GET['id']);
 	list($id,$sort,$class,$image) = mysql_fetch_array($stamparray);
 
-	stdhead("Редактирование штампа");
+	$REL_TPL->stdhead("Редактирование штампа");
 	print("<form name=\"save\" action=\"".$REL_SEO->make_link('stampadmin','action','saveedit')."\" method=\"post\"><table width=\"100%\"><tr><td class=\"colhead\">Картинка (имя файла)</td></tr><tr><td><input type=\"hidden\" name=\"id\" value=\"".$id."\"><input type=\"text\" name=\"image\" size=\"80\" value=\"".$image."\"></td></tr><tr><td class=\"colhead\">Сортировка (порядок положения)</td></tr><tr><td><input type=\"text\" name=\"sort\" size=\"4\" value=\"".$sort."\"></td></tr><tr><td class=\"colhead\">Класс доступа</td></tr><tr><td>
 <select size=\"1\" name=\"class\">
 <option ".($class == "6" ? "selected" : "")." value=\"6\">Только Директорат</option>
@@ -87,7 +87,7 @@ elseif ($_GET['action'] == 'edit') {
 <option ".($class == "1" ? "selected" : "")." value=\"1\">Продвинутые и выше</option>
 <option ".($class == "0" ? "selected" : "")." value=\"0\">Пользователи и выше</option>
 </select></td></tr><tr><td><input type=\"submit\" class=\"btn\" value=\"Отредактировать\"></td></tr></table></form>");
-	stdfoot();
+	$REL_TPL->stdfoot();
 }
 
 elseif ($_GET['action'] == 'saveedit') {

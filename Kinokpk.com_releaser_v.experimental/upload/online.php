@@ -26,11 +26,11 @@ require_once("include/bittorrent.php");
 dbconn();
 loggedinorreturn();
 
-stdhead("Где пользователь");
+$REL_TPL->stdhead("Где пользователь");
 if (get_user_class() < UC_MODERATOR)
 {
 	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'), 'error');
-	stdfoot();
+	$REL_TPL->stdfoot();
 	die();
 }
 
@@ -98,6 +98,6 @@ if($per_list < $count){
 		.$pagerbottom."</td></tr>"; }
 		echo "</table>";
 
-		stdfoot();
+		$REL_TPL->stdfoot();
 
 		?>

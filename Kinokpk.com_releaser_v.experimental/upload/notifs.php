@@ -30,14 +30,14 @@ $type = (string)$_GET['type'];
 if ($action=='deny') { sql_query("DELETE FROM notifs WHERE id=$id");
 stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('delete_notif'),'success');
 } else {
-	$valid_types = array('comments'=>'torrents',
+	$valid_types = array('relcomments'=>'torrents',
 'reqcomments'=>'requests',
 'pollcomments'=>'polls',
 'usercomments'=>'users',
 'rgcomments'=>'relgroups',
 'rgnewscomments'=>'rgnews',
 'newscomments'=>'news',
-'pagecomments'=>'pages');
+'forumcomments'=>'forum_topics');
 
 	if (!array_key_exists($type,$valid_types))
 	stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_type'));

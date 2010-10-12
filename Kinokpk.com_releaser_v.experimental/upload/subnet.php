@@ -23,7 +23,7 @@ if (substr($mask,0,1) == "/")
 	if (!is_numeric($n) or $n < 0 or $n > 32)
 	{
 		stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_subnet'));
-		stdfoot();
+		$REL_TPL->stdfoot();
 		die();
 	}
 	else
@@ -32,12 +32,12 @@ if (substr($mask,0,1) == "/")
 elseif (!preg_match($regex, $mask))
 {
 	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_subnet'));
-	stdfoot();
+	$REL_TPL->stdfoot();
 	die();
 }
 $res = sql_query("SELECT id, username, class, last_access, added, ratingsum FROM users WHERE enabled=1 AND confirmed=1 AND id <> $CURUSER[id] AND INET_ATON(ip) & INET_ATON('$mask') = INET_ATON('$ip') & INET_ATON('$mask')") or sqlerr(__FILE__, __LINE__);
 if (mysql_num_rows($res)){
-	stdhead($REL_LANG->say_by_key('network_neighbot') );
+	$REL_TPL->stdhead($REL_LANG->say_by_key('network_neighbot') );
 
 	print("<table border=1 cellspacing=0 cellpadding=5>\n");
 	print("<tr><td class=colhead align=center colspan=8>:: ".$REL_LANG->say_by_key('network_neighbot')." ::</td></tr><tr><td colspan=8><center>".$REL_LANG->say_by_key('speed_above')."</center></td></tr>");
@@ -54,7 +54,7 @@ if (mysql_num_rows($res)){
 <td>".$tmpip[0].".".$tmpip[1].".".$tmpip[2].".*</td></tr>\n");
 	}
 	print("</table>");
-	stdfoot();}
+	$REL_TPL->stdfoot();}
 	else
 	stderr($REL_LANG->say_by_key('information'), $REL_LANG->say_by_key('not_found_neighbot'));
 	?>

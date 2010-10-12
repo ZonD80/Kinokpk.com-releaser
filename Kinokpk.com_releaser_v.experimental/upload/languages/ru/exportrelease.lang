@@ -1,6 +1,0 @@
-// LANGUAGE FILE: RUSSIAN
-// MODULE: exportrelease.php
-exportrelease_notice=Описание релиза<br/>
-exportrelease_warning=<b>Внимание!</b> При размещении нашего релиза на других сайтах ссылка на наш сайт обязательна!
-exportrelease_mname=Экспортировать на сайт
-select_all=<strong>Выбрать все</strong>

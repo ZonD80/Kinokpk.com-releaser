@@ -33,19 +33,17 @@ $id = (int) $_GET["id"];
 if (is_array($_POST["conusr"]))                            {
 	$ids = @implode(",", array_map("intval", $_POST["conusr"]));
 	sql_query("UPDATE invites SET confirmed=1 WHERE inviteid IN (" . $ids . ") AND confirmed=0".( get_user_class() < UC_SYSOP ? " AND inviter = $CURUSER[id]" : "")) or sqlerr(__FILE__,__LINE__);
-	$cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('rating_perinvite','rating_enabled')");
-while ($cronres = mysql_fetch_array($cronrow)) $CRON[$cronres['cron_name']] = $cronres['cron_value'];
 
-if ($CRON['rating_enabled']) {
-	sql_query("UPDATE users SET ratingsum=ratingsum+{$CRON['rating_perinvite']} WHERE id IN($ids,$id)") or sqlerr(__FILE__,__LINE__);
-}
+	if ($REL_CRON['rating_enabled']) {
+		sql_query("UPDATE users SET ratingsum=ratingsum+{$REL_CRON['rating_perinvite']} WHERE id IN($ids,$id)") or sqlerr(__FILE__,__LINE__);
+	}
 
 	$ids = explode(',',$ids);
 	if ($ids)
 	foreach ($ids as $id) {
 		sql_query("INSERT INTO friends (userid,friendid,confirmed) VALUES ({$CURUSER['id']},$id,1)");
-		
-		write_sys_msg($id,sprintf($REL_LANG->say_by_key('invite_confirmed'),$CRON['rating_per_invite']),$REL_LANG->say_by_key('invite_confirmed_title'));
+
+		write_sys_msg($id,sprintf($REL_LANG->say_by_key('invite_confirmed'),$REL_CRON['rating_per_invite']),$REL_LANG->say_by_key('invite_confirmed_title'));
 	}
 }
 safe_redirect($REL_SEO->make_link('invite','id',$id));

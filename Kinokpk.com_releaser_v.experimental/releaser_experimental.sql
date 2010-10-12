@@ -1,20 +1,3317 @@
+-- phpMyAdmin SQL Dump
+-- version 3.2.3
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Oct 12, 2010 at 08:58 PM
+-- Server version: 5.1.40
+-- PHP Version: 5.3.1
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
--- phpMyAdmin SQL Dump
--- version 2.6.1
--- http://www.phpmyadmin.net
--- 
--- ����: localhost
--- ����� ��������: ��� 14 2010 �., 12:52
--- ������ �������: 5.0.45
--- ������ PHP: 5.2.4
--- 
--- ��: `releaser320`
--- 
+
+--
+-- Database: `releaser330`
+--
 
 -- --------------------------------------------------------
+
+--
+-- Table structure for table `addedrequests`
+--
+
+CREATE TABLE IF NOT EXISTS `addedrequests` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `requestid` int(10) unsigned NOT NULL DEFAULT '0',
+  `userid` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `pollid` (`id`),
+  KEY `userid` (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `addedrequests`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bannedemails`
+--
+
+CREATE TABLE IF NOT EXISTS `bannedemails` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `added` int(10) NOT NULL,
+  `addedby` int(10) unsigned NOT NULL DEFAULT '0',
+  `comment` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `bannedemails`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bans`
+--
+
+CREATE TABLE IF NOT EXISTS `bans` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `mask` varchar(60) NOT NULL,
+  `descr` varchar(255) DEFAULT NULL,
+  `user` int(10) unsigned NOT NULL DEFAULT '0',
+  `added` int(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `bans`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bookmarks`
+--
+
+CREATE TABLE IF NOT EXISTS `bookmarks` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(10) unsigned NOT NULL DEFAULT '0',
+  `torrentid` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `bookmarks`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cache_stats`
+--
+
+CREATE TABLE IF NOT EXISTS `cache_stats` (
+  `cache_name` varchar(255) NOT NULL,
+  `cache_value` text,
+  PRIMARY KEY (`cache_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
+
+--
+-- Dumping data for table `cache_stats`
+--
+
+INSERT INTO `cache_stats` (`cache_name`, `cache_value`) VALUES
+('adminemail', 'admin@windows.lox'),
+('allow_invite_signup', '1'),
+('announce_interval', '30'),
+('announce_packed', '1'),
+('as_check_messages', '1'),
+('as_timeout', '15'),
+('autoclean_interval', '900'),
+('avatar_max_height', '100'),
+('avatar_max_width', '100'),
+('cache_template', '0'),
+('cache_template_time', '100'),
+('debug_language', '0'),
+('debug_mode', '1'),
+('debug_template', '0'),
+('defaultbaseurl', 'http://releaser330.com'),
+('default_emailnotifs', 'unread,torrents,friends'),
+('default_language', 'ru'),
+('default_notifs', 'unread,torrents,relcomments,pollcomments,newscomments,usercomments,reqcomments,rgcomments,pages,pagecomments,friends'),
+('default_theme', 'releaser330'),
+('deny_signup', '0'),
+('description', 'Kinokpk.com releaser 3.30 new installation'),
+('forum_enabled', '1'),
+('keywords', 'kinokpk.com, releaser, 3.30, 330, ZonD80, TorrentsBook.com'),
+('low_comment_hide', '-3'),
+('maxusers', '0'),
+('max_dead_torrent_time', '744'),
+('max_images', '4'),
+('max_torrent_size', '1000000'),
+('pm_max', '150'),
+('pron_cats', '0'),
+('register_timezone', '3'),
+('re_privatekey', 'none'),
+('re_publickey', 'non'),
+('signup_timeout', '3'),
+('sign_length', '250'),
+('siteemail', 'bot@kinokpk.com'),
+('sitename', 'Kinokpk.com releaser 3.30 new installation'),
+('siteonline', '1'),
+('smtptype', 'advanced'),
+('torrentsperpage', '25'),
+('ttl_days', '28'),
+('use_blocks', '1'),
+('use_captcha', '0'),
+('use_dc', '1'),
+('use_email_act', '0'),
+('use_gzip', '0'),
+('use_ipbans', '1'),
+('use_kinopoisk_trailers', '1'),
+('use_ttl', '0'),
+('yourcopy', '© {datenow} Your Copyright');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categories`
+--
+
+CREATE TABLE IF NOT EXISTS `categories` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `sort` int(10) NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL,
+  `seo_name` varchar(80) DEFAULT NULL,
+  `image` varchar(255) NOT NULL,
+  `parent_id` int(10) NOT NULL DEFAULT '0',
+  `forum_id` smallint(5) NOT NULL DEFAULT '0',
+  `disable_export` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `categories`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `censoredtorrents`
+--
+
+CREATE TABLE IF NOT EXISTS `censoredtorrents` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `reason` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `censoredtorrents`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comments`
+--
+
+CREATE TABLE IF NOT EXISTS `comments` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user` int(10) unsigned NOT NULL DEFAULT '0',
+  `toid` int(10) unsigned NOT NULL DEFAULT '0',
+  `type` varchar(255) DEFAULT NULL,
+  `added` int(10) NOT NULL,
+  `text` text NOT NULL,
+  `editedby` int(10) unsigned NOT NULL DEFAULT '0',
+  `editedat` int(10) NOT NULL,
+  `ratingsum` int(5) NOT NULL DEFAULT '0',
+  `ip` varchar(15) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`),
+  KEY `torrent` (`toid`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `comments`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `countries`
+--
+
+CREATE TABLE IF NOT EXISTS `countries` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `flagpic` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=106 ;
+
+--
+-- Dumping data for table `countries`
+--
+
+INSERT INTO `countries` (`id`, `name`, `flagpic`) VALUES
+(1, 'Швеция', 'sweden.gif'),
+(2, 'США', 'usa.gif'),
+(3, 'Россия', 'russia.gif'),
+(4, 'Финляндия', 'finland.gif'),
+(5, 'Канада', 'canada.gif'),
+(6, 'Франция', 'france.gif'),
+(7, 'Германия', 'germany.gif'),
+(8, 'Китай', 'china.gif'),
+(9, 'Италия', 'italy.gif'),
+(10, 'Denmark', 'denmark.gif'),
+(11, 'Норвегия', 'norway.gif'),
+(12, 'Англия', 'uk.gif'),
+(13, 'Ирландия', 'ireland.gif'),
+(14, 'Польша', 'poland.gif'),
+(15, 'Нидерланды', 'netherlands.gif'),
+(16, 'Бельгия', 'belgium.gif'),
+(17, 'Япония', 'japan.gif'),
+(18, 'Бразилия', 'brazil.gif'),
+(19, 'Аргентина', 'argentina.gif'),
+(20, 'Австралия', 'australia.gif'),
+(21, 'Новая Зеландия', 'newzealand.gif'),
+(22, 'Испания', 'spain.gif'),
+(23, 'Португалия', 'portugal.gif'),
+(24, 'Мексика', 'mexico.gif'),
+(25, 'Сингапур', 'singapore.gif'),
+(26, 'Индия', 'india.gif'),
+(27, 'Албания', 'albania.gif'),
+(28, 'Южная Африка', 'southafrica.gif'),
+(29, 'Южная Корея', 'southkorea.gif'),
+(30, 'Ямайка', 'jamaica.gif'),
+(31, 'Люксембург', 'luxembourg.gif'),
+(32, 'Гонк Конг', 'hongkong.gif'),
+(33, 'Belize', 'belize.gif'),
+(34, 'Алжир', 'algeria.gif'),
+(35, 'Ангола', 'angola.gif'),
+(36, 'Австрия', 'austria.gif'),
+(37, 'Югославия', 'yugoslavia.gif'),
+(38, 'Южные Самоа', 'westernsamoa.gif'),
+(39, 'Малайзия', 'malaysia.gif'),
+(40, 'Доминиканская Республика', 'dominicanrep.gif'),
+(41, 'Греция', 'greece.gif'),
+(42, 'Гуатемала', 'guatemala.gif'),
+(43, 'Израиль', 'israel.gif'),
+(44, 'Пакистан', 'pakistan.gif'),
+(45, 'Чехия', 'czechrep.gif'),
+(46, 'Сербия', 'serbia.gif'),
+(47, 'Сейшельские Острова', 'seychelles.gif'),
+(48, 'Тайвань', 'taiwan.gif'),
+(49, 'Пуерто Рико', 'puertorico.gif'),
+(50, 'Чили', 'chile.gif'),
+(51, 'Куба', 'cuba.gif'),
+(52, 'Кного', 'congo.gif'),
+(53, 'Афганистан', 'afghanistan.gif'),
+(54, 'Турция', 'turkey.gif'),
+(55, 'Узбекистан', 'uzbekistan.gif'),
+(56, 'Швейцария', 'switzerland.gif'),
+(57, 'Кирибати', 'kiribati.gif'),
+(58, 'Филиппины', 'philippines.gif'),
+(59, 'Burkina Faso', 'burkinafaso.gif'),
+(60, 'Нигерия', 'nigeria.gif'),
+(61, 'Исландия', 'iceland.gif'),
+(62, 'Науру', 'nauru.gif'),
+(63, 'Словакия', 'slovenia.gif'),
+(64, 'Туркменистан', 'turkmenistan.gif'),
+(65, 'Босния', 'bosniaherzegovina.gif'),
+(66, 'Андора', 'andorra.gif'),
+(67, 'Литва', 'lithuania.gif'),
+(68, 'Македония', 'macedonia.gif'),
+(69, 'Нидерландские Антиллы', 'nethantilles.gif'),
+(70, 'Украина', 'ukraine.gif'),
+(71, 'Венесуела', 'venezuela.gif'),
+(72, 'Венгрия', 'hungary.gif'),
+(73, 'Румыния', 'romania.gif'),
+(74, 'Вануату', 'vanuatu.gif'),
+(75, 'Вьетнам', 'vietnam.gif'),
+(76, 'Trinidad & Tobago', 'trinidadandtobago.gif'),
+(77, 'Гондурас', 'honduras.gif'),
+(78, 'Киргистан', 'kyrgyzstan.gif'),
+(79, 'Эквадор', 'ecuador.gif'),
+(80, 'Багамы', 'bahamas.gif'),
+(81, 'Перу', 'peru.gif'),
+(82, 'Камбоджа', 'cambodia.gif'),
+(83, 'Барбадос', 'barbados.gif'),
+(84, 'Бенгладеш', 'bangladesh.gif'),
+(85, 'Лаос', 'laos.gif'),
+(86, 'Уругвай', 'uruguay.gif'),
+(87, 'Antigua Barbuda', 'antiguabarbuda.gif'),
+(88, 'Парагвая', 'paraguay.gif'),
+(89, 'Тайланд', 'thailand.gif'),
+(90, 'СССР', 'ussr.gif'),
+(91, 'Senegal', 'senegal.gif'),
+(92, 'Того', 'togo.gif'),
+(93, 'Северная Корея', 'northkorea.gif'),
+(94, 'Хорватия', 'croatia.gif'),
+(95, 'Эстония', 'estonia.gif'),
+(96, 'Колумбия', 'colombia.gif'),
+(97, 'Леванон', 'lebanon.gif'),
+(98, 'Латвия', 'latvia.gif'),
+(99, 'Коста Рика', 'costarica.gif'),
+(100, 'Египт', 'egypt.gif'),
+(101, 'Болгария', 'bulgaria.gif'),
+(102, 'Исла де Муерто', 'jollyroger.gif'),
+(103, 'Казахстан', 'kazahstan.png'),
+(104, 'Молдова', 'moldova.gif'),
+(105, 'Беларусь', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cron`
+--
+
+CREATE TABLE IF NOT EXISTS `cron` (
+  `cron_name` varchar(255) NOT NULL,
+  `cron_value` int(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`cron_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
+
+--
+-- Dumping data for table `cron`
+--
+
+INSERT INTO `cron` (`cron_name`, `cron_value`) VALUES
+('announce_interval', 15),
+('autoclean_interval', 900),
+('cron_is_native', 0),
+('delete_votes', 1440),
+('in_cleanup', 0),
+('in_remotecheck', 0),
+('last_cleanup', 0),
+('last_remotecheck', 0),
+('max_dead_torrent_time', 744),
+('num_checked', 0),
+('num_cleaned', 0),
+('pm_delete_sys_days', 15),
+('pm_delete_user_days', 30),
+('promote_rating', 50),
+('rating_checktime', 180),
+('rating_discounttorrent', 1),
+('rating_dislimit', -200),
+('rating_downlimit', -10),
+('rating_enabled', 1),
+('rating_freetime', 7),
+('rating_max', 300),
+('rating_perdownload', 1),
+('rating_perinvite', 5),
+('rating_perleech', 1),
+('rating_perrelease', 5),
+('rating_perrequest', 10),
+('rating_perseed', 1),
+('remotecheck_disabled', 0),
+('remotecheck_interval', 2),
+('remotepeers_cleantime', 10800),
+('remote_trackers', 500),
+('signup_timeout', 5),
+('ttl_days', 100);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cron_emails`
+--
+
+CREATE TABLE IF NOT EXISTS `cron_emails` (
+  `email` varchar(255) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `body` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
+
+--
+-- Dumping data for table `cron_emails`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dchubs`
+--
+
+CREATE TABLE IF NOT EXISTS `dchubs` (
+  `id` int(3) unsigned NOT NULL AUTO_INCREMENT,
+  `sort` int(3) NOT NULL DEFAULT '0',
+  `announce_url` varchar(500) NOT NULL,
+  `mask` varchar(60) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `dchubs`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `files`
+--
+
+CREATE TABLE IF NOT EXISTS `files` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `torrent` int(10) unsigned NOT NULL DEFAULT '0',
+  `filename` varchar(255) NOT NULL,
+  `size` bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `torrent` (`torrent`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `files`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `forum_categories`
+--
+
+CREATE TABLE IF NOT EXISTS `forum_categories` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `sort` int(10) NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL,
+  `seo_name` varchar(255) DEFAULT NULL,
+  `image` varchar(255) NOT NULL,
+  `parent_id` int(10) NOT NULL DEFAULT '0',
+  `class` int(2) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=COMPACT AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `forum_categories`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `forum_topics`
+--
+
+CREATE TABLE IF NOT EXISTS `forum_topics` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `subject` varchar(255) DEFAULT NULL,
+  `comments` int(5) unsigned NOT NULL DEFAULT '0',
+  `author` int(10) unsigned NOT NULL DEFAULT '0',
+  `started` int(10) NOT NULL DEFAULT '0',
+  `lastposted_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `closed` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `closedate` int(10) NOT NULL DEFAULT '0',
+  `category` int(5) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `forum_topics`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `friends`
+--
+
+CREATE TABLE IF NOT EXISTS `friends` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(10) unsigned NOT NULL DEFAULT '0',
+  `friendid` int(10) unsigned NOT NULL DEFAULT '0',
+  `confirmed` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `userid` (`userid`,`friendid`),
+  UNIQUE KEY `friendid` (`friendid`,`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `friends`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `invites`
+--
+
+CREATE TABLE IF NOT EXISTS `invites` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `inviter` int(10) unsigned NOT NULL DEFAULT '0',
+  `inviteid` int(10) NOT NULL DEFAULT '0',
+  `invite` varchar(32) NOT NULL,
+  `time_invited` int(10) NOT NULL,
+  `confirmed` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `invites`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `languages`
+--
+
+CREATE TABLE IF NOT EXISTS `languages` (
+  `lkey` varchar(255) NOT NULL,
+  `ltranslate` varchar(2) NOT NULL,
+  `lvalue` text NOT NULL,
+  UNIQUE KEY `key` (`lkey`,`ltranslate`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
+
+--
+-- Dumping data for table `languages`
+--
+
+INSERT INTO `languages` (`lkey`, `ltranslate`, `lvalue`) VALUES
+('about', 'en', 'About myself:'),
+('about', 'ru', 'Не много о себе:'),
+('abuse', 'en', 'Abuse'),
+('abuse', 'ru', 'Реклама'),
+('access_closed', 'en', 'Access to this section is closed.'),
+('access_closed', 'ru', 'Доступ в этот раздел закрыт.'),
+('access_denied', 'en', 'Access denied.'),
+('access_denied', 'ru', 'Доступ запрещен.'),
+('account', 'en', 'Account'),
+('account', 'ru', 'Аккаунт'),
+('account_activated', 'en', 'Account is activated'),
+('account_activated', 'ru', 'Аккаунт активирован'),
+('account_deleted', 'en', 'Account deleted.'),
+('account_deleted', 'ru', 'Аккаунт удален.'),
+('account_disabled', 'en', 'Your account was disabled due reason: %s'),
+('account_disabled', 'ru', 'Ваш аккаунт отключен, прична: %s'),
+('account_settings', 'en', 'Account settings'),
+('account_settings', 'ru', 'Настройки аккаунта'),
+('acc_disabled', 'en', 'My Account is disabled, what to do?'),
+('acc_disabled', 'ru', 'Мой аккаунт отключен, что делать?'),
+('actions', 'en', 'Actions'),
+('actions', 'ru', 'Действия'),
+('active', 'en', 'Active'),
+('active', 'ru', 'Активные'),
+('active_connections', 'en', 'Active connections'),
+('active_connections', 'ru', 'Активных подключений'),
+('activities', 'en', 'Activity:'),
+('activities', 'ru', 'Деятельность:'),
+('add', 'en', 'Add'),
+('add', 'ru', 'Добавить'),
+('add a new user', 'en', 'Add a new user'),
+('add a new user', 'ru', 'Добавить нового пользователя'),
+('added', 'en', 'Created'),
+('added', 'ru', 'Дата создания'),
+('adduser', 'en', 'Add a new userr'),
+('adduser', 'ru', 'Добавить пользователя'),
+('adduser', 'ua', 'Додати користувача'),
+('add_announce_urls', 'en', 'Add/Del tracker'),
+('add_announce_urls', 'ru', 'Добавить/удалить трекера'),
+('add_ban', 'en', 'Add a ban'),
+('add_ban', 'ru', 'Добавить запрет'),
+('add_comment', 'en', 'Add comment to %s'),
+('add_comment', 'ru', 'Добавить комментарий к %s'),
+('add_friend', 'en', 'Friendship'),
+('add_friend', 'ru', 'Дружить'),
+('add_group', 'en', 'Add release groups'),
+('add_group', 'ru', 'Добавление группы'),
+('add_news', 'en', 'Add a news'),
+('add_news', 'ru', 'Добавить новость'),
+('add_news', 'ua', 'Додати новину'),
+('add_new_category', 'en', 'Adding new category'),
+('add_new_category', 'ru', 'Добавление новой категории'),
+('add_new_categoryb', 'en', 'Add a new category'),
+('add_new_categoryb', 'ru', 'Добавить новую категорию'),
+('add_new_categoryok', 'en', 'The category successfully added'),
+('add_new_categoryok', 'ru', 'Категория успешно добавлена'),
+('add_new_country', 'en', 'Add a New Country'),
+('add_new_country', 'ru', 'Добавить новую страну'),
+('add_new_pagescategory', 'en', 'The category successfully added'),
+('add_new_pagescategory', 'ru', 'Добавление новой категории'),
+('add_retracker', 'en', 'Add retracker'),
+('add_retracker', 'ru', 'Добавить ретрекер'),
+('add_to_frends', 'en', 'Add to my friends'),
+('add_to_frends', 'ru', 'Добавить в мои друзья'),
+('add_to_friends', 'en', 'Be friends'),
+('add_to_friends', 'ru', 'Дружить'),
+('add_user', 'en', 'Add user'),
+('add_user', 'ru', 'Добавить пользователя'),
+('admin_search', 'en', 'Administrative search'),
+('admin_search', 'ru', 'Административный поиск'),
+('admin_search', 'ua', 'Адміністративний пошук'),
+('admin_view_profile', 'en', 'You are viewing private profile as administration member'),
+('admin_view_profile', 'ru', 'Вы просматриваете этот приватный профиль как член администрации'),
+('age', 'en', 'Age'),
+('age', 'ru', 'Возраст'),
+('ago', 'en', 'Ago'),
+('ago', 'ru', 'назад'),
+('agree_rules', 'en', 'I agree with this rules'),
+('agree_rules', 'ru', 'Я согласен(а)!'),
+('all_db_q', 'en', 'All requests to the database took about %s seconds'),
+('all_db_q', 'ru', 'Все запросы к базе данных заняли %s секунд'),
+('all_types', 'en', '(All Types)'),
+('all_types', 'ru', '(Все типы)'),
+('already_bookmarked', 'en', 'already in bookmarks.'),
+('already_bookmarked', 'ru', 'уже в закладках.'),
+('already_in_private_group', 'en', 'This user is already in your friend list!'),
+('already_in_private_group', 'ru', 'Этот пользователь уже находится в списке ваших друзей!'),
+('already_notified_newscomments', 'en', 'You are already signed on notifications about comments to this news'),
+('already_notified_newscomments', 'ru', 'Вы уже подписаны на оповещения о комментариях к этой новости'),
+('already_notified_pagecomments', 'en', 'You are already signed on notifications about comments to this page'),
+('already_notified_pagecomments', 'ru', 'Вы уже подписаны на оповещения о комментариях к этой странице'),
+('already_notified_pollcomments', 'en', 'You are already signed on notifications about comments to this interrogation'),
+('already_notified_pollcomments', 'ru', 'Вы уже подписаны на оповещения о комментариях к этому опросу'),
+('already_notified_relcomments', 'en', 'You are already signed on notifications about comments to this release'),
+('already_notified_relcomments', 'ru', 'Вы уже подписаны на оповещения о комментариях к этому релизу'),
+('already_notified_reqcomments', 'en', 'You are already signed on notifications about comments to this inquiry'),
+('already_notified_reqcomments', 'ru', 'Вы уже подписаны на оповещения о комментариях к этому запросу'),
+('already_notified_rgcomments', 'en', 'You are already signed on notifications about comments to this release to group'),
+('already_notified_rgcomments', 'ru', 'Вы уже подписаны на оповещения о комментариях к этой релиз группе'),
+('already_notified_rgnewscomments', 'en', 'You are already signed on notifications about comments to this news from group release'),
+('already_notified_rgnewscomments', 'ru', 'Вы уже подписаны на оповещения о комментариях к этой новости от релиз группы'),
+('already_notified_usercomments', 'en', 'You are already signed on notifications about comments to this user'),
+('already_notified_usercomments', 'ru', 'Вы уже подписаны на оповещения о комментариях к этому пользователю'),
+('already_rated', 'en', 'You have already voted here'),
+('already_rated', 'ru', 'Вы уже голосовали здесь'),
+('already_report', 'en', 'You already reported'),
+('already_report', 'ru', 'Вы уже подавали жалобу'),
+('amount', 'en', 'The quantity of a farmed necessary for a subscription.'),
+('amount', 'ru', 'Количество откупа, необх. для подписки'),
+('Amount of fails', 'en', 'Amount of fails'),
+('Amount of fails', 'ru', 'Количество неудачных запросов'),
+('amount_of_discount', 'en', 'Amount of discount'),
+('amount_of_discount', 'ru', 'Количество откупа'),
+('amount_of_rating', 'en', 'Amount of rating'),
+('amount_of_rating', 'ru', 'Количество рейтинга'),
+('announce_invalid', 'en', 'Invalid'),
+('announce_invalid', 'ru', 'Неверный'),
+('announce_invalid_passkey', 'en', '''Unknown passkey! Re-download the torrent file (.torrent) from ''.$CACHEARRAY[''defaultbaseurl'']'),
+('announce_invalid_passkey', 'ru', 'Неверный пасскей! Перекачайте торрент'),
+('announce_invalid_port', 'en', 'Unknown port'),
+('announce_invalid_port', 'ru', 'Неверный порт'),
+('announce_missing_parameter', 'en', 'Missing parameter'),
+('announce_missing_parameter', 'ru', 'Отсутствует параметр'),
+('announce_not_authorized', 'en', 'You are not authorized'),
+('announce_not_authorized', 'ru', 'Не авторизированны'),
+('announce_read_faq', 'en', 'Read the FAQ'),
+('announce_read_faq', 'ru', 'Читайте ЧаВо'),
+('announce_torrent_not_registered', 'en', 'Torrent not registered with this tracker'),
+('announce_torrent_not_registered', 'ru', 'Релиз не зарегистрирован на трекере'),
+('announce_url', 'en', 'Announce URL'),
+('announce_url', 'ru', 'Announce URL'),
+('announce_urls', 'en', 'Addresses trackers<br /><small>If empty, then the torrent is not multitracker</small>'),
+('announce_urls', 'ru', 'Адреса трекеров<br /><small>Если пусто, то торрент не мультитрекерный</small>'),
+('announce_urls_notice', 'en', 'Specify the same address on each line. After clicking on the "add" the system will check these tracker. This may take a long time. After verification you will see the results.'),
+('announce_urls_notice', 'ru', 'Указывайте по одному адресу на каждой строчке. После нажатия на кнопку "добавить" система проверит указанные здесь трекера. Это может занять длительное время. После проверки вам будут отображены ее результаты'),
+('announce_you_can_leech_only_from_one_place', 'en', 'The limit of connections has been reached! You can download only from one place.'),
+('announce_you_can_leech_only_from_one_place', 'ru', 'Лимит соединений превышен! Вы можете качать только с одного места.'),
+('anonymous', 'en', 'Anonymous'),
+('anonymous', 'ru', 'Аноним'),
+('anonymous_release', 'en', 'Anonymous release'),
+('anonymous_release', 'ru', 'Анонимизация релиза'),
+('antirespect', 'en', 'Disrespect'),
+('antirespect', 'ru', 'Антиреспект'),
+('approve', 'en', 'Approve release<br /><small>If selected, release will be shown around the releaser, not in test-releaser only</small>'),
+('approve', 'ru', 'Подтвердить оформление релиза<br /><small>В этом случае релиз станет отображаться на главной и в списке релизов, а не только на тренировочном релизере</small>'),
+('archive_of_news', 'en', 'Archive news'),
+('archive_of_news', 'ru', 'Архив новостей'),
+('are_you_sure', 'en', 'Are you sure?'),
+('are_you_sure', 'ru', 'Вы уверены?'),
+('as_dc_magnet', 'ru', 'Отобразить DirectConnect ссылку!'),
+('as_magnet', 'en', 'Show Magnet-link!'),
+('as_magnet', 'ru', 'Отобразить Magnet-ссылку!'),
+('at', 'en', 'at'),
+('at', 'ru', 'в'),
+('attention', 'en', 'Attention'),
+('attention', 'ru', 'Внимание'),
+('autor', 'en', 'Autor'),
+('autor', 'ru', 'Автор'),
+('avatar', 'en', 'Avatar'),
+('avatar', 'ru', 'Аватар'),
+('avatar_adress_invalid', 'en', 'The address of this avatar is not valid.'),
+('avatar_adress_invalid', 'ru', 'Неверный адрес аватары.'),
+('avatar_is_too_big', 'en', 'The size of your avatar exceed %dx%d piskeley, reduce it in any graphics editor!'),
+('avatar_is_too_big', 'ru', 'Размеры вашей аватары превышают %dx%d пискелей, уменьшите ее в любом графическом редакторе!'),
+('average', 'en', 'Average'),
+('average', 'ru', 'Средняя'),
+('avialable_formats', 'en', 'Available formats'),
+('avialable_formats', 'ru', 'Допустимые форматы'),
+('back', 'en', 'Back'),
+('back', 'ru', 'Назад'),
+('back_to_details', 'en', 'Back to the description'),
+('back_to_details', 'ru', 'Вернуться к описанию релиза'),
+('badwords', 'en', 'Bad words'),
+('badwords', 'ru', 'Мат'),
+('banemailadmin', 'en', 'E-mail bans'),
+('banemailadmin', 'ru', 'Бан емайлов'),
+('banemailadmin', 'ua', 'Бан емайлів'),
+('banned', 'en', 'Banned'),
+('banned', 'ru', 'Забанен'),
+('banned_releases', 'en', 'Banned releases'),
+('banned_releases', 'ru', 'Запрещенные релизы'),
+('bans', 'en', 'Bans'),
+('bans', 'ru', 'Баны'),
+('bans', 'ua', 'Бани'),
+('ban_releases', 'en', 'Ban releases'),
+('ban_releases', 'ru', 'Запрещенные релизы'),
+('ban_uninstalled', 'en', 'The ban has been successfully uninstalled.<br /> <a href="viewcensoredtorrents.php">list of bans</a>'),
+('ban_uninstalled', 'ru', 'Запрет успешно удален.<br /><a href="viewcensoredtorrents.php">К списку запретов</a>'),
+('become_uploader', 'en', 'I want to be uploader!'),
+('become_uploader', 'ru', 'Хочу стать аплоадером!'),
+('big_present_discount', 'en', '<img src="pic/presents/discount_big.png" alt="image" style="border: 0px;" /><br />Present farmed'),
+('big_present_discount', 'ru', '<img src="pic/presents/discount_big.png" alt="image" style="border: 0px;" /><br />Подарить откуп'),
+('big_present_ratingsum', 'en', '<img src="pic/presents/ratingsum_big.png" alt="image" style="border: 0px;" /><br />Present rating'),
+('big_present_ratingsum', 'ru', '<img src="pic/presents/ratingsum_big.png" alt="image" style="border: 0px;" /><br />Подарить рейтинг'),
+('big_present_torrent', 'en', '<img src="pic/presents/torrent_big.png" alt="image" style="border: 0px;" /><br />Present realese'),
+('big_present_torrent', 'ru', '<img src="pic/presents/torrent_big.png" alt="image" style="border: 0px;" /><br />Подарить релиз'),
+('bitbucket', 'en', 'Upload image'),
+('bitbucket', 'ru', 'Закачать картинку'),
+('blank_vote', 'en', 'Blank vote (I just wanna see the results)'),
+('blank_vote', 'ru', 'Пустой голос (Я просто хочу увидеть результаты!)'),
+('block', 'en', 'lock'),
+('block', 'ru', 'блокировку'),
+('blocked_list', 'en', 'List of enemies'),
+('blocked_list', 'ru', 'Список врагов'),
+('blocksadmin', 'en', 'Blocks administration'),
+('blocksadmin', 'ru', 'Управление Блоками'),
+('blocksadmin', 'ua', 'Управління Блоками'),
+('bonus', 'en', 'Bonus'),
+('bonus', 'ru', 'Откуп'),
+('bookmarked', 'en', 'was added to your bookmarks.'),
+('bookmarked', 'ru', 'добавлен в закладки.'),
+('bookmarks', 'en', 'Bookmarks'),
+('bookmarks', 'ru', 'Закладки'),
+('bookmark_this', 'en', 'Add to bookmarks'),
+('bookmark_this', 'ru', 'В закладки'),
+('books', 'en', 'Favorite Books:'),
+('books', 'ru', 'Любимые книги:'),
+('boys', 'en', 'Boys'),
+('boys', 'ru', 'Парни'),
+('break_attempt', 'en', 'Possible breakin attempt'),
+('break_attempt', 'ru', 'Обнаружена попытка взлома'),
+('browse', 'en', 'Releasers'),
+('browse', 'ru', 'Релизы'),
+('browse_download', 'en', 'Download releasers'),
+('browse_download', 'ru', 'Скачать Релизы'),
+('bugs_site', 'en', 'Bugs site'),
+('bugs_site', 'ru', 'Баги на сайте'),
+('bulk_email', 'en', 'Bulk E-mail'),
+('bulk_email', 'ru', 'Массовый E-mail'),
+('bytes', 'en', 'bytes'),
+('bytes', 'ru', 'байт'),
+('cache', 'en', 'Cache'),
+('cache', 'ru', 'Кэш'),
+('cache_cleared', 'en', 'Cache cleared'),
+('cache_cleared', 'ru', 'Кеш очищен'),
+('cannot_discount', 'en', 'You can not get farmed, since quantity of the releases downloaded by you and so exceeds quantity of your farmed'),
+('cannot_discount', 'ru', 'Вы не можете получить откуп, т.к. количество скачанных вами релизов и так превышает количество вашего откупа'),
+('cannot_edit_friends', 'en', 'You cannot make action not over the friends'),
+('cannot_edit_friends', 'ru', 'Вы не можете производить действия не над своими друзьями'),
+('cant_add_myself', 'en', 'You cannot add yourselves in friends'),
+('cant_add_myself', 'ru', 'Вы не можете добавить сами себя в друзья'),
+('cant_dell_acc', 'en', 'You can not delete your account.'),
+('cant_dell_acc', 'ru', 'Невозможно удалить аккаунт.'),
+('cant_del_acc', 'en', 'You can not delete your account.'),
+('cant_del_acc', 'ru', 'Невозможно удалить аккаунт.'),
+('cant_rate_yourself', 'en', 'You cannot score yourselves.!'),
+('cant_rate_yourself', 'ru', 'Вы не можете оценить сами себя!'),
+('captcha_human', 'en', 'Are you a human?'),
+('captcha_human', 'ru', 'Вы человек?'),
+('Categories', 'en', 'Categories'),
+('Categories', 'ru', 'Категории'),
+('category', 'en', 'Category'),
+('category', 'ru', 'Категория'),
+('category', 'ua', 'Категорії'),
+('category_admin', 'en', 'Management of categories'),
+('category_admin', 'ru', 'Админка категорий'),
+('category_success_delete', 'en', 'The category successfully deteted'),
+('category_success_delete', 'ru', 'Категория успешно удалена'),
+('category_success_edit', 'en', 'The category is successfully edited'),
+('category_success_edit', 'ru', 'Категория успешно отредактирована'),
+('chage_rating', 'en', 'Exchange Rate on farming'),
+('chage_rating', 'ru', 'Обменять рейтинг на откуп'),
+('change', 'en', 'Change'),
+('change', 'ru', 'Сменить'),
+('Change avatar', 'en', 'Change avatar'),
+('Change avatar', 'ru', 'Сменить аватар'),
+('Changed', 'en', 'Changed'),
+('Changed', 'ru', 'Изменен'),
+('change_class', 'en', 'Change of class'),
+('change_class', 'ru', 'Смена класса'),
+('change_password', 'en', 'Change password'),
+('change_password', 'ru', 'Смена пароля'),
+('change_user_pass', 'en', 'Change user password'),
+('change_user_pass', 'ru', 'Сменить пароль пользователю'),
+('change_usr_succ', 'en', 'Change user was successful.'),
+('change_usr_succ', 'ru', 'Изменения пользователя прошло успешно'),
+('check', 'en', 'Checking'),
+('check', 'ru', 'Проверка'),
+('Checked', 'en', 'Checked'),
+('Checked', 'ru', 'Проверен'),
+('checked_by', 'en', '<span style="color: green;">This release <b>was checked</b> by </span>'),
+('checked_by', 'ru', '<span style="color: green;">Этот релиз <b>был проверен</b> </span>'),
+('check_address', 'en', 'Check whether the address entered Email!'),
+('check_address', 'ru', 'Проверьте, верно ли введен адрес Email!'),
+('check_ip', 'en', 'Check the IP address'),
+('check_ip', 'ru', 'Проверить IP адрес'),
+('check_port', 'en', 'Check port'),
+('check_port', 'ru', 'Проверить порт'),
+('choose', 'en', 'Choose'),
+('choose', 'ru', 'Выберите'),
+('class', 'en', 'Class'),
+('class', 'ru', 'Класс'),
+('class_administrator', 'en', 'Administrator'),
+('class_administrator', 'ru', 'Администратор'),
+('class_administrators', 'en', 'Administrators'),
+('class_administrators', 'ru', 'Администраторы'),
+('class_moderator', 'en', 'Moderator'),
+('class_moderator', 'ru', 'Модератор'),
+('class_override_denied', 'en', 'An attempt to change the class dismissed, your class is too low'),
+('class_override_denied', 'ru', 'Попытка смены класса откланена, ваш класс слишком низок'),
+('class_power_user', 'en', 'Power user'),
+('class_power_user', 'ru', 'Опытный пользователь'),
+('class_sysop', 'en', 'Owner'),
+('class_sysop', 'ru', 'Директор'),
+('class_uploader', 'en', 'Releaser'),
+('class_uploader', 'ru', 'Аплоадер'),
+('class_user', 'en', 'User'),
+('class_user', 'ru', 'Пользователь'),
+('class_users', 'en', 'Users'),
+('class_users', 'ru', 'Пользователи'),
+('class_vip', 'en', 'VIP'),
+('class_vip', 'ru', 'VIP'),
+('clean', 'en', 'Clean'),
+('clean', 'ru', 'Очистить'),
+('cleaning_cache', 'en', 'Cleaning cache'),
+('cleaning_cache', 'ru', 'Очистка кэшей'),
+('cleanup_completed', 'en', 'Cleanup completed successfully. Used to clean %s request(s).'),
+('cleanup_completed', 'ru', 'Очистка завершена успешно. На очистку использовано %s запрос(ов).'),
+('cleanup_is_running', 'en', 'Now perform clean database'),
+('cleanup_is_running', 'ru', 'В данный момент выполняется очистка БД'),
+('cleanup_not_running', 'en', 'Cleaning the database in standby mode.'),
+('cleanup_not_running', 'ru', 'Очистка БД в режиме ожидания'),
+('Clear language cache', 'en', 'Clear language cache'),
+('Clear language cache', 'ru', 'Очистить языковой кеш'),
+('clearcache', 'en', 'Clear caches'),
+('clearcache', 'ru', 'Очистка кешей'),
+('clearcache', 'ua', 'Очищення кешу'),
+('client', 'en', 'Client'),
+('client', 'ru', 'Клиент'),
+('clients_recomened_by_us', 'en', 'Clients recomended by us'),
+('clients_recomened_by_us', 'ru', 'Клиенты рекомендуемые нами'),
+('clock', 'en', 'Time'),
+('clock', 'ru', 'Время'),
+('Closed', 'en', 'Closed'),
+('Closed', 'ru', 'Закрыт'),
+('close_list', 'en', 'Close list'),
+('close_list', 'ru', 'Закрыть список'),
+('close_window', 'en', 'Close window'),
+('close_window', 'ru', 'Закрыть окно'),
+('cloud_tags', 'en', 'A large cloud of tags'),
+('cloud_tags', 'ru', 'Большое облако тегов'),
+('code_incorrect', 'en', 'Confirmation code is incorrect'),
+('code_incorrect', 'ru', 'Код подтверждения неверен'),
+('code_incorrectly', 'en', 'Code from the image is entered incorrectly or not entered!'),
+('code_incorrectly', 'ru', 'Код с картинки введен неверно или не введен!'),
+('comma_separated', 'en', 'User ID, after a comma, <b>no spaces</b>'),
+('comma_separated', 'ru', 'ID пользователей, через запятую, <b>без пробелов</b>'),
+('comment', 'en', 'comment'),
+('comment', 'ru', 'комментарий'),
+('comments', 'en', 'Comm.'),
+('comments', 'ru', 'Комм.'),
+('Comments list', 'en', 'Comments list'),
+('Comments list', 'ru', 'Список комментариев'),
+('comments_and_social', 'en', 'Comments.<br /><br />Social activity<br /><br />Filesharing'),
+('comments_and_social', 'ru', 'Комментарии<br /><br />Соцактивность<br /><br />Файлообмен'),
+('comments_for', 'en', 'Comments to'),
+('comments_for', 'ru', 'Комментарии к'),
+('comment_cant_be_empty', 'en', 'Comment cannot be empty!'),
+('comment_cant_be_empty', 'ru', 'Комментарий не может быть пустым!'),
+('comment_notice_newscomments', 'en', 'New comment was added to news %s. To discard comment notifications visit news\\'' page'),
+('comment_notice_newscomments', 'ru', 'Добавился новый комментарий к новости %s. Отказаться от таких уведомлении можно на странице новости'),
+('comment_notice_pagecomments', 'en', 'New comments was added to page %s. To discard comment notifications view page'),
+('comment_notice_pagecomments', 'ru', 'Добавился новый комментарий к странице %s. Отказаться от таких уведомлении можно при просмотре страницы'),
+('comment_notice_pollcomments', 'en', 'New comment was added to poll %s. To discard comment notifications visit poll\\''s page'),
+('comment_notice_pollcomments', 'ru', 'Добавился новый комментарий к опросу %s. Отказаться от таких уведомлении можно на странице опроса'),
+('comment_notice_relcomments', 'en', 'New comment was added to release %s. To discard comment notifications visit release\\''s page'),
+('comment_notice_relcomments', 'ru', 'Добавился новый комментарий к релизу %s. Отказаться от таких уведомлении можно на странице релиза'),
+('comment_notice_reqcomments', 'en', 'New comment was added to request %s. To discard comment notifications visit request\\''s page'),
+('comment_notice_reqcomments', 'ru', 'Добавился новый комментарий к запросу %s. Отказаться от таких уведомлении можно на странице запроса'),
+('comment_notice_rgcomments', 'en', 'New comment was added to release group %s. To discard comment notifications visit release group\\''s page'),
+('comment_notice_rgcomments', 'ru', 'Добавился новый комментарий к релиз-группе %s. Отказаться от таких уведомлении можно на странице релиз-группы'),
+('comment_notice_rgnewscomments', 'en', 'New comment was added to release group\\'' news %s. To discard comment notifications visit release group\\''s page or release group\\''s news page'),
+('comment_notice_rgnewscomments', 'ru', 'Добавился новый комментарий к новости %s. Отказаться от таких уведомлении можно на странице релиз-группы или на странице новостей релиз группы'),
+('comment_notice_usercomments', 'en', 'New comment was added to user %s. To discard comment notifications visit user\\''s page (if it\\''s your profile visit <a href="userdetails.php">your profile page</a>)'),
+('comment_notice_usercomments', 'ru', 'Добавился новый комментарий к пользователю %s. Отказаться от таких уведомлении можно на странице профиля пользователя (или если это ваш профиль, то в <a href="userdetails.php">вашем профиле</a>)'),
+('comms', 'en', 'Comments: %d'),
+('comms', 'ru', 'Комментариев: %d'),
+('comms_2', 'en', 'Comments:'),
+('comms_2', 'ru', 'Комментариев:'),
+('community', 'en', 'Community'),
+('community', 'ru', 'Сообщество'),
+('completed', 'en', 'Completed'),
+('completed', 'ru', 'Закончил'),
+('confidentiality', 'en', 'Privacy'),
+('confidentiality', 'ru', 'Конфиденциальность'),
+('configadmin', 'en', 'Global settings'),
+('configadmin', 'ru', 'Основные настройки'),
+('configadmin', 'ua', 'Основні налаштування'),
+('confirm', 'en', 'Confirm'),
+('confirm', 'ru', 'Подтвердить'),
+('confirmation_delete', 'en', 'Are you sure?'),
+('confirmation_delete', 'ru', 'Вы уверены?'),
+('confirmation_mail_sent', 'en', 'Confirmative e-mail was mailed to the address indicated by you (%s). You must read and react on that e-mail before you will be able to use your account. If you will not do it, your account will be automatically deleted in a few days.'),
+('confirmation_mail_sent', 'ru', 'Подтверждающее письмо отправлено на указанный вами адрес (%s). Вам необходимо прочитать и отреагировать на письмо прежде чем вы сможете использовать ваш аккаунт. Если вы этого не сделаете, новый аккаунт будет автоматически удален через несколько дней.'),
+('confirmed', 'en', 'Confirmed'),
+('confirmed', 'ru', 'Подтвержден'),
+('connected', 'en', 'Seeding'),
+('connected', 'ru', 'В&nbsp;раздаче'),
+('connection_limit_exceeded', 'en', 'Connection limit has been exceeded!'),
+('connection_limit_exceeded', 'ru', 'Лимит соединений превышен!'),
+('contact', 'en', 'Contact'),
+('contact', 'ru', 'Обратная связь'),
+('contact_admin', 'en', '<br />You can contact the site administrator via <a href="contact.php"> this page.</a>'),
+('contact_admin', 'ru', '<br />Вы можете связаться с администрацией сайта через <a href="contact.php">эту страницу</a>'),
+('content', 'en', 'Content'),
+('content', 'ru', 'Содержание'),
+('continue', 'en', 'Continue'),
+('continue', 'ru', 'Продолжить'),
+('cookie_login', 'en', 'For successfull login cookies must be enabled.'),
+('cookie_login', 'ru', 'Для успешного входа у вас должна быть включена поддержка cookies.'),
+('country', 'en', 'Country'),
+('country', 'ru', 'Страна'),
+('countryadmin', 'en', 'Countries and flags'),
+('countryadmin', 'ru', 'Админка стран и флагов'),
+('countryadmin', 'ua', 'Адмінка держав та прапорів'),
+('country_admin', 'en', 'Management of the Countries and Flags'),
+('country_admin', 'ru', 'Управление странами и флагами'),
+('country_and_flags', 'en', 'Countries and Flags'),
+('country_and_flags', 'ru', 'Страны и флаги'),
+('country_success_delete', 'en', 'Country Successfully Deleted'),
+('country_success_delete', 'ru', 'Удалено!'),
+('country_success_edit', 'en', 'Country Successfully Edited'),
+('country_success_edit', 'ru', 'Изменения приняты!'),
+('create', 'en', 'Create'),
+('create', 'ru', 'Создать'),
+('create_country', 'en', 'Create Country'),
+('create_country', 'ru', 'Создать'),
+('create_invite', 'en', 'Create invitation'),
+('create_invite', 'ru', 'Создать приглашение'),
+('cronadmin', 'en', 'Sheduled jobs administration'),
+('cronadmin', 'ru', 'Настройка cron-функций и рейтинга'),
+('cronadmin', 'ua', 'Настройка cron-функцій та рейтингу'),
+('cron_cron', 'en', 'Scheduled jobs activating from cron'),
+('cron_cron', 'ru', 'Периодические задания запускаются через cron'),
+('cron_native', 'en', 'Scheduled jobs activating by native method'),
+('cron_native', 'ru', 'Периодические задания запускаются через Kinokpk.com releaser'),
+('cron_settings_saved', 'en', 'Cron-function setting successfully saved'),
+('cron_settings_saved', 'ru', 'Настройки cron-функций сохранены'),
+('cron_state_reseted', 'en', 'Cron-function settings successfully reseted'),
+('cron_state_reseted', 'ru', 'Сброс статистики произошел успешно'),
+('cur_tree', 'en', 'Current section categories'),
+('cur_tree', 'ru', 'Текущее дерево категорий страниц'),
+('date', 'en', 'Date'),
+('date', 'ru', 'Дата'),
+('DC Hubs administration', 'en', 'DC Hubs administration'),
+('DC Hubs administration', 'ru', 'Администрирование DC-хабов'),
+('dead', 'en', 'dead'),
+('dead', 'ru', 'мертвый'),
+('dead_releases', 'en', 'Dead releases'),
+('dead_releases', 'ru', 'Мертвых релизов'),
+('del', 'en', 'Delete'),
+('del', 'ru', 'Удалить'),
+('delacctadmin', 'en', 'Delete user account'),
+('delacctadmin', 'ru', 'Удалить юзера'),
+('delacctadmin', 'ua', 'Видалити юзера'),
+('delete', 'en', 'Delete'),
+('delete', 'ru', 'Удалить'),
+('deleted', 'en', 'Deleted'),
+('deleted', 'ru', 'Удален'),
+('delete_account', 'en', 'Delete Account'),
+('delete_account', 'ru', 'Удалить аккаунт'),
+('delete_all_users', 'en', 'Remove all subscribers'),
+('delete_all_users', 'ru', 'Удалить всех подписчиков'),
+('delete_comments_ok', 'en', 'Comments successfully deleted. Now you will back to previous page.'),
+('delete_comments_ok', 'ru', 'Комментарии успешно удалены. Сейчас вы вернетесь на предыдущую страницу'),
+('delete_from_friends', 'en', 'Remove from Friends'),
+('delete_from_friends', 'ru', 'Удалить из друзей'),
+('delete_marked_messages', 'en', 'Delete marked messages'),
+('delete_marked_messages', 'ru', 'Удалить выделенные сообщения'),
+('delete_notif', 'en', 'You have successfully cancelled a subscription;'),
+('delete_notif', 'ru', 'Вы успешно отменили подписку'),
+('delete_notify', 'en', 'Dear user!<br />Administrator group (site) has been discontinued your subscription to releases of "%s"'),
+('delete_notify', 'ru', 'Уважаемый пользователь!<br />Администратором группы(сайта) была прекращена ваша подписка на релизы группы "%s"'),
+('delete_on_friends', 'en', 'Delete from friends'),
+('delete_on_friends', 'ru', 'Отказать'),
+('delete_user_ok', 'en', 'The user is removed from the group of subscribers'),
+('delete_user_ok', 'ru', 'Пользователь удален из подписчиков группы'),
+('delete_with_notify', 'en', 'Remove from notifying user'),
+('delete_with_notify', 'ru', 'Удалить с уведомлением пользователя'),
+('del_friend', 'en', 'Stop friendship'),
+('del_friend', 'ru', 'Прекратить дружбу'),
+('del_peers', 'en', 'Deleted peers'),
+('del_peers', 'ru', 'Удаленные пиры'),
+('deny_notifs_month', 'en', 'Disable the window for a month'),
+('deny_notifs_month', 'ru', 'отключите окошко на месяц'),
+('deny_notifs_session', 'en', 'Click to turn off this window on the current session'),
+('deny_notifs_session', 'ru', 'Кликните, для того, чтобы отключить это окошко на время текущей сессии'),
+('deny_success', 'en', 'You have successfully unsubscribed from the release group.'),
+('deny_success', 'ru', 'Вы успешно отписались от релиз-группы'),
+('descr', 'en', 'Description'),
+('descr', 'ru', 'Описание'),
+('description', 'en', 'Description'),
+('description', 'ru', 'Описание'),
+('description_notice', 'ru', 'Вы можете использовать копировать-вставить (CTRL+C CTRL+V), оформление сохраняется<br /><br />Чтобы вставить шаблон релиза, нажмите на кнопку <img src="js/tiny_mce/plugins/reltemplates/img/reltemplate.gif" title="Шаблоны релизов" alt="image" /> в редакторе<br /><br />Чтобы заполнить описание фильма, используя данные kinopoisk.ru, нажмите <img src="js/tiny_mce/plugins/kinopoisk/img/kinopoisk.gif" title="Парсер кинопоиска" alt="image" />'),
+('design', 'en', 'Style'),
+('design', 'ru', 'Стиль'),
+('details_10_last_snatched', 'en', '10 last snatched'),
+('details_10_last_snatched', 'ru', '10 последних скачавших'),
+('details_10_last_snatched_noone', 'en', 'Nobody got this torrent yet'),
+('details_10_last_snatched_noone', 'ru', 'Еще никто не скачал этот релиз по torrent'),
+('details_leeching', 'en', 'Leeching'),
+('details_leeching', 'ru', 'Качающие'),
+('details_seeding', 'en', 'Seeding'),
+('details_seeding', 'ru', 'Раздающие'),
+('disabled', 'en', 'Excuse your akkaunt unlocked, reason:'),
+('disabled', 'ru', 'Извините, ваш аккаунт отключен, причина:'),
+('disabled_rating', 'en', '(Due to low ratings). You can raise your ranking by purchasing a ransom (or include your account immediately by buying VIP-privilege) <a href="donate.php"> on this page</a>'),
+('disabled_rating', 'ru', '(из-за малого рейтинга). Вы можете поднять свой рейтинг, купив откупы (или включить аккаунт немедленно, купив VIP-привелегии) <a href="donate.php">на этой странице</a>'),
+('disable_export', 'en', 'Disable export of releases on the forum from this category'),
+('disable_export', 'ru', 'Отключить экспорт релизов на форум из этой категории'),
+('disable_export_short', 'en', 'Export disabled'),
+('disable_export_short', 'ru', 'Экспорт отключен'),
+('discounted', 'en', 'Bought off'),
+('discounted', 'ru', 'Откупились от'),
+('discount_limit', 'en', 'You can not get this amount of farmed, as In this case it will exceed the number of downloaded releases, which is prohibited by the rules.'),
+('discount_limit', 'ru', 'Вы не можете получить данное количество откупа, т.к. в данном случае оно будет превышать количество скачанных релизов, что запрещено правилами'),
+('discount_link', 'en', 'You can <strong><a href="myrating.php?discount"><span style="color: red;">get farmed</span></a></strong> exchanging %s rating of 1 farming or <a href="donate.php?smszamok">Paying</a><br /><small>Tax farming is added to Seeder releases, for example, you are distributing 3 release, and gave farmed for 3 release, it turns out that you are distributing as least 6 releases :)</small>'),
+('discount_link', 'ru', 'Вы можете <strong><a href="myrating.php?discount"><span style="color: red;">получить откуп</span></a></strong> обменяв %s рейтинга на 1 откуп или на <a href="donate.php?smszamok">платной основе</a><br /><small>Откуп прибавляется к сидирующимся релизам, например вы сидируете 3 и откупились от трех, получается что Вы сидируете какбы 6 релизов :)</small>'),
+('distr_our_tracker', 'en', 'This torrent at the moment is heard only on our tracker.'),
+('distr_our_tracker', 'ru', 'Этот торрент на данный момент раздается только на нашем трекере.'),
+('dl_speed', 'en', 'Download speed'),
+('dl_speed', 'ru', 'Закачка'),
+('done', 'en', 'Done'),
+('done', 'ru', 'Готово'),
+('dont_invite', 'en', 'You do not have invitions!'),
+('dont_invite', 'ru', 'У вас больше не осталось приглашений!'),
+('dont_set_cache', 'en', 'Not selected cache cleaning'),
+('dont_set_cache', 'ru', 'Не выбран кэш для очистки'),
+('download', 'en', 'Download'),
+('download', 'ru', 'Скачать'),
+('Download again', 'en', 'Download again'),
+('Download again', 'ru', 'Скачать еще раз'),
+('downloaded', 'en', 'Downloaded'),
+('downloaded', 'ru', 'Скачал'),
+('downloaded_rel', 'en', 'Downloads'),
+('downloaded_rel', 'ru', 'Скачали'),
+('downloading', 'en', 'Downloading'),
+('downloading', 'ru', 'В раздаче'),
+('downloading_torrent', 'en', 'Downloading a torrent'),
+('downloading_torrent', 'ru', 'Скачивание релиза'),
+('download_notice', 'en', 'Downloading this release you rating will decrease by %s , and will become %s. Remember, that with %s rating you can\\''t'),
+('download_notice', 'ru', 'При скачивании этого релиза у вас отнимется %s рейтинга, и он станет равным %s. Помните, что при рейтинге %s вам будет запрещено скачивание релизов. Получить "откуп" вы можете на странице "Мой рейтинг". Если вдруг закачка торрента прервалась, вы можете скачать это торрент повторно без изменения рейтинга.'),
+('download_torrent', 'en', 'Download torrent!'),
+('download_torrent', 'ru', 'Скачать торрент!'),
+('download_zip_again', 'en', 'You can download all previous releases in one ZIP-archive without rating decrease<br/><a href="%s">View downloaded releases</a> or <a href="%s">Download ZIP-archive with torrents</a>'),
+('download_zip_again', 'ru', 'Вы можете скачать все скачанные ранее релизы одним ZIP-архивом без понижения рейтинга<br/><a href="%s">Посмотреть скачанные релизы</a> или <a href="%s">Скачать ZIP-архив с торрентами</a>'),
+('down_formula', 'en', 'Вы раздаете %s релизов, откупились от %s, что в сумме меньше, чем скачали (%s скачанных релизов), поэтому Ваш рейтинг изменяется на'),
+('down_formula', 'ru', 'Вы раздаете %s релизов, откупились от %s, что в сумме меньше, чем скачали (%s скачанных релизов), поэтому Ваш рейтинг изменяется на'),
+('down_levels', 'en', 'The lower level of restriction'),
+('down_levels', 'ru', 'Пороги ограничений'),
+('down_notice', 'en', 'In rating a %s , you can not download releases, and at %s Your account will be disabled'),
+('down_notice', 'ru', 'При рейтинге в %s Вы не сможете скачивать релизы, а при %s Ваш аккаунт будет отключен'),
+('down_size', 'en', 'Down size'),
+('down_size', 'ru', 'Скачал'),
+('E-mail or password is invalid', 'en', 'E-mail or password is invalid'),
+('E-mail or password is invalid', 'ru', 'Эта комбинация данных для входа неверная. Попробуйте еще раз'),
+('edit', 'en', 'Edit'),
+('edit', 'ru', 'Редактировать'),
+('edited', 'en', 'Successful editing!'),
+('edited', 'ru', 'Успешное редактирование!'),
+('editing_retracker', 'en', 'Edit retracker'),
+('editing_retracker', 'ru', 'Редактирование ретрекера'),
+('editing_succ', 'en', 'Editing of data was successful'),
+('editing_succ', 'ru', 'Изменение данных прошло успешно'),
+('edit_delete', 'en', 'Edit/Delete'),
+('edit_delete', 'ru', 'Ред/Уд'),
+('edit_group', 'en', 'Edit release groups'),
+('edit_group', 'ru', 'Редактирование группы'),
+('email', 'en', 'E-Mail'),
+('email', 'ru', 'eMail'),
+('email_nickname', 'en', 'E-mail or nickname'),
+('email_nickname', 'ru', 'E-mail или никнейм'),
+('email_sender', 'en', '<b>E-Mail sender</b>:'),
+('email_sender', 'ru', '<b>E-Mail отправителя</b>:'),
+('en', 'en', 'English (EN-US)'),
+('en', 'ru', 'English (EN-US)'),
+('enable_popup', 'en', 'Enable pop-up notification'),
+('enable_popup', 'ru', 'Включить всплывающие уведомления'),
+('enable_success', 'en', 'Pop-up notification successfully enabled'),
+('enable_success', 'ru', 'Всплывающие уведомления успешно включены'),
+('enter_invite_code', 'en', 'You can enter Invite code and sign up for free:'),
+('enter_invite_code', 'ru', 'Вы можете ввести инвайт-код и подписаться безвозмездно:'),
+('enter_message', 'en', 'Please enter a message!'),
+('enter_message', 'ru', 'Пожалуста, введите сообщение!'),
+('enter_reason_pr', 'en', 'Enter a short message to attach to your present'),
+('enter_reason_pr', 'ru', 'Введите короткое сообщение, которое будет прикреплено к вашему подарку'),
+('enter_subject', 'en', 'Please enter the subject!'),
+('enter_subject', 'ru', 'Пожалуста, введите тему!'),
+('enter_topic', 'en', 'Please enter the topic!'),
+('enter_topic', 'ru', 'Пожалуста, введите тему!'),
+('error', 'en', 'Error'),
+('error', 'ru', 'Ошибка'),
+('errors', 'en', 'Errors'),
+('errors', 'ru', 'Ошибки'),
+('error_calculating', 'en', 'Error calculating the confirmation code'),
+('error_calculating', 'ru', 'Ошибка вычисления кода подтверждения'),
+('error_change_address', 'en', 'Error change of address'),
+('error_change_address', 'ru', 'Ошибка изменения адреса'),
+('error_no_onwers', 'en', '<h1>There is no owners of this relgroup, contact site admin.</h1>'),
+('error_no_onwers', 'ru', '<h1>У текущей резиз группы не назначены владельцы, обратитесь к администратору ресурса</h1>'),
+('event', 'en', 'Event'),
+('event', 'ru', 'Событие'),
+('exchange', 'en', 'Exchange'),
+('exchange', 'ru', 'Обменник'),
+('Export and download', 'en', 'Export and download'),
+('Export and download', 'ru', 'Экспортировать/скачать'),
+('Export language to file', 'en', 'Export language to file'),
+('Export language to file', 'ru', 'Экспортировать язык в файл'),
+('exportrelease_mname', 'en', 'Export release to another site'),
+('exportrelease_mname', 'ru', 'Экспортировать на сайт'),
+('exportrelease_notice', 'en', 'Description'),
+('exportrelease_notice', 'ru', 'Описание релиза<br />'),
+('exportrelease_warning', 'en', '<b>Warning!</b> At placing of our release on other sites the reference to our site is obligatory!'),
+('exportrelease_warning', 'ru', '<b>Внимание!</b> При размещении нашего релиза на других сайтах ссылка на наш сайт обязательна!'),
+('export_id', 'en', 'ID forums IPB for export releases <br /><small>Leave this field blank for auto exports, if the name of the forum and category match</small>'),
+('export_id', 'ru', 'ID форума IPB для экспорта релизов<br /><small>Оставьте это поле пустым для автоматического экспорта, если названия форума и категории совпадают</small>'),
+('fail_invite', 'en', 'You are already subscribed to the release of the group.'),
+('fail_invite', 'ru', 'Вы уже подписаны на релизы этой группы'),
+('faq', 'en', 'FAQ'),
+('faq', 'ru', 'ЧаВо'),
+('files', 'en', 'Files'),
+('files', 'ru', 'Файлов'),
+('files_l', 'en', 'Files'),
+('files_l', 'ru', 'файлов'),
+('file_list', 'en', 'File list'),
+('file_list', 'ru', 'Список файлов'),
+('file_size', 'en', '<br />File Size: <b> %s kilobyte. </b><hr /><div style="text-align: center;">Avatar added to user profile</div>'),
+('file_size', 'ru', '<br />Размер файла: <b> %s кб. </b><hr /><div style="text-align: center;">Аватар автоматически добавлен в профиль пользователя</div>'),
+('filled', 'en', 'Filled in?'),
+('filled', 'ru', 'Выполнен?'),
+('filled_by', 'en', 'Filled out'),
+('filled_by', 'ru', 'Выполнил'),
+('fill_form', 'en', 'Fill out the form correctly.'),
+('fill_form', 'ru', 'Пожалуйста заполняйте форму корректно.'),
+('flag', 'en', 'Flag'),
+('flag', 'ru', 'Флаг'),
+('footer_ratiopopup', 'en', 'Go to <a href="%s">My rating stats</a> or <a href="%s">exchange rating to discount</a>'),
+('footer_ratiopopup', 'ru', 'Перейти к <a href="%s">Моему рейтингу</a> или <a href="%s">Обмену рейтинга на скидку</a>'),
+('forced_cleaning', 'en', 'Forced Cleaning'),
+('forced_cleaning', 'ru', 'Принудительная Очистка Релизера'),
+('forgot_psw', 'en', '<p>If you forgot your password, try to recover it on <a href="%s">Password recovery page</a></p><p>You did not register yet? You can <a href="%s">Register now!</a></p>'),
+('forgot_psw', 'ru', '<p>Если вы забыли пароль, вы можете восстановить его на <a href="%s">странице восстановления пароля</a><p>Вы еще не зарегестрированы? <a href="%s">Зарегестрируйтесь сейчас!</a></p>'),
+('formats', 'en', 'File formats'),
+('formats', 'ru', 'Форматы файлов'),
+('form_contact', 'en', 'Form of contact'),
+('form_contact', 'ru', 'Форма для связи'),
+('form_contact_for_admin', 'en', 'The form for communication with the Administration'),
+('form_contact_for_admin', 'ru', 'Форма для связи с Администрацией'),
+('forum', 'en', 'Forum'),
+('forum', 'ru', 'Форум'),
+('Forumcomments', 'en', 'Forumcomments'),
+('Forumcomments', 'ru', 'Комм.форума'),
+('forum_id', 'en', 'IPB\\''s forum ID'),
+('forum_id', 'ru', 'ID форума IPB'),
+('forum_selector', 'en', '*In the rounds selected category, which will be used for automatic creation of release on the forum'),
+('forum_selector', 'ru', '*В кружках выбирается категория, которая будет использована при автоматическом создании релиза на форуме'),
+('for_admin', 'en', 'For administrators'),
+('for_admin', 'ru', 'Видно администраторам'),
+('for_admin', 'ua', 'Видно адміністраторам'),
+('for_moderators', 'en', 'For moderators'),
+('for_moderators', 'ru', 'Видно модераторам'),
+('for_moderators', 'ua', 'Видно модераторам'),
+('for_owners', 'en', 'For owners'),
+('for_owners', 'ru', 'Видно сис. администраторам'),
+('for_owners', 'ua', 'Видно сис. адміністраторам'),
+('friend', 'en', 'friend'),
+('friend', 'ru', 'друга'),
+('friends', 'en', 'Friends'),
+('friends', 'ru', 'Друзья'),
+('friendship_cancelled', 'en', 'The friendship is over'),
+('friendship_cancelled', 'ru', 'Дружба прервана'),
+('friends_list', 'en', 'List of friends'),
+('friends_list', 'ru', 'Список друзей'),
+('friend_confirmed', 'en', 'Now you are confirmed that %s is your friend, thank you'),
+('friend_confirmed', 'ru', 'Вы подтвердили, что пользователь %s является вашем другом, спасибо'),
+('friend_deleted', 'en', 'The user has been removed from your friends'),
+('friend_deleted', 'ru', 'Пользователь удален из ваших друзей'),
+('friend_deny', 'en', 'The user миша has refused to you friendship'),
+('friend_deny', 'ru', 'Пользователь %s отказал вам в дружбе'),
+('friend_notice', 'en', 'User %s asks you for friendship, if he is your friend, you can [<a href="friends.php?action=confirm&amp;id=%s">Confirm</a>] or [<a href="friends.php?action=deny&amp;id=%s">Deny</a>] friendship');
+INSERT INTO `languages` (`lkey`, `ltranslate`, `lvalue`) VALUES
+('friend_notice', 'ru', 'Пользователь %s изъявил желание добавить вас в свои друзья, если это так, то [<a href="friends.php?action=confirm&amp;id=%s">Подтвердите</a>] или [<a href="friends.php?action=deny&amp;id=%s">Откажите</a>] ему в этом'),
+('friend_notice_subject', 'en', 'Lets be friends?'),
+('friend_notice_subject', 'ru', 'Давай дружить?'),
+('friend_pending', 'en', 'Expects confirmation'),
+('friend_pending', 'ru', 'Ожидает подтверждения'),
+('from', 'en', 'from'),
+('from', 'ru', 'из'),
+('From_present', 'en', 'From'),
+('From_present', 'ru', 'От'),
+('from_system', 'en', 'System'),
+('from_system', 'ru', 'Torrentsbook.com'),
+('from_torrents', 'en', ', from them without torrents'),
+('from_torrents', 'ru', ', из них без торрентов'),
+('full_lst_rel', 'en', 'Full list of releases'),
+('full_lst_rel', 'ru', 'Полный список релизов'),
+('f_p', 'en', 'Friends and presents'),
+('f_p', 'ru', 'Подарки друзьям'),
+('games', 'en', 'Favorite games:'),
+('games', 'ru', 'Любимые игры:'),
+('gender', 'en', 'Sex'),
+('gender', 'ru', 'Пол'),
+('gender_nonselected', 'en', 'I have not selected yet:)'),
+('gender_nonselected', 'ru', 'А я еще не определилось:)'),
+('genre', 'en', 'Genre:'),
+('genre', 'ru', 'Жанр:'),
+('getdox_file_not_found', 'en', 'File not found'),
+('getdox_file_not_found', 'ru', 'Файл не найден'),
+('getdox_no_file', 'en', 'No file name'),
+('getdox_no_file', 'ru', 'Нет имени файла'),
+('get_rating', 'en', 'You will receive a +%s rating for the upload release'),
+('get_rating', 'ru', 'Вы получите +%s рейтинга за загрузку релиза'),
+('gifts_friends', 'en', 'Present Friens'),
+('gifts_friends', 'ru', 'Подарки друзьям'),
+('girls', 'en', 'Girls'),
+('girls', 'ru', 'Девушки'),
+('go', 'en', 'Go'),
+('go', 'ru', 'Вперед'),
+('golden', 'en', 'Golden torrent'),
+('golden', 'ru', 'Золотой релиз'),
+('golden_descr', 'en', 'Golden releaser (counting only upload, download does not count).'),
+('golden_descr', 'ru', 'Золотой релиз (при скачивании релиза не понижается рейтинг)'),
+('golden_torrents', 'en', 'Golden releaser'),
+('golden_torrents', 'ru', 'Золотые релизы'),
+('good', 'en', 'good!'),
+('good', 'ru', 'good!'),
+('goods_new', 'en', '<span style="color: red;">You the new ( %s days left), and you learn the rating system, you do not subtract rating for downloading releases or lack seeders</span>'),
+('goods_new', 'ru', '<span style="color: red;">Вы новичок (осталось %s дней), и Вы изучаете рейтинговую систему, у Вас не отнимается рейтинг за скачивание релизов или за отстутствие сида</span>'),
+('goods_vip', 'en', '<span style="color: red;">You the VIP, is not taken away from you rating for downloading of releases or for absence seeders</span>'),
+('goods_vip', 'ru', '<span style="color: red;">Вы VIP, у Вас не отнимается рейтинг за скачивание релизов или за отстутствие сида</span>'),
+('go_go_go', 'en', 'Lets go'),
+('go_go_go', 'ru', 'Поехали'),
+('go_to', 'en', 'Go to'),
+('go_to', 'ru', 'Перейти'),
+('group_added', 'en', 'Group successfully added. Now you can go to her page'),
+('group_added', 'ru', 'Группа успешно добавлена. Сейчас вы перейдете к ее странице'),
+('group_edited', 'en', 'Group successfully edited. Now you can go to her page'),
+('group_edited', 'ru', 'Группа успешно отредактирована. Сейчас вы перейдете к ее странице'),
+('group_error', 'en', 'An error occurred in the operations of the group'),
+('group_error', 'ru', 'Произошла ошибка в операциях над группой'),
+('Guest', 'en', 'Guest'),
+('Guest', 'ru', 'Гость'),
+('guests_online', 'en', 'Guests online'),
+('guests_online', 'ru', 'Всего гостей'),
+('hack', 'en', 'Hacking attempt'),
+('hack', 'ru', 'Взлом'),
+('has_reports', 'en', 'Filed %s reports, please understand and remove to remove this message'),
+('has_reports', 'ru', 'Подано %s жалоб, просьба разобраться и удалить, чтобы убрать это сообщение'),
+('has_unchecked', 'en', 'he site is %s untested release(s)'),
+('has_unchecked', 'ru', 'На сайте есть %s непроверенных релиза(ов)'),
+('have_been_last_release', 'en', 'Have you been on the last release'),
+('have_been_last_release', 'ru', 'Вы уже были на последнем релизе'),
+('have_first_release', 'en', 'You were on the first release'),
+('have_first_release', 'ru', 'Вы были на первом релизе'),
+('helpseed', 'en', 'Files to which are necessary to the distributing'),
+('helpseed', 'ru', 'Файлы, которым нужны раздающим'),
+('help_seed', 'en', 'Got it done? Let others get it!'),
+('help_seed', 'ru', 'Скачали сами, дайте скачать другому. Если вы скачали релиз не по torrent, встаньте, пожалуйста, на раздачу'),
+('Hide', 'en', 'Hide'),
+('Hide', 'ru', 'Скрыт'),
+('hide_filled', 'en', 'Hide completed'),
+('hide_filled', 'ru', 'Спрятать выполненные'),
+('hint', 'en', 'Hint: Avatar must be no larger than a %d kilobyte<br />&amp; dimensions not more than %d x %d pixels'),
+('hint', 'ru', 'Подсказка: Аватара должна быть размером не больше %d килобайт<br />и pазмером не больше %d x %d пикселей'),
+('history_downloaded', 'en', 'Downloaded releases'),
+('history_downloaded', 'ru', 'Скачанные релизы'),
+('history_friends', 'en', 'Friends'),
+('history_friends', 'ru', 'Друзья'),
+('history_leeching', 'en', 'Leeching at present'),
+('history_leeching', 'ru', 'Качает в данный момент'),
+('history_newscomments', 'en', 'Comments to the news'),
+('history_newscomments', 'ru', 'Комментарии к новостям'),
+('history_pagecomments', 'en', 'Comments to the pages'),
+('history_pagecomments', 'ru', 'Комментарии страницам'),
+('history_pages', 'en', 'Created page'),
+('history_pages', 'ru', 'Созданные страницы'),
+('history_pollcomments', 'en', 'Comments to the polls'),
+('history_pollcomments', 'ru', 'Комментарии к опросам'),
+('history_presents', 'en', 'Presents for user'),
+('history_presents', 'ru', 'Подарки для пользователя'),
+('history_presents2', 'en', 'History of user presents'),
+('history_presents2', 'ru', 'История подарков пользователя'),
+('history_relcomments', 'en', 'Comments to the releases'),
+('history_relcomments', 'ru', 'Комментарии к релизам'),
+('history_reqcomments', 'en', 'Comments to the request'),
+('history_reqcomments', 'ru', 'Комментарии к запросам'),
+('history_rgcomments', 'en', 'Comments to the releases groups'),
+('history_rgcomments', 'ru', 'Комментарии к релиз-группам'),
+('history_seeding', 'en', 'Seeding at present'),
+('history_seeding', 'ru', 'Раздает в данный момент'),
+('history_uploaded', 'en', 'Uploaded releases'),
+('history_uploaded', 'ru', 'Загруженные релизы'),
+('history_usercomments', 'en', 'Comments to the Users'),
+('history_usercomments', 'ru', 'Комментарии к пользователям'),
+('hits', 'en', 'Hits'),
+('hits', 'ru', 'Взят'),
+('home', 'en', 'Home ''.$REL_CONFIG[''defaultbaseurl''].'''),
+('home', 'ru', 'На главную ''.$REL_CONFIG[''defaultbaseurl''].'''),
+('homepage', 'en', 'Main'),
+('homepage', 'ru', 'Главная'),
+('hours', 'en', 'Hour(s) (Gold, and donated to you your releases not included)'),
+('hours', 'ru', 'час(а) (Золотые, Ваши и подаренные Вам релизы не учитываются)'),
+('how_did_get_here', 'en', 'How did you get here? <a href="\\">Back</a>'),
+('how_did_get_here', 'ru', 'Как вы сюда попали? <a href="\\">Назад</a>'),
+('how_discount', 'en', 'Farmed'),
+('how_discount', 'ru', 'Откупа'),
+('how_many_present', 'en', 'How much to present&amp;'),
+('how_many_present', 'ru', 'Сколько дарить?'),
+('how_present_notice_discount', 'en', 'This quantity of a farmed will be subtracted at you and added to your friend.'),
+('how_present_notice_discount', 'ru', 'Это количество откупа будет вычтено у вас и прибавлено вашему другу'),
+('how_present_notice_ratingsum', 'en', 'This amount will be deducted karma you have and adding the karma of your friend.'),
+('how_present_notice_ratingsum', 'ru', 'Это количество репутации будет вычтенно у вас и прибавлено к репутации вашего друга'),
+('how_present_notice_torrent', 'en', 'Rating for downloading this release will be deducted from you and your friend will be able to download this torrent, not taking into account your rating'),
+('how_present_notice_torrent', 'ru', 'Рейтинг за скачивание этого релиза будет вычтен у вас и ваш друг сможет скачать этот торрент, не учитывая свой рейтинг'),
+('how_ratingsum', 'en', 'Karma'),
+('how_ratingsum', 'ru', 'Кармы'),
+('how_torrent', 'en', 'ID torrent, you can get by details.php?id=<span style="color: red;">ID Torrent</span>'),
+('how_torrent', 'ru', 'ID торрента, можно узнать по details.php?id=<span style="color: red;">ID торрента</span>'),
+('how_to_ratiopopup', 'en', 'How to increase rating? Just start seeding!'),
+('how_to_ratiopopup', 'ru', 'Как увеличить рейтинг? Просто сидируйте!'),
+('idle', 'en', 'Inactivity'),
+('idle', 'ru', 'Бездействие'),
+('image', 'en', 'Logo'),
+('image', 'ru', 'Логотип'),
+('images', 'en', 'Images'),
+('images', 'ru', 'Картинки'),
+('import a langfile', 'en', 'Import a langfile'),
+('import a langfile', 'ru', 'Импортировать языковой файл'),
+('in', 'en', 'in'),
+('in', 'ru', 'в'),
+('inbox', 'en', 'Incoming'),
+('inbox', 'ru', 'Входящие'),
+('inbox_m', 'en', 'Incoming messages'),
+('inbox_m', 'ru', 'Входящие ЛС'),
+('include_remote', 'en', ', exclude %s %s on remote trackers'),
+('include_remote', 'ru', ', исключая %s %s на удаленных трекерах'),
+('including_dead', 'en', 'including dead'),
+('including_dead', 'ru', 'включая мертвяки'),
+('incorrect', 'en', 'Username or password incorrect!'),
+('incorrect', 'ru', 'Имя пользователя или пароль неверны!'),
+('information', 'en', 'Info'),
+('information', 'ru', 'Информация'),
+('info_hash', 'en', 'Info hash'),
+('info_hash', 'ru', 'Хэш релиза'),
+('init', 'en', '<div style="text-align: right;"><small>The initiator of friendship</small></div>'),
+('init', 'ru', '<div style="text-align: right;"><small>Инициатор дружбы</small></div>'),
+('inivite_code_created', 'en', 'Successfully created Invite code <strong>%s</strong> for release group "%s", Now you go to a page created invitations'),
+('inivite_code_created', 'ru', 'Успешно создан инвайт-код <strong>%s</strong> для релиз-группы "%s", сейчас вы перейдете на страницу созданных приглашений'),
+('interests', 'en', 'Interests:'),
+('interests', 'ru', 'Интересы:'),
+('invaled_passed', 'en', 'invalid arguments passed'),
+('invaled_passed', 'ru', 'invalid arguments passed'),
+('invalid_filename', 'en', 'Invalid file name (perhaps this is not a picture or invalid image).'),
+('invalid_filename', 'ru', 'Неверное имя файла (не картинка или неверный формат).'),
+('invalid_format', 'en', 'Invalid e-mail or username format'),
+('invalid_format', 'ru', 'Неверный формат никнейма или e-mail'),
+('invalid_id', 'en', 'Invalid ID.'),
+('invalid_id', 'ru', 'Неверный идентификатор.'),
+('invalid_idtype', 'en', 'The System has not found that, on what you subscribe'),
+('invalid_idtype', 'ru', 'Система не нашла то, на что вы подписываетесь'),
+('invalid_invite_code', 'en', 'Invalid or incorrect Invite code. <a href="denied:javascript:history.go(-1);">Back</a>'),
+('invalid_invite_code', 'ru', 'Недействительный или неверный инвайт-код. <a href="denied:javascript:history.go(-1);">Назад</a>'),
+('invalid_ip', 'en', 'Invalid IP address.'),
+('invalid_ip', 'ru', 'Неверный IP адрес.'),
+('invalid_login', 'en', 'Username or password is invalid'),
+('invalid_login', 'ru', 'Неверное имя пользователя или пароль'),
+('invalid_result', 'en', ': invalid query result'),
+('invalid_result', 'ru', ': неверный результат запроса'),
+('invalid_subnet', 'en', 'Invalid subnet mask.'),
+('invalid_subnet', 'ru', 'Неверная маска подсети.'),
+('invalid_tiger_hash', 'en', 'Invalid TreeTiger hash'),
+('invalid_tiger_hash', 'ru', 'Неверный TreeTiger хеш'),
+('invalid_type', 'en', 'Invalid the type history'),
+('invalid_type', 'ru', 'Неизвестный тип истории'),
+('invalid_username', 'en', 'Incorrect name of the user or the password. Check up the entered information..'),
+('invalid_username', 'ru', 'Неверное имя пользователя. Проверьте введеные данные.'),
+('invalid_username_pass', 'en', 'You have not registered on this site yet, or this combination of e-mail and password is invalid. You can <a href="%s">Register now</a> or <a href="javascript:history.go(-1);">Try again</a>.'),
+('invalid_username_pass', 'ru', 'Вы еще не зарегистрировались на сайте, либо эта комбинация логина и пароля неверная. Вы можете <a href="%s">Зарегистрироваться сейчас</a> или <a href="javascript:history.go(-1);">Попробовать войти еще раз</a>.'),
+('invite', 'en', 'Invite'),
+('invite', 'ru', 'Пригласить'),
+('Invite code', 'en', 'Invite code'),
+('Invite code', 'ru', 'Код приглашения'),
+('invites', 'en', 'Invites'),
+('invites', 'ru', 'Приглашений'),
+('invite_added', 'en', 'Created'),
+('invite_added', 'ru', 'Дата создания'),
+('invite_code', 'en', 'Invitation Code'),
+('invite_code', 'ru', 'Код приглашения'),
+('invite_code_notice', 'en', 'If you have an invite code, past it into field below'),
+('invite_code_notice', 'ru', 'Если у вас есть код приглашения, вставьте его в поле ниже'),
+('invite_confirmed', 'en', 'Who invited you just podtverlil your participation in the community. You added for %s units rating. Also, you automatically become his(her) friend. View a list of friends can be <a href="friends.php">Here</a>'),
+('invite_confirmed', 'ru', 'Пригласивший вас только что подтверлил ваше участие в сообществе. Вам прибавлено %s единиц рейтинга. Также Вы автоматически стали его(ее) другом. Посмотреть список друзей можно <a href="friends.php">Тут</a>'),
+('invite_confirmed_title', 'en', 'Your invite confirmed'),
+('invite_confirmed_title', 'ru', 'Ваше участие подтверждено'),
+('invite_friends', 'en', 'Invite your friends'),
+('invite_friends', 'ru', 'Пригласите ваших друзей'),
+('invite_link', 'en', 'Link friends'),
+('invite_link', 'ru', 'Ссылка для друзей'),
+('invite_notice', 'en', 'Welcome! We wish you happy to spend time on our site. <br /> Attention, you have registered on the invitation to %s. As an incentive, you get a + rating is already at the start, but only after you are invited to confirm.<br /><br /><i>Good luck!</i>'),
+('invite_notice', 'ru', 'Добро пожаловать! Желаем вам с удовольствием провести время на нашем сайте.<br /> Внимание, вы зарегистрировались по приглашению от %s. В качестве поощрения вы получите + к рейтингу уже на старте, но только после того, как пригласивший подтвердит вас.<br /><br /><i>Удачи!</i>'),
+('invite_notice_fr', 'en', 'Divide the pleasure of using our tracker with your friends'),
+('invite_notice_fr', 'ru', 'Разделите удовольствие от использования TorrentsBook.com с вашими друзьями'),
+('invite_notice_get', 'en', 'Get the opportunity to invite someone <a href="myrating.php">exchange your bonus</a>'),
+('invite_notice_get', 'ru', 'Получить возможность пригласить кого-нибудь можно <a href="myrating.php">обменяв откупы</a>'),
+('invite_notice_reg', 'en', 'At your invitation just registered user %s, confirm your invitation in <a href="invite.php">The system of invitations</a>'),
+('invite_notice_reg', 'ru', 'По вашему приглашению только что зарегистрировался пользователь %s, подтвердите ваше приглашение в <a href="invite.php">системе инвайтов</a>'),
+('invite_notice_rg', 'en', 'You are going to create an invitation for the release of the band "%s". Invitations for release groups do not require confirmation and act as much, and subscribe to release a group of (%s). For the creation of an invitation you will be taken away %s <a href="myrating.php?discount">farmed</a> (сейчас у вас %s). If you want to join this group, click "Continue'),
+('invite_notice_rg', 'ru', 'Вы собираетесь создать приглашение для релиз группы "%s". Приглашения для релиз-групп не требуют подтверждения и действуют столько же, сколько и подписка на релиз-группу (%s). За создание приглашения у вас отнимется %s <a href="myrating.php?discount">откупа</a> (сейчас у вас %s). Если вы хотите вступить в эту группу, нажмите "Продолжить"'),
+('invite_per', 'en', 'Valid until'),
+('invite_per', 'ru', 'Действует до'),
+('invite_system', 'en', 'The system of invitations'),
+('invite_system', 'ru', 'Система приглашений'),
+('in_debug', 'en', 'Warning Enable debugging. Only the owner can see this message, and requests above.'),
+('in_debug', 'ru', 'Внимание! Включен режим отладки. Только владелец может видеть это сообщение и запросы выше'),
+('in_network', 'en', 'In a network'),
+('in_network', 'ru', 'В сети'),
+('in_time', 'en', ', expires'),
+('in_time', 'ru', ', истекает через'),
+('IP/subnet bans', 'en', 'IP/subnet bans'),
+('IP/subnet bans', 'ru', 'Баны IP/подсетей'),
+('ipcheck', 'en', 'Search for double IP'),
+('ipcheck', 'ru', 'Повторные IP'),
+('ipcheck', 'ua', 'Повторні IP'),
+('ip_address', 'en', 'IP address'),
+('ip_address', 'ru', 'IP адрес'),
+('ip_sender', 'en', '<b>IP sender</b>:'),
+('ip_sender', 'ru', '<b>IP отправителя</b>:'),
+('is', 'en', 'is'),
+('is', 'ru', 'в'),
+('is_on_the_port', 'en', 'is on the Port:'),
+('is_on_the_port', 'ru', 'is on the Port:'),
+('ivalid_sort', 'en', 'Invalid sort option'),
+('ivalid_sort', 'ru', 'Неверный параметр сортировки'),
+('i_can_be_notified_due_my_class', 'en', 'My class of %s, I want to be notified about:'),
+('i_can_be_notified_due_my_class', 'ru', 'Мой класс %s, я хочу получать уведомления о:'),
+('i_chage', 'en', 'You have %s of his rating (max: %s), and now your rating is %s (Tax farming can not be greater than the number of downloaded releases)'),
+('i_chage', 'ru', 'Вы меняте %s своего рейтинга (max: %s), а сейчас Ваш рейтинг равен %s (Откуп не может быть больше количества скачанных релизов)'),
+('join_by_invite', 'en', 'You are about to subscribe to the release of the group "%s" (the duration of the subscription  %s), using this invitation code: <strong>%s</strong>. Click "Continue" to sign up for releases group "%s".'),
+('join_by_invite', 'ru', 'Вы собираетесь подписаться на релиз группу "%s" (продолжительность подписки %s), используя этот код приглашения: <strong>%s</strong>. Нажмите "Продолжить", чтобы подписаться на релизы группы "%s".'),
+('join_notice', 'en', 'You are about to subscribe to release private group "%s", a subscription to this release of the band are %s, to join this group you need to spend %s <a href="myrating.php?discount">farmed</a> (you have %s). If you want to join this group, click "Continue"'),
+('join_notice', 'ru', 'Вы собираетесь подписаться на релизы приватной группы "%s", подписка для этой релиз группы действует %s, для вступления в эту группу вам необходимо потратить %s <a href="myrating.php?discount">откупа</a> (у вас %s). Если вы хотите вступить в эту группу, нажмите "Продолжить"'),
+('Jump to', 'en', 'Jump to'),
+('Jump to', 'ru', 'Быстрый переход к'),
+('Key', 'en', 'Key'),
+('Key', 'ru', 'Ключ'),
+('langadmin_key', 'en', 'Key (optional, else MD5 of word)'),
+('langadmin_key', 'ru', 'Ключ (опц., иначе MD5 от слова)'),
+('langadmin_remember', 'en', 'Add a new word. <b>Remember, that you must FIRST add ENGLISH translation, than another one!</b>'),
+('langadmin_remember', 'ru', 'Добавить новое слово. <b>Помните, что вы должны СНАЧАЛА добавить АНГЛИЙСКИЙ перевод, а затем остальные!</b>'),
+('langfile_link', 'en', 'Language file as it is'),
+('langfile_link', 'ru', 'Сам языковой файл'),
+('language administration tools', 'en', 'Language administration tools'),
+('language administration tools', 'ru', 'Средства администрирования языка'),
+('language debug', 'en', 'Language debug'),
+('language debug', 'ru', 'Дебаг языка'),
+('language editor', 'en', 'Language editor'),
+('language editor', 'ru', 'Редактор языка'),
+('language tools', 'en', 'Language tools'),
+('language tools', 'ru', 'Управление языком'),
+('language_charset', 'en', 'windows-1251'),
+('language_charset', 'ru', 'windows-1251'),
+('lang_imp_notice', 'en', 'Language to be imported, e.g. ''ru,en,ua'''),
+('lang_imp_notice', 'ru', 'Язык для импортирования, напр. ''ru, en, ua'''),
+('large_tags', 'en', 'Large tags'),
+('large_tags', 'ru', 'Большие теги'),
+('Last edited by', 'en', 'Last edited by'),
+('Last edited by', 'ru', 'Последние изменение от'),
+('Last post', 'en', 'Last post'),
+('Last post', 'ru', 'Последний ответ'),
+('last_5_pr', 'en', 'Last 5 user presents'),
+('last_5_pr', 'ru', 'Последние 5 подарков'),
+('last_access', 'en', 'Last access'),
+('last_access', 'ru', 'Последний доступ'),
+('last_cleanup', 'en', 'The last cleaning (synchronization) of the database produced in'),
+('last_cleanup', 'ru', 'Последняя очистка (синхронизация) базы данных произведена в'),
+('last_post', 'en', 'Last Post'),
+('last_post', 'ru', 'Посл. сообщение'),
+('last_registered_user', 'en', 'Last registered user'),
+('last_registered_user', 'ru', 'Последний зарегистрированный пользователь'),
+('last_remotecheck', 'en', 'Last check remote trackers produced in'),
+('last_remotecheck', 'ru', 'Последняя проверка удаленных трекеров произведена в'),
+('last_seen', 'en', 'Last seen'),
+('last_seen', 'ru', 'Последний раз был в сети'),
+('last_user', 'en', 'Last user'),
+('last_user', 'ru', 'Последний'),
+('Later than yesterday', 'en', 'Later than yesterday'),
+('Later than yesterday', 'ru', 'Позже, чем вчера'),
+('leechers', 'en', 'Leech'),
+('leechers', 'ru', 'Личей'),
+('leechers_l', 'en', 'leechers'),
+('leechers_l', 'ru', 'качающих'),
+('leeching', 'en', 'Leeching'),
+('leeching', 'ru', 'Качает'),
+('lifetime', 'en', 'Forever'),
+('lifetime', 'ru', 'Пожизненная'),
+('links_prohibited', 'en', 'Links in the message is prohibited!'),
+('links_prohibited', 'ru', 'Ссылки в сообщении запрещены!'),
+('loading', 'en', 'Loading'),
+('loading', 'ru', 'Нагрузка'),
+('log', 'en', 'Log'),
+('log', 'ru', 'Журнал'),
+('log', 'ua', 'Лог сайту'),
+('logged', 'en', 'You are already logged on'),
+('logged', 'ru', 'Вы уже вошли на'),
+('loggedinorreturn', 'en', 'Sorry, but the page you required can only be accessed by <b>logged in users</b>.<br />Please log in to the system, and we will reditect you to this page after this.'),
+('loggedinorreturn', 'ru', 'Извините, но страница, которую вы попытались загрузить доступна  <b>только зарегистрированным пользователям</b>.<br />Пожалуйста, войдите в систему, и мы направим вас на эту страницу сразу же после входа.'),
+('logged_on', 'en', 'Unfortunately the page you are trying to view is available only <b>to registered</b>.<br />After successful registered you will be redirected to the requested page.'),
+('logged_on', 'ru', 'К сожалению страница, которую вы пытаетесь посмотреть <b>доступна только вошедшим в систему</b>.<br />После успешного входа вы будете переадресованы на запрошенную страницу.'),
+('login', 'en', 'Login'),
+('login', 'ru', 'Вход'),
+('login_error', 'en', 'Login error'),
+('login_error', 'ru', 'Ошибка входа'),
+('login_ok', 'en', 'Successful login'),
+('login_ok', 'ru', 'Удачный вход'),
+('logout', 'en', 'Logout'),
+('logout', 'ru', 'Выход'),
+('logs', 'en', 'Logs'),
+('logs', 'ru', 'Логи'),
+('log_file_empty', 'en', 'The log file is empty'),
+('log_file_empty', 'ru', 'Лог файл пустой'),
+('lower_class', 'en', 'Your current status is low. Click here to go back.'),
+('lower_class', 'ru', 'Вы работаете под более низким классом. Нажмите сюда для возврата.'),
+('magnet', 'en', 'Click on this link to download'),
+('magnet', 'ru', 'Кликните на эту ссылку для скачивания релиза'),
+('mailer_seccessful', 'en', 'Mailer successfully. Sent'),
+('mailer_seccessful', 'ru', 'Рассылка успешно завершена. Отправлено'),
+('mail_read', 'en', 'Read PMs'),
+('mail_read', 'ru', 'Прочитанное'),
+('mail_read_desc', 'en', 'Read PMs'),
+('mail_read_desc', 'ru', 'Прочитанные сообщения'),
+('mail_unread_desc', 'en', 'Unread PMs'),
+('mail_unread_desc', 'ru', 'Непрочитанные сообщения'),
+('main_category', 'en', 'Main category'),
+('main_category', 'ru', 'Главная категория'),
+('main_menu', 'en', 'Main menu'),
+('main_menu', 'ru', 'Главное Меню'),
+('make_anonymous', 'en', 'Make anonymous releases'),
+('make_anonymous', 'ru', 'Анонимизация релиза'),
+('make_request', 'en', 'Make request'),
+('make_request', 'ru', 'Сделать запрос'),
+('mark', 'en', 'Mark'),
+('mark', 'ru', 'Выделить'),
+('mark_all', 'en', 'Mark all'),
+('mark_all', 'ru', 'Выделить все'),
+('mark_as_read', 'en', 'Mark as read'),
+('mark_as_read', 'ru', 'Отметить выделенные сообщения как прочитанные'),
+('mark_read', 'en', 'Read'),
+('mark_read', 'ru', 'Прочитать'),
+('mass_email', 'en', 'Mass e-mail'),
+('mass_email', 'ru', 'Массовый E-mail'),
+('mass_email', 'ua', 'Масовий E-mail'),
+('mass_mailing', 'en', 'Mass mailing from the user'),
+('mass_mailing', 'ru', 'Массовое сообщение от пользователя'),
+('max_avatar_size', 'en', 'The dimensions of avatar has to be no more than %dx%d pixels.'),
+('max_avatar_size', 'ru', 'Размеры аватары должны быть не более %dx%d пикселей.'),
+('max_file_size', 'en', 'Max file size'),
+('max_file_size', 'ru', 'Максимальный размер файла (динамические ссылки запрещены)'),
+('members', 'en', 'Member'),
+('members', 'ru', 'Члены'),
+('menu_header', 'en', '<a href="reltemplatesadmin.php">List of all templates</a> / <a href="reltemplatesadmin.php?action=add">Add new</a>'),
+('menu_header', 'ru', '<a href="reltemplatesadmin.php">Список шаблонов</a> / <a href="reltemplatesadmin.php?action=add">Добавить новый</a>'),
+('message', 'en', '<b>Message</b>:'),
+('message', 'ru', '<b>Сообщение</b>:'),
+('messages', 'en', 'PM'),
+('messages', 'ru', 'ЛС'),
+('message_from', 'en', '<b>Message from</b>:'),
+('message_from', 'ru', '<b>Сообщение от</b>:'),
+('message_sent', 'en', 'Your message has been sent to the administration.'),
+('message_sent', 'ru', 'Ваше сообщение было отправлено администрации.'),
+('Method of check', 'en', 'Method of check'),
+('Method of check', 'ru', 'Метод проверки'),
+('Method of request', 'en', 'Method of request'),
+('Method of request', 'ru', 'Метод запроса'),
+('mine_torrents', 'en', 'My Releases'),
+('mine_torrents', 'ru', 'Мои релизы'),
+('missing_data', 'en', 'Missing form data.'),
+('missing_data', 'ru', 'Заполните все поля формы'),
+('missing_form_data', 'en', 'Please fill in all the fields in this form.'),
+('missing_form_data', 'ru', 'Заполните все поля формы.'),
+('moderate', 'en', 'Admin'),
+('moderate', 'ru', 'Admin'),
+('monitor_comments', 'en', 'Monitor this comments'),
+('monitor_comments', 'ru', 'Следить за комментариями'),
+('monitor_comments_disable', 'en', 'Disable monitoring comments'),
+('monitor_comments_disable', 'ru', 'Отключить слежение'),
+('more', 'en', 'More'),
+('more', 'ru', 'Подробнее'),
+('movies', 'en', 'Favorite Releases:'),
+('movies', 'ru', 'Любимые релизы:'),
+('multitracker_torrent', 'en', 'Multitracker torrent'),
+('multitracker_torrent', 'ru', 'Мультитрекерный торрент'),
+('multitracker_torrent_notice', 'en', 'Check this box, if u are uploading torrent file from other tracker'),
+('multitracker_torrent_notice', 'ru', 'Отметьте эту галочку, если вы загружаете торрент-файл другого трекера'),
+('music', 'en', 'Favorite Music:'),
+('music', 'ru', 'Любимая музыка:'),
+('my', 'en', 'Control panel'),
+('my', 'ru', 'Панель управления'),
+('My privacy level', 'en', 'My privacy level'),
+('My privacy level', 'ru', 'Уровень приватности'),
+('mynotifs_config_page', 'en', 'Go to configuration page of my notifications'),
+('mynotifs_config_page', 'ru', 'Перейти на страницу конфигурации моих уведомлений'),
+('mynotifs_not_subscribed_redirect', 'en', 'You did not subscribed to view %s notifications, please set up it in your <a href="%s">notifications configuration page</a> and try again. Redirecting you to notifications configuration'),
+('mynotifs_not_subscribed_redirect', 'ru', 'Вы не включили просмотр уведомлений: %s, пожалуйста <a href="%s">настройте ваши уведомления</a> и попытайтесь еще раз. Перенаправляем на страницу конфигурации уведомлений'),
+('mysqlstats', 'en', 'MySQL status'),
+('mysqlstats', 'ru', 'Статистика MySQL'),
+('mysqlstats', 'ua', 'Статистика MySQL'),
+('my_allow_pm_from', 'en', 'Allow PM from'),
+('my_allow_pm_from', 'ru', 'Разрешить ЛС от'),
+('my_avatar_url', 'en', 'Address of your avatar'),
+('my_avatar_url', 'ru', 'Адрес аватары'),
+('my_birthdate', 'en', 'Date of birth'),
+('my_birthdate', 'ru', 'Дата рождения'),
+('my_bonus', 'en', 'My bonus'),
+('my_bonus', 'ru', 'Мой бонус'),
+('my_comments', 'en', 'Alert in PM for the comments on my profile'),
+('my_comments', 'ru', 'Оповещать в ЛС о комментариях к моему профилю'),
+('my_contact', 'en', 'My messengers'),
+('my_contact', 'ru', 'Система мгновенных сообщений'),
+('my_contact_aim', 'en', 'Name in AIM'),
+('my_contact_aim', 'ru', 'Имя в AIM'),
+('my_contact_descr', 'en', 'If you want other users quickly contact you, specify your information in the next systems of rapid messaging'),
+('my_contact_descr', 'ru', 'Если вы хотите, чтобы другие посетители могли быстро связаться с вами, укажите свои данные в следующих системах быстрых сообщений'),
+('my_contact_icq', 'en', 'Your ICQ number'),
+('my_contact_icq', 'ru', 'Номер ICQ'),
+('my_contact_mirc', 'en', 'Name at mIRC!'),
+('my_contact_mirc', 'ru', 'Имя в mIRC!'),
+('my_contact_msn', 'en', 'Name at MSN'),
+('my_contact_msn', 'ru', 'Ваш MSN'),
+('my_contact_skype', 'en', 'Name at Skype'),
+('my_contact_skype', 'ru', 'Имя в Skype'),
+('my_contact_yahoo', 'en', 'Name at Yahoo!'),
+('my_contact_yahoo', 'ru', 'Имя в Yahoo!'),
+('my_country', 'en', 'Country'),
+('my_country', 'ru', 'Страна'),
+('my_day', 'en', 'Day'),
+('my_day', 'ru', 'День'),
+('my_default_browse', 'en', 'Default viewing categories'),
+('my_default_browse', 'ru', 'Категории просмотра по умолчанию'),
+('my_delete_after_reply', 'en', 'Delete PMs after reply'),
+('my_delete_after_reply', 'ru', 'Удалять ЛС при ответе'),
+('my_discount', 'en', 'Your farmed'),
+('my_discount', 'ru', 'Ваш откуп'),
+('my_email_notify', 'en', 'Notification by e-mail'),
+('my_email_notify', 'ru', 'Уведомление по email'),
+('my_formula', 'en', 'he formula for calculating your rating'),
+('my_formula', 'ru', 'Формула расчета вашего рейтинга'),
+('my_gender', 'en', 'My sex'),
+('my_gender', 'ru', 'Пол'),
+('my_gender_female', 'en', 'Woman'),
+('my_gender_female', 'ru', 'Девушка'),
+('my_gender_male', 'en', 'Man'),
+('my_gender_male', 'ru', 'Парень'),
+('my_goods', 'en', 'Advantages'),
+('my_goods', 'ru', 'Ваши преимущества'),
+('my_info', 'en', 'Info'),
+('my_info', 'ru', 'Информация'),
+('my_language', 'en', 'Language'),
+('my_language', 'ru', 'Язык'),
+('my_mail', 'en', 'E-mail'),
+('my_mail', 'ru', 'Email'),
+('my_mail_sent', 'en', 'Confirmative letter was sent to your e-mail!'),
+('my_mail_sent', 'ru', 'Подтверждающее письмо отправлено! Если в течение 3х дней вы не отреагируете на письмо, ваш аккаунт будет удален автоматически.'),
+('my_mail_updated', 'en', 'E-mail address updated!'),
+('my_mail_updated', 'ru', 'E-mail адрес обновлен!'),
+('my_messages_per_page', 'en', 'Messages on the page'),
+('my_messages_per_page', 'ru', 'Сообщений на страницу'),
+('my_month', 'en', 'Month'),
+('my_month', 'ru', 'Месяц'),
+('my_months_april', 'en', 'April'),
+('my_months_april', 'ru', 'Апрель'),
+('my_months_august', 'en', 'August'),
+('my_months_august', 'ru', 'Август'),
+('my_months_december', 'en', 'December'),
+('my_months_december', 'ru', 'Декабрь'),
+('my_months_february', 'en', 'February'),
+('my_months_february', 'ru', 'Февраль'),
+('my_months_january', 'en', 'January'),
+('my_months_january', 'ru', 'Январь'),
+('my_months_jule', 'en', 'July'),
+('my_months_jule', 'ru', 'Июль'),
+('my_months_june', 'en', 'June'),
+('my_months_june', 'ru', 'Июнь'),
+('my_months_march', 'en', 'March'),
+('my_months_march', 'ru', 'Март'),
+('my_months_may', 'en', 'May'),
+('my_months_may', 'ru', 'Май'),
+('my_months_november', 'en', 'November'),
+('my_months_november', 'ru', 'Ноябрь'),
+('my_months_october', 'en', 'October'),
+('my_months_october', 'ru', 'Октябрь'),
+('my_months_september', 'en', 'September'),
+('my_months_september', 'ru', 'Сентябрь'),
+('my_my', 'en', 'Control panel'),
+('my_my', 'ru', 'Панель управления'),
+('my_notifs', 'en', 'My notifications'),
+('my_notifs', 'ru', 'Мои уведомления'),
+('my_notifs_settings', 'en', 'Setting my notifications'),
+('my_notifs_settings', 'ru', 'Настройки моих уведомлений'),
+('my_private_groups', 'en', 'My friends'),
+('my_private_groups', 'ru', 'Мои друзья'),
+('my_rating', 'en', 'My rating'),
+('my_rating', 'ru', 'Мой рейтинг'),
+('my_releases', 'en', 'My Releases'),
+('my_releases', 'ru', 'Мои релизы'),
+('my_sentbox', 'en', 'Save sent PMs'),
+('my_sentbox', 'ru', 'Сохранять отправленные ЛС'),
+('my_show_avatars', 'en', 'Show avatars'),
+('my_show_avatars', 'ru', 'Показывать аватары'),
+('my_style', 'en', 'Style'),
+('my_style', 'ru', 'Вид интерфейса'),
+('my_timezone', 'en', 'Timezone'),
+('my_timezone', 'ru', 'Временная зона'),
+('my_topics_per_page', 'en', 'Topics on the page'),
+('my_topics_per_page', 'ru', 'Тем на страницу'),
+('my_torrents', 'en', 'My releases'),
+('my_torrents', 'ru', 'Мои релизы'),
+('my_torrents_per_page', 'en', 'Releases on the page'),
+('my_torrents_per_page', 'ru', 'Релизов на страницу'),
+('my_unset', 'en', 'Not selected'),
+('my_unset', 'ru', 'Не выбрано'),
+('my_updated', 'en', 'Profile updated!'),
+('my_updated', 'ru', 'Профиль обновлён!'),
+('my_userbar', 'en', 'Userbar'),
+('my_userbar', 'ru', 'Юзербар'),
+('my_userbar_descr', 'en', 'This is your userbar. You can place it as your sing on forums.<br />Forum users will see your ration on this tracker. Also if you will put a link on our tracker - they will be able to get to this traker simply by clicking on your userbar.<br /><br />This is your <b>BB-code</b> for an insertion into your signature on forums.'),
+('my_userbar_descr', 'ru', 'Это ваш юзербар. Вы можете поставить его в подписи на форуме.<br />Пользователям форума будет виден ваш рейтинг на нашем трекере, а если вы еще поставите и ссылку на наш трекер - они смогут попасть на наш трекер просто нажав на картинку.<br /><br />Вот ваш <b>BB-код</b> для вставки в подпись на форумах'),
+('my_warnings', 'en', 'My warnings'),
+('my_warnings', 'ru', 'Мои предупреждения'),
+('my_website', 'en', 'Website'),
+('my_website', 'ru', 'Сайт'),
+('my_year', 'en', 'Year'),
+('my_year', 'ru', 'Год'),
+('my_you_can_park', 'en', 'You can park your accaunt in avoidance of deleting it from unactivity, for example if you go to a vacation. But when it is parked, some functions will not be accessible to you, for example viewing or downloading torrents.'),
+('name', 'en', 'Name'),
+('name', 'ru', 'Название'),
+('name_cache', 'en', 'Name cache'),
+('name_cache', 'ru', 'Название кэша'),
+('need_seeds', 'en', 'Releases, which need seeds'),
+('need_seeds', 'ru', 'Релизы, которым нужны раздающие'),
+('neighbours', 'en', 'Neighbors'),
+('neighbours', 'ru', 'Соседи'),
+('network_neighbot', 'en', 'Network Neighborhood'),
+('network_neighbot', 'ru', 'Сетевые соседи'),
+('never', 'en', 'never'),
+('never', 'ru', 'никогда'),
+('news', 'en', 'News'),
+('news', 'ru', 'Новости'),
+('newsarchive', 'en', 'View all news'),
+('newsarchive', 'ru', 'Все новости'),
+('newsarchive', 'ua', 'Всі новини'),
+('Newscomments', 'en', 'Newscomments'),
+('Newscomments', 'ru', 'Комм.новостей'),
+('news_added', 'en', 'Added'),
+('news_added', 'ru', 'Добавлена'),
+('news_poster', 'en', 'Author'),
+('news_poster', 'ru', 'Автор'),
+('newuser', 'en', 'View new users'),
+('newuser', 'ru', 'Новые пользователи'),
+('newuser', 'ua', 'Нові користувачі'),
+('new_comment', 'en', 'New comment!'),
+('new_comment', 'ru', 'Новый комментарий!'),
+('new_email', 'en', '<br /> New E-mail:'),
+('new_email', 'ru', '<br /> Новая почта:'),
+('new_friends', 'en', 'New offer of friendship.!'),
+('new_friends', 'ru', 'Новое предложение дружбы!'),
+('new_offers', 'en', 'New proposals'),
+('new_offers', 'ru', 'Новые предложения'),
+('new_pages', 'en', 'New page!'),
+('new_pages', 'ru', 'Новая страница!'),
+('new_password', 'en', '<br /> New password:'),
+('new_password', 'ru', '<br /> Новый пароль:'),
+('new_pm', 'en', '(%d new)'),
+('new_pm', 'ru', '(%d новых)'),
+('new_pms', 'en', 'You have %d new PM(s)'),
+('new_pms', 'ru', 'У вас %d новое(ых) сообщение(ий)!'),
+('new_port_test', 'en', 'New Port test'),
+('new_port_test', 'ru', 'New Port test'),
+('new_reports', 'en', 'The new complaint!'),
+('new_reports', 'ru', 'Новая жалоба!'),
+('new_torrents', 'en', 'New releasers'),
+('new_torrents', 'ru', 'Новые релизы'),
+('new_torrents_stats', 'en', 'Seeding: %d, Leeching: %d'),
+('new_torrents_stats', 'ru', 'Раздают: %d, Качают: %d'),
+('new_unchecked', 'en', 'The new release of unverified'),
+('new_unchecked', 'ru', 'Новый непроверенный релиз'),
+('new_unread', 'en', 'New PM!'),
+('new_unread', 'ru', 'Новое личное сообщение!'),
+('new_users', 'en', 'New user'),
+('new_users', 'ru', 'Новый пользователь'),
+('next', 'en', 'Next'),
+('next', 'ru', 'Вперед'),
+('Nickname', 'en', 'Nickname'),
+('Nickname', 'ru', 'Никнейм'),
+('no', 'en', 'No'),
+('no', 'ru', 'Нет'),
+('none_voted', 'en', 'No one voted'),
+('none_voted', 'ru', 'нет голосов'),
+('none_yet', 'en', 'Nobody'),
+('none_yet', 'ru', 'Никто'),
+('nonfree', 'en', 'Pay (For entry into the group have something to pay)'),
+('nonfree', 'ru', 'Платная (За вступление в группу надо что-то заплатить)'),
+('nothing_found', 'en', 'Nothing was found'),
+('nothing_found', 'ru', 'Ничего не найдено'),
+('notice_friends', 'en', 'One of the users of our site that offered you friendship! You can confirm or deny this on your "My Friends"'),
+('notice_friends', 'ru', 'Один из пользователей нашего сайта только что предложили вам дружбу! Вы можете подтвердить или отказать ему в этом на странице "Мои Друзья"'),
+('notice_pages', 'en', 'The site has just created a new page, you can see a list of pages'),
+('notice_pages', 'ru', 'На сайте только что была создана новая страница, вы можете посмотреть ее в списке страниц'),
+('notice_reports', 'en', 'The new complaint has just been submitted. You can look it in the administrator-panel under "Complaint"'),
+('notice_reports', 'ru', 'Только что была подана новая жалоба. Вы можете посмотреть ее в админ-панели в разделе "Жалобы"'),
+('notice_torrents', 'en', 'The site has a new release'),
+('notice_torrents', 'ru', 'На сайте появился новый релиз'),
+('notice_unread', 'en', 'You have new private message'),
+('notice_unread', 'ru', 'У вас новое личное сообщение'),
+('notice_users', 'en', 'The site has just registered a new user, you can view information about it on the "My Notifications"'),
+('notice_users', 'ru', 'На сайте только что зарегистрировался новый пользователь, вы можете просмотреть информацию о нем на странице "Мои Уведомления"'),
+('notifications', 'en', 'Notifications'),
+('notifications', 'ru', 'Уведомления'),
+('notifications_cp', 'en', 'You can customize your notification in the control panel account'),
+('notifications_cp', 'ru', 'Вы можете настроить свои уведомления в панели управления аккаунтом'),
+('notify_email', 'en', 'Notify email'),
+('notify_email', 'ru', 'Уведомлять на email'),
+('notify_forumcomments', 'en', 'Notify about new forum posts'),
+('notify_forumcomments', 'ru', 'Уведомлять о новых постах на форуме'),
+('notify_friends', 'en', 'Notify new friends'),
+('notify_friends', 'ru', 'Уведомлять о новых друзьях'),
+('notify_is_forumcomments', 'en', 'New reply to topic %s "%s" from %s %s'),
+('notify_is_forumcomments', 'ru', 'Новый ответ к топику %s "%s"  от %s %s'),
+('notify_is_friends', 'en', '[<a href="friends.php?action=confirm&amp;id=%s">Confirm</a>] or [<a href="friends.php?action=deny&amp;id=%s">Deny</a>] friendship %s'),
+('notify_is_friends', 'ru', '[<a href="friends.php?action=confirm&amp;id=%s">Подтвердить</a>] или [<a href="friends.php?action=deny&amp;id=%s">Отказать</a>] в дружбе %s'),
+('notify_is_newscomments', 'en', 'New comment on news "%s%s" from %s %s'),
+('notify_is_newscomments', 'ru', 'Новый комментарий к новости "%s%s" от %s %s'),
+('notify_is_pagecomments', 'en', 'New comment on page "%s%s" from %s %s'),
+('notify_is_pagecomments', 'ru', 'Новый комментарий к странице "%s%s" от %s %s'),
+('notify_is_pages', 'en', 'New pages "%s%s" from %s %s'),
+('notify_is_pages', 'ru', 'Новая страница "%s%s" от %s %s'),
+('notify_is_pollcomments', 'en', 'New comment on this poll "%s%s" from %s %s'),
+('notify_is_pollcomments', 'ru', 'Новый комментарий к опросу "%s%s" от %s %s'),
+('notify_is_relcomments', 'en', 'New comment to release "%s%s" from %s %s'),
+('notify_is_relcomments', 'ru', 'Новый комментарий к релизу "%s%s" от %s %s'),
+('notify_is_reports', 'en', 'The new reports type %s"%s" from user %s %s'),
+('notify_is_reports', 'ru', 'Новая жалоба типа %s"%s" от пользователя %s %s'),
+('notify_is_reqcomments', 'en', 'New comment to request "%s%s" from %s %s'),
+('notify_is_reqcomments', 'ru', 'Новый комментарий к запросу "%s%s" от %s %s'),
+('notify_is_rgcomments', 'en', 'New comment to release group "%s%s" from %s %s'),
+('notify_is_rgcomments', 'ru', 'Новый комментарий к релиз-группе "%s%s" от %s %s'),
+('notify_is_torrents', 'en', 'New releases "<a href="details.php?id=%s">%s</a>" from %s %s'),
+('notify_is_torrents', 'ru', 'Новый релиз "<a href="details.php?id=%s">%s</a>" от %s %s'),
+('notify_is_unchecked', 'en', 'New releases unchecked "<a href="details.php?id=%s">%s</a>" from %s %s'),
+('notify_is_unchecked', 'ru', 'Новый непроверенный релиз "<a href="details.php?id=%s">%s</a>" от %s %s'),
+('notify_is_unread', 'en', 'New message with the subject "%s%s" from %s come %s'),
+('notify_is_unread', 'ru', 'Новое сообщение с темой "%s%s" от %s пришло %s'),
+('notify_is_usercomments', 'en', 'New comment to the user %s%s from %s %s'),
+('notify_is_usercomments', 'ru', 'Новый комментарий к пользователю %s%s от %s %s'),
+('notify_is_users', 'en', 'New User %s%s%s %s'),
+('notify_is_users', 'ru', 'Новый пользователь %s%s%s %s'),
+('notify_newscomments', 'en', 'Notify new comment for news'),
+('notify_newscomments', 'ru', 'Уведомлять о новых комментариях к новостям'),
+('notify_pagecomments', 'en', 'Notify new comment for pages'),
+('notify_pagecomments', 'ru', 'Уведомлять о новых комментариях к страницам'),
+('notify_pages', 'en', 'Notify new pages'),
+('notify_pages', 'ru', 'Уведомлять о новых страницах'),
+('notify_pollcomments', 'en', 'Notify new comment for polls'),
+('notify_pollcomments', 'ru', 'Уведомлять о новых комментариях к опросам'),
+('notify_popup', 'en', 'Notify pop-up window'),
+('notify_popup', 'ru', 'Уведомлять вспл.окном'),
+('notify_popup_comments', 'en', 'Comments'),
+('notify_popup_comments', 'ru', 'Комментарии'),
+('notify_relcomments', 'en', 'Notify new comment for release'),
+('notify_relcomments', 'ru', 'Уведомлять о новых комментариях к релизам'),
+('notify_reports', 'en', 'Notify of new reports'),
+('notify_reports', 'ru', 'Уведомлять о новых жалобах'),
+('notify_reqcomments', 'en', 'Notify new comment for requests'),
+('notify_reqcomments', 'ru', 'Уведомлять о новых комментариях к запросам'),
+('notify_rgcomments', 'en', 'Notify new comment for release groups'),
+('notify_rgcomments', 'ru', 'Уведомлять о новых комментариях к релиз-группам'),
+('notify_send', 'en', 'Sent a notify'),
+('notify_send', 'ru', 'Отправлено уведомление'),
+('notify_settigs_saved', 'en', 'Notification Preferences successfully saved, now you can go to control panel account');
+INSERT INTO `languages` (`lkey`, `ltranslate`, `lvalue`) VALUES
+('notify_settigs_saved', 'ru', 'Насройки уведомлений успешно сохранены, сейчас вы перейдете к панели управления аккаунтом'),
+('notify_subject', 'en', 'Unsubscribe release group'),
+('notify_subject', 'ru', 'Отмена подписки релиз-группы'),
+('notify_torrents', 'en', 'Notify of new release'),
+('notify_torrents', 'ru', 'Уведомлять о новых релизах'),
+('notify_type', 'en', 'Type notifications'),
+('notify_type', 'ru', 'Тип уведомления'),
+('notify_unchecked', 'en', 'Notify of new untested release'),
+('notify_unchecked', 'ru', 'Уведомлять о новых непроверенных релизах'),
+('notify_unread', 'en', 'Notify unread  PM'),
+('notify_unread', 'ru', 'Уведомлять о непрочитанных ЛС'),
+('notify_usercomments', 'en', 'Notify new comment for users'),
+('notify_usercomments', 'ru', 'Уведомлять о новых комментариях к пользователям'),
+('notify_users', 'en', 'Notify new for users'),
+('notify_users', 'ru', 'Уведомлять о новых пользователях'),
+('not_act_account', 'en', 'You have not yet activated your account! Activate your account and try again.'),
+('not_act_account', 'ru', 'Вы еще не активировали свой аккаунт! Активируйте ваш аккаунт и попробуйте снова.'),
+('not_banned', 'en', 'not banned.'),
+('not_banned', 'ru', 'не забанен.'),
+('not_chosen_message', 'en', 'You have not chosen to delete the message!'),
+('not_chosen_message', 'ru', 'Вы не выбрали сообщения для удаления!'),
+('not_confirmed', 'en', 'Not confirmed'),
+('not_confirmed', 'ru', 'Не подтвержден'),
+('not_confirmed_users', 'en', 'Not confirmed users'),
+('not_confirmed_users', 'ru', 'Не подтвержденные пользователи'),
+('not_email', 'en', 'You did not enter Email sender!'),
+('not_email', 'ru', 'Вы не указали Email отправителя!'),
+('not_enough_votes', 'en', 'Not yet (Has to be at least %d голосов. Already:'),
+('not_enough_votes', 'ru', 'Еще нет (нужно хотя-бы %d голосов. Собрано:'),
+('not_entered_number', 'en', 'You have entered no number in the box below:'),
+('not_entered_number', 'ru', 'Вы ввели не число в следующее поле:'),
+('not_filled_fields', 'en', 'You have not filled in all fields!'),
+('not_filled_fields', 'ru', 'Вы не заполнили все поля!'),
+('not_found_neighbot', 'en', 'Network Neighborhood not found.'),
+('not_found_neighbot', 'ru', 'Сетевых соседей не обнаружено.'),
+('not_good', 'en', 'not good!'),
+('not_good', 'ru', 'not good!'),
+('not_name_sender', 'en', 'You have not specified the name of the sender!'),
+('not_name_sender', 'ru', 'Вы не указали имя отправителя!'),
+('not_permission_prohibitions', 'en', 'You do not have permission to remove the prohibitions.'),
+('not_permission_prohibitions', 'ru', 'У вас нет прав для удаления запретов.'),
+('not_pic', 'en', 'This is not a picture, access denied'),
+('not_pic', 'ru', 'Это не картинка, доступ запрещен'),
+('not_releases', 'en', 'You may not download releases on this tracker.'),
+('not_releases', 'ru', 'Вы не загружали релизы на этот трекер.'),
+('not_spec', 'en', 'You did not enter a user name and (or) password!'),
+('not_spec', 'ru', 'Вы не указали имя пользователя и(или) пароль!'),
+('not_subject', 'en', 'You did not specify a subject for your message!'),
+('not_subject', 'ru', 'Вы не указали тему сообщения!'),
+('not_sysop', 'en', 'Access denied. You do not SYSOP'),
+('not_sysop', 'ru', 'Доступ запрещен. Ты не SYSOP'),
+('not_text_message', 'en', 'You have not filled out the box with the text message!'),
+('not_text_message', 'ru', 'Вы не заполнили поле с текстом сообщения!'),
+('not_try_remove', 'en', 'You are not trying to remove a bookmark!'),
+('not_try_remove', 'ru', 'Вы пытаетесь удалить не свою закладку!'),
+('not_yet_checked', 'en', '<span style="color: red;">This release <b>NOT</b> yet checked by moderator</span>'),
+('not_yet_checked', 'ru', '<span style="color: red;">Этот релиз еще <b>НЕ</b> проверен модератором</span>'),
+('now', 'en', 'Now'),
+('now', 'ru', 'сейчас'),
+('now_i', 'en', 'Now you...'),
+('now_i', 'ru', 'Сейчас Вы...'),
+('now_notified_newscomments', 'en', 'You have successfully subscribed for dispatch about comments to this news'),
+('now_notified_newscomments', 'ru', 'Вы успешно подписались на рассылку о комментариях к этой новости'),
+('now_notified_pagecomments', 'en', 'You have successfully subscribed for dispatch about comments to this page'),
+('now_notified_pagecomments', 'ru', 'Вы успешно подписались на рассылку о комментариях к этой странице'),
+('now_notified_pollcomments', 'en', 'You have successfully subscribed for dispatch about comments to this interrogation'),
+('now_notified_pollcomments', 'ru', 'Вы успешно подписались на рассылку о комментариях к этому опросу'),
+('now_notified_relcomments', 'en', 'You have successfully subscribed for dispatch about comments to this release'),
+('now_notified_relcomments', 'ru', 'Вы успешно подписались на рассылку о комментариях к этому релизу'),
+('now_notified_reqcomments', 'en', 'You have successfully subscribed for dispatch about comments to this inquiry'),
+('now_notified_reqcomments', 'ru', 'Вы успешно подписались на рассылку о комментариях к этому запросу'),
+('now_notified_rgcomments', 'en', 'You have successfully subscribed for dispatch about comments to this release to group'),
+('now_notified_rgcomments', 'ru', 'Вы успешно подписались на рассылку о комментариях к этой релиз группе'),
+('now_notified_rgnewscomments', 'en', 'You have successfully subscribed for dispatch about comments to this news from group release'),
+('now_notified_rgnewscomments', 'ru', 'Вы успешно подписались на рассылку о комментариях к этой новости от релиз группы'),
+('now_notified_usercomments', 'en', 'You have successfully subscribed for dispatch about comments to this user'),
+('now_notified_usercomments', 'ru', 'Вы успешно подписались на рассылку о комментариях к этому пользователю'),
+('no_access', 'en', 'No Access.'),
+('no_access', 'ru', 'Нет доступа.'),
+('no_access_priv_rg', 'en', 'This is a private release of the group, and you are not a member of this group of subscribers.'),
+('no_access_priv_rg', 'ru', 'Это приватная релиз группа, а вы не состоите в подписчиках этой группы'),
+('no_blocked', 'en', 'You have no enemies'),
+('no_blocked', 'ru', 'У вас нет врагов'),
+('no_choose', 'en', 'Not chosen'),
+('no_choose', 'ru', 'Не выбрано'),
+('no_comments', 'en', 'No comments'),
+('no_comments', 'ru', 'Нет комментариев'),
+('no_conf_usr', 'en', 'There is no confirmed users ...'),
+('no_conf_usr', 'ru', 'Нет не подтвержденных пользователей ...'),
+('no_dchubs', 'en', 'For your subnet is not discovered supports DC-hubs, you can download only release using <a href="download.php?id=%s&amp;ok">.torrent</a> or <a href="download.php?id=%s&amp;ok&amp;magnet=1">magnet</a>'),
+('no_dchubs', 'ru', 'Для вашей подсети не обнаружено поддерживаемых DC-хабов, вы можете скачать релиз только используя <a href="download.php?id=%s&amp;ok">.torrent файл</a> или <a href="download.php?id=%s&amp;ok&amp;magnet=1">magnet-ссылку</a>'),
+('no_discount', 'en', 'You do not have enough farmed to subscribe to the release of the group'),
+('no_discount', 'ru', 'У вас не хватает откупа, чтобы подписаться на релизы этой группы'),
+('no_discount_invite', 'en', 'You are missing a farmed, to create an invitation'),
+('no_discount_invite', 'ru', 'У вас не хватает откупа, чтобы создать приглашение'),
+('no_fields_blank', 'en', 'Do not leave any fields blank.'),
+('no_fields_blank', 'ru', 'Не оставляйте пустых полей.'),
+('no_formula', 'en', 'You have no pitching and no handed, so you get 0'),
+('no_formula', 'ru', 'Вы еще ничего не качали и ничего не раздали, поэтому вы получаете 0'),
+('no_friend', 'en', 'This user has not confirmed your friendship, or it is not your friend.'),
+('no_friend', 'ru', 'Этот человек не подтвердил вашу дружбу, либо вообще не является вашим другом'),
+('no_friends', 'en', 'You have no friends or no friends have been found'),
+('no_friends', 'ru', 'У вас нет друзей, либо мы не нашли подходящих под критерии поиска'),
+('no_goods', 'en', 'You do not have privileges, but you <a href="donate.php?smszamok">can buy VIP status</a>'),
+('no_goods', 'ru', 'У Вас нет привилегий, но Вы можете <a href="donate.php">купить VIP статус</a>'),
+('no_image', 'en', 'No logo'),
+('no_image', 'ru', 'Нет логотипа'),
+('no_messages', 'en', 'No messages'),
+('no_messages', 'ru', 'Нет сообщений'),
+('no_money_discount', 'en', 'You do not have enough "money"! Enter more farmed, or present a smaller amount'),
+('no_money_discount', 'ru', 'У вас не хватает "денег"! Наберите побольше откупа, либо подарите меньшее количество'),
+('no_money_ratingsum', 'en', 'You do not have enough "money"! Unfortunately, you are not respectable enough to give present'),
+('no_money_ratingsum', 'ru', 'У вас не хватает "денег"! К сожалению, вы не настролько респектабельны, чтобы дарить такие подарки'),
+('no_money_torrent', 'en', 'You do not have enough "money"! Type rating to give this release, or select another release for a present'),
+('no_money_torrent', 'ru', 'У вас не хватает "денег"! Наберите рейтинг, чтобы подарить этот релиз, либо выберите другой релиз для подарка'),
+('no_need_seeding', 'en', 'No torrents without seeders'),
+('no_need_seeding', 'ru', 'Все необходимые релизы сидируются:)'),
+('no_news', 'en', 'No news'),
+('no_news', 'ru', 'Нет новостей'),
+('no_notifs_yet', 'en', 'ou are not subscribed to any notice. <a href="mynotifs.php?settings">You can do so here</a>'),
+('no_notifs_yet', 'ru', 'Вы еще не подписались на какие-либо уведомления. <a href="mynotifs.php?settings">Вы можете сделать это тут</a>'),
+('no_offers', 'en', 'No suggestions'),
+('no_offers', 'ru', 'Нет предложений'),
+('no_online_users', 'en', 'No active users for the last 15 minutes.'),
+('no_online_users', 'ru', 'Не было активных пользователей за последние 15 минут.'),
+('no_parent', 'en', 'No parent category'),
+('no_parent', 'ru', 'Нет родителя'),
+('no_pay', 'en', 'Free'),
+('no_pay', 'ru', 'Бесплатная'),
+('no_polls', 'en', 'No polls'),
+('no_polls', 'ru', 'Нет опросов'),
+('no_present_torrent', 'en', 'Release with this ID is not on our site or this release is presented'),
+('no_present_torrent', 'ru', 'Релиза с этим номером нет на нашем сайте, либо этот релиз уже подарен'),
+('no_rating', 'en', 'We decided to go into minus?:) You do not have as many rankings, select a smaller value'),
+('no_rating', 'ru', 'Решили уйти в минус?:) У Вас нет столько рейтинга, выберите меньшее значение'),
+('no_releases', 'en', 'No releases'),
+('no_releases', 'ru', 'Релизов нет'),
+('no_relgroup', 'en', 'Chosen release group does not exist on our site'),
+('no_relgroup', 'ru', 'Выбранной вами релиз группы не существует на нашем сайте'),
+('no_relgroups', 'en', 'No release groups <a href="rgadmin.php?a=add">Add</a>'),
+('no_relgroups', 'ru', 'Нет релиз групп <a href="rgadmin.php?a=add">Добавить</a>'),
+('no_relgroup_owner', 'en', 'You are not the owner of the release of the band. Access denied'),
+('no_relgroup_owner', 'ru', 'Вы не являетесь владельцем данной релиз группы. Доступ запрещен'),
+('no_seeds', 'en', 'No seeds'),
+('no_seeds', 'ru', 'Без сидов'),
+('no_selection', 'en', 'No selection'),
+('no_selection', 'ru', 'Ничего не выбрано'),
+('no_subject', 'en', 'No subject'),
+('no_subject', 'ru', 'Без темы'),
+('no_tiger', 'en', 'TIGER-hash is not found, this release can download protocol DirectConnect'),
+('no_tiger', 'ru', 'TIGER-хеша не обнаружено, этот релиз нельзя скачать по протоколу DirectConnect'),
+('no_torrents', 'en', 'No torrents'),
+('no_torrents', 'ru', 'Нет релизов'),
+('no_torrent_with_such_id', 'en', 'No torrent with such ID.'),
+('no_torrent_with_such_id', 'ru', 'Нет торрента с таким ID.'),
+('no_type', 'en', 'Incorrectly selected type of present'),
+('no_type', 'ru', 'Неверно выбран тип подарка'),
+('no_user', 'en', 'This user does not exist'),
+('no_user', 'ru', 'Такого пользователя не существует'),
+('no_users', 'en', 'In this release group no subscribers'),
+('no_users', 'ru', 'У этой релиз-группы нет подписчиков'),
+('no_user_id', 'en', 'No user with that ID'),
+('no_user_id', 'ru', 'Нет пользователя с таким ID'),
+('no_value', 'en', 'Not specified one of the mandatory values of the form'),
+('no_value', 'ru', 'Не указано одно из обязательных значений формы'),
+('no_votes', 'en', 'No votes'),
+('no_votes', 'ru', 'Нет голосов'),
+('number_release', 'en', 'ID release:'),
+('number_release', 'ru', 'ID релиза:'),
+('num_checked', 'en', 'Total since the last time the script checks the remote peers, he was executed %s times'),
+('num_checked', 'ru', 'Всего с момента последнего запуска скрипта проверки удаленных пиров, он был выполнен %s раз'),
+('num_cleaned', 'en', 'Total since the last time the script treatment facilities cleaned %s times'),
+('num_cleaned', 'ru', 'Всего с момента последнего запуска скрипта очистки база очищена %s раз'),
+('offers', 'en', 'Suggestions'),
+('offers', 'ru', 'Предложения'),
+('official', 'en', 'Official'),
+('official', 'ru', 'Официальный'),
+('offline', 'en', 'offline'),
+('offline', 'ru', 'оффлайне'),
+('old_polls', 'en', 'Old polls'),
+('old_polls', 'ru', 'Прошлые опросы'),
+('once', 'en', 'rated once every'),
+('once', 'ru', 'рейтинга раз в'),
+('online', 'en', 'Online'),
+('online', 'ru', 'В сети'),
+('online_users', 'en', 'Total online'),
+('online_users', 'ru', 'Всего Онлайн'),
+('only_dead', 'en', 'Only dead'),
+('only_dead', 'ru', 'Только мертвые'),
+('only_invites', 'en', 'May subscribe by invitation only'),
+('only_invites', 'ru', 'Возможно подписаться <b>только</b> по приглашению'),
+('only_invites_enabled', 'en', 'Subscribe to this release the group can be accomplished only by invitation'),
+('only_invites_enabled', 'ru', 'Подписка на эту релиз группу может быть выполнена только с помощью приглашения'),
+('only_votes', 'en', 'only %d votes'),
+('only_votes', 'ru', 'только %d голосов'),
+('open_list', 'en', 'Open list'),
+('open_list', 'ru', 'Посмотреть список'),
+('option', 'en', 'Select'),
+('option', 'ru', 'Выберите'),
+('option', 'ua', 'Виберіть'),
+('optional', 'en', 'Optional.'),
+('optional', 'ru', 'Не обязательно.'),
+('or', 'en', 'or'),
+('or', 'ru', 'или'),
+('order', 'en', 'Order'),
+('order', 'ru', 'Порядок'),
+('other', 'en', 'Other'),
+('other', 'ru', 'Прочее'),
+('our_films', 'en', 'Our releases'),
+('our_films', 'ru', 'Наши релизы'),
+('outbox', 'en', 'Sent'),
+('outbox', 'ru', 'Отправленные'),
+('outbox_m', 'en', 'Outgoing messages'),
+('outbox_m', 'ru', 'Исходящие ЛС'),
+('Override current data', 'en', 'Override current data'),
+('Override current data', 'ru', 'Заменить существующие значения'),
+('owners', 'en', 'Owners'),
+('owners', 'ru', 'Владельцы'),
+('owner_release', 'en', 'Owner release'),
+('owner_release', 'ru', 'Владелец релиза'),
+('own_reason', 'en', 'My reason:'),
+('own_reason', 'ru', 'Свое:'),
+('Pagecomments', 'en', 'Pagecomments'),
+('Pagecomments', 'ru', 'Комм.страниц'),
+('pager_text', 'en', 'Total: %s to %s  page to %s page (now see %s - %s)'),
+('pager_text', 'ru', 'Всего: %s на %s стр. по %s на стр. (сейчас просматриваете %s-%s)'),
+('pages', 'en', 'Pages'),
+('pages', 'ru', 'Страницы'),
+('pagescategory', 'en', 'Categories for pages'),
+('pagescategory', 'ru', 'Категории страниц'),
+('pagescategory', 'ua', 'Категорії сторінок'),
+('pagescategory_admin', 'en', 'Management categories pages'),
+('pagescategory_admin', 'ru', 'Админка категорий страниц'),
+('pagescategory_success_delete', 'en', 'The category successfully deteted'),
+('pagescategory_success_delete', 'ru', 'Категория успешно удалена'),
+('pagescategory_success_edit', 'en', 'The category successfully edited'),
+('pagescategory_success_edit', 'ru', 'Категория успешно отредактирована'),
+('page_generated', 'en', 'Page generated in %f seconds with %d queries (%s%% PHP / %s%% MySQL)'),
+('page_generated', 'ru', 'Страница сгенерирована за %f секунд. Выполнено %d запросов (%s%% PHP / %s%% MySQL);'),
+('page_pay', 'en', 'Pages payment<br /><small>(If empty, the "currency" - Farmed)<br />If the value is blank, the group will automatically become Pay.</small>'),
+('page_pay', 'ru', 'Страница оплаты<br /><small>(Если пусто, то "валюта" - откуп)<br />Если значение заполнено, группа автоматически становится платной</small>'),
+('page_title', 'en', 'Release Templates administration'),
+('page_title', 'ru', 'Администрирование шаблонов описаний'),
+('panel_admin', 'en', 'Administrator control panel'),
+('panel_admin', 'ru', 'Панель Администратора'),
+('panel_admin', 'ua', 'Панель Адміністратора'),
+('panel_name', 'en', 'Management retrackers'),
+('panel_name', 'ru', 'Администрирование опции ретрекера'),
+('panel_notice', 'en', 'This page allows you to manage retrackers<br />Warning, this <b>RETRACKERS</b>,and they will be added to the torrent file only <b> when user downloading torrent! You <b>cant</b> access any statistics of this trackers.<br /><b><span style="text-decoration: underline;">Subnet Mask can be filled only 1 IP address, or a mask in the format of CIDR &lt;/ u&gt; &lt;/ b&gt; <br />Leave the field blank if you wish to register retracker for ALL users.</span></b></b>'),
+('panel_notice', 'ru', 'Данная страница служит для управления опцией ретрекера<br />'),
+('parent', 'en', 'Parent categoryt'),
+('parent', 'ru', 'Родитель'),
+('password', 'en', 'Password'),
+('password', 'ru', 'Пароль'),
+('passwordadmin', 'en', 'Change user password'),
+('passwordadmin', 'ru', 'Сменить пароль юзверю'),
+('passwordadmin', 'ua', 'Змінити пароль юзверю'),
+('password_mismatch', 'en', 'Passwords do not match.'),
+('password_mismatch', 'ru', 'Пароли не совпадают.'),
+('path', 'en', 'Path'),
+('path', 'ru', 'Путь'),
+('pay_required', 'en', 'Pay'),
+('pay_required', 'ru', 'Платная'),
+('peers_l', 'en', 'peers'),
+('peers_l', 'ru', 'пиров'),
+('Pending', 'en', 'Pending'),
+('Pending', 'ru', 'Ожидает подтверждения'),
+('permission_denied', 'en', 'Access denied'),
+('permission_denied', 'ru', 'В доступе отказано'),
+('personal_lists', 'en', 'Personal list'),
+('personal_lists', 'ru', 'Мои друзья'),
+('places', 'en', 'Places on tracker'),
+('places', 'ru', 'Мест на трекере'),
+('please_register', 'en', 'You have not registered on this site yet, or this combination of e-mail and password is invalid. You can <a href="%s">Register now</a> or <a href="denied:javascript:history.go(-1);">Try again</a>.'),
+('please_register', 'ru', 'Вы еще не зарегестированы, либо такая комбинация никнейма(email) и пароля неверна. Вы можете <a href="%s">Зарегестироваться сейчас</a> или <a href="denied:javascript:history.go(-1);">Попытаться зайти еще раз</a>.'),
+('pm', 'en', 'PM'),
+('pm', 'ru', 'ЛС'),
+('poll', 'en', 'Poll'),
+('poll', 'ru', 'Опрос'),
+('Pollcomments', 'en', 'Pollcomments'),
+('Pollcomments', 'ru', 'Комм.опросов'),
+('pollsadmin', 'en', 'Polls administration'),
+('pollsadmin', 'ru', 'Опросы'),
+('pollsadmin', 'ua', 'Опитування'),
+('port_number', 'en', 'Port number:'),
+('port_number', 'ru', 'Номер порта:'),
+('port_open', 'en', 'NAT'),
+('port_open', 'ru', 'NAT'),
+('posted', 'en', 'Posted:'),
+('posted', 'ru', 'Выложил:'),
+('poster', 'en', 'To look a poster'),
+('poster', 'ru', 'Посмотреть постер'),
+('Posts', 'en', 'Posts'),
+('Posts', 'ru', 'Ответов'),
+('present', 'en', 'Present'),
+('present', 'ru', 'Подарки'),
+('Present type', 'en', 'Present type'),
+('Present type', 'ru', 'Тип подарка'),
+('presented', 'en', 'You friend %s just gave you %s! Congratulations! You can also <a href="present.php?id=%s">present anything to your friend</a>'),
+('presented', 'ru', 'Ваш друг %s только что подарил вам %s! Поздравляем! Вы также можете <a href="present.php?id=%s">подарить что-либо вашему другу</a>'),
+('presented_discount', 'en', '%s farmed'),
+('presented_discount', 'ru', '%s откупа'),
+('presented_ratingsum', 'en', 'part of their rating (%s respekt)'),
+('presented_ratingsum', 'ru', 'часть своего рейтинга (%s респектов)'),
+('presented_torrent', 'en', 'release "%s", now that this release will show an icon <img src="pic/presents/present.gif" alt="image" />, to remind you of your friends'),
+('presented_torrent', 'ru', 'релиз под названием "%s", теперь у этого релиза будет отображаться иконка <img src="pic/presents/present.gif" alt="image" />, чтобы напомнить вам о ваших друзьях'),
+('presents', 'en', 'Presents'),
+('presents', 'ru', 'Подарки'),
+('present_bonus', 'en', 'Present farming'),
+('present_bonus', 'ru', 'Подарить откуп'),
+('present_discount', 'en', 'Present farmed to a friend'),
+('present_discount', 'ru', 'Подарить откуп другу'),
+('present_for_you', 'en', 'he release you somebody present, the rating is not considered!'),
+('present_for_you', 'ru', 'Этот релиз вам кто-то подарил, рейтинг не учитывается!'),
+('present_ratingsum', 'en', 'Present rating to a friend'),
+('present_ratingsum', 'ru', 'Подарить рейтинг другу'),
+('present_ratio', 'en', 'Present rating'),
+('present_ratio', 'ru', 'Подарить рейтинг'),
+('present_torrent', 'en', 'Present Torrent!'),
+('present_torrent', 'ru', 'Подарить торрент!'),
+('present_torrents', 'en', 'Present torrents'),
+('present_torrents', 'ru', 'Подарить торрент'),
+('present_to_friend', 'en', '<img src="pic/presents/present.gif" title="Present torrent to friend!" alt="image" style="border: 0px;" />&nbsp; Present torrent to friend!'),
+('present_to_friend', 'ru', '<img src="pic/presents/present.gif" title="Подарить торрент другу!" alt="image" style="border: 0px;" />&nbsp; Подарить торрент другу!'),
+('present_upload', 'en', 'Present apload'),
+('present_upload', 'ru', 'Подарить аплоад'),
+('prev', 'en', 'Preview'),
+('prev', 'ru', 'Назад'),
+('preview', 'en', 'Preview'),
+('preview', 'ru', 'Просмотреть'),
+('privacy_highest', 'en', 'Highest. Your profile is totally closed from users, except your friends'),
+('privacy_highest', 'ru', 'Высочайший. Ваш профиль полностью закрыт от пользователей, кроме ваших друзей'),
+('privacy_level_error', 'en', 'This user uses privacy level, you need to <a href="%s">Become friend of %s</a> to view this page'),
+('privacy_level_error', 'ru', 'Этот пользователь использует приватность, вы должны <a href="%s">Стать другом %s</a>, чтобы смотреть эту страницу'),
+('privacy_normal', 'en', 'Normal. Your profile and stats can be viewed by any registered member'),
+('privacy_normal', 'ru', 'Нормальный. Ваш профиль и статистику может просматривать любой пользователь'),
+('privacy_strong', 'en', 'Strong. Only your profile (NOT STATS) can be viewed by any registered member'),
+('privacy_strong', 'ru', 'Усиленный. Ваш профиль (НЕ СТАТИСТИКУ) может просматривать любой пользователь'),
+('private', 'en', 'Private (Group Closed)'),
+('private', 'ru', 'Приватная (Группа Закрытая)'),
+('private_group_friend_subscribe', 'en', 'This is a private group, you can subscribe to the releases, only received an invitation friend'),
+('private_group_friend_subscribe', 'ru', 'Это приватная группа, вы можете подписаться на релизы, только получив приглашение друга'),
+('private_release_access_denied', 'en', 'This release <strong> private </ strong> group %s, to download this release you must be in subscribers in this group. Get a subscription can be <a href="relgroups.php"> On Release Group</a></strong>'),
+('private_release_access_denied', 'ru', 'Это релиз <strong>приватной</strong> группы %s, чтобы скачать этот релиз вы должны состоять в подписчиках этой группы. Получить подписку можно <a href="relgroups.php">На странице Релиз-Групп</a>'),
+('problem_activation', 'en', 'The problem with the activation'),
+('problem_activation', 'ru', 'Проблема с активацией'),
+('profile', 'en', 'Profile'),
+('profile', 'ru', 'Профиль'),
+('pr_now', 'en', 'Present now!'),
+('pr_now', 'ru', 'Подарить сейчас'),
+('quest_realeases', 'en', 'Questions about the releases'),
+('quest_realeases', 'ru', 'Вопросы о раздачах'),
+('quote', 'en', 'Quote'),
+('quote', 'ru', 'Цитировать'),
+('quotes', 'en', 'Favorite Quotes:'),
+('quotes', 'ru', 'Любимые цитаты:'),
+('quote_selected', 'en', 'Quote selected'),
+('quote_selected', 'ru', 'Цитировать выбранное'),
+('rate_comment', 'en', 'Rate comment:'),
+('rate_comment', 'ru', 'Оценить комментарий:'),
+('rate_down', 'en', 'Down rating'),
+('rate_down', 'ru', 'Уменьшить рейтинг'),
+('rate_up', 'en', 'UP rating'),
+('rate_up', 'ru', 'Увеличить рейтинг'),
+('rating', 'en', 'Rating'),
+('rating', 'ru', 'Оценка'),
+('Rating system manual', 'en', 'Rating system manual'),
+('Rating system manual', 'ru', 'Описание рейтинговой системы'),
+('rating_changed', 'en', 'Rating successfully exchanged for the farmed, now will take you to the page "Your rating"'),
+('rating_changed', 'ru', 'Рейтинг успешно обменян на откуп, сейчас Вы перейдете к странице "Ваш рейтинг"'),
+('rating_disconnected', 'en', 'You are currently not seeding any release. Calculation of the rating has been suspended.'),
+('rating_disconnected', 'ru', 'В данный момент вы ничего не раздаете. Расчет рейтинга приостановлен.'),
+('rating_low', 'en', 'You can not download the release, your rating is too low, lift my rating is actively commenting, filling the releases, or uploading new releases. Also, you can raise my rating on a fee basis.'),
+('rating_low', 'ru', 'Вы не можете скачать релиз, ваш рейтинг слишком мал, поднимите себе рейтинг активно комментируя, заливая релизы, либо находясь на раздаче. Также вы можете поднять себе рейтинг на платной основе.'),
+('rating_max_formula', 'en', 'Your rating is upper then %s, automatic rating increase disabled. You can increase your rating by active commenting, releasing and receiving ratings from another users'),
+('rating_max_formula', 'ru', 'Ваш рейтинг больше, чем %s, автоматическое прибавление рейтинга за сидирование отключено. Вы можете увеличить свой рейтинг активно комментируя, создавая релизы и получая оценки от других пользователей'),
+('rating_per_invite', 'en', 'You will receive a +%s rating for the invitation friend'),
+('rating_per_invite', 'ru', 'Вы получите +%s рейтинга за приглашение друга'),
+('rating_per_request', 'en', 'You will receive a +%s rating for the query'),
+('rating_per_request', 'ru', 'Вы получите +%s рейтинга за выполнение запроса'),
+('rating_title', 'en', 'Score'),
+('rating_title', 'ru', 'Оценка'),
+('ratio', 'en', 'Torrent rating'),
+('ratio', 'ru', 'Торрент-рейтинг'),
+('ratio_down', 'en', '<span style="color:red;">Your rating is reduced and now is %s</span>'),
+('ratio_down', 'ru', '<span style="color:red;">Ваш рейтинг уменьшается и сейчас равен %s</span>'),
+('ratio_warning', 'en', '<span style="color:red;">Warning (rating)!</span>'),
+('ratio_warning', 'ru', '<span style="color:red;">Внимание (рейтинг)!</span>'),
+('reason', 'en', 'Select report reason:'),
+('reason', 'ru', 'Выберите причину жалобы:'),
+('reason_ban', 'en', 'The reason for the ban'),
+('reason_ban', 'ru', 'Причина запрета'),
+('receiver', 'en', 'Receiver'),
+('receiver', 'ru', 'Получатель'),
+('recounadmin_notice', 'en', 'This page allows you to sync database values'),
+('recounadmin_notice', 'ru', 'Эта страница позволяет пересчитать счетчики комментариев и пр.'),
+('recountadmin_link', 'en', 'Recount/sync database values'),
+('recountadmin_link', 'ru', 'Пересчитать счетчики'),
+('recover', 'en', 'Restore user access'),
+('recover', 'ru', 'Востан. юзера'),
+('recover', 'ua', 'Віднов. юзера'),
+('registered', 'en', 'Registered'),
+('registered', 'ru', 'Зарегестрирован'),
+('Registrer now!', 'en', 'Registrer now!'),
+('Registrer now!', 'ru', 'Зарегистрироваться сейчас!'),
+('reg_proceed', 'en', 'To proceed registration you must agreee the following terms'),
+('reg_proceed', 'ru', 'Чтобы продолжить регистрацию, вы должны согласиться со следующим'),
+('relationship', 'en', '- Communication with the administration'),
+('relationship', 'ru', '- Связь с администрацией'),
+('Relcomments', 'en', 'Relcomments'),
+('Relcomments', 'ru', 'Комм. к релизам'),
+('release', 'en', 'Release'),
+('release', 'ru', 'Релиз'),
+('Release bookmarks', 'en', 'Release bookmarks'),
+('Release bookmarks', 'ru', 'Закладки релизов'),
+('releases', 'en', 'Releases'),
+('releases', 'ru', 'Релизов'),
+('release_anonymous', 'en', 'The release is now anonymous'),
+('release_anonymous', 'ru', 'Релиз успешно анонимизирован'),
+('relgroup', 'en', 'Release group'),
+('relgroup', 'ru', 'Релиз-группа'),
+('relgroups', 'en', 'Release groups'),
+('relgroups', 'ru', 'Релиз-группы'),
+('relgroupsadd', 'en', '| <a href="rgadmin.php?a=add">Add</a>'),
+('relgroupsadd', 'ru', '| <a href="rgadmin.php?a=add">Добавить</a>'),
+('relgroup_deleted', 'en', 'Release group is removed, now you can go to the management panel release groups'),
+('relgroup_deleted', 'ru', 'Релиз группа удалена, сейчас вы перейдете к панели администрирования релиз групп'),
+('relgroup_release', 'en', 'Release Private group'),
+('relgroup_release', 'ru', 'Релиз приватной группы'),
+('relgroup_releases', 'en', 'Releases of this group'),
+('relgroup_releases', 'ru', 'Релизы этой группы'),
+('relgroup_title', 'en', 'Release group "%s", specialization for %s'),
+('relgroup_title', 'ru', 'Релиз группа "%s", специализируется на %s'),
+('reltemplatesadmin', 'en', 'Release''s templates adminsitration'),
+('reltemplatesadmin', 'ru', 'Настройка Шаблонов Релизов'),
+('reltemplatesadmin', 'ua', 'Налаштування Шаблонів Релізів'),
+('remotecheck_disabled', 'en', 'Verify remote peers not running.'),
+('remotecheck_disabled', 'ru', 'Проверка удаленных пиров отключена'),
+('remotecheck_is_running', 'en', 'Now perform remote peers'),
+('remotecheck_is_running', 'ru', 'В данный момент выполняется проверка удаленных пиров'),
+('remotecheck_not_running', 'en', 'Verify remote peers is not running.'),
+('remotecheck_not_running', 'ru', 'Проверка удаленных пиров не запущена'),
+('remove', 'en', 'Remove'),
+('remove', 'ru', 'Удалить'),
+('removed', 'en', 'removed.'),
+('removed', 'ru', 'удален.'),
+('repeat_password', 'en', 'Repeat password;'),
+('repeat_password', 'ru', 'Повтор пароля'),
+('replies', 'en', 'Replies'),
+('replies', 'ru', 'Ответов'),
+('reports', 'en', 'View reports'),
+('reports', 'ru', 'Жалобы'),
+('reports', 'ua', 'Скарги'),
+('reports_p', 'en', 'Reports'),
+('reports_p', 'ru', 'Жалобы'),
+('report_it', 'en', 'Report it!'),
+('report_it', 'ru', 'Пожаловаться!'),
+('report_ok', 'en', 'Your report successfully accepted'),
+('report_ok', 'ru', 'Ваша жалоба принята к рассмотрению'),
+('report_reason', 'en', 'to cause:'),
+('report_reason', 'ru', 'с причиной:'),
+('Reqcomments', 'en', 'Reqcomments'),
+('Reqcomments', 'ru', 'Комм.запросов'),
+('request', 'en', 'Request'),
+('request', 'ru', 'Запрос'),
+('requester', 'en', 'Requester'),
+('requester', 'ru', 'Запросил'),
+('requests', 'en', 'Requests'),
+('requests_section', 'en', 'Section requests'),
+('requests_section', 'ru', 'Секция запросов'),
+('resend_activation', 'en', 'If you did not receive confirmation letter, you can <a href="%s">Resend</a> it.'),
+('resend_activation', 'ru', 'Если вы не получили письмо подтверждения, мы можем <a href="%s">переслать его еще раз</a>.'),
+('respect', 'en', 'Respect'),
+('respect', 'ru', 'Респект'),
+('restored', 'en', 'restored'),
+('restored', 'ru', 'восстановлен'),
+('result', 'en', 'Result'),
+('result', 'ru', 'Результат'),
+('retrackeradmin', 'en', 'Retracker administration'),
+('retrackeradmin', 'ru', 'Управление ретрекером'),
+('retrackeradmin', 'ua', 'Управління ретрекером'),
+('rgadmin', 'en', 'Release groups'),
+('rgadmin', 'ru', 'Релиз-группы'),
+('rgadmin', 'ua', 'Реліз-групи'),
+('Rgcomments', 'en', 'Rgcomments'),
+('Rgcomments', 'ru', 'Комм.релиз-групп'),
+('rginvite', 'en', 'Suggest a subscription to a friend'),
+('rginvite', 'ru', 'Предложить подписку другу'),
+('rginvite_deny', 'en', 'Unsubscribe'),
+('rginvite_deny', 'ru', 'Отписаться'),
+('rginvite_my', 'en', 'Subscribe'),
+('rginvite_my', 'ru', 'Подписаться'),
+('rgusers', 'en', 'Subscribers'),
+('rgusers', 'ru', 'Подписчиков'),
+('rg_faq', 'en', 'Tip: in the field of image indicates a full or relative URL of the image, in the fields of the owners and members of the specified user ID, <b>after a comma, no spaces</b>. In the "payment page" indicates a full or relative path to the payment page<br />To make the user paid subscription to the mailing list you want to run SQL-query:<br /><pre>INSERT INTO rg_subscribes (userid,rgid,valid_until) VALUES (ID_user,ID_release_group,UNIX_time+time_subscription*86400);</pre>'),
+('rg_faq', 'ru', 'Совет: в поле картинка указывается полный или относительный URL картинки, в полях владельцы и члены указываются ID соответствующих пользователей <b>через запятую, без пробелов</b>. В поле "страница оплаты" указывается полный или относительный путь к странице оплаты<br />Для внесения пользователя при платной подписке в список подписчиков нужно выполнить SQL-запрос:<br /><pre>INSERT INTO rg_subscribes (userid,rgid,valid_until) VALUES (ID_пользователя,ID_релиз группы,UNIX_время+время_подписки*86400);</pre>'),
+('rg_title', 'en', 'Management release groups'),
+('rg_title', 'ru', 'Администрирование релиз-групп'),
+('rss', 'en', 'Subscribe(RSS)'),
+('rss', 'ru', 'Подпишись'),
+('rt_state_1', 'en', '<span style="color: red;">Request filed to stop, but the script still running. Please wait...</span>'),
+('rt_state_1', 'ru', '<span style="color: red;">Запрос на остановку подан, но скрипт еще выполняется. Подождите пожалуйста</span>'),
+('rt_state_2', 'en', '<span style="color: green;">Stopping</span>'),
+('rt_state_2', 'ru', '<span style="color: green;">Функция остановлена</span>'),
+('rt_state_3', 'en', '<span style="color: green;">Function works</span>'),
+('rt_state_3', 'ru', '<span style="color: green;">Функция работает</span>'),
+('rt_state_4', 'en', '<span style="color: red;">Start request was send, script is starting now</span>'),
+('rt_state_4', 'ru', '<span style="color: red;">Запрос на запуск функции подан, но функция еще не запустилась</span>'),
+('ru', 'en', 'Русский (RU)'),
+('ru', 'ru', 'Русский (RU)'),
+('rules', 'en', 'Rules'),
+('rules', 'ru', 'Правила'),
+('said_thanks', 'en', 'Said&nbsp;thanks'),
+('said_thanks', 'ru', 'Сказали&nbsp;спасибо'),
+('Save changes', 'en', 'Save changes'),
+('Save changes', 'ru', 'Сохранить изменения'),
+('save_order', 'en', 'Save order'),
+('save_order', 'ru', 'Сохранить порядок'),
+('screens', 'en', 'Screenshots'),
+('screens', 'ru', 'Скриншоты, кадры'),
+('search', 'en', 'Search'),
+('search', 'ru', 'Поиск'),
+('search', 'ua', 'Пошук:'),
+('Search by key or value', 'en', 'Search by key or value'),
+('Search by key or value', 'ru', 'Искать по ключу или значению'),
+('search_btn', 'en', 'Search!'),
+('search_btn', 'ru', 'Искать'),
+('search_google', 'en', 'Search Google'),
+('search_google', 'ru', 'Искать в Гугле'),
+('search_requests', 'en', 'Search requests'),
+('search_requests', 'ru', 'Искать запросы'),
+('search_results_for', 'en', 'Search results for'),
+('search_results_for', 'ru', 'Результаты поиска для'),
+('search_users', 'en', 'Search Friends'),
+('search_users', 'ru', 'Найти друзей'),
+('seeder', 'en', 'Seeder'),
+('seeder', 'ru', 'Раздающий'),
+('seeders', 'en', 'Seeders'),
+('seeders', 'ru', 'Сидов'),
+('seeders_l', 'en', 'seeders'),
+('seeders_l', 'ru', 'раздающих'),
+('seeder_last_seen', 'en', 'Last time was here'),
+('seeder_last_seen', 'ru', 'Последний раз был здесь'),
+('seeding', 'en', 'Seeding'),
+('seeding', 'ru', 'Раздаете'),
+('seeds', 'en', 'Seed'),
+('seeds', 'ru', 'Сиды'),
+('Select language for export', 'en', 'Select language for export'),
+('Select language for export', 'ru', 'Выберите язык для экспорта'),
+('select_all', 'en', 'Select All'),
+('select_all', 'ru', '<strong>Выбрать все</strong>'),
+('select_avatar', 'en', 'Select Avatar'),
+('select_avatar', 'ru', 'Выберите аватару'),
+('select_cache', 'en', 'Select to clear the cache'),
+('select_cache', 'ru', 'Выберите кэш для очистки'),
+('select_classes', 'en', 'Select 1 or more classes to send the message.'),
+('select_classes', 'ru', 'Выберите 1 или более классов для отправки сообщения.'),
+('select_friend', 'en', 'Select friend'),
+('select_friend', 'ru', 'Выберите друга'),
+('select_history_type', 'en', 'Select the type of user history'),
+('select_history_type', 'ru', 'Выберите тип истории пользователя'),
+('select_present', 'en', '<strong>Present!</strong>'),
+('select_present', 'ru', '<strong>Подарить!</strong>'),
+('select_user', 'en', 'You should select the user for editing.'),
+('select_user', 'ru', 'Вы должны выбрать пользователя для редактирования.'),
+('send', 'en', 'Send'),
+('send', 'ru', 'Отправлено'),
+('sender', 'en', 'Sender'),
+('sender', 'ru', 'Отправитель'),
+('send_email_admin', 'en', 'Send e-mail administration'),
+('send_email_admin', 'ru', 'Отправка e-mail администрации'),
+('seo_name', 'en', 'SEO link'),
+('seo_name', 'ru', 'SEO ссылка'),
+('server_load', 'en', 'Server load'),
+('server_load', 'ru', 'Нагрузка на сервер'),
+('shop', 'en', 'Shop'),
+('shop', 'ru', 'Магазин'),
+('show_all', 'en', 'Show all'),
+('show_all', 'ru', 'Показать все'),
+('show_data', 'en', 'Show info'),
+('show_data', 'ru', 'Показать данные'),
+('show_my_requests', 'en', 'Show my requests'),
+('show_my_requests', 'ru', 'Посмотреть мои запросы'),
+('Signature', 'en', 'Signature'),
+('Signature', 'ru', 'Подпись'),
+('signature_notice', 'en', 'Your signature will be shown in comments. Maximum length is %s characters (if more, text will be cutted). Pure HTML knowing is allowed!'),
+('signature_notice', 'ru', 'Ваша подпись будет отображаться в ваших комментариях. Длина ее до %s символов (если больше, мы ее обрежем). Знания чистого HTML приветствуются!'),
+('signup', 'en', 'Registration'),
+('signup', 'ru', 'Регистрация'),
+('signup_already_registered', 'en', 'You are already registered %s!'),
+('signup_already_registered', 'ru', 'Вы уже зарегистрированный пользователь %s!'),
+('signup_contact', 'en', 'Contacts'),
+('signup_contact', 'ru', 'Контакты'),
+('signup_email', 'en', 'E-mail'),
+('signup_email', 'ru', 'Email'),
+('signup_email_must_be_valid', 'en', 'E-mail has to be valid.'),
+('signup_email_must_be_valid', 'ru', 'Email адрес должен быть верным. Вам прийдет подтверждающее письмо, на которое вы должны отреагировать. Ваш email больше не будет использован. Если в течение 3х дней вы не отреагируете на письмо, ваш аккаунт будет удален автоматически.'),
+('signup_email_notice', 'en', 'This email must be used to login this site.'),
+('signup_email_notice', 'ru', 'Этот адрес будет использован для входа на сайт.'),
+('signup_female', 'en', 'Woman'),
+('signup_female', 'ru', 'Девушка'),
+('signup_gender', 'en', 'Sex'),
+('signup_gender', 'ru', 'Пол'),
+('signup_i_am_13_years_old_or_more', 'en', 'I am 13+ years old.'),
+('signup_i_am_13_years_old_or_more', 'ru', 'Мне 13 лет или больше.'),
+('signup_i_have_read_rules', 'en', 'I read the <a href="rules.php" target="_blank">rules</a>.'),
+('signup_i_have_read_rules', 'ru', 'Я прочитал(а) <a href="rules.php" target="_blank">правила</a>.'),
+('signup_i_will_read_faq', 'en', 'I will read the <a href="faq.php" target="_blank">FAQ</a> before asking questions.'),
+('signup_i_will_read_faq', 'ru', 'Я буду читать <a href="faq.php" target="_blank">ЧаВо</a> прежде чем задавать вопросы.'),
+('signup_male', 'en', 'Man'),
+('signup_male', 'ru', 'Парень'),
+('signup_not_selected', 'en', '---- Not selected ----'),
+('signup_not_selected', 'ru', '---- Не выбрано ----'),
+('signup_password', 'en', 'Password'),
+('signup_password', 'ru', 'Пароль'),
+('signup_password_again', 'en', 'Re-enter pasword'),
+('signup_password_again', 'ru', 'Повторите пароль'),
+('signup_pm', 'en', 'Hello dear new user. You have just registered on our site. Please check <a href="%s">Your rating stats</a> to be happy on our site.<br/><i>Best regards, site team.</i>'),
+('signup_pm', 'ru', 'Здравствуйте. Вы только что зарегистрировались на нашем сайте. Пожалуйста, проверяйте <a href="%s">Свой рейтинг</a> чтобы счастливо использовать все преимущества сайта.<br /><i>С уважением, администрация.</i>'),
+('signup_pm_norating', 'en', 'Hello dear new user. You have just registered on our site. Feel free to be happy on our site.<br/><i>Best regards, site team.</i>'),
+('signup_pm_norating', 'ru', 'Здравствуйте. Вы только что зарегистрировались на нашем сайте. Мы надеемся, что вы получите истинное удовольствие пользуясь им.<br /><i>С уважением, разработчики.</i>'),
+('signup_signup', 'en', 'Registration'),
+('signup_signup', 'ru', 'Регистрация'),
+('signup_successful', 'en', 'Successful registration'),
+('signup_successful', 'ru', 'Успешная регистрация'),
+('signup_username', 'en', 'User'),
+('signup_username', 'ru', 'Пользователь'),
+('signup_users_limit', 'en', 'Current user limit (%d) has been reached. Nonactive accounts are constantly deleting, please check again later...'),
+('signup_users_limit', 'ru', 'Текущий лимит пользователей (%d) достигнут. Неактивные пользователи постоянно удаляются, пожалуйста вернитесь попозже...'),
+('signup_use_cookies', 'en', 'For successful registration allow cookies.'),
+('signup_use_cookies', 'ru', 'Для правильной регистрации активизируйте cookies.'),
+('since_your_last_visit', 'en', 'Since your last visit:<br />'),
+('since_your_last_visit', 'ru', 'С момента вашего последнего визита:<br />'),
+('Site rules', 'en', 'Site rules'),
+('Site rules', 'ru', 'Правила Сайта'),
+('siteonoff', 'en', 'On/Off the site'),
+('siteonoff', 'ru', 'Управление Отключением / Включением сайта и классами доступа'),
+('siteonoff', 'ua', 'Управління Відключенням / Включенням сайту й класами доступу'),
+('size', 'en', 'Size'),
+('size', 'ru', 'Размер'),
+('size_exceeds', 'en', '<br />The size of your avatar more than %s kilobyte!'),
+('size_exceeds', 'ru', '<br />Размер вашей аватары превышает %s килобайт!'),
+('size_you_avatar', 'en', '<br />Size of your avatar %sx%s. Allowable size of %sx%s pixels'),
+('size_you_avatar', 'ru', '<br />Размер вашего аватара %sx%s. Требуется размер не более %sx%s пикселей'),
+('snatched', 'en', 'Snatched'),
+('snatched', 'ru', 'Скачан'),
+('social_downloaded', 'en', 'Download(s)'),
+('social_downloaded', 'ru', 'Скачал(а)'),
+('social_friends', 'en', 'Friends'),
+('social_friends', 'ru', 'Друзей'),
+('social_leeching', 'en', 'Leeching'),
+('social_leeching', 'ru', 'Качает'),
+('social_newscomments', 'en', 'To news'),
+('social_newscomments', 'ru', 'К новостям'),
+('social_pagecomments', 'en', 'To pages'),
+('social_pagecomments', 'ru', 'К страницам'),
+('social_pages', 'en', 'Created pages'),
+('social_pages', 'ru', 'Созданных страниц'),
+('social_pollcomments', 'en', 'To polls'),
+('social_pollcomments', 'ru', 'К опросам'),
+('social_relcomments', 'en', 'To release'),
+('social_relcomments', 'ru', 'К релизам'),
+('social_reqcomments', 'en', 'To request'),
+('social_reqcomments', 'ru', 'К запросам'),
+('social_rgcomments', 'en', 'To releases group');
+INSERT INTO `languages` (`lkey`, `ltranslate`, `lvalue`) VALUES
+('social_rgcomments', 'ru', 'К релиз-группам'),
+('social_seeding', 'en', 'Seedeng'),
+('social_seeding', 'ru', 'Раздает'),
+('social_uploaded', 'en', 'Created releases'),
+('social_uploaded', 'ru', 'Созданных релизов'),
+('social_usercomments', 'en', 'To Users'),
+('social_usercomments', 'ru', 'К пользователям'),
+('some_fields_blank', 'en', 'Some fields are blank. <a href="denied:javascript:history.go(-1);">Back</a>'),
+('some_fields_blank', 'ru', 'Некоторые поля не заполнены. <a href="denied:javascript:history.go(-1);">Вернуться назад</a>'),
+('sort', 'en', 'Display order'),
+('sort', 'ru', 'Порядок'),
+('spam', 'en', 'Spam'),
+('spam', 'ru', 'Спам'),
+('spam', 'ua', 'ОП користувачів :)'),
+('spec', 'en', 'Specialization'),
+('spec', 'ru', 'Специализация'),
+('speed_above', 'en', 'These users of your network neighbors, which means that you get from them the speed above.'),
+('speed_above', 'ru', 'Эти пользователи ваши сетевые соседи, что означает что вы можете получить от них скорость выше.'),
+('spoiler', 'en', 'Hidden text'),
+('spoiler', 'ru', 'Скрытый текст'),
+('staff', 'en', 'Staff'),
+('staff', 'ru', 'Администрация'),
+('staffmess', 'en', 'Mass private message'),
+('staffmess', 'ru', 'Массовое ЛС'),
+('staffmess', 'ua', 'Масове ОП'),
+('staff_functions', 'en', 'Staff functions'),
+('staff_functions', 'ru', 'Инструменты владельца'),
+('staff_functions', 'ua', 'Інструменти власника'),
+('stampadmin', 'en', 'Stamps'),
+('stampadmin', 'ru', 'Штампы и печати'),
+('stampadmin', 'ua', 'Штампи й печатки'),
+('stamps', 'en', 'Stamps'),
+('stamps', 'ru', 'Штампы'),
+('stamps_seals', 'en', 'Stamps and seals'),
+('stamps_seals', 'ru', 'Штампы и печати'),
+('Started at', 'en', 'Started at'),
+('Started at', 'ru', 'Добавлено'),
+('statistic', 'en', 'Statistics'),
+('statistic', 'ru', 'Статистика'),
+('statistics', 'en', 'Statistics'),
+('statistics', 'ru', 'Статистика'),
+('stats', 'en', 'View statistics'),
+('stats', 'ru', 'Статистика'),
+('stats', 'ua', 'Статистика'),
+('status', 'en', 'Status'),
+('status', 'ru', 'Статус'),
+('Sticky', 'en', 'Sticky'),
+('Sticky', 'ru', 'Прикреплен'),
+('subcats', 'en', 'Extra categories'),
+('subcats', 'ru', 'Дополнительные категории'),
+('subject', 'en', 'Subject'),
+('subject', 'ru', 'Тема'),
+('submit', 'en', 'Send'),
+('submit', 'ru', 'Отправить'),
+('Submit comment', 'en', 'Submit comment'),
+('Submit comment', 'ru', 'Отправить комментарий'),
+('subnet_mask', 'en', 'Subnet mask'),
+('subnet_mask', 'ru', 'Маска подсети'),
+('subscribe_last_comment', 'en', 'Subscribe for last comment'),
+('subscribe_last_comment', 'ru', 'Последнее сообщение'),
+('subscribe_length', 'en', 'Subscription Period (0 - indefinitely)'),
+('subscribe_length', 'ru', 'Период подписки (0 - бесконечно)'),
+('subscribe_list', 'en', 'Subscribe list'),
+('subscribe_list', 'ru', 'Лист подписки'),
+('subscribe_no', 'en', 'No new comments in threads, on which you were signed up.'),
+('subscribe_no', 'ru', 'Нет новых комментариев в темах, на которые вы подписаны.'),
+('subscribe_unneeded', 'en', 'This public release of the group, subscribe to its release is not necessary'),
+('subscribe_unneeded', 'ru', 'Это публичная релиз группа, подписываться на ее релизы не надо'),
+('subscribe_until', 'en', 'Subscribe to'),
+('subscribe_until', 'ru', 'Подписка до'),
+('success', 'en', 'Successfully'),
+('success', 'ru', 'Успешно'),
+('Successful', 'en', 'Successful'),
+('Successful', 'ru', 'Успешно'),
+('successful_upload', 'en', 'Successful upload!'),
+('successful_upload', 'ru', 'Успешная заливка!'),
+('success_invite', 'en', 'You have successfully subscribed to the release of the group'),
+('success_invite', 'ru', 'Вы успешно подписались на релизы этой группы'),
+('succes_upload', 'en', '<b>Your avatar has been successfully uploaded to the server!</b><hr /> Filename: <b></b>'),
+('succes_upload', 'ru', '<b>Ваша аватара была успешно загружёна на сервер!</b><hr /> Название файла: <b></b>'),
+('succ_logout', 'en', 'Successful logout'),
+('succ_logout', 'ru', 'Успешный выход'),
+('succ_purif', 'en', 'was successfully cleaned'),
+('succ_purif', 'ru', 'был успешно очищен'),
+('suggestions', 'en', 'Suggestions'),
+('suggestions', 'ru', 'Предложения'),
+('support', 'en', 'Support'),
+('support', 'ru', 'Поддержка'),
+('sure_mark_delete', 'en', 'Are you sure you want to delete marked messages?'),
+('sure_mark_delete', 'ru', 'Вы уверены, что хотите удалить выбранные сообщения?'),
+('sure_mark_read', 'en', 'Are you sure you want to mark selected messages as read?'),
+('sure_mark_read', 'ru', 'Вы уверены, что хотите пометить выбранные сообщения как прочитанные?'),
+('sysop_account_activated', 'en', 'Your account is activated! You are logged in. Now you can go to the <a href="%s/"><b>main</b></a> page start using your account.'),
+('sysop_account_activated', 'ru', 'Ваш аккаунт активирован! Вы автоматически вошли. Теперь вы можете <a href="%s/"><b>перейти на главную</b></a> и начать использовать ваш уккаунт.'),
+('sysop_activated', 'en', 'Administrator`s account successfully activated'),
+('sysop_activated', 'ru', 'Аккаунт администратора успешно активирован'),
+('taken_from_torrent', 'en', 'Undertakes from torrent. <b>Please, use an intelligible names.</b>'),
+('taken_from_torrent', 'ru', '<b>Миссия / The Mission (2008) [DVDrip, r.g. TV-Shows]</b>, <b>Макс Пейн / Max Payne (2001) [PC]</b>, <b>Дом2 / Дом2 (2000-3000) [TVrip, 499 выпуск]</b>'),
+('tbhome', 'en', 'Go to home page'),
+('tbhome', 'ru', 'Перейти на главную страницу Torrentsbook'),
+('templatesadmin', 'en', 'Skins administration'),
+('templatesadmin', 'ru', 'Настройки шкурок'),
+('templatesadmin', 'ua', 'Налаштування шкірок'),
+('testip', 'en', 'Test that IP was banned'),
+('testip', 'ru', 'Проверка IP'),
+('testip', 'ua', 'Перевірка IP'),
+('test_humanity', 'en', 'You are not tested for humanity, please try again.'),
+('test_humanity', 'ru', 'Вы не прошли проверку на человечность, попробуйте еще раз.'),
+('test_port', 'en', 'Test port'),
+('test_port', 'ru', 'Проверить порт'),
+('test_releaser', 'en', 'Test releaser'),
+('test_releaser', 'ru', 'Непроверенные релизы'),
+('thanks', 'en', 'Thanks'),
+('thanks', 'ru', 'Спасибо'),
+('thanks_added', 'en', 'Your thanks added!'),
+('thanks_added', 'ru', 'Спасибо добавлено!'),
+('thanks_for_registering', 'en', 'Thanks for your registration on %s! Now you can <a href="login.php">login</a> into the system.'),
+('thanks_for_registering', 'ru', 'Спасибо что зарегистрировались на %s! Теперь вы можете <a href="login.php">войти</a> в систему.'),
+('the_unique_1', 'en', 'Total Unique is connected to the tracker'),
+('the_unique_1', 'ru', 'Всего к трекеру подключено уникальных'),
+('this_account_activated', 'en', 'This account already activated. You can <a href="login.php">login</a> into it.'),
+('this_account_activated', 'ru', 'Этот аккаунт уже активирован. Вы можете <a href="login.php">войти</a> с ним.'),
+('this_acc_active', 'en', 'This user is active at the moment. Sign impossible!'),
+('this_acc_active', 'ru', 'Этот пользователь на данный момент активен. Вход невозможен!'),
+('this_acc_disabled', 'en', 'This account has been disabled.'),
+('this_acc_disabled', 'ru', 'Этот аккаунт отключен.'),
+('this_category', 'en', 'this category'),
+('this_category', 'ru', 'этой категории'),
+('this_is_dc_magnet', 'ru', '<div style="margin: auto;">Это DirectConnect-Magnet-ссылка. С помощью этой ссылки вы можете начать скачивание в DirectConnect клиенте (например, PeLink). Для того, чтобы начать скачивание, кликните по ссылке ниже:</div>'),
+('this_is_magnet', 'en', '<div style="margin: auto;">This Magnet-link. With this link you can start downloading a popular torrent client without saving the torrent file on your computer. To begin downloading, click on the link below:</div>'),
+('this_is_magnet', 'ru', '<div style="margin: auto;">Это Magnet-ссылка. С помощью этой ссылки вы можете начать скачивание в популярных торрент-клиентах без сохранения торрент-файла на вашем компьютере. Для того, чтобы начать скачивание, кликните по ссылке ниже:</div>'),
+('this_is_magnet_title', 'en', 'Magnet-link:'),
+('this_is_magnet_title', 'ru', 'Magnet-ссылка:'),
+('tiger_hash', 'en', 'TreeTiger hash'),
+('tiger_hash', 'ru', 'TreeTiger хеш'),
+('tiger_hash_notice', 'en', '<small>Used to create links DirectConnect. All responsibility for the accuracy of this hash falls on you. DirectConnect download is available only with the flooding torrent-file. In re pouring torrent, do not forget that this hash also changes</small>'),
+('tiger_hash_notice', 'ru', '<small>Используется для создания DirectConnect ссылок. Вся ответственность за правильность этого хеша ложится на вас. DirectConnect загрузка доступна только вместе с заливкой torrent-файла. При перезаливке торрента, не забудьте, что этот хеш тоже изменяется</small>'),
+('time', 'en', 'Time'),
+('time', 'ru', 'Время'),
+('times', 'en', 'times'),
+('times', 'ru', 'раз'),
+('title', 'en', 'Title'),
+('title', 'ru', 'Название'),
+('to panel index', 'en', 'To panel index'),
+('to panel index', 'ru', 'К главной странице этой панели'),
+('Today', 'en', 'Today'),
+('Today', 'ru', 'Сегодня'),
+('Topic name', 'en', 'Topic name'),
+('Topic name', 'ru', 'Название'),
+('topten', 'en', 'Top 10'),
+('topten', 'ru', 'Топ 10'),
+('torrent', 'en', 'Torrent'),
+('torrent', 'ru', 'Торрент'),
+('torrents', 'en', 'Torrents'),
+('torrents', 'ru', 'Релизы'),
+('torrent_clients', 'en', 'Torrent clients'),
+('torrent_clients', 'ru', 'Торрент Клиенты'),
+('torrent_details', 'en', 'Torrent details'),
+('torrent_details', 'ru', 'Детали релиза'),
+('torrent_file', 'en', 'Torrent file'),
+('torrent_file', 'ru', 'Torrent файл'),
+('torrent_info', 'en', 'Torrent info'),
+('torrent_info', 'ru', 'Данные о торренте'),
+('torrent_name', 'en', 'Torrent`s name'),
+('torrent_name', 'ru', 'Название'),
+('torrent_not_selected', 'en', 'Torrent not selected!'),
+('torrent_not_selected', 'ru', 'Релиз не выбран!'),
+('torrent_recounted', 'en', 'Torrents files are synchronised with a database, is changed torrents: %s'),
+('torrent_recounted', 'ru', 'Торрент файлы синхронизированы с базой данных, изменено торрентов: %s'),
+('total', 'en', 'Total'),
+('total', 'ru', 'Всего'),
+('Total notifications', 'en', 'Total notifications'),
+('Total notifications', 'ru', 'Всего уведомлений'),
+('to_comment', 'en', 'Comment'),
+('to_comment', 'ru', 'Комментировать'),
+('to_details', 'en', '<p style="text-align: right;">You can also <a href="details.php?id=%s"> go into the details of release</a></p>'),
+('to_details', 'ru', '<p style="text-align: right;">Вы также можете <a href="details.php?id=%s">вернуться в детали релиза</a></p>'),
+('to_history', 'en', '| <a href="userhistory.php?id=%s">To history %s</a>'),
+('to_history', 'ru', '| <a href="userhistory.php?id=%s">К истории %s</a>'),
+('to_notifs_list', 'en', 'To the list of notifications'),
+('to_notifs_list', 'ru', 'К списку уведомлений'),
+('to_relgroups_list', 'en', '[<a href="relgroups.php">To the list of release groups</a>]'),
+('to_relgroups_list', 'ru', '[<a href="relgroups.php">К списку релиз групп</a>]'),
+('to_rgadmin', 'en', '| <a href="rgadmin.php">By the management of release groups</a>'),
+('to_rgadmin', 'ru', '| <a href="rgadmin.php">К администрированию релиз групп</a>'),
+('tracker', 'en', 'Tracker'),
+('tracker', 'ru', 'Трекер'),
+('tracker_added', 'en', '<span style="color: green;">Tracker added:</span>'),
+('tracker_added', 'ru', '<span style="color: green;">Трекер добавлен:</span>'),
+('tracker_dead_torrents', 'en', 'Dead torrents'),
+('tracker_dead_torrents', 'ru', 'Мертвых Торрентов'),
+('tracker_deleted', 'en', '<span style="color: red;">Tracker was deleted</span>'),
+('tracker_deleted', 'ru', '<span style="color: red;">Трекер удален</span>'),
+('tracker_failed', 'en', '<span style="color: red;">The tracker is NOT added. Reason:</span>'),
+('tracker_failed', 'ru', '<span style="color: red;">Трекер НЕ добавлен. Причина:</span>'),
+('tracker_leechers', 'en', 'Leechers'),
+('tracker_leechers', 'ru', 'Качающих'),
+('tracker_peers', 'en', 'Active connections'),
+('tracker_peers', 'ru', 'Активных подключений'),
+('tracker_seeders', 'en', 'Seeding'),
+('tracker_seeders', 'ru', 'Раздающих'),
+('tracker_seed_peer', 'en', 'Seeding/Leeching (%)'),
+('tracker_seed_peer', 'ru', 'Раздающих/Качающих (%)'),
+('tracker_skipped', 'en', '<span style="color: green;">Tracker has been registered, missing</span>'),
+('tracker_skipped', 'ru', '<span style="color: green;">Трекер уже зарегестирован, пропущено</span>'),
+('tracker_torrents', 'en', 'Torrents'),
+('tracker_torrents', 'ru', 'Релизов'),
+('ttl', 'en', 'TTL'),
+('ttl', 'ru', 'TTL'),
+('tv', 'en', 'Favorite TV shows:'),
+('tv', 'ru', 'Любимые телешоу:'),
+('type', 'en', 'Type'),
+('type', 'ru', 'Тип'),
+('ua', 'en', 'Українська (UA)'),
+('ua', 'ru', 'Українська (UA)'),
+('ul_speed', 'en', 'Upload speed'),
+('ul_speed', 'ru', 'Раздача'),
+('unable_peers', 'en', 'Unable to obtain data on the peers from remote tracker'),
+('unable_peers', 'ru', 'Не удалось получить данные о пирах с удаленного трекера'),
+('unable_to_create_account', 'en', 'Unable to create an account. Possibly, the name you have chosen is already taken.'),
+('unable_to_create_account', 'ru', 'Невозможно создать аккаунт. Возможно имя пользователя уже занято.'),
+('unable_to_read_torrent', 'en', 'Unable to read the torrent file.'),
+('unable_to_read_torrent', 'ru', 'Невозможно прочитать торрент файл.'),
+('uncheck', 'en', 'Uncheck'),
+('uncheck', 'ru', 'Отменить проверку'),
+('Unchecked', 'en', 'Unchecked'),
+('Unchecked', 'ru', 'Непр.релизов'),
+('unchecked_only_moders', 'en', 'Watch unverified releases may only moderators or above'),
+('unchecked_only_moders', 'ru', 'Смотреть непроверенные релизы могут только модераторы и выше'),
+('unco', 'en', 'Unconfirmed users'),
+('unco', 'ru', 'Неподтв. юзеры'),
+('unco', 'ua', 'Непідтв. юзери'),
+('unknown', 'en', 'Unknown'),
+('unknown', 'ru', 'Неизвестно'),
+('unknown_action', 'en', 'Unknown action'),
+('unknown_action', 'ru', 'Неизвестное действие'),
+('unknown_passkey', 'en', 'Unknown passkey!'),
+('unknown_passkey', 'ru', 'Неизвестный пасскей!'),
+('unread', 'en', 'Unread'),
+('unread', 'ru', 'Новые ЛС'),
+('un_upd_acc', 'en', 'Unable to update account.'),
+('un_upd_acc', 'ru', 'Не удается обновить учетную запись.'),
+('upd_users_inv_amn', 'en', 'The Quantity of invitations is updated'),
+('upd_users_inv_amn', 'ru', 'Кол-во приглашений обновлено'),
+('upload', 'en', 'Upload'),
+('upload', 'ru', 'Загрузить'),
+('uploaded', 'en', 'You uploaded a release'),
+('uploaded', 'ru', 'Вы загрузили релиз'),
+('uploadeder', 'en', 'Uploading'),
+('uploadeder', 'ru', 'Раздает'),
+('uploaded_body', 'en', 'You have just uploaded a release. You are not an uploader, so you release must be checked by moderator.<br /><h3>Attention!</h3>This message contains a link to your release, here it is:<h1>%s</h1>Please, do not delete this message ultil you release checked. <span style="color: red;">This message contains a link to you release, which does not seen everywhere until it\\''s get checked</span><hr />You also will receive notifications about checking you release.<br /><div style="text-align: right;"><i>Be sereous to this message, lets keep our site clean.<br />Thank you, best regards, Moderators.</i></div>'),
+('uploaded_body', 'ru', 'Вы только что загрузили релиз на наш сайт. Так как вы являетесь пользователем, а не аплоадером, то вашему релизу необходимо пройти проверку модератором.<br /><h3>Важно!</h3>Это сообщение содержит ссылку на релиз, вот она:<h1>%s</h1>Пожалуйста, не удаляйте это сообщение до тех пор, пока ваш релиз не будет проверен. <span style="color: red;">Это сообщение содержит ссылку на ваш релиз, который больше нигде до проверки модератором отображаться не будет</span><hr />Вы также будете получать уведомления о ходе проверки вашего релиза.<br /><div style="text-align: right;"><i>Отнеситесь к этому сообщению серьезно. Давайте держать наш с вами сайт в чистоте<br />Спасибо за понимание и внимание, с уважением, Модераторы</i></div>'),
+('uploaders', 'en', 'View uploaders &amp; stats'),
+('uploaders', 'ru', 'Аплоадеры'),
+('uploaders', 'ua', 'Аплоадери'),
+('upload_avatar', 'en', 'Upload avatar'),
+('upload_avatar', 'ru', 'Загрузка аватара'),
+('upload_notice', 'en', 'You have just uploaded a release. Your rating will be increased by %s after moderator check your release. You must <a href="download.php?id=%s">Download .torrent file</a> and begin seeding in your torrent-client. Thank you.'),
+('upload_notice', 'ru', 'Вы только что загрузили новый релиз на сайт, после его проверки модератором вам прибавлено %s рейтинга. Вы должны <a href="download.php?id=%s&amp;ok">Скачать torrent файл</a> или <a href="%s">Перейти по Magnet-ссылке</a> и начать раздачу в торрент-клиенте. Спасибо.'),
+('upload_notice_norating', 'en', 'You have just uploaded a release. You must <a href="download.php?id=%s">Download .torrent file</a> and begin seeding in your torrent-client. Thank you.'),
+('upload_notice_norating', 'ru', 'Вы только что загрузили новый релиз на сайт. Вы должны <a href="download.php?id=%s">Скачать torrent файл</a> или <a href="%s">Перейти по Magnet-ссылке</a> и начать раздачу в торрент-клиенте. Спасибо.'),
+('upload_torrent', 'en', 'Upload torrent'),
+('upload_torrent', 'ru', 'Загрузить релиз'),
+('up_size', 'en', 'Up size'),
+('up_size', 'ru', 'Раздал'),
+('user', 'en', 'User'),
+('user', 'ru', 'Юзер'),
+('Usercomments', 'en', 'Usercomments'),
+('Usercomments', 'ru', 'Комм. к пользователям'),
+('username', 'en', 'Username'),
+('username', 'ru', 'Пользователь'),
+('users', 'en', 'Users'),
+('users', 'ru', 'Пользователи'),
+('users', 'ua', 'Список юзерів'),
+('users_deleted', 'en', 'All subscribers to the group successfully removed'),
+('users_deleted', 'ru', 'Все подписчики группы успешно удалены'),
+('users_disabled', 'en', 'Disabled'),
+('users_disabled', 'ru', 'Отключенных'),
+('users_registered', 'en', 'Registered'),
+('users_registered', 'ru', 'Зарегистрированных'),
+('users_sl', 'en', 'users'),
+('users_sl', 'ru', 'пользователей'),
+('users_unconfirmed', 'en', 'Unconfirmed'),
+('users_unconfirmed', 'ru', 'Неподтвержденных'),
+('users_uploaders', 'en', 'Uploaders'),
+('users_uploaders', 'ru', 'Аплоадеров'),
+('users_vips', 'en', 'VIP'),
+('users_vips', 'ru', 'VIP'),
+('users_warned', 'en', 'Warned'),
+('users_warned', 'ru', 'Предупреждённых'),
+('user_0', 'en', 'View users with rating below 0'),
+('user_0', 'ru', 'Пользователи с рейтингом ниже 0'),
+('user_0', 'ua', 'Користувачі з рейтингом нижче 0'),
+('user_agent', 'en', '<b>User agent</b>:'),
+('user_agent', 'ru', '<b>User agent</b>:'),
+('user_bans', 'en', 'View disabled users'),
+('user_bans', 'ru', 'Отключенные пользователи'),
+('user_bans', 'ua', 'Відключені користувачі'),
+('user_menu', 'en', 'Personal menu'),
+('user_menu', 'ru', 'Персональное меню'),
+('user_name', 'en', 'User name'),
+('user_name', 'ru', 'Имя пользователя'),
+('user_notice_sent', 'en', 'User %s sent a message of friendship offered for you. He can become your friend, only after you confirm a friend request'),
+('user_notice_sent', 'ru', 'Пользователю %s отправлено сообщение о предложенной вами дружбе. Он сможет стать вашим другом, только после того, как подтвердит ваши намерения'),
+('user_unconfirmed', 'en', '<small>Friendship is not confirmed, you can not make a present</small>'),
+('user_unconfirmed', 'ru', '<small>Дружба не подтверждена, вы не можете сделать подарок</small>'),
+('u_presents', 'en', 'User presents'),
+('u_presents', 'ru', 'Подарки пользователю'),
+('Value', 'en', 'Value'),
+('Value', 'ru', 'Значение'),
+('view', 'en', 'View'),
+('view', 'ru', 'Посмотреть'),
+('View list of users', 'en', 'View list of users'),
+('View list of users', 'ru', 'Список пользователей'),
+('View private messages', 'en', 'View private messages'),
+('View private messages', 'ru', 'Посмотреть ЛС'),
+('View site log', 'en', 'View site log'),
+('View site log', 'ru', 'Лог сайта'),
+('View uploaders & stats', 'en', 'View uploaders & stats'),
+('View uploaders & stats', 'ru', 'Статистика аплоадеров'),
+('viewing_profile', 'en', 'You see Profile'),
+('viewing_profile', 'ru', 'Вы смотрите профиль'),
+('views', 'en', 'Views'),
+('views', 'ru', 'Просмотров'),
+('view_all', 'en', 'View all'),
+('view_all', 'ru', 'Посмотреть все'),
+('view_images', 'en', 'View images'),
+('view_images', 'ru', 'Просмотр картинки'),
+('view_users', 'en', 'View subscribers'),
+('view_users', 'ru', 'Посмотреть подписчиков'),
+('view_xxx', 'en', 'Show XXX releases'),
+('view_xxx', 'ru', 'Показывать XXX релизы'),
+('visible', 'en', 'Visible'),
+('visible', 'ru', 'Видимый'),
+('visitors', 'en', 'Visitors'),
+('visitors', 'ru', 'Гости'),
+('vkcom', 'en', 'We in vkontakte.ru'),
+('vkcom', 'ru', 'Мы В Контакте'),
+('vote', 'en', 'Vote'),
+('vote', 'ru', 'Оценка'),
+('voted', 'en', 'Vote added!'),
+('voted', 'ru', 'Голос добавлен!'),
+('votes', 'en', 'Total votes'),
+('votes', 'ru', 'Голосов'),
+('vote_1', 'en', 'Awful!'),
+('vote_1', 'ru', 'Ужасно!'),
+('vote_2', 'en', 'Bad'),
+('vote_2', 'ru', 'Плохо'),
+('vote_3', 'en', 'Fine'),
+('vote_3', 'ru', 'Нормально'),
+('vote_4', 'en', 'Good'),
+('vote_4', 'ru', 'Хорошо'),
+('vote_5', 'en', 'Excellent!'),
+('vote_5', 'ru', 'Отлично!'),
+('wait', 'en', 'Waiting..'),
+('wait', 'ru', 'Ожидание'),
+('warned', 'en', 'View warned users'),
+('warned', 'ru', 'Предупр. юзеры'),
+('warned', 'ua', 'Поперед. юзери'),
+('warning', 'en', 'For the publication of data files to your account will be immediately blocked without any warning. The publication of these files was officially banned by the right holder, or prohibited for any other reason, does not depend on us.<br />The ban is valid until until the file is located in <a href="viewcensoredtorrents.php">list of prohibited releases</a>.'),
+('warning', 'ru', 'За публикацию данных релизов ваш аккаунт будет немедленно заблокирован без каких-либо предупреждений. Публикация этих фильмов была официально запрещена правообладателем, либо запрещена по любой другой причине, не зависящей от нас.<br />Запрет действует до тех пор, пока фильм находится в <a href="viewcensoredtorrents.php">списке запрещенных релизов</a>.'),
+('warning_removed', 'en', '- Warning removed'),
+('warning_removed', 'ru', '- Предупреждение снял'),
+('welcome_back', 'en', 'Welcome back,'),
+('welcome_back', 'ru', 'Добро пожаловать,'),
+('we_vkontakte', 'en', 'We vkontakte'),
+('we_vkontakte', 'ru', 'Мы вконтакте'),
+('what_present', 'en', 'What exactly do you wish to present?'),
+('what_present', 'ru', 'Что именно вы хотите подарить?'),
+('whos_online', 'en', 'Who`s online'),
+('whos_online', 'ru', 'Кто Онлайн'),
+('who_online', 'en', 'Who online'),
+('who_online', 'ru', 'Кто онлайн'),
+('with', 'en', 'with'),
+('with', 'ru', 'с'),
+('With wish of', 'en', 'With wish of'),
+('With wish of', 'ru', 'С пожеланием'),
+('Word', 'en', 'Word'),
+('Word', 'ru', 'Слово'),
+('wrong_id', 'en', 'Direct access to this script not allowed, or wrong ID'),
+('wrong_id', 'ru', 'Прямой доступ к этому скрипту запрещен, или у вас неверный ID'),
+('wrote_at', 'en', 'Added at'),
+('wrote_at', 'ru', 'Писал в'),
+('xxx_release', 'en', 'XXX (porno) release'),
+('xxx_release', 'ru', 'XXX (прон) релиз'),
+('yes', 'en', 'Yes'),
+('yes', 'ru', 'Да'),
+('Yesterday', 'en', 'Yesterday'),
+('Yesterday', 'ru', 'Вчера'),
+('yours', 'en', 'Yours'),
+('yours', 'ru', 'Ваш'),
+('your_class_is_lower', 'en', 'Your class is too low to change the password for this user'),
+('your_class_is_lower', 'ru', 'Ваш класс слишком низок для измениния пароля этому пользователю'),
+('your_email', 'en', 'Your Email:'),
+('your_email', 'ru', 'Ваш Email:'),
+('your_invites', 'en', 'Your invitations'),
+('your_invites', 'ru', 'Ваши неиспользованные приглашения'),
+('your_ip', 'en', 'Your IP'),
+('your_ip', 'ru', 'Ваш IP'),
+('your_message', 'en', 'Your message'),
+('your_message', 'ru', 'Ваше сообщение'),
+('your_name', 'en', 'Your name:'),
+('your_name', 'ru', 'Ваше имя:'),
+('you_already_reported', 'en', 'You have already reported'),
+('you_already_reported', 'ru', 'Вы уже пожаловались'),
+('you_can_start_seeding', 'en', 'Now you can start seeding. <b>Keep in mind</b> that your torrent will not be visible until you will start seeding it!'),
+('you_can_start_seeding', 'ru', 'Вы можете начинать раздачу. <b>Учтите</b> что торрент не будет виден пока вы не начнете раздавать!'),
+('you_edit', 'en', 'You are editing'),
+('you_edit', 'ru', 'Вы редактируете'),
+('you_have', 'en', 'You have'),
+('you_have', 'ru', 'У вас'),
+('you_have_friends', 'en', 'Add %s new friends'),
+('you_have_friends', 'ru', 'Добавилось %s новых друзей'),
+('you_have_newscomments', 'en', 'Add %s new comments to the news'),
+('you_have_newscomments', 'ru', 'Добавилось %s новых комментариев к новостям'),
+('you_have_no_bookmarks', 'en', 'You have no bookmarks!'),
+('you_have_no_bookmarks', 'ru', 'У вас нет закладок!'),
+('you_have_pagecomments', 'en', 'Add %s new comments to the page'),
+('you_have_pagecomments', 'ru', 'Добавилось %s новых комментариев к страницам'),
+('you_have_pages', 'en', 'Add %s new pages'),
+('you_have_pages', 'ru', 'Добавилось %s новых страниц'),
+('you_have_pollcomments', 'en', 'Add %s new comments to the polls'),
+('you_have_pollcomments', 'ru', 'Добавилось %s новых комментариев к опросам'),
+('you_have_relcomments', 'en', 'Add %s new comments to the releases'),
+('you_have_relcomments', 'ru', 'Добавилось %s новых комментариев к релизам'),
+('you_have_reports', 'en', 'Add %s new reports'),
+('you_have_reports', 'ru', 'Добавилось %s новых жалоб'),
+('you_have_reqcomments', 'en', 'Add %s new comments to the requests'),
+('you_have_reqcomments', 'ru', 'Добавилось %s новых комментариев к запросам'),
+('you_have_rgcomments', 'en', 'Add %s new comments to the release groups'),
+('you_have_rgcomments', 'ru', 'Добавилось %s новых комментариев к релиз-группам'),
+('you_have_torrents', 'en', 'Add %s new releases'),
+('you_have_torrents', 'ru', 'Добавилось %s новых релизов'),
+('you_have_unchecked', 'en', 'Add %s new unchecked releases'),
+('you_have_unchecked', 'ru', 'Добавилось %s новых непроверенных релизов'),
+('you_have_unread', 'en', 'Add %s unread PM'),
+('you_have_unread', 'ru', 'Добавилось %s непрочитанных ЛС'),
+('you_have_usercomments', 'en', 'Add %s new comments to the users'),
+('you_have_usercomments', 'ru', 'Добавилось %s новых комментариев к пользователям'),
+('you_have_users', 'en', 'Add %s new users'),
+('you_have_users', 'ru', 'Добавилось %s новых пользователей'),
+('you_have_voted_for_this_torrent', 'en', 'You have rated this torrent as'),
+('you_have_voted_for_this_torrent', 'ru', 'вы оценили этот релиз как'),
+('you_not_logged', 'en', 'You are not logged in!'),
+('you_not_logged', 'ru', 'Вы не зарегистрированы в системе!'),
+('you_people', 'en', 'Are you human?'),
+('you_people', 'ru', 'Вы человек??'),
+('you_success_presented', 'en', 'You have been given a %s present!'),
+('you_success_presented', 'ru', 'Вы успешно подарили %s подарок!'),
+('you_succ_logout', 'en', 'You have successfully logout!'),
+('you_succ_logout', 'ru', 'Вы успешно вышли!'),
+('you_want_to_delete_x_click_here', 'en', 'You want to delete %s. Click <a href="%s">here</a> to proceed.'),
+('you_want_to_delete_x_click_here', 'ru', 'Вы хотите удалить %s. Нажмите <a href="%s">сюда</a> если вы уверены.'),
+('you_warning_removed', 'en', 'Your warning removed'),
+('you_warning_removed', 'ru', 'Ваше предупреждение снял'),
+('you_watching_friends', 'en', 'You are currently viewing: new friends'),
+('you_watching_friends', 'ru', 'Вы просматриваете: новых друзей'),
+('you_watching_newscomments', 'en', 'You are currently viewing: the new comments to the news'),
+('you_watching_newscomments', 'ru', 'Вы просматриваете: новые комментарии к новостям'),
+('you_watching_pagecomments', 'en', 'You are currently viewing: the new comments to the pages'),
+('you_watching_pagecomments', 'ru', 'Вы просматриваете: новые комментарии к страницам'),
+('you_watching_pages', 'en', 'You are currently viewing: the new page'),
+('you_watching_pages', 'ru', 'Вы просматриваете: новые страницы'),
+('you_watching_pollcomments', 'en', 'You are currently viewing: the new comments to the polls'),
+('you_watching_pollcomments', 'ru', 'Вы просматриваете: новые комментарии к опросам'),
+('you_watching_relcomments', 'en', 'You are currently viewing: the new comments to the releases'),
+('you_watching_relcomments', 'ru', 'Вы просматриваете: новые комментарии к релизам'),
+('you_watching_reports', 'en', 'You are currently viewing: the new reports'),
+('you_watching_reports', 'ru', 'Вы просматриваете: новые жалобы'),
+('you_watching_reqcomments', 'en', 'You are currently viewing: the new comments to the request'),
+('you_watching_reqcomments', 'ru', 'Вы просматриваете: новые комментарии к запросам'),
+('you_watching_rgcomments', 'en', 'You are currently viewing: the new comments to the release groups'),
+('you_watching_rgcomments', 'ru', 'Вы просматриваете: новые комментарии к релиз-группам'),
+('you_watching_torrents', 'en', 'You are currently viewing: the new release'),
+('you_watching_torrents', 'ru', 'Вы просматриваете: новые релизы'),
+('you_watching_unchecked', 'en', 'You are currently viewing: the new untested release'),
+('you_watching_unchecked', 'ru', 'Вы просматриваете: новые непроверенные релизы'),
+('you_watching_unread', 'en', 'You are currently viewing: unread PM'),
+('you_watching_unread', 'ru', 'Вы просматриваете: непрочитанные ЛС'),
+('you_watching_usercomments', 'en', 'You are currently viewing: the new comments to the users'),
+('you_watching_usercomments', 'ru', 'Вы просматриваете: новые комментарии к пользователям'),
+('you_watching_users', 'en', 'You are currently viewing: the new user'),
+('you_watching_users', 'ru', 'Вы просматриваете: новые пользователи'),
+('zodiac', 'en', 'Zodiac'),
+('zodiac', 'ru', 'Знак зодиака');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `messages`
+--
+
+CREATE TABLE IF NOT EXISTS `messages` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `sender` int(10) unsigned NOT NULL DEFAULT '0',
+  `receiver` int(10) unsigned NOT NULL DEFAULT '0',
+  `added` int(10) DEFAULT NULL,
+  `subject` varchar(255) NOT NULL,
+  `msg` text,
+  `unread` tinyint(1) NOT NULL DEFAULT '1',
+  `poster` int(10) unsigned NOT NULL DEFAULT '0',
+  `location` tinyint(1) NOT NULL DEFAULT '1',
+  `saved` tinyint(1) NOT NULL DEFAULT '0',
+  `archived` tinyint(1) NOT NULL DEFAULT '0',
+  `archived_receiver` tinyint(1) NOT NULL DEFAULT '0',
+  `spamid` int(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `receiver` (`receiver`),
+  KEY `sender` (`sender`),
+  KEY `poster` (`poster`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `messages`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `news`
+--
+
+CREATE TABLE IF NOT EXISTS `news` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(11) NOT NULL DEFAULT '0',
+  `added` int(10) NOT NULL,
+  `body` text NOT NULL,
+  `subject` varchar(300) NOT NULL,
+  `comments` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `added` (`added`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `news`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifs`
+--
+
+CREATE TABLE IF NOT EXISTS `notifs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `checkid` int(11) NOT NULL DEFAULT '0',
+  `type` varchar(100) NOT NULL,
+  `userid` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `checkid` (`checkid`,`type`,`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `notifs`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orbital_blocks`
+--
+
+CREATE TABLE IF NOT EXISTS `orbital_blocks` (
+  `bid` int(10) NOT NULL AUTO_INCREMENT,
+  `title` varchar(60) NOT NULL,
+  `content` text NOT NULL,
+  `bposition` char(1) NOT NULL,
+  `weight` int(10) NOT NULL DEFAULT '1',
+  `active` int(1) NOT NULL DEFAULT '1',
+  `blockfile` varchar(255) NOT NULL,
+  `view` varchar(20) DEFAULT NULL,
+  `expire` int(10) NOT NULL DEFAULT '0',
+  `which` varchar(255) NOT NULL,
+  `custom_tpl` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`bid`),
+  KEY `title` (`title`),
+  KEY `weight` (`weight`),
+  KEY `active` (`active`)
+) ENGINE=InnoDB  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=18 ;
+
+--
+-- Dumping data for table `orbital_blocks`
+--
+
+INSERT INTO `orbital_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `expire`, `which`, `custom_tpl`) VALUES
+(1, 'Новинки!', '', 't', 2, 1, 'block-indextorrents.php', '-1,0,1,2,3,4,5,6', 0, 'index,', ''),
+(2, 'Новости', '', 'r', 2, 1, 'block-news.php', '', 0, 'index,', ''),
+(3, 'Serverload', '', 't', 3, 1, 'block-server_load.php', '6', 0, '', ''),
+(4, 'Добро пожаловать', '', 'r', 1, 1, 'block-userpanel.php', '', 0, 'index,search,', ''),
+(5, 'Опросы', '', 'd', 3, 1, 'block-polls.php', '0', 0, 'index,userdetails,', NULL),
+(6, 'О проекте', 'content', 'r', 5, 1, '', '', 0, 'faq,rules,signup,', ''),
+(7, 'Пользователи Онлайн', '', 'r', 3, 1, 'block-online.php', '0', 0, 'index,', NULL),
+(8, 'Статистика', '<h2><span style="color: #ffcc00;">Чтобы знали, что вас ожидает, посмотрите на статистику:</span></h2>', 'd', 1, 1, 'block-stats.php', '-1', 0, 'signup,', NULL),
+(9, 'Наша социальная сеть растет с каждым днем:', '', 'd', 2, 1, 'block-stats.php', '', 0, 'index,', ''),
+(12, 'Запрещенные релизы', '', 'r', 7, 1, 'block-cen.php', '0', 0, 'index,', NULL),
+(14, 'Последние комментарии', '', 'r', 6, 1, 'block-req.php', '0', 0, 'index,', NULL),
+(15, 'DISCLAIMER', '<span class="small" style="font-weight: normal;">Русский:<br />Предупреждение! Информация, расположенная на данном сервере, предназначена исключительно для частного использования в образовательных целях и не может быть загружена/перенесена на другой компьютер. Ни владелец сайта, ни хостинг-провайдер, ни любые другие физические или юридические лица не могут нести никакой ответственности за любое использование материалов данного сайта. Входя на сайт, Вы, как пользователь, тем самым подтверждаете полное и безоговорочное согласие со всеми условиями использования. Авторы проекта относятся особо негативно к нелегальному использованию информации, полученной на сайте.<br /><br /></span><strong></strong>[spoiler=Информация для правообладателей]<strong>ВНИМАНИЕ!</strong> Мы не осуществляем контроль за действиями пользователей, которые могут повторно размещать ссылки на информацию, являющуюся объектом вашего исключительного права. Любая информация на ресурсе размещается пользователем самостоятельно, без какого-либо контроля с чьей-либо стороны, что соответствует общепринятой мировой практике размещения информации в сети Интернет. Однако мы в любом случае рассмотрим все Ваши корректно сформулированные запросы относительно ссылок на информацию, нарушающую Ваши права. Запросы на удаление НЕПОСРЕДСТВЕННО информации, нарушающей права, будут возвращены отправителю, так как на серверах torrentsbook.com подобная информация не содержится.\r\n<p><strong>Необходимо предоставить следующую информацию:</strong></p>\r\n<p>1. Данные о продукте:</p>\r\n<p>1.1. Название продукта - русское и английское (в случае наличия английской версии).</p>\r\n<p>1.2. Официальная страница продукта в Интернете (в случае наличия).</p>\r\n<p>1.3. Номер, присвоенный продукту по государственному реестру.</p>\r\n<p>1.4. Для Юридического Лица / Правообладателя электронных изданий/программ для ЭВМ/баз данных - Копия документа о государственной регистрации. Для Юридического Лица / Правообладателя кино- и видеоматериалов - Прокатное удостоверение (копия).</p>\r\n<p>2. Данные о правообладателе:</p>\r\n<p>2.1. Полное наименование юридического лица.</p>\r\n<p>2.2. Почтовый адрес (в случае несовпадения юридического и почтового адреса – обязательное указание юридического адреса).</p>\r\n<p>2.3. Сайт правообладателя в сети Интернет.</p>\r\n<p>2.4. Лицензия на право деятельности (если таковая деятельность лицензируется в установленном законом порядке).</p>\r\n<p>2.5. Контактное лицо правообладателя (ФИО, должность, телефон, email).</p>\r\n<p>3. Данные лица, подающего жалобу.</p>\r\n<p>3.1. ФИО.</p>\r\n<p>3.2. Должность.</p>\r\n<p>3.3. Телефон.</p>\r\n<p>3.4. email.</p>\r\n<p>3.5. Копия доверенности на действия от лица Правообладателя (не требуется в случае если лицо подающее жалобу – руководитель компании Правообладателя). Если жалобу подает не правообладатель, а его уполномоченный доверенностью представитель - юридическое лицо, следует предоставить копию доверенности на действия физического лица от лица компании, уполномоченной доверенностью Правообладателя (не требуется в случае, если лицо подающее жалобу - руководитель компании представителя).</p>\r\n<p>4. Претензионные данные.</p>\r\n<p>4.1. Адрес страницы сайта, которые содержат ссылки на данные, нарушающие права. Ссылка должна иметь вид http://www.torrentsbook.com/xxx/название</p>\r\n<p>4.2. Полное описание сути нарушения прав (почему распространение данной информации запрещено Правообладателем).</p>\r\n<p>5. Подписка о правомерности действий (заполняется от руки и высылается в отсканированном варианте). Обязательна для каждой жалобы.</p>\r\n<hr />\r\n<p><strong>Форма запроса</strong></p>\r\n<p><em><strong>Я, «ФИО», действующий от лица «Юридическое наименование правообладателя» на основании доверенности «данные доверенности» свидетельствую о том, что все данные, указанные в данном обращении верны, «Наименование лица» (Правообладатель) – является обладателем исключительных имущественных прав, включая:</strong></em></p>\r\n<ul>\r\n<li><em>исключительное право на воспроизведение;</em></li>\r\n<li><em>исключительное право на распространение;</em></li>\r\n<li><em>исключительное право на публичный показ;</em></li>\r\n<li><em>исключительное право на доведение до всеобщего сведения;</em></li>\r\n</ul>\r\n<p><em>Все вышеперечисленные права действуют на территории Российской Федерации, все вопросы, связанные, с выплатой вознаграждений авторам произведения урегулированы Правообладателем, Правообладателю неизвестно о претензиях третьих лиц, в отношении указанных прав. В случае возникновения претензий к ресурсу torrentsbook.com со стороны третьих лиц, связанных с нарушением их прав (в том числе потребительских прав) в отношении удаленной/блокированной ссылки «ССЫЛКА», Правообладатель принимает все необходимые меры по урегулированию претензий, а также возможных споров, в том числе судебных.</em></p>\r\n<em> </em>\r\n<p><em>Правообладатель обязуется урегулировать требования, претензии, либо иски третьих лиц, а также полностью возместить ресурсу torrentsbook.com расходы и убытки (включая упущенную выгоду, оплату услуг юриста и т.п.), связанные с компенсацией требований, претензий, исков третьих лиц по факту нарушения их прав, а также иными претензиями, связанными с незаконным или ошибочным блокированием, либо удалением ссылки по требованию Правообладателя.</em></p>\r\n<em> </em>\r\n<p><em>«Дата. Подпись.»</em></p>\r\n<hr />\r\nОбращаем ваше внимание на то, что ваши письма принимаются только по адресу <a href="mailto:copyrights@torrentsbook.com"><strong>copyrights@torrentsbook.com</strong></a>, и только в соответствии с этим шаблоном и перечнем документов, указанных выше. В противном случае ваши письма будут<span style="text-decoration: underline;"> проигнорированы</span>.[/spoiler]<br /><span class="small" style="font-weight: normal;">English:<br /></span><span class="small" style="font-weight: normal;">No files you see here are hosted on the server. Links available are provided by site users and administation is not responsible for them. It is strictly prohibited to upload any copyrighted material without explicit permission from copyright holders. If you find that some content is abusing you feel free to contact administation.</span>', 'd', 5, 1, '', '', 0, 'index,', ''),
+(17, 'Мы вернулись!', '<h1><span style="font-family: ''arial black'', ''avant garde''; color: #ff0000;">WE STILL ONLINE *</span></h1>\r\n<div style="text-align: right;"><strong>* мы все еще онлайн</strong></div>\r\n<div style="text-align: left;"><strong><a href="newsoverview.php?id=78">Подробности тут</a></strong><br /><br /></div>', 't', 0, 0, '', '0', 0, '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `peers`
+--
+
+CREATE TABLE IF NOT EXISTS `peers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `torrent` int(10) unsigned NOT NULL DEFAULT '0',
+  `peer_id` varchar(40) NOT NULL,
+  `ip` varchar(64) NOT NULL,
+  `port` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `seeder` tinyint(1) NOT NULL DEFAULT '0',
+  `started` int(10) NOT NULL,
+  `last_action` int(10) NOT NULL,
+  `userid` int(10) unsigned NOT NULL DEFAULT '0',
+  `finishedat` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `torrent_peer_id` (`torrent`,`peer_id`),
+  KEY `torrent` (`torrent`),
+  KEY `torrent_seeder` (`torrent`,`seeder`),
+  KEY `last_action` (`last_action`),
+  KEY `userid` (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `peers`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `polls`
+--
+
+CREATE TABLE IF NOT EXISTS `polls` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `question` varchar(255) NOT NULL,
+  `start` int(10) NOT NULL,
+  `exp` int(10) DEFAULT NULL,
+  `public` tinyint(1) NOT NULL DEFAULT '0',
+  `comments` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `polls`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `polls_structure`
+--
+
+CREATE TABLE IF NOT EXISTS `polls_structure` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pollid` int(10) NOT NULL,
+  `value` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `polls_structure`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `polls_votes`
+--
+
+CREATE TABLE IF NOT EXISTS `polls_votes` (
+  `vid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `sid` int(10) NOT NULL DEFAULT '0',
+  `user` int(10) NOT NULL,
+  `pid` int(10) NOT NULL,
+  PRIMARY KEY (`vid`),
+  UNIQUE KEY `sid` (`sid`,`user`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `polls_votes`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `presents`
+--
 
 CREATE TABLE IF NOT EXISTS `presents` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -23,1344 +3320,446 @@ CREATE TABLE IF NOT EXISTS `presents` (
   `type` varchar(100) DEFAULT NULL,
   `msg` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
--- 
--- ��������� ������� `addedrequests`
--- 
-
-CREATE TABLE `addedrequests` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `requestid` int(10) unsigned NOT NULL default '0',
-  `userid` int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `pollid` (`id`),
-  KEY `userid` (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `addedrequests`
--- 
+--
+-- Dumping data for table `presents`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `bannedemails`
--- 
-
-CREATE TABLE `bannedemails` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `added` int(10) NOT NULL,
-  `addedby` int(10) unsigned NOT NULL default '0',
-  `comment` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `bannedemails`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `bans`
--- 
-
-CREATE TABLE `bans` (
-  `id` int(11) unsigned NOT NULL auto_increment,
-  `mask` varchar(60) NOT NULL,
-  `desc` varchar(255) default NULL,
-  `user` int(10) unsigned NOT NULL default '0',
-  `added` int(10) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `bans`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `bookmarks`
--- 
-
-CREATE TABLE `bookmarks` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `userid` int(10) unsigned NOT NULL default '0',
-  `torrentid` int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `bookmarks`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `cache_stats`
--- 
-
-CREATE TABLE `cache_stats` (
-  `cache_name` varchar(255) NOT NULL,
-  `cache_value` text,
-  PRIMARY KEY  (`cache_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-
--- 
--- ���� ������ ������� `cache_stats`
--- 
-
-INSERT INTO `cache_stats` VALUES ('adminemail', 'admin@localhost');
-INSERT INTO `cache_stats` VALUES ('allow_invite_signup', '1');
-INSERT INTO `cache_stats` VALUES ('announce_interval', '30');
-INSERT INTO `cache_stats` VALUES ('announce_packed', '1');
-INSERT INTO `cache_stats` VALUES ('as_check_messages', '1');
-INSERT INTO `cache_stats` VALUES ('as_timeout', '15');
-INSERT INTO `cache_stats` VALUES ('autoclean_interval', '900');
-INSERT INTO `cache_stats` VALUES ('avatar_max_height', '100');
-INSERT INTO `cache_stats` VALUES ('avatar_max_width', '100');
-INSERT INTO `cache_stats` VALUES ('debug_mode', '1');
-INSERT INTO `cache_stats` VALUES ('defaultbaseurl', 'http://releaser320.com');
-INSERT INTO `cache_stats` VALUES ('default_emailnotifs', 'unread,torrents,friends');
-INSERT INTO `cache_stats` VALUES ('default_language', 'ru');
-INSERT INTO `cache_stats` VALUES ('default_notifs', 'unread,torrents,comments,pollcomments,newscomments,usercomments,reqcomments,rgcomments,pages,pagecomments,friends');
-INSERT INTO `cache_stats` VALUES ('default_theme', 'kinokpk');
-INSERT INTO `cache_stats` VALUES ('defuserclass', '3');
-INSERT INTO `cache_stats` VALUES ('deny_signup', '0');
-INSERT INTO `cache_stats` VALUES ('description', 'Kinokpk.com releaser new installation');
-INSERT INTO `cache_stats` VALUES ('emo_dir', 'default');
-INSERT INTO `cache_stats` VALUES ('exporttype', 'wiki');
-INSERT INTO `cache_stats` VALUES ('forumname', 'Integrated forum');
-INSERT INTO `cache_stats` VALUES ('forumurl', 'http://forum.pdaprime.ru');
-INSERT INTO `cache_stats` VALUES ('forum_bin_id', '20');
-INSERT INTO `cache_stats` VALUES ('ipb_cookie_prefix', '');
-INSERT INTO `cache_stats` VALUES ('ipb_password_priority', '0');
-INSERT INTO `cache_stats` VALUES ('keywords', 'kinokpk, kinokpk.com, releaser, 3.20, ZonD80');
-INSERT INTO `cache_stats` VALUES ('maxusers', '0');
-INSERT INTO `cache_stats` VALUES ('max_dead_torrent_time', '744');
-INSERT INTO `cache_stats` VALUES ('max_images', '4');
-INSERT INTO `cache_stats` VALUES ('max_torrent_size', '1000000');
-INSERT INTO `cache_stats` VALUES ('not_found_export_id', '66');
-INSERT INTO `cache_stats` VALUES ('pm_max', '100');
-INSERT INTO `cache_stats` VALUES ('pron_cats', '0');
-INSERT INTO `cache_stats` VALUES ('register_timezone', '3');
-INSERT INTO `cache_stats` VALUES ('re_privatekey', 'none');
-INSERT INTO `cache_stats` VALUES ('re_publickey', 'none');
-INSERT INTO `cache_stats` VALUES ('signup_timeout', '3');
-INSERT INTO `cache_stats` VALUES ('siteemail', 'webmaster@localhost');
-INSERT INTO `cache_stats` VALUES ('sitename', 'Kinokpk.com releaser new installation');
-INSERT INTO `cache_stats` VALUES ('siteonline', 'a:4:{s:5:"onoff";i:1;s:6:"reason";s:4:"test";s:5:"class";i:6;s:10:"class_name";s:21:"������ ��� ����������";}');
-INSERT INTO `cache_stats` VALUES ('smtptype', 'advanced');
-INSERT INTO `cache_stats` VALUES ('torrentsperpage', '25');
-INSERT INTO `cache_stats` VALUES ('ttl_days', '28');
-INSERT INTO `cache_stats` VALUES ('use_blocks', '1');
-INSERT INTO `cache_stats` VALUES ('use_captcha', '1');
-INSERT INTO `cache_stats` VALUES ('use_dc', '1');
-INSERT INTO `cache_stats` VALUES ('use_email_act', '0');
-INSERT INTO `cache_stats` VALUES ('use_gzip', '0');
-INSERT INTO `cache_stats` VALUES ('use_integration', '0');
-INSERT INTO `cache_stats` VALUES ('use_ipbans', '1');
-INSERT INTO `cache_stats` VALUES ('use_kinopoisk_trailers', '1');
-INSERT INTO `cache_stats` VALUES ('use_lang', '1');
-INSERT INTO `cache_stats` VALUES ('use_sessions', '1');
-INSERT INTO `cache_stats` VALUES ('use_ttl', '0');
-INSERT INTO `cache_stats` VALUES ('use_wait', '0');
-INSERT INTO `cache_stats` VALUES ('yourcopy', '� {datenow} Your Copyright');
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `categories`
--- 
-
-CREATE TABLE `categories` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `sort` int(10) NOT NULL default '0',
-  `name` varchar(255) NOT NULL,
-  `seo_name` varchar(80) default NULL,
-  `image` varchar(255) NOT NULL,
-  `parent_id` int(10) NOT NULL default '0',
-  `forum_id` smallint(5) NOT NULL default '0',
-  `disable_export` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `categories`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `censoredtorrents`
--- 
-
-CREATE TABLE `censoredtorrents` (
-  `id` int(10) NOT NULL auto_increment,
-  `name` varchar(255) NOT NULL,
-  `reason` text NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `censoredtorrents`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `comments`
--- 
-
-CREATE TABLE `comments` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `user` int(10) unsigned NOT NULL default '0',
-  `torrent` int(10) unsigned NOT NULL default '0',
-  `added` int(10) NOT NULL,
-  `text` text NOT NULL,
-  `editedby` int(10) unsigned NOT NULL default '0',
-  `editedat` int(10) NOT NULL,
-  `ratingsum` int(5) NOT NULL default '0',
-  `ip` varchar(15) NOT NULL,
-  `post_id` int(10) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `user` (`user`),
-  KEY `torrent` (`torrent`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `comments`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `countries`
--- 
-
-CREATE TABLE `countries` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(50) default NULL,
-  `flagpic` varchar(50) default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=106 ;
-
--- 
--- ���� ������ ������� `countries`
--- 
-
-INSERT INTO `countries` VALUES (1, '������', 'sweden.gif');
-INSERT INTO `countries` VALUES (2, '���', 'usa.gif');
-INSERT INTO `countries` VALUES (3, '������', 'russia.gif');
-INSERT INTO `countries` VALUES (4, '���������', 'finland.gif');
-INSERT INTO `countries` VALUES (5, '������', 'canada.gif');
-INSERT INTO `countries` VALUES (6, '�������', 'france.gif');
-INSERT INTO `countries` VALUES (7, '��������', 'germany.gif');
-INSERT INTO `countries` VALUES (8, '�����', 'china.gif');
-INSERT INTO `countries` VALUES (9, '������', 'italy.gif');
-INSERT INTO `countries` VALUES (10, 'Denmark', 'denmark.gif');
-INSERT INTO `countries` VALUES (11, '��������', 'norway.gif');
-INSERT INTO `countries` VALUES (12, '������', 'uk.gif');
-INSERT INTO `countries` VALUES (13, '��������', 'ireland.gif');
-INSERT INTO `countries` VALUES (14, '������', 'poland.gif');
-INSERT INTO `countries` VALUES (15, '����������', 'netherlands.gif');
-INSERT INTO `countries` VALUES (16, '�������', 'belgium.gif');
-INSERT INTO `countries` VALUES (17, '������', 'japan.gif');
-INSERT INTO `countries` VALUES (18, '��������', 'brazil.gif');
-INSERT INTO `countries` VALUES (19, '���������', 'argentina.gif');
-INSERT INTO `countries` VALUES (20, '���������', 'australia.gif');
-INSERT INTO `countries` VALUES (21, '����� ��������', 'newzealand.gif');
-INSERT INTO `countries` VALUES (22, '�������', 'spain.gif');
-INSERT INTO `countries` VALUES (23, '����������', 'portugal.gif');
-INSERT INTO `countries` VALUES (24, '�������', 'mexico.gif');
-INSERT INTO `countries` VALUES (25, '��������', 'singapore.gif');
-INSERT INTO `countries` VALUES (26, '�����', 'india.gif');
-INSERT INTO `countries` VALUES (27, '�������', 'albania.gif');
-INSERT INTO `countries` VALUES (28, '����� ������', 'southafrica.gif');
-INSERT INTO `countries` VALUES (29, '����� �����', 'southkorea.gif');
-INSERT INTO `countries` VALUES (30, '������', 'jamaica.gif');
-INSERT INTO `countries` VALUES (31, '����������', 'luxembourg.gif');
-INSERT INTO `countries` VALUES (32, '���� ����', 'hongkong.gif');
-INSERT INTO `countries` VALUES (33, 'Belize', 'belize.gif');
-INSERT INTO `countries` VALUES (34, '�����', 'algeria.gif');
-INSERT INTO `countries` VALUES (35, '������', 'angola.gif');
-INSERT INTO `countries` VALUES (36, '�������', 'austria.gif');
-INSERT INTO `countries` VALUES (37, '���������', 'yugoslavia.gif');
-INSERT INTO `countries` VALUES (38, '����� �����', 'westernsamoa.gif');
-INSERT INTO `countries` VALUES (39, '��������', 'malaysia.gif');
-INSERT INTO `countries` VALUES (40, '������������� ����������', 'dominicanrep.gif');
-INSERT INTO `countries` VALUES (41, '������', 'greece.gif');
-INSERT INTO `countries` VALUES (42, '���������', 'guatemala.gif');
-INSERT INTO `countries` VALUES (43, '�������', 'israel.gif');
-INSERT INTO `countries` VALUES (44, '��������', 'pakistan.gif');
-INSERT INTO `countries` VALUES (45, '�����', 'czechrep.gif');
-INSERT INTO `countries` VALUES (46, '������', 'serbia.gif');
-INSERT INTO `countries` VALUES (47, '����������� �������', 'seychelles.gif');
-INSERT INTO `countries` VALUES (48, '�������', 'taiwan.gif');
-INSERT INTO `countries` VALUES (49, '������ ����', 'puertorico.gif');
-INSERT INTO `countries` VALUES (50, '����', 'chile.gif');
-INSERT INTO `countries` VALUES (51, '����', 'cuba.gif');
-INSERT INTO `countries` VALUES (52, '�����', 'congo.gif');
-INSERT INTO `countries` VALUES (53, '����������', 'afghanistan.gif');
-INSERT INTO `countries` VALUES (54, '������', 'turkey.gif');
-INSERT INTO `countries` VALUES (55, '����������', 'uzbekistan.gif');
-INSERT INTO `countries` VALUES (56, '���������', 'switzerland.gif');
-INSERT INTO `countries` VALUES (57, '��������', 'kiribati.gif');
-INSERT INTO `countries` VALUES (58, '���������', 'philippines.gif');
-INSERT INTO `countries` VALUES (59, 'Burkina Faso', 'burkinafaso.gif');
-INSERT INTO `countries` VALUES (60, '�������', 'nigeria.gif');
-INSERT INTO `countries` VALUES (61, '��������', 'iceland.gif');
-INSERT INTO `countries` VALUES (62, '�����', 'nauru.gif');
-INSERT INTO `countries` VALUES (63, '��������', 'slovenia.gif');
-INSERT INTO `countries` VALUES (64, '������������', 'turkmenistan.gif');
-INSERT INTO `countries` VALUES (65, '������', 'bosniaherzegovina.gif');
-INSERT INTO `countries` VALUES (66, '������', 'andorra.gif');
-INSERT INTO `countries` VALUES (67, '�����', 'lithuania.gif');
-INSERT INTO `countries` VALUES (68, '���������', 'macedonia.gif');
-INSERT INTO `countries` VALUES (69, '������������� �������', 'nethantilles.gif');
-INSERT INTO `countries` VALUES (70, '�������', 'ukraine.gif');
-INSERT INTO `countries` VALUES (71, '���������', 'venezuela.gif');
-INSERT INTO `countries` VALUES (72, '�������', 'hungary.gif');
-INSERT INTO `countries` VALUES (73, '�������', 'romania.gif');
-INSERT INTO `countries` VALUES (74, '�������', 'vanuatu.gif');
-INSERT INTO `countries` VALUES (75, '�������', 'vietnam.gif');
-INSERT INTO `countries` VALUES (76, 'Trinidad & Tobago', 'trinidadandtobago.gif');
-INSERT INTO `countries` VALUES (77, '��������', 'honduras.gif');
-INSERT INTO `countries` VALUES (78, '���������', 'kyrgyzstan.gif');
-INSERT INTO `countries` VALUES (79, '�������', 'ecuador.gif');
-INSERT INTO `countries` VALUES (80, '������', 'bahamas.gif');
-INSERT INTO `countries` VALUES (81, '����', 'peru.gif');
-INSERT INTO `countries` VALUES (82, '��������', 'cambodia.gif');
-INSERT INTO `countries` VALUES (83, '��������', 'barbados.gif');
-INSERT INTO `countries` VALUES (84, '���������', 'bangladesh.gif');
-INSERT INTO `countries` VALUES (85, '����', 'laos.gif');
-INSERT INTO `countries` VALUES (86, '�������', 'uruguay.gif');
-INSERT INTO `countries` VALUES (87, 'Antigua Barbuda', 'antiguabarbuda.gif');
-INSERT INTO `countries` VALUES (88, '��������', 'paraguay.gif');
-INSERT INTO `countries` VALUES (89, '�������', 'thailand.gif');
-INSERT INTO `countries` VALUES (90, '����', 'ussr.gif');
-INSERT INTO `countries` VALUES (91, 'Senegal', 'senegal.gif');
-INSERT INTO `countries` VALUES (92, '����', 'togo.gif');
-INSERT INTO `countries` VALUES (93, '�������� �����', 'northkorea.gif');
-INSERT INTO `countries` VALUES (94, '��������', 'croatia.gif');
-INSERT INTO `countries` VALUES (95, '�������', 'estonia.gif');
-INSERT INTO `countries` VALUES (96, '��������', 'colombia.gif');
-INSERT INTO `countries` VALUES (97, '�������', 'lebanon.gif');
-INSERT INTO `countries` VALUES (98, '������', 'latvia.gif');
-INSERT INTO `countries` VALUES (99, '����� ����', 'costarica.gif');
-INSERT INTO `countries` VALUES (100, '�����', 'egypt.gif');
-INSERT INTO `countries` VALUES (101, '��������', 'bulgaria.gif');
-INSERT INTO `countries` VALUES (102, '���� �� ������', 'jollyroger.gif');
-INSERT INTO `countries` VALUES (103, '���������', 'kazahstan.png');
-INSERT INTO `countries` VALUES (104, '�������', 'moldova.gif');
-INSERT INTO `countries` VALUES (105, '��������', '');
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `cron`
--- 
-
-CREATE TABLE `cron` (
-  `cron_name` varchar(255) NOT NULL,
-  `cron_value` int(10) NOT NULL default '0',
-  PRIMARY KEY  (`cron_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-
--- 
--- ���� ������ ������� `cron`
--- 
-
-INSERT INTO `cron` VALUES ('announce_interval', 15);
-INSERT INTO `cron` VALUES ('autoclean_interval', 900);
-INSERT INTO `cron` VALUES ('delete_votes', 1440);
-INSERT INTO `cron` VALUES ('in_cleanup', 0);
-INSERT INTO `cron` VALUES ('in_remotecheck', 0);
-INSERT INTO `cron` VALUES ('last_cleanup', 0);
-INSERT INTO `cron` VALUES ('last_remotecheck', 0);
-INSERT INTO `cron` VALUES ('max_dead_torrent_time', 744);
-INSERT INTO `cron` VALUES ('num_checked', 0);
-INSERT INTO `cron` VALUES ('num_cleaned', 0);
-INSERT INTO `cron` VALUES ('pm_delete_sys_days', 15);
-INSERT INTO `cron` VALUES ('pm_delete_user_days', 30);
-INSERT INTO `cron` VALUES ('promote_rating', 50);
-INSERT INTO `cron` VALUES ('rating_checktime', 180);
-INSERT INTO `cron` VALUES ('rating_discounttorrent', 1);
-INSERT INTO `cron` VALUES ('rating_dislimit', -200);
-INSERT INTO `cron` VALUES ('rating_downlimit', -10);
-INSERT INTO `cron` VALUES ('rating_enabled', 1);
-INSERT INTO `cron` VALUES ('rating_freetime', 7);
-INSERT INTO `cron` VALUES ('rating_max', 300);
-INSERT INTO `cron` VALUES ('rating_perdownload', 1);
-INSERT INTO `cron` VALUES ('rating_perinvite', 5);
-INSERT INTO `cron` VALUES ('rating_perleech', 1);
-INSERT INTO `cron` VALUES ('rating_perrelease', 5);
-INSERT INTO `cron` VALUES ('rating_perrequest', 10);
-INSERT INTO `cron` VALUES ('rating_perseed', 1);
-INSERT INTO `cron` VALUES ('remotecheck_disabled', 0);
-INSERT INTO `cron` VALUES ('remotecheck_interval', 2);
-INSERT INTO `cron` VALUES ('remotepeers_cleantime', 10800);
-INSERT INTO `cron` VALUES ('remote_lastchecked', 0);
-INSERT INTO `cron` VALUES ('remote_trackers', 50);
-INSERT INTO `cron` VALUES ('signup_timeout', 5);
-INSERT INTO `cron` VALUES ('ttl_days', 100);
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `cron_emails`
--- 
-
-CREATE TABLE `cron_emails` (
-  `email` varchar(255) NOT NULL,
-  `subject` varchar(255) NOT NULL,
-  `body` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-
--- 
--- ���� ������ ������� `cron_emails`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `dchubs`
--- 
-
-CREATE TABLE `dchubs` (
-  `id` int(3) unsigned NOT NULL auto_increment,
-  `sort` int(3) NOT NULL default '0',
-  `announce_url` varchar(500) NOT NULL,
-  `mask` varchar(60) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `dchubs`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `files`
--- 
-
-CREATE TABLE `files` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `torrent` int(10) unsigned NOT NULL default '0',
-  `filename` varchar(255) NOT NULL,
-  `size` bigint(20) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `torrent` (`torrent`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `files`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `friends`
--- 
-
-CREATE TABLE `friends` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `userid` int(10) unsigned NOT NULL default '0',
-  `friendid` int(10) unsigned NOT NULL default '0',
-  `confirmed` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `userid` (`userid`,`friendid`),
-  UNIQUE KEY `friendid` (`friendid`,`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `friends`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `invites`
--- 
-
-CREATE TABLE `invites` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `inviter` int(10) unsigned NOT NULL default '0',
-  `inviteid` int(10) NOT NULL default '0',
-  `invite` varchar(32) NOT NULL,
-  `time_invited` int(10) NOT NULL,
-  `confirmed` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `invites`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `messages`
--- 
-
-CREATE TABLE `messages` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `sender` int(10) unsigned NOT NULL default '0',
-  `receiver` int(10) unsigned NOT NULL default '0',
-  `added` int(10) default NULL,
-  `subject` varchar(255) NOT NULL,
-  `msg` text,
-  `unread` tinyint(1) NOT NULL default '1',
-  `poster` int(10) unsigned NOT NULL default '0',
-  `location` tinyint(1) NOT NULL default '1',
-  `saved` tinyint(1) NOT NULL default '0',
-  `archived` tinyint(1) NOT NULL default '0',
-  `archived_receiver` tinyint(1) NOT NULL default '0',
-  `spamid` int(10) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `receiver` (`receiver`),
-  KEY `sender` (`sender`),
-  KEY `poster` (`poster`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `messages`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `news`
--- 
-
-CREATE TABLE `news` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `userid` int(11) NOT NULL default '0',
-  `added` int(10) NOT NULL,
-  `body` text NOT NULL,
-  `subject` varchar(300) NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `added` (`added`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `news`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `newscomments`
--- 
-
-CREATE TABLE `newscomments` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `user` int(10) unsigned NOT NULL default '0',
-  `news` int(10) unsigned NOT NULL default '0',
-  `added` int(10) NOT NULL,
-  `text` text NOT NULL,
-  `editedby` int(10) unsigned NOT NULL default '0',
-  `editedat` int(10) NOT NULL,
-  `ratingsum` int(5) NOT NULL default '0',
-  `ip` varchar(15) NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `user` (`user`),
-  KEY `news` (`news`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `newscomments`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `notifs`
--- 
-
-CREATE TABLE `notifs` (
-  `id` int(11) NOT NULL auto_increment,
-  `checkid` int(11) NOT NULL default '0',
-  `type` varchar(100) NOT NULL,
-  `userid` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `checkid` (`checkid`,`type`,`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `notifs`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `orbital_blocks`
--- 
-
-CREATE TABLE `orbital_blocks` (
-  `bid` int(10) NOT NULL auto_increment,
-  `bkey` varchar(15) NOT NULL,
-  `title` varchar(60) NOT NULL,
-  `content` text NOT NULL,
-  `bposition` char(1) NOT NULL,
-  `weight` int(10) NOT NULL default '1',
-  `active` int(1) NOT NULL default '1',
-  `time` int(10) NOT NULL default '0',
-  `blockfile` varchar(255) NOT NULL,
-  `view` int(1) NOT NULL default '0',
-  `expire` int(10) NOT NULL default '0',
-  `action` char(1) NOT NULL,
-  `which` varchar(255) NOT NULL,
-  PRIMARY KEY  (`bid`),
-  KEY `title` (`title`),
-  KEY `weight` (`weight`),
-  KEY `active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=16 ;
-
--- 
--- ���� ������ ������� `orbital_blocks`
--- 
-
-INSERT INTO `orbital_blocks` VALUES (1, '', '�������!', '', 'c', 2, 1, 0, 'block-indextorrents.php', 0, 0, 'd', 'ihome,');
-INSERT INTO `orbital_blocks` VALUES (2, '', '�������', '', 'r', 2, 1, 0, 'block-news.php', 0, 0, 'd', 'ihome,');
-INSERT INTO `orbital_blocks` VALUES (3, '', 'Serverload', '', 'c', 3, 1, 0, 'block-server_load.php', 2, 0, 'd', 'all');
-INSERT INTO `orbital_blocks` VALUES (4, '', '����� ����������', '', 'r', 1, 1, 0, 'block-login.php', 1, 0, 'd', 'ihome,');
-INSERT INTO `orbital_blocks` VALUES (5, '', '������', '', 'd', 3, 1, 0, 'block-polls.php', 1, 0, 'd', 'ihome,userdetails,');
-INSERT INTO `orbital_blocks` VALUES (6, '', '� �������', 'about project', 'r', 5, 1, 0, '', 0, 0, 'd', 'faq,rules,signup,');
-INSERT INTO `orbital_blocks` VALUES (7, '', '������������ ������', '', 'r', 3, 1, 0, 'block-online.php', 1, 0, 'd', 'ihome,');
-INSERT INTO `orbital_blocks` VALUES (8, '', '����������', '<h2><span style="color: #ffcc00;">����� �����, ��� ��� �������, ���������� �� ����������:</span></h2>', 'd', 1, 1, 0, 'block-stats.php', 0, 0, 'd', 'signup,');
-INSERT INTO `orbital_blocks` VALUES (9, '', '����������', '', 'd', 2, 1, 0, 'block-stats.php', 0, 0, 'd', 'ihome,');
-INSERT INTO `orbital_blocks` VALUES (10, '', '����', '', 'r', 4, 1, 0, 'block-cloud.php', 0, 0, 'd', 'ihome,');
-INSERT INTO `orbital_blocks` VALUES (11, '', 'helpseed', '', 'd', 4, 0, 0, 'block-helpseed.php', 2, 0, 'd', 'ihome,');
-INSERT INTO `orbital_blocks` VALUES (12, '', '����������� ������', '', 'r', 7, 1, 0, 'block-cen.php', 1, 0, 'd', 'ihome,');
-INSERT INTO `orbital_blocks` VALUES (13, '', '����� �������', 'nothing here', 'c', 1, 0, 0, '', 0, 0, 'd', 'ihome,');
-INSERT INTO `orbital_blocks` VALUES (14, '', '��������� �����������', '', 'r', 6, 1, 0, 'block-req.php', 1, 0, 'd', 'ihome,');
-INSERT INTO `orbital_blocks` VALUES (15, '', 'DISCLAIMER', 'disclaimer', 'd', 5, 1, 0, '', 0, 0, 'd', 'ihome,');
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `pagecomments`
--- 
-
-CREATE TABLE `pagecomments` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `user` int(10) unsigned NOT NULL default '0',
-  `page` int(10) unsigned NOT NULL default '0',
-  `added` int(10) NOT NULL,
-  `text` text NOT NULL,
-  `editedby` int(10) unsigned NOT NULL default '0',
-  `editedat` int(10) NOT NULL,
-  `ratingsum` int(5) NOT NULL default '0',
-  `ip` varchar(15) NOT NULL,
-  `post_id` int(10) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `user` (`user`),
-  KEY `torrent` (`page`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `pagecomments`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `pages`
--- 
-
-CREATE TABLE `pages` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `category` varchar(100) NOT NULL,
-  `owner` int(10) NOT NULL default '0',
-  `added` int(10) NOT NULL,
-  `name` varchar(300) NOT NULL,
-  `class` int(2) NOT NULL default '0',
-  `tags` varchar(500) NOT NULL,
-  `content` text NOT NULL,
-  `comments` int(5) unsigned NOT NULL default '0',
-  `indexed` tinyint(1) NOT NULL default '0',
-  `sticky` tinyint(1) NOT NULL default '0',
-  `ratingsum` int(5) NOT NULL default '0',
-  `denycomments` tinyint(1) unsigned NOT NULL default '0',
-  `views` int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `pages`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `pagescategories`
--- 
-
-CREATE TABLE `pagescategories` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `sort` int(10) NOT NULL default '0',
-  `name` varchar(255) NOT NULL,
-  `image` varchar(255) NOT NULL,
-  `parent_id` int(10) NOT NULL default '0',
-  `class` int(2) NOT NULL default '0',
-  `class_edit` int(2) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `pagescategories`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `peers`
--- 
-
-CREATE TABLE `peers` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `torrent` int(10) unsigned NOT NULL default '0',
-  `peer_id` varchar(40) NOT NULL,
-  `ip` varchar(64) NOT NULL,
-  `port` smallint(5) unsigned NOT NULL default '0',
-  `seeder` tinyint(1) NOT NULL default '0',
-  `started` int(10) NOT NULL,
-  `last_action` int(10) NOT NULL,
-  `userid` int(10) unsigned NOT NULL default '0',
-  `finishedat` int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `torrent_peer_id` (`torrent`,`peer_id`),
-  KEY `torrent` (`torrent`),
-  KEY `torrent_seeder` (`torrent`,`seeder`),
-  KEY `last_action` (`last_action`),
-  KEY `userid` (`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `peers`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `pollcomments`
--- 
-
-CREATE TABLE `pollcomments` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `user` int(10) unsigned NOT NULL default '0',
-  `poll` int(10) unsigned NOT NULL default '0',
-  `added` int(10) NOT NULL,
-  `text` text NOT NULL,
-  `editedby` int(10) unsigned NOT NULL default '0',
-  `editedat` int(10) NOT NULL,
-  `ratingsum` int(5) NOT NULL default '0',
-  `ip` varchar(15) NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `user` (`user`),
-  KEY `poll` (`poll`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `pollcomments`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `polls`
--- 
-
-CREATE TABLE `polls` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `question` varchar(255) NOT NULL,
-  `start` int(10) NOT NULL,
-  `exp` int(10) default NULL,
-  `public` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `polls`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `polls_structure`
--- 
-
-CREATE TABLE `polls_structure` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `pollid` int(10) NOT NULL,
-  `value` text NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `polls_structure`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `polls_votes`
--- 
-
-CREATE TABLE `polls_votes` (
-  `vid` int(10) unsigned NOT NULL auto_increment,
-  `sid` int(10) NOT NULL default '0',
-  `user` int(10) NOT NULL,
-  `pid` int(10) NOT NULL,
-  PRIMARY KEY  (`vid`),
-  UNIQUE KEY `sid` (`sid`,`user`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `polls_votes`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `ratings`
--- 
-
-CREATE TABLE `ratings` (
-  `id` int(6) NOT NULL auto_increment,
+--
+-- Table structure for table `ratings`
+--
+
+CREATE TABLE IF NOT EXISTS `ratings` (
+  `id` int(6) NOT NULL AUTO_INCREMENT,
   `rid` int(10) NOT NULL,
   `userid` int(10) NOT NULL,
   `type` varchar(30) NOT NULL,
-  `added` int(10) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  `added` int(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   UNIQUE KEY `rid` (`rid`,`userid`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `ratings`
--- 
+--
+-- Dumping data for table `ratings`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `relgroups`
--- 
+--
+-- Table structure for table `relgroups`
+--
 
-CREATE TABLE `relgroups` (
-  `id` int(10) unsigned NOT NULL auto_increment,
+CREATE TABLE IF NOT EXISTS `relgroups` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(150) NOT NULL,
-  `added` int(10) NOT NULL default '0',
+  `added` int(10) NOT NULL DEFAULT '0',
   `spec` varchar(500) NOT NULL,
   `descr` text NOT NULL,
   `image` varchar(300) NOT NULL,
   `owners` varchar(100) NOT NULL,
   `members` varchar(255) NOT NULL,
-  `ratingsum` int(5) NOT NULL default '0',
-  `private` tinyint(1) NOT NULL default '0',
-  `only_invites` tinyint(1) unsigned NOT NULL default '0',
-  `amount` int(3) NOT NULL default '0',
+  `ratingsum` int(5) NOT NULL DEFAULT '0',
+  `private` tinyint(1) NOT NULL DEFAULT '0',
+  `only_invites` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `amount` int(3) NOT NULL DEFAULT '0',
   `page_pay` varchar(300) NOT NULL,
-  `subscribe_length` int(2) NOT NULL default '31',
-  PRIMARY KEY  (`id`),
+  `subscribe_length` int(2) NOT NULL DEFAULT '31',
+  `comments` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `relgroups`
--- 
+--
+-- Dumping data for table `relgroups`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `reltemplates`
--- 
+--
+-- Table structure for table `reltemplates`
+--
 
-CREATE TABLE `reltemplates` (
-  `id` int(3) unsigned NOT NULL auto_increment,
+CREATE TABLE IF NOT EXISTS `reltemplates` (
+  `id` int(3) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `content` text NOT NULL,
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `reltemplates`
--- 
+--
+-- Dumping data for table `reltemplates`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `reports`
--- 
+--
+-- Table structure for table `reports`
+--
 
-CREATE TABLE `reports` (
-  `id` int(11) NOT NULL auto_increment,
-  `reportid` int(10) NOT NULL default '0',
-  `userid` int(10) NOT NULL default '0',
+CREATE TABLE IF NOT EXISTS `reports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `reportid` int(10) NOT NULL DEFAULT '0',
+  `userid` int(10) NOT NULL DEFAULT '0',
   `type` varchar(100) NOT NULL,
   `motive` varchar(255) NOT NULL,
   `added` int(10) NOT NULL,
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   UNIQUE KEY `reportid` (`reportid`,`userid`,`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `reports`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `reqcomments`
--- 
-
-CREATE TABLE `reqcomments` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `user` int(10) unsigned NOT NULL default '0',
-  `request` int(10) unsigned NOT NULL default '0',
-  `added` int(10) NOT NULL,
-  `text` text NOT NULL,
-  `editedby` int(10) unsigned NOT NULL default '0',
-  `editedat` int(10) NOT NULL,
-  `ratingsum` int(5) NOT NULL default '9',
-  `ip` varchar(15) NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `user` (`user`),
-  KEY `news` (`request`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `reqcomments`
--- 
+--
+-- Dumping data for table `reports`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `requests`
--- 
+--
+-- Table structure for table `requests`
+--
 
-CREATE TABLE `requests` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `userid` int(10) unsigned NOT NULL default '0',
-  `request` varchar(225) default NULL,
+CREATE TABLE IF NOT EXISTS `requests` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(10) unsigned NOT NULL DEFAULT '0',
+  `request` varchar(225) DEFAULT NULL,
   `descr` text NOT NULL,
   `added` int(10) NOT NULL,
-  `hits` int(10) unsigned NOT NULL default '0',
+  `hits` int(10) unsigned NOT NULL DEFAULT '0',
   `filled` varchar(200) NOT NULL,
-  `comments` int(10) unsigned NOT NULL default '0',
-  `cat` int(10) unsigned NOT NULL default '0',
-  `filledby` int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  `comments` int(10) unsigned NOT NULL DEFAULT '0',
+  `cat` int(10) unsigned NOT NULL DEFAULT '0',
+  `filledby` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   KEY `userid` (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `requests`
--- 
+--
+-- Dumping data for table `requests`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `retrackers`
--- 
+--
+-- Table structure for table `retrackers`
+--
 
-CREATE TABLE `retrackers` (
-  `id` int(3) unsigned NOT NULL auto_increment,
-  `sort` int(3) NOT NULL default '0',
+CREATE TABLE IF NOT EXISTS `retrackers` (
+  `id` int(3) unsigned NOT NULL AUTO_INCREMENT,
+  `sort` int(3) NOT NULL DEFAULT '0',
   `announce_url` varchar(500) NOT NULL,
   `mask` varchar(60) NOT NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `retrackers`
--- 
+--
+-- Dumping data for table `retrackers`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `rg_invites`
--- 
+--
+-- Table structure for table `rgnews`
+--
 
-CREATE TABLE `rg_invites` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `inviter` int(10) unsigned NOT NULL default '0',
-  `rgid` int(5) NOT NULL default '0',
-  `invite` varchar(32) NOT NULL,
-  `time_invited` int(10) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `rg_invites`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `rg_subscribes`
--- 
-
-CREATE TABLE `rg_subscribes` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `userid` int(10) unsigned NOT NULL,
-  `rgid` int(5) unsigned NOT NULL,
-  `valid_until` int(10) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `userid` (`userid`,`rgid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `rg_subscribes`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `rgcomments`
--- 
-
-CREATE TABLE `rgcomments` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `user` int(10) unsigned NOT NULL default '0',
-  `relgroup` int(5) unsigned NOT NULL default '0',
-  `added` int(10) NOT NULL,
-  `text` text NOT NULL,
-  `editedby` int(10) unsigned NOT NULL default '0',
-  `editedat` int(11) NOT NULL,
-  `ratingsum` int(5) NOT NULL default '0',
-  `ip` varchar(15) NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `user` (`user`),
-  KEY `news` (`relgroup`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `rgcomments`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `rgnews`
--- 
-
-CREATE TABLE `rgnews` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `relgroup` int(5) NOT NULL default '0',
+CREATE TABLE IF NOT EXISTS `rgnews` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `relgroup` int(5) NOT NULL DEFAULT '0',
   `added` int(10) NOT NULL,
   `body` text NOT NULL,
   `subject` varchar(300) NOT NULL,
-  PRIMARY KEY  (`id`),
+  `comments` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   KEY `added` (`added`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `rgnews`
--- 
+--
+-- Dumping data for table `rgnews`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `rgnewscomments`
--- 
+--
+-- Table structure for table `rg_invites`
+--
 
-CREATE TABLE `rgnewscomments` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `user` int(10) unsigned NOT NULL default '0',
-  `rgnews` int(10) unsigned NOT NULL default '0',
-  `added` int(10) NOT NULL,
-  `text` text NOT NULL,
-  `editedby` int(10) unsigned NOT NULL default '0',
-  `editedat` int(11) NOT NULL,
-  `ratingsum` int(5) NOT NULL default '0',
-  `ip` varchar(15) NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `user` (`user`),
-  KEY `news` (`rgnews`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `rg_invites` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `inviter` int(10) unsigned NOT NULL DEFAULT '0',
+  `rgid` int(5) NOT NULL DEFAULT '0',
+  `invite` varchar(32) NOT NULL,
+  `time_invited` int(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `rgnewscomments`
--- 
+--
+-- Dumping data for table `rg_invites`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `sessions`
--- 
+--
+-- Table structure for table `rg_subscribes`
+--
 
-CREATE TABLE `sessions` (
+CREATE TABLE IF NOT EXISTS `rg_subscribes` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(10) unsigned NOT NULL,
+  `rgid` int(5) unsigned NOT NULL,
+  `valid_until` int(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `userid` (`userid`,`rgid`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `rg_subscribes`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `seorules`
+--
+
+CREATE TABLE IF NOT EXISTS `seorules` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `script` varchar(255) DEFAULT NULL,
+  `parameter` varchar(255) DEFAULT NULL,
+  `replace` varchar(255) DEFAULT NULL,
+  `sort` int(2) NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `script` (`script`,`parameter`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `seorules`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sessions`
+--
+
+CREATE TABLE IF NOT EXISTS `sessions` (
   `sid` varchar(32) NOT NULL,
-  `uid` int(10) NOT NULL default '0',
+  `uid` int(10) NOT NULL DEFAULT '0',
   `username` varchar(40) NOT NULL,
-  `class` tinyint(4) NOT NULL default '0',
+  `class` tinyint(4) NOT NULL DEFAULT '0',
   `ip` varchar(40) NOT NULL,
-  `time` bigint(30) NOT NULL default '0',
+  `time` bigint(30) NOT NULL DEFAULT '0',
   `url` varchar(150) NOT NULL,
   `useragent` text,
-  PRIMARY KEY  (`sid`),
+  PRIMARY KEY (`sid`),
   KEY `time` (`time`),
   KEY `uid` (`uid`),
   KEY `url` (`url`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
 
--- 
--- ���� ������ ������� `sessions`
--- 
+--
+-- Dumping data for table `sessions`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `sitelog`
--- 
+--
+-- Table structure for table `sitelog`
+--
 
-CREATE TABLE `sitelog` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `added` int(10) default NULL,
-  `userid` int(10) NOT NULL default '0',
+CREATE TABLE IF NOT EXISTS `sitelog` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `added` int(10) DEFAULT NULL,
+  `userid` int(10) NOT NULL DEFAULT '0',
   `txt` text,
-  `type` varchar(80) NOT NULL default 'tracker',
-  PRIMARY KEY  (`id`),
+  `type` varchar(80) NOT NULL DEFAULT 'tracker',
+  PRIMARY KEY (`id`),
   KEY `added` (`added`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `sitelog`
--- 
+--
+-- Dumping data for table `sitelog`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `snatched`
--- 
+--
+-- Table structure for table `snatched`
+--
 
-CREATE TABLE `snatched` (
-  `id` int(11) NOT NULL auto_increment,
-  `userid` int(11) default '0',
-  `torrent` int(10) unsigned NOT NULL default '0',
+CREATE TABLE IF NOT EXISTS `snatched` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userid` int(11) DEFAULT '0',
+  `torrent` int(10) unsigned NOT NULL DEFAULT '0',
   `startedat` int(10) NOT NULL,
   `completedat` int(10) NOT NULL,
-  `finished` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  `finished` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   UNIQUE KEY `snatch` (`torrent`,`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `snatched`
--- 
+--
+-- Dumping data for table `snatched`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `stamps`
--- 
+--
+-- Table structure for table `stamps`
+--
 
-CREATE TABLE `stamps` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `sort` int(10) NOT NULL default '0',
-  `class` tinyint(3) NOT NULL default '0',
+CREATE TABLE IF NOT EXISTS `stamps` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `sort` int(10) NOT NULL DEFAULT '0',
+  `class` tinyint(3) NOT NULL DEFAULT '0',
   `image` varchar(255) NOT NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `stamps`
--- 
+--
+-- Dumping data for table `stamps`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `stylesheets`
--- 
+--
+-- Table structure for table `stylesheets`
+--
 
-CREATE TABLE `stylesheets` (
-  `id` int(10) unsigned NOT NULL auto_increment,
+CREATE TABLE IF NOT EXISTS `stylesheets` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uri` varchar(255) NOT NULL,
   `name` varchar(64) NOT NULL,
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   KEY `uri` (`uri`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=2 ;
 
--- 
--- ���� ������ ������� `stylesheets`
--- 
+--
+-- Dumping data for table `stylesheets`
+--
 
-INSERT INTO `stylesheets` VALUES (1, 'kinokpk', 'Kinokpk.com releaser 3');
+INSERT INTO `stylesheets` (`id`, `uri`, `name`) VALUES
+(1, 'releaser330', 'Kinokpk.com releaser 3.30');
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `torrents`
--- 
+--
+-- Table structure for table `torrents`
+--
 
-CREATE TABLE `torrents` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `info_hash` varbinary(40) NOT NULL default '',
-  `tiger_hash` varbinary(38) default NULL,
+CREATE TABLE IF NOT EXISTS `torrents` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `info_hash` varbinary(40) NOT NULL DEFAULT '',
+  `tiger_hash` varbinary(38) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `descr` text NOT NULL,
   `filename` varchar(255) NOT NULL,
   `images` text NOT NULL,
   `category` varchar(255) NOT NULL,
-  `size` bigint(20) unsigned NOT NULL default '0',
-  `added` int(10) NOT NULL default '0',
-  `ismulti` tinyint(1) NOT NULL default '0',
-  `numfiles` int(10) unsigned NOT NULL default '1',
-  `comments` int(10) unsigned NOT NULL default '0',
-  `views` int(10) unsigned NOT NULL default '0',
-  `hits` int(10) unsigned NOT NULL default '0',
-  `times_completed` int(10) unsigned NOT NULL default '0',
-  `last_action` int(10) NOT NULL default '0',
-  `last_reseed` int(10) NOT NULL default '0',
-  `visible` tinyint(1) NOT NULL default '1',
-  `banned` tinyint(1) NOT NULL default '0',
-  `owner` int(10) unsigned NOT NULL default '0',
-  `orig_owner` int(10) unsigned NOT NULL default '0',
-  `ratingsum` int(10) NOT NULL default '0',
-  `free` tinyint(1) NOT NULL default '0',
-  `sticky` tinyint(1) NOT NULL default '0',
-  `moderated` tinyint(1) NOT NULL default '0',
+  `size` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `added` int(10) NOT NULL DEFAULT '0',
+  `ismulti` tinyint(1) NOT NULL DEFAULT '0',
+  `numfiles` int(10) unsigned NOT NULL DEFAULT '1',
+  `comments` int(10) unsigned NOT NULL DEFAULT '0',
+  `views` int(10) unsigned NOT NULL DEFAULT '0',
+  `hits` int(10) unsigned NOT NULL DEFAULT '0',
+  `times_completed` int(10) unsigned NOT NULL DEFAULT '0',
+  `last_action` int(10) NOT NULL DEFAULT '0',
+  `last_reseed` int(10) NOT NULL DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  `banned` tinyint(1) NOT NULL DEFAULT '0',
+  `owner` int(10) unsigned NOT NULL DEFAULT '0',
+  `orig_owner` int(10) unsigned NOT NULL DEFAULT '0',
+  `ratingsum` int(10) NOT NULL DEFAULT '0',
+  `free` tinyint(1) NOT NULL DEFAULT '0',
+  `sticky` tinyint(1) NOT NULL DEFAULT '0',
+  `moderated` tinyint(1) NOT NULL DEFAULT '0',
   `modcomm` text NOT NULL,
-  `moderatedby` int(10) unsigned default '0',
+  `moderatedby` int(10) unsigned DEFAULT '0',
   `freefor` text NOT NULL,
   `relgroup` int(5) NOT NULL,
-  `topic_id` int(10) NOT NULL default '0',
   `online` text NOT NULL,
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   UNIQUE KEY `info_hash` (`info_hash`),
   KEY `owner` (`owner`),
   KEY `visible` (`visible`),
   KEY `category_visible` (`category`,`visible`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 PACK_KEYS=0 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `torrents`
--- 
+--
+-- Dumping data for table `torrents`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `trackers`
--- 
+--
+-- Table structure for table `trackers`
+--
 
-CREATE TABLE `trackers` (
-  `id` int(10) unsigned NOT NULL auto_increment,
+CREATE TABLE IF NOT EXISTS `trackers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `torrent` int(10) unsigned NOT NULL,
-  `tracker` varchar(255) NOT NULL default 'localhost',
-  `seeders` int(5) unsigned NOT NULL default '0',
-  `leechers` int(5) unsigned NOT NULL default '0',
-  `lastchecked` int(10) unsigned NOT NULL default '0',
+  `tracker` varchar(255) NOT NULL DEFAULT 'localhost',
+  `seeders` int(5) unsigned NOT NULL DEFAULT '0',
+  `leechers` int(5) unsigned NOT NULL DEFAULT '0',
+  `lastchecked` int(10) unsigned NOT NULL DEFAULT '0',
   `state` varchar(300) NOT NULL,
-  PRIMARY KEY  (`id`),
+  `method` varchar(10) NOT NULL DEFAULT 'local',
+  `remote_method` varchar(10) NOT NULL DEFAULT 'N/A',
+  `num_failed` int(5) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   UNIQUE KEY `torrent` (`torrent`,`tracker`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `trackers`
--- 
+--
+-- Dumping data for table `trackers`
+--
 
 
 -- --------------------------------------------------------
 
--- 
--- ��������� ������� `usercomments`
--- 
+--
+-- Table structure for table `users`
+--
 
-CREATE TABLE `usercomments` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `user` int(10) unsigned NOT NULL default '0',
-  `userid` int(10) unsigned NOT NULL default '0',
-  `added` int(10) NOT NULL,
-  `text` text NOT NULL,
-  `editedby` int(10) unsigned NOT NULL default '0',
-  `editedat` int(11) NOT NULL,
-  `ratingsum` int(5) NOT NULL default '0',
-  `ip` varchar(15) NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `user` (`user`),
-  KEY `news` (`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
-
--- 
--- ���� ������ ������� `usercomments`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- ��������� ������� `users`
--- 
-
-CREATE TABLE `users` (
-  `id` int(10) unsigned NOT NULL auto_increment,
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(40) NOT NULL,
   `old_password` varchar(40) NOT NULL,
   `passhash` varchar(32) NOT NULL,
   `secret` varchar(20) NOT NULL,
   `email` varchar(80) NOT NULL,
-  `confirmed` tinyint(1) NOT NULL default '0',
-  `added` int(10) NOT NULL default '0',
-  `last_login` int(10) NOT NULL default '0',
-  `last_access` int(10) NOT NULL default '0',
+  `confirmed` tinyint(1) NOT NULL DEFAULT '0',
+  `added` int(10) NOT NULL DEFAULT '0',
+  `last_login` int(10) NOT NULL DEFAULT '0',
+  `last_access` int(10) NOT NULL DEFAULT '0',
   `editsecret` varchar(20) NOT NULL,
-
-  `privacy` enum('strong','normal','highest') NOT NULL default 'normal',
-
-  `stylesheet` int(10) default '1',
+  `privacy` enum('strong','normal','highest') NOT NULL DEFAULT 'normal',
+  `stylesheet` int(10) DEFAULT '1',
   `info` text,
-  `ratingsum` int(8) NOT NULL default '0',
-  `acceptpms` enum('yes','friends','no') NOT NULL default 'yes',
-  `pron` tinyint(1) NOT NULL default '0',
+  `ratingsum` int(8) NOT NULL DEFAULT '0',
+  `acceptpms` enum('yes','friends','no') NOT NULL DEFAULT 'yes',
+  `pron` tinyint(1) NOT NULL DEFAULT '0',
   `ip` varchar(15) NOT NULL,
-  `class` tinyint(3) unsigned NOT NULL default '0',
+  `class` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `supportfor` text,
   `avatar` varchar(100) NOT NULL,
   `icq` varchar(255) NOT NULL,
@@ -1371,36 +3770,37 @@ CREATE TABLE `users` (
   `mirc` varchar(255) NOT NULL,
   `website` varchar(50) NOT NULL,
   `title` varchar(30) NOT NULL,
-  `country` int(10) unsigned NOT NULL default '0',
+  `country` int(10) unsigned NOT NULL DEFAULT '0',
   `notifs` varchar(1000) NOT NULL,
   `emailnotifs` varchar(1000) NOT NULL,
   `modcomment` text,
-  `enabled` tinyint(1) NOT NULL default '1',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1',
   `dis_reason` text NOT NULL,
-  `timezone` int(2) NOT NULL default '0',
-  `avatars` tinyint(1) NOT NULL default '1',
-  `extra_ef` tinyint(1) NOT NULL default '1',
-  `donor` tinyint(1) default '0',
-  `warned` tinyint(1) default '0',
+  `timezone` int(2) NOT NULL DEFAULT '0',
+  `avatars` tinyint(1) NOT NULL DEFAULT '1',
+  `extra_ef` tinyint(1) NOT NULL DEFAULT '1',
+  `donor` tinyint(1) DEFAULT '0',
+  `warned` tinyint(1) DEFAULT '0',
   `warneduntil` int(10) NOT NULL,
-  `deletepms` tinyint(1) default '0',
-  `savepms` tinyint(1) NOT NULL default '1',
-  `gender` smallint(1) NOT NULL default '0',
-  `birthday` date default '0000-00-00',
+  `deletepms` tinyint(1) DEFAULT '0',
+  `savepms` tinyint(1) NOT NULL DEFAULT '1',
+  `gender` smallint(1) NOT NULL DEFAULT '0',
+  `birthday` date DEFAULT '0000-00-00',
   `passkey` varchar(32) NOT NULL,
-  `language` varchar(255) default NULL,
-  `invites` int(10) NOT NULL default '0',
-  `invitedby` int(10) NOT NULL default '0',
-  `invitedroot` int(10) NOT NULL default '0',
+  `language` varchar(255) DEFAULT NULL,
+  `invites` int(10) NOT NULL DEFAULT '0',
+  `invitedby` int(10) NOT NULL DEFAULT '0',
+  `invitedroot` int(10) NOT NULL DEFAULT '0',
   `passkey_ip` varchar(15) NOT NULL,
-  `num_warned` int(2) NOT NULL default '0',
+  `num_warned` int(2) NOT NULL DEFAULT '0',
   `status` varchar(255) NOT NULL,
-  `last_downloaded` int(10) NOT NULL default '0',
-  `last_checked` int(10) NOT NULL default '0',
-  `last_announced` int(10) NOT NULL default '0',
-  `discount` int(5) NOT NULL default '0',
-  `viptill` int(10) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  `last_downloaded` int(10) NOT NULL DEFAULT '0',
+  `last_checked` int(10) NOT NULL DEFAULT '0',
+  `last_announced` int(10) NOT NULL DEFAULT '0',
+  `discount` int(5) NOT NULL DEFAULT '0',
+  `viptill` int(10) NOT NULL DEFAULT '0',
+  `comments` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `status_added` (`confirmed`,`added`),
   KEY `ip` (`ip`),
@@ -1412,27 +3812,7 @@ CREATE TABLE `users` (
   KEY `passkey` (`passkey`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
--- 
--- ���� ������ ������� `users`
--- 
+--
+-- Dumping data for table `users`
+--
 
-INSERT INTO `cache_stats` (
-=======
-`cache_name` ,
-`cache_value`
-)
-VALUES (
-'low_comment_hide', '-3'
-);
-
-INSERT INTO `cache_stats` (`cache_name`, `cache_value`) VALUES
-('debug_language', '0');
-=======
-);
-
-CREATE TABLE IF NOT EXISTS `languages` (
-  `lkey` varchar(255) NOT NULL,
-  `ltranslate` varchar(2) NOT NULL,
-  `lvalue` text NOT NULL,
-  UNIQUE KEY `key` (`lkey`,`ltranslate`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;

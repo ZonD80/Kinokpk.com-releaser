@@ -1,8 +1,0 @@
-error=Error
-back=Back
-not_spec=You did not enter a user name and (or) password!
-you_not_logged=You are not logged in!
-not_act_account=You have not yet activated your account! Activate your account and try again.
-incorrect=Username or password incorrect!
-this_acc_disabled=This account has been disabled.
-this_acc_active=This user is active at the moment. Sign impossible!

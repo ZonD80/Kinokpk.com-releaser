@@ -30,7 +30,7 @@ httpauth();
 
 if (get_user_class() < UC_ADMINISTRATOR) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 
-stdhead($REL_LANG->say_by_key('change_user_pass'));
+$REL_TPL->stdhead($REL_LANG->say_by_key('change_user_pass'));
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$updateset = array();
@@ -47,10 +47,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$updateset[] = "email = ".sqlesc($imail);
 	if (count($updateset)) {
 		$class = @mysql_result(sql_query("SELECT class FROM users WHERE username = ".sqlesc($iname)),0);
-		if (get_user_class() <= $class) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('your_class_is_lower'),'error'); stdfoot(); die(); }
+		if (get_user_class() <= $class) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('your_class_is_lower'),'error'); $REL_TPL->stdfoot(); die(); }
 		$res = sql_query("UPDATE users SET ".implode(", ", $updateset)." WHERE username = ".sqlesc($iname)) or sqlerr(__FILE__,__LINE__);
 
-		change_ipb_password($ipass,$iname);
 	}
 	stdmsg($REL_LANG->say_by_key('change_usr_succ'), $REL_LANG->say_by_key('username').$iname.(!empty($hash) ? $REL_LANG->say_by_key('new_password').$ipass : "").(!empty($imail) ? $REL_LANG->say_by_key('new_email').$imail : ""));
 } else {
@@ -74,5 +73,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	."</form>";
 }
 
-stdfoot();
+$REL_TPL->stdfoot();
 ?>

@@ -17,9 +17,9 @@ loggedinorreturn();
 if (get_user_class() < UC_MODERATOR)
 stderr($REL_LANG->say_by_key('error'), "Отказано в доступе.");
 
-stdhead("Предупрежденные пользователи");
+$REL_TPL->stdhead("Предупрежденные пользователи");
 $warned = number_format(get_row_count("users", "WHERE warned=1"));
-begin_frame("Предупрежденные пользователи: ($warned)", true);
+$REL_TPL->begin_frame("Предупрежденные пользователи: ($warned)", true);
 
 $res = sql_query("SELECT id,username,added,last_access,ratingsum,warneduntil,donor,enabled,warned,class FROM users WHERE warned=1 ORDER BY users.warneduntil") or sqlerr(__FILE__, __LINE__);
 $num = mysql_num_rows($res);
@@ -57,7 +57,7 @@ print("<input type=\"hidden\" name=\"nowarned\" value=\"nowarned\"></form></tabl
 
 print("<p>$pagemenu<br />$browsemenu</p>");
 
-end_frame();
+$REL_TPL->end_frame();
 
-stdfoot();
+$REL_TPL->stdfoot();
 ?>
