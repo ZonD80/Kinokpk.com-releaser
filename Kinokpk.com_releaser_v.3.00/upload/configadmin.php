@@ -102,7 +102,7 @@ elseif ($_GET['action'] == 'save'){
 'forumname','yourcopy','pm_max','default_language',
 'avatar_max_width','avatar_max_height','default_theme','nc','deny_signup','allow_invite_signup',
 'use_ttl','use_email_act','use_wait','use_lang','use_captcha','use_blocks','use_gzip','use_ipbans','smtptype',
-'as_timeout','as_check_messages','use_integration','debug_mode','ipb_cookie_prefix','announce_packed','pron_cats','register_timezone');
+'as_timeout','as_check_messages','use_integration','debug_mode','ipb_cookie_prefix','announce_packed','pron_cats','register_timezone','default_notifs','default_emailnotifs');
 	$int_param = array('exporttype','forumurl','forum_bin_id','defuserclass','not_found_export_id','emo_dir','ipb_password_priority');
 	$captcha_param = array('re_publickey','re_privatekey');
 
