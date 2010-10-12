@@ -59,7 +59,7 @@
 	<td class="center" style="width: 50px;">{if !$row.banned}<font color="green"><b>{$REL_LANG->say_by_key('no')}</b></font>{else}<font	color="red"><b>{$REL_LANG->say_by_key('yes')}</b></font>{/if}</td>
 	<td class="center" style="width: 15px;">{if $row['visible']}<font color="green"><b>{$REL_LANG->say_by_key('no')}</b></font>{else}<font color="red"><b>{$REL_LANG->say_by_key('yes')}</b></font>{/if}</td>
 	{/if} {if $TABLE_VARIANT=='bookmarks'}
-	<td class="center"><input type="checkbox" name="delbookmark[]" value="{$row.bookmarkid}" /></td>
+	<td class="center"><input type="checkbox" name="delbookmark[]" value="{$row.id}" /></td>
 	{/if}
 </tr>
 {/foreach}
