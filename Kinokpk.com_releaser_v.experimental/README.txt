@@ -12,4 +12,6 @@ torrents  777
 cache 777
 avatars 777
 graffities  777
+file	CHMOD
+Sitemap.xml	666
 Have fun!
