@@ -358,12 +358,11 @@ $REL_TPL->assignByRef('to_id',$id);
 $REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'usercomments' ));
 $REL_TPL->assign('textbbcode',textbbcode('text'));
 $REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('User'));
-$FORM_TYPE = 'usercomments';
+$FORM_TYPE = 'user';
 $REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 $REL_TPL->display('commenttable_form.tpl');
 $REL_TPL->end_frame ();
 
-print ( '</td></tr></table>' );
 if (get_user_class () >= UC_MODERATOR && $user ["class"] < get_user_class ()) {
 	$REL_TPL->begin_frame ( "Редактирование пользователя", true );
 	print ( "<form method=\"post\" action=\"".$REL_SEO->make_link('modtask')."\">\n" );

@@ -363,11 +363,10 @@ $REL_TPL->assignByRef('to_id',$id);
 $REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'rgcomments' ));
 $REL_TPL->assign('textbbcode',textbbcode('text'));
 $REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release group'));
-$FORM_TYPE = 'rgcomments';
+$FORM_TYPE = 'rg';
 $REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 $REL_TPL->display('commenttable_form.tpl');
 
-	print("</table>");
 
 	?></div>
 </div>

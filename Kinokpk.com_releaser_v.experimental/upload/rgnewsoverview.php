@@ -173,10 +173,9 @@ $REL_TPL->assignByRef('to_id',$rgnewsid);
 $REL_TPL->assignByRef('is_i_notified',is_i_notified ( $rgnewsid, 'rgnewscomments' ));
 $REL_TPL->assign('textbbcode',textbbcode('text'));
 $REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release group news'));
-$FORM_TYPE = 'rgnewscomments';
+$FORM_TYPE = 'rgnews';
 $REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 $REL_TPL->display('commenttable_form.tpl');
-print("</table>");
 ?>
 
 </div>

@@ -281,10 +281,10 @@ $REL_TPL->assignByRef('to_id',$id);
 $REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'relcomments' ));
 $REL_TPL->assign('textbbcode',textbbcode('text'));
 $REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release'));
-$FORM_TYPE = 'relcomments';
+$FORM_TYPE = 'rel';
 $REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 $REL_TPL->display('commenttable_form.tpl');
-print '</table>';
+
 sql_query ( "UPDATE torrents SET views = views + 1 WHERE id = $id" );
 set_visited('torrents',$id);
 $REL_TPL->stdfoot();

@@ -109,7 +109,7 @@ elseif ($action=='newtopic') {
 	} else {
 		if (!$curcat) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No forum defined to post to, <a href="javascript.history.go(-1);">try again</a>'));
 		if ($CAT['class']>get_user_class()) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access denied'));
-		
+
 		if ($CAT['nodes']) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('You can not post to categories. Only forums enabled. Please <a href="javascript.history.go(-1);">try again</a>'));
 		$topictitle = makesafe((string)$_POST['title']);
 		if (!$topictitle) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No topic title defined, <a href="javascript.history.go(-1);">try again</a>'));
@@ -142,8 +142,9 @@ elseif ($action=='viewtopic') {
 	//var_dump($topic['category']);
 	$curcat = $topic['category'];
 	forum_routing($curcat);
-	if ($CAT['class']>get_user_class()) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access denied'));
-	
+	//var_dump($CAT);
+	if (!$CAT || $CAT['class']>get_user_class()) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access denied'));
+
 	$REL_TPL->assignByRef('topic', $topic);
 
 	$res = $REL_DB->query("SELECT GROUP_CONCAT(id) AS posts FROM comments WHERE toid={$topic['id']} AND type='forum' ORDER BY id ASC") or sqlerr(__FILE__,__LINE__);
@@ -170,16 +171,17 @@ elseif ($action=='viewtopic') {
 	$REL_TPL->assignByRef('commenttable', commenttable($allrows,true,'modules/forum/commenttable.tpl'));
 	$REL_TPL->output($action);
 
-
-	$REL_TPL->assignByRef('to_id',$topic['id']);
-	$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $topic['id'], 'forumcomments' ));
-	$REL_TPL->assign('textbbcode',textbbcode('text'));
-	$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Forum topic'));
-	$FORM_TYPE = 'forumcomments';
-	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-	$REL_TPL->display('commenttable_form.tpl');
-	//print '<pre>';
-	//print_r($_SESSION);
+	if ($CURUSER) {
+		$REL_TPL->assignByRef('to_id',$topic['id']);
+		$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $topic['id'], 'forumcomments' ));
+		$REL_TPL->assign('textbbcode',textbbcode('text'));
+		$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Forum topic'));
+		$FORM_TYPE = 'forum';
+		$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+		$REL_TPL->display('commenttable_form.tpl');
+		//print '<pre>';
+		//print_r($_SESSION);
+	}
 	$REL_TPL->stdfoot();
 }
 else $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unknown action'));

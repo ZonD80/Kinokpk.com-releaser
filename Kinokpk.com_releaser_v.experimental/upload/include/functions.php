@@ -450,6 +450,7 @@ function cleanhtml($code) {
 	//'safe'=>1, // Dangerous elements and attributes thus not allowed
     'comments'=>1,
     'cdata'=>1,
+	'valid_xhtml'=>1,
     'deny_attribute'=>'on*',
     'elements'=>'*-applet'./*-embed*/'-iframe'./*-object*/'-script', //object, embed allowed for youtube video
     'scheme'=>'href: aim, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, telnet; style: nil; *:file, http, https'
@@ -996,8 +997,12 @@ function user_session() {
 			elseif ($type=='friends') {
 				$noadd=true; $addition = "friendid={$CURUSER['id']} AND confirmed=0";
 			}
+			elseif($type=='forumcomments') {
+				$addition = " AND type = 'forum' AND forum_categories.class<=".get_user_class(); $table = 'comments LEFT JOIN forum_topics ON forum_topics.id=comments.toid LEFT JOIN forum_categories ON forum_topics.category=forum_categories.id';
+				$sel_id = 'comments.';
+			}
 			elseif (in_array($type,array('relcomments','pollcomments','newscomments',
-			'usercomments','reqcomments','rgcomments','forumcomments'))) {
+			'usercomments','reqcomments','rgcomments'))) {
 			$addition = " AND type = '".str_replace('comments','',$type)."'"; $table = 'comments';
 			}
 
@@ -1007,10 +1012,11 @@ function user_session() {
 
 			$noselect = @implode(',',@array_map("intval",$_SESSION['visited_'.$type]));
 
-			$string = ($noselect?'id NOT IN ('.$noselect.') AND ':'').($noadd?'':"added>".$CURUSER['last_login']).$addition;
+			$string = ($noselect?$sel_id.'id NOT IN ('.$noselect.') AND ':'').($noadd?'':"{$sel_id}added>".$CURUSER['last_login']).$addition;
 
-			$sql_query[]="(SELECT GROUP_CONCAT(id) FROM ".($table?$table:$type).($string?" WHERE $string":'').') AS '.$type;
+			$sql_query[]="(SELECT GROUP_CONCAT({$sel_id}id) FROM ".($table?$table:$type).($string?" WHERE $string":'').') AS '.$type;
 			unset($addition);
+			unset($sel_id);
 			unset($table);
 			unset($noadd);
 			unset($string);
@@ -1168,8 +1174,8 @@ function mksizeint($bytes) {
  * @return string Nice time
  */
 function mkprettytime($seconds, $time = true) {
-	global $CURUSER;
-
+	global $CURUSER, $REL_CONFIG;
+	$seconds = $seconds+$REL_CONFIG['site_timezone']*3600;
 	$seconds = $seconds-date("Z")+$CURUSER['timezone']*3600;
 	$search = array('January','February','March','April','May','June','July','August','September','October','November','December');
 	$replace = array('€нвар€','феврал€','марта','апрел€','ма€','июн€','июл€','августа','сент€бр€','окт€бр€','но€бр€','декабр€');
@@ -1661,10 +1667,10 @@ function fuckIE() {
 function clear_comment_caches($type) {
 	global $REL_CACHE;
 	$clearcache = array();
-	if ($type=='newscomments') $clearcache[] = 'block-news';
-	elseif ($type=='pollcomments') $clearcache[] = 'block-polls';
-	elseif ($type=='reqcomments') $clearcache[] = 'block-req';
-	elseif ($type=='relcomments') {
+	if ($type=='news') $clearcache[] = 'block-news';
+	elseif ($type=='poll') $clearcache[] = 'block-polls';
+	elseif ($type=='req') $clearcache[] = 'block-req';
+	elseif ($type=='rel') {
 		$clearcache[] ='block-indextorrents';
 		$clearcache[] = 'block-comments';
 	}
@@ -1958,6 +1964,15 @@ function torrenttable($res, $variant = "index") {
 	$REL_TPL->assign('res',$res);
 	$REL_TPL->assign('IS_MODERATOR',(get_user_class() >= UC_MODERATOR));
 	$REL_TPL->display('torrenttable.tpl');
+}
+
+function torrenttable_browse($res, $variant = "index") {
+	global $CURUSER, $REL_CONFIG, $REL_SEO, $REL_LANG, $tree, $REL_TPL;
+	if (!$tree) $tree = make_tree();
+	$REL_TPL->assign('TABLE_VARIANT',$variant);
+	$REL_TPL->assign('res',$res);
+	$REL_TPL->assign('IS_MODERATOR',(get_user_class() >= UC_MODERATOR));
+	$REL_TPL->display('torrenttable_browse.tpl');
 }
 
 /**

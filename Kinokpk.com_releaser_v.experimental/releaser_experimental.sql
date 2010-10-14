@@ -146,6 +146,7 @@ INSERT INTO `cache_stats` (`cache_name`, `cache_value`) VALUES
 ('pm_max', '150'),
 ('pron_cats', '0'),
 ('register_timezone', '3'),
+('site_timezone', '3'),
 ('re_privatekey', 'none'),
 ('re_publickey', 'non'),
 ('signup_timeout', '3'),

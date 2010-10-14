@@ -282,10 +282,9 @@ $REL_TPL->assignByRef('to_id',$id);
 $REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'reqcomments' ));
 $REL_TPL->assign('textbbcode',textbbcode('text'));
 $REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Request'));
-$FORM_TYPE = 'reqcomments';
+$FORM_TYPE = 'req';
 $REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 $REL_TPL->display('commenttable_form.tpl');
-print '</table>';
 
 //print($commentbar);
 $REL_TPL->stdfoot();

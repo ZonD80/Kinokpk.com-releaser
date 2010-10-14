@@ -16,8 +16,8 @@ dbconn();
 
 loggedinorreturn();
 
-$allowed_types = array('relcomments'=>'torrents','pollcomments'=>'polls','newscomments'=>'news','usercomments'=>'users','reqcomments'=>'requests','rgcomments'=>'relgroups','rgnewscomments'=>'rgnews','forumcomments'=>'forum_topics');
-$names = array('relcomments'=>'name','pollcomments'=>'question','newscomments'=>'subject','usercomments'=>'username','reqcomments'=>'request','rgcomments'=>'name','rgnewscomments'=>'subject','forumcomments'=>'subject');
+$allowed_types = array('rel'=>'torrents','poll'=>'polls','news'=>'news','user'=>'users','req'=>'requests','rg'=>'relgroups','rgnews'=>'rgnews','forum'=>'forum_topics');
+$names = array('rel'=>'name','poll'=>'question','news'=>'subject','user'=>'username','req'=>'request','rg'=>'name','rgnews'=>'subject','forum'=>'subject');
 $returnto = strip_tags((string)($_POST['returnto']?$_POST['returnto']:$_SERVER['HTTP_REFERER']));
 if ($action == "add")
 {
@@ -91,26 +91,25 @@ if ($action == "add")
 		// ANITSPAM SYSTEM END
 		sql_query("INSERT INTO comments (user, toid, added, text, ip, type) VALUES (" .
 		$CURUSER["id"] . ",$to_id, '" . time() . "', " . sqlesc($text) .
-	       "," . sqlesc(getip()) . ", '".str_replace('comments','',$type)."')") or die(mysql_error());
+	       "," . sqlesc(getip()) . ", '$type')") or sqlerr(__FILE__,__LINE__);
 
 		$newid = mysql_insert_id();
 
 		$clearcache = array('block-indextorrents','block-comments');
 		foreach ($clearcache as $cachevalue) $REL_CACHE->clearGroupCache($cachevalue);
 
-		sql_query("UPDATE {$allowed_types[$type]} SET comments = comments + 1 WHERE id = $to_id");
-		
+		sql_query("UPDATE {$allowed_types[$type]} SET comments = comments + 1".($type=='forum'?", lastposted_id=$newid":'')." WHERE id = $to_id") or sqlerr(__FILE__,__LINE__);
 		clear_comment_caches($type);
 		/////////////////—À≈∆≈Õ»≈ «¿  ŒÃÃ≈Õ“¿Ã»/////////////////
 		
-		send_comment_notifs($to_id,"<a href=\"$returnto\">$name</a>",$type);
+		send_comment_notifs($to_id,"<a href=\"$returnto\">$name</a>","{$type}comments");
 
 		/////////////////—À≈∆≈Õ»≈ «¿  ŒÃÃ≈Õ“¿Ã»/////////////////
 		if (!REL_AJAX) {
 			safe_redirect($returnto);
 			stderr($REL_LANG->_('Successfull'),$REL_LANG->_('Comment added'),'success'); }
 			else {
-				$subres = sql_query ( "SELECT c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.toid, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.id=$newid AND c.type='".str_replace('comments','',$type)."'" ) or sqlerr ( __FILE__, __LINE__ );
+				$subres = sql_query ( "SELECT c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.toid, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.id=$newid AND c.type='$type'" ) or sqlerr ( __FILE__, __LINE__ );
 				//$link = $allowed_links[$type].$allrows[0]['toid'];
 				$allrows = prepare_for_commenttable($subres,$name,$returnto);
 				$IS_MODERATOR = (get_user_class()>=UC_MODERATOR);
@@ -136,10 +135,10 @@ elseif ($action == "quote")
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 	$REL_TPL->stdhead($REL_LANG->_("Quoting comment"));
-	$type = ($arr['type']?$arr['type']:'comments');
+
 	$text = "<blockquote><p>" . format_comment($arr["text"]) . "</p></blockquote><cite>$arr[username]</cite><hr /><br /><br />\n";
 
-	print("<form method=\"post\" name=\"comment\" action=\"".$REL_SEO->make_link('comments','action','add','type',$type)."\">\n");
+	print("<form method=\"post\" name=\"comment\" action=\"".$REL_SEO->make_link('comments','action','add','type',$arr[type])."\">\n");
 	print("<input type=\"hidden\" name=\"to_id\" value=\"$arr[toid]\" />\n");
 	print("<input type=\"hidden\" name=\"returnto\" value=\"".strip_tags($_SERVER['HTTP_REFERER'])."\" />\n");
 	?>
@@ -245,16 +244,17 @@ elseif ($action == "delete")
 
 		sql_query("DELETE FROM comments WHERE id=$commentid") or sqlerr(__FILE__,__LINE__);
 		if ($to_id && mysql_affected_rows() > 0) {
-		sql_query("UPDATE {$allowed_types[$type.'comments']} SET comments = comments - 1 WHERE id = $to_id") or sqlerr(__FILE__,__LINE__);
+		sql_query("UPDATE {$allowed_types[$type]} SET comments = comments - 1 WHERE id = $to_id") or sqlerr(__FILE__,__LINE__);
 		if ($type=='forum') {
 			
-			$check = @mysql_result($REL_DB->query("SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id<>$commentid ORDER BY comments.id DESC LIMIT 1"),0);
-			if (!$check) $REL_DB->query("DELETE FROM forum_topics WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
-			elseif ($to_id==$check) {
-				$REL_DB->query("UPDATE forum_topics SET lastposted_id=$check WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
+			$check = mysql_fetch_assoc($REL_DB->query("SELECT (SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id>$commentid ORDER BY id ASC LIMIT 1) AS next, (SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id<$commentid ORDER BY id DESC LIMIT 1) AS prev"));
+			//die(var_dump($check));
+			if (!$check['next']&&!$check['prev']) $REL_DB->query("DELETE FROM forum_topics WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
+			elseif (!$check['next']) {
+				$REL_DB->query("UPDATE forum_topics SET lastposted_id={$check['prev']} WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
 			}
 		}
-		clear_comment_caches($type.'comments');
+		clear_comment_caches($type);
 		}
 	}
 	if (!REL_AJAX)

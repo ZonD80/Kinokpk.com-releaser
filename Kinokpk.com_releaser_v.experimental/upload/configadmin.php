@@ -32,9 +32,11 @@ if (!isset($_GET['action'])){
 	print('<tr><td>Ключевые слова (meta keywords):</td><td><input type="text" name="keywords" size="80" value="'.$REL_CONFIG['keywords'].'"> <br/>Например, "скачать, тушканчики, япония, релизер"</td></tr>');
 	print('<tr><td>Емайл, с которого будут отправляться сообщения сайта:</td><td><input type="text" name="siteemail" size="30" value="'.$REL_CONFIG['siteemail'].'"> <br/>Например, "bot@kinokpk.com"</td></tr>');
 	print('<tr><td>Емайл для связи с администратором:</td><td><input type="text" name="adminemail" size="30" value="'.$REL_CONFIG['adminemail'].'"> <br/>Например, "admin@windows.lox"</td></tr>');
-	print('<tr><td>Язык релизера по умолчанию (имя lang_%язык%):</td><td><input type="text" name="default_language" size="2" value="'.$REL_CONFIG['default_language'].'"></td></tr>');
+	print('<tr><td>Язык релизера по умолчанию:</td><td><input type="text" name="default_language" size="2" value="'.$REL_CONFIG['default_language'].'"></td></tr>');
 	print('<tr><td>Стандартная тема для гостей и регистрирующихся (themes/%тема%):</td><td><input type="text" name="default_theme" size="10" value="'.$REL_CONFIG['default_theme'].'"> По умолчанию "kinokpk"</td></tr>');
 	print('<tr><td>Ваш копирайт для отображения внизу страницы:<br /><small>*вы можете использовать шаблон <b>{datenow}</b> для показа текущего года</small></td><td><input type="text" name="yourcopy" size="60" value="'.$REL_CONFIG['yourcopy'].'"> <br/>Например, "&copy; 2008-{datenow} Мой Мосх"</td></tr>');
+	print('<tr><td>'.$REL_LANG->_("Site timezone").':</td><td>'.list_timezones('site_timezone',$REL_CONFIG['site_timezone']).'</td></tr>');
+	
 	print('<tr><td>Использовать систему блоков (отключать не рекомендуется):</td><td><select name="use_blocks"><option value="1" '.($REL_CONFIG['use_blocks']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_blocks']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>Использовать gzip сжатие для страниц:</td><td><select name="use_gzip"><option value="1" '.($REL_CONFIG['use_gzip']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_gzip']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>'.$REL_LANG->_("Cache templates").':</td><td><select name="cache_template"><option value="1" '.($REL_CONFIG['cache_template']==1?"selected":"").'>'.$REL_LANG->_("Yes").'</option><option value="0" '.($REL_CONFIG['cache_template']==0?"selected":"").'>'.$REL_LANG->_("No").'</option></select></td></tr>');
@@ -96,7 +98,7 @@ elseif ($_GET['action'] == 'save'){
 'yourcopy','pm_max','default_language','siteonline','cache_template','cache_template_time',
 'avatar_max_width','avatar_max_height','default_theme','use_dc','deny_signup','allow_invite_signup',
 'use_ttl','use_email_act','use_captcha','use_blocks','use_gzip','use_ipbans','smtptype',
-'as_timeout','as_check_messages','debug_mode','debug_language','debug_template','announce_packed','pron_cats','register_timezone','low_comment_hide','sign_length','default_notifs','default_emailnotifs');
+'as_timeout','as_check_messages','debug_mode','debug_language','debug_template','announce_packed','pron_cats','register_timezone','site_timezone','low_comment_hide','sign_length','default_notifs','default_emailnotifs');
 	$captcha_param = array('re_publickey','re_privatekey');
 
 	$updateset = array();

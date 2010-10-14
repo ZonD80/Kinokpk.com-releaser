@@ -227,10 +227,9 @@ $REL_TPL->assignByRef('to_id',$pid);
 $REL_TPL->assignByRef('is_i_notified',is_i_notified ( $pid, 'pollcomments' ));
 $REL_TPL->assign('textbbcode',textbbcode('text'));
 $REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Poll'));
-$FORM_TYPE = 'pollcomments';
+$FORM_TYPE = 'poll';
 $REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 $REL_TPL->display('commenttable_form.tpl');
-print '</table>';
 $REL_TPL->stdfoot();
 
 ?>
