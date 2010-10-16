@@ -132,6 +132,7 @@ INSERT INTO `cache_stats` (`cache_name`, `cache_value`) VALUES
 ('defaultbaseurl', 'http://releaser330.com'),
 ('default_emailnotifs', 'unread,torrents,friends'),
 ('default_language', 'ru'),
+('static_language', ''),
 ('default_notifs', 'unread,torrents,relcomments,pollcomments,newscomments,usercomments,reqcomments,rgcomments,pages,pagecomments,friends'),
 ('default_theme', 'releaser330'),
 ('deny_signup', '0'),

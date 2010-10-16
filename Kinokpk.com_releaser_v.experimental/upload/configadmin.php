@@ -32,7 +32,7 @@ if (!isset($_GET['action'])){
 	print('<tr><td>Ключевые слова (meta keywords):</td><td><input type="text" name="keywords" size="80" value="'.$REL_CONFIG['keywords'].'"> <br/>Например, "скачать, тушканчики, япония, релизер"</td></tr>');
 	print('<tr><td>Емайл, с которого будут отправляться сообщения сайта:</td><td><input type="text" name="siteemail" size="30" value="'.$REL_CONFIG['siteemail'].'"> <br/>Например, "bot@kinokpk.com"</td></tr>');
 	print('<tr><td>Емайл для связи с администратором:</td><td><input type="text" name="adminemail" size="30" value="'.$REL_CONFIG['adminemail'].'"> <br/>Например, "admin@windows.lox"</td></tr>');
-	print('<tr><td>Язык релизера по умолчанию:</td><td><input type="text" name="default_language" size="2" value="'.$REL_CONFIG['default_language'].'"></td></tr>');
+	print('<tr><td>Язык релизера по умолчанию:</td><td><input type="text" name="default_language" size="2" value="'.$REL_CONFIG['default_language'].'">'.$REL_LANG->_('Static language system (full path to file from site root). Leave empty to disable').'<input type="text" name="static_language" value="'.$REL_CONFIG['static_language'].'"></td></tr>');
 	print('<tr><td>Стандартная тема для гостей и регистрирующихся (themes/%тема%):</td><td><input type="text" name="default_theme" size="10" value="'.$REL_CONFIG['default_theme'].'"> По умолчанию "kinokpk"</td></tr>');
 	print('<tr><td>Ваш копирайт для отображения внизу страницы:<br /><small>*вы можете использовать шаблон <b>{datenow}</b> для показа текущего года</small></td><td><input type="text" name="yourcopy" size="60" value="'.$REL_CONFIG['yourcopy'].'"> <br/>Например, "&copy; 2008-{datenow} Мой Мосх"</td></tr>');
 	print('<tr><td>'.$REL_LANG->_("Site timezone").':</td><td>'.list_timezones('site_timezone',$REL_CONFIG['site_timezone']).'</td></tr>');
@@ -95,7 +95,7 @@ if (!isset($_GET['action'])){
 
 elseif ($_GET['action'] == 'save'){
 	$reqparametres = array('forum_enabled','torrentsperpage','maxusers','max_torrent_size','max_images','defaultbaseurl','siteemail','adminemail','sitename','description','keywords',
-'yourcopy','pm_max','default_language','siteonline','cache_template','cache_template_time',
+'yourcopy','pm_max','default_language','static_language','siteonline','cache_template','cache_template_time',
 'avatar_max_width','avatar_max_height','default_theme','use_dc','deny_signup','allow_invite_signup',
 'use_ttl','use_email_act','use_captcha','use_blocks','use_gzip','use_ipbans','smtptype',
 'as_timeout','as_check_messages','debug_mode','debug_language','debug_template','announce_packed','pron_cats','register_timezone','site_timezone','low_comment_hide','sign_length','default_notifs','default_emailnotifs');

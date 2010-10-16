@@ -69,7 +69,7 @@ class REL_TPL extends Smarty {
 	 * @param string $headadd Page <head> tag addition
 	 */
 	function stdhead($title = "", $descradd = '', $keywordsadd = "", $headadd = '') {
-		global $REL_CONFIG;
+		global $REL_CONFIG, $CURUSER;
 
 		if (!$REL_CONFIG['siteonline'] && get_user_class()<UC_SYSOP) {
 		$this->display('offline.tpl');

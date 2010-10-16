@@ -37,17 +37,20 @@ class REL_LANG {
 		if ($REL_CONFIG['debug_language']) $this->DEBUG=true; else $this->DEBUG=false;
 		$this->lang[$REL_CONFIG['lang']]=array();
 		$this->language = $REL_CONFIG['lang'];
-		$this->load();
-		if ($this->language<>'en') $this->load($this->language);
+		$this->load('en',$REL_CONFIG['static_language']);
+		if ($this->language<>'en') $this->load($this->language,$REL_CONFIG['static_language']);
 		return true;
 	}
 
 	/**
 	 * Loads selected language file
 	 * @param string $option What file to load
+	 * @param string $file Load language from this file, if empty, loads from database
 	 */
-	public function load($language='en') {
+	public function load($language='en',$file='') {
+		if (!$file)
 		$this->parse_db($language);
+		else $this->parse_langfile(ROOT_PATH.$file,$language);
 	}
 	/**
 	 * Say something by key
@@ -67,9 +70,8 @@ class REL_LANG {
 	}
 
 	/**
-	 * Description
-	 * @param unknown_type $file
-	 * @param unknown_type $language
+	 * Parse language from database (cache) into associative array
+	 * @param string $language Language to parse
 	 */
 	private function parse_db($language='en') {
 		global $REL_CACHE,$REL_SEO, $CURUSER;
@@ -89,16 +91,21 @@ class REL_LANG {
 	}
 
 	/**
-	 * Parses language file into associative array
-	 * @param string $file File to be userd
+	 * Parses language file into associative array (used only in installer)
+	 * @param string $file File to be used (full path to file)
 	 * @param string $language Language to be used
+	 * @return boolean False on error & prints error message
 	 */
 	private function parse_langfile($file,$language='en') {
 		global $REL_SEO;
 		if (@in_array($file,$this->parsed_langs[$language])) return;
 		if ($language<>'en') $this->parse_langfile($file,'en');
-		$parse = @file(ROOT_PATH."languages/$language/$file.lang",FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
-		if (!$parse) die ("FATAL ERROR: no language ($language) for option $file. <a href=\"".$REL_SEO->make_link('setlang','l','en')."\">Switch to English (default)</a>.");
+		$parse = @file($file,FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
+		if (!$parse) {
+			print ("FATAL ERROR: no language ($language) for file $file.");
+			return false;
+		}
+
 		foreach ($parse as $string) {
 			$cut = strpos($string,'=');
 			if (!$cut) continue;
