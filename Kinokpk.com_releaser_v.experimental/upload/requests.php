@@ -258,7 +258,7 @@ if (!$count) {
 } else {
 	list($pagertop, $pagerbottom, $limit) = pager(20, $count, $REL_SEO->make_link('requests','id',$id)."&", array(lastpagedefault => 1));
 	$subres = sql_query("SELECT c.type, c.id, c.ip, c.text, c.ratingsum, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
-		"u.username, u.title, u.class, u.donor, u.ratingsum AS urating, u.enabled, s.time AS last_access, e.username AS editedbyname FROM comments c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .
+		"u.username, u.title, u.info, u.class, u.donor, u.ratingsum AS urating, u.enabled, s.time AS last_access, e.username AS editedbyname FROM comments c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .
 		"$id AND c.type='req' GROUP BY c.id ORDER BY c.id $limit") or sqlerr(__FILE__, __LINE__);
 		$allrows = prepare_for_commenttable($subres, $s,$REL_SEO->make_link('requests','id',$id));
 	print("<table class=main cellSpacing=\"0\" cellPadding=\"5\" width=\"100%\" >");

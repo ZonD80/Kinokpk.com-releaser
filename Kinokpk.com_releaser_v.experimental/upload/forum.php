@@ -84,10 +84,11 @@ if (!$action) {
 			list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, $REL_SEO->make_link('forum','cat',$curcat,'name',translit($CAT['name']))."&amp;" );
 			$REL_TPL->assignByRef('pagertop', $pagertop);
 			$REL_TPL->assignByRef('pagerbottom', $pagerbottom);
-			$res = $REL_DB->query("SELECT forum_topics.*,(SELECT users.username FROM users WHERE users.id=forum_topics.author) AS aname,(SELECT users.class FROM users WHERE users.id=forum_topics.author) AS aclass, users.username,users.class,comments.added,comments.user FROM forum_topics LEFT JOIN comments ON forum_topics.lastposted_id=comments.id LEFT JOIN users ON comments.user=users.id WHERE category=$curcat AND comments.type='forum' ORDER BY comments.added,started DESC $limit") or sqlerr(__FILE__,__LINE__);
+			$res = $REL_DB->query("SELECT forum_topics.*,(SELECT users.username FROM users WHERE users.id=forum_topics.author) AS aname,(SELECT users.class FROM users WHERE users.id=forum_topics.author) AS aclass, users.username,users.class,comments.added,comments.user FROM forum_topics LEFT JOIN comments ON forum_topics.lastposted_id=comments.id LEFT JOIN users ON comments.user=users.id WHERE category=$curcat AND comments.type='forum' ORDER BY forum_topics.id,comments.added,started DESC $limit") or sqlerr(__FILE__,__LINE__);
 			while ($row = mysql_fetch_assoc($res)) {
 				$tabledata[] = array('id'=>$row['id'],'subject'=>$row['subject'],'posts'=>$row['comments'],'started'=>mkprettytime($row['started']),'author'=>"<a href=\"{$REL_SEO->make_link('userdetails','id',$row['author'],'name',$row['aname'])}\">".get_user_class_color($row['aclass'],$row['aname'])."</a>",'lastposted_time'=>mkprettytime($row['added']),'lastposted_user'=>"<a href=\"{$REL_SEO->make_link('userdetails','id',$row['user'],'name',$row['username'])}\">".get_user_class_color($row['class'],$row['username'])."</a>", 'lastposted_id'=>$row['lastposted_id']);
 			}
+							
 			$REL_TPL->assignByRef('TOPICS',$tabledata);
 			$REL_TPL->output('topicmode');
 		}
@@ -165,7 +166,7 @@ elseif ($action=='viewtopic') {
 	$REL_TPL->assignByRef('pagertop', $pagertop);
 	$REL_TPL->assignByRef('pagerbottom', $pagerbottom);
 
-	$subres = sql_query ( "SELECT c.id, c.ip, c.ratingsum, c.text, c.type, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = {$topic['id']} AND c.type='forum' GROUP BY c.id ORDER BY c.id $limit" ) or sqlerr ( __FILE__, __LINE__ );
+	$subres = sql_query ( "SELECT c.id, c.ip, c.ratingsum, c.text, c.type, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = {$topic['id']} AND c.type='forum' GROUP BY c.id ORDER BY c.id $limit" ) or sqlerr ( __FILE__, __LINE__ );
 	$allrows = prepare_for_commenttable($subres,$topic['subject'],$REL_SEO->make_link('forum','a','viewtopic','id',$topic['id'],'subject',translit($topic['subject'])));
 
 	$REL_TPL->assignByRef('commenttable', commenttable($allrows,true,'modules/forum/commenttable.tpl'));

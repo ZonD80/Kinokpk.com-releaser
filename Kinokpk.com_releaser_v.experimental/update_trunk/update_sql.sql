@@ -15,3 +15,4 @@ update orbital_blocks set bposition='t' where bposition='c';
 update news set comments=(SELECT COUNT(*) FROM comments WHERE type='news' AND toid=news.id) where id=id
 update comments set type='rel' where type='';
 update notifs set type='relcomments' where type='comments';
+insert into cache_stats (cache_name,cache_value) VALUES ('site_timezone',3);
