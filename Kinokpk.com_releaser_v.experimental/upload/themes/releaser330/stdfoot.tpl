@@ -1,27 +1,27 @@
-<br />{show_blocks('d')}
+<br />
+{show_blocks('d')}
 </td>
-                       <td class="bottom" width="200" valign="top">
-                       {show_blocks('r')}
-                       </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
+<td class="bottom" width="200" valign="top"> {show_blocks('r')} </td>
+</tr>
+</table>
+			</div>
+		</div>
+	</div>
+</div>
         <div align="left" class="footm"><a href="http://kreaweb.ru/">Реклама на сайте</a><br />
           <a href="http://forum.kreaweb.ru/index.php">Для правообладателей</a><br />
           <a href="http://kreaweb.ru/oplata/">Пользовательское Соглашение</a></div>
-        <div align="left" class="footers">© site.ru 2008-2010 Все права защищены. <br />
-          Powered by <a target="_blank" href="http://www.kinokpk.com/">Kinokpk.com</a> <a target="_blank" href="http://dev.kinokpk.com/">releaser</a> 3.30 © 2008-2010 </div>
-        <div class="b7">
-          <div class="b9">
-            <div class="b8"></div>
-          </div>
-        </div>
-      </div></td>
-    <td valign="top" class="itd"><div class="tr"></div></td>
-  </tr>
+<div align="left" class="footers">© site.ru 2008-2010 Все права защищены. <br />
+  Powered by <a target="_blank" href="http://www.kinokpk.com/">Kinokpk.com</a> <a target="_blank" href="http://dev.kinokpk.com/">releaser</a> 3.30 © 2008-2010 </div>
+<div class="b7">
+  <div class="b9">
+    <div class="b8"></div>
+  </div>
+</div>
+</div>
+</td>
+<td valign="top" class="itd bottom"><div class="tr"></div></td>
+</tr>
 </table>
 <div align="center">
   <div class="tf"></div>

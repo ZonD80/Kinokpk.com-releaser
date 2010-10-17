@@ -33,28 +33,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	if (mysql_errno()==1062)
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('unable_to_create_account'));
 	$id = mysql_insert_id();
-	safe_redirect("../".$REL_SEO->make_link('userdetails','id',$id,'username',$username));
+	safe_redirect($REL_SEO->make_link('userdetails','id',$id,'username',$username));
 	die;
 }
 $REL_TPL->stdhead($REL_LANG->say_by_key('add_user'));
 ?>
-<h1><?=$REL_LANG->say_by_key('add_user');?></h1>
-<form method=post action="<?=$REL_SEO->make_link('adduser')?>">
+<h1><?php print $REL_LANG->say_by_key('add_user');?></h1>
+<form method=post action="<?php print $REL_SEO->make_link('adduser')?>">
 <table border=1 cellspacing=0 cellpadding=5>
 	<tr>
-		<td class=rowhead><?=$REL_LANG->say_by_key('username');?></td>
+		<td class=rowhead><?php print $REL_LANG->say_by_key('username');?></td>
 		<td><input type=text name=username size=40></td>
 	</tr>
 	<tr>
-		<td class=rowhead><?=$REL_LANG->say_by_key('password');?></td>
+		<td class=rowhead><?php print $REL_LANG->say_by_key('password');?></td>
 		<td><input type=password name=password size=40></td>
 	</tr>
 	<tr>
-		<td class=rowhead><?=$REL_LANG->say_by_key('repeat_password');?></td>
+		<td class=rowhead><?php print $REL_LANG->say_by_key('repeat_password');?></td>
 		<td><input type=password name=password2 size=40></td>
 	</tr>
 	<tr>
-		<td class=rowhead>E-mail</td>
+		<td class=rowhead><?php print $REL_LANG->_("E-mail");?></td>
 		<td><input type=text name=email size=40></td>
 	</tr>
 	<tr>
@@ -62,4 +62,4 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('add_user'));
 	</tr>
 </table>
 </form>
-<? $REL_TPL->stdfoot(); ?>
+<?php $REL_TPL->stdfoot(); ?>
