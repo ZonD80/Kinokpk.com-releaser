@@ -305,7 +305,7 @@ theme_advanced_buttons4 : "'./*insertlayer,moveforward,movebackward,absolute,|,s
         theme_advanced_resizing : true,
         dialog_type:"modal",
         entities:"38,amp,60,lt,62,gt",
-        paste_remove_spans:"1", 
+        //paste_remove_spans:"1", 
         paste_strip_class_attributes:"all"
 });
 });
@@ -1865,13 +1865,11 @@ function prepare_for_torrenttable($res) {
 	if (!$tree) $tree = make_tree();
 	$resarray = array();
 	$REL_CONFIG['pron_cats'] = explode(',',$REL_CONFIG['pron_cats']); //pron
-	$seocats = $REL_SEO->assoc_cats();
 
 	while ($resvalue = mysql_fetch_array($res)) {
 		$chsel = array();
 		$cats = explode(',',$resvalue['category']);
 		$catq= array_shift($cats);
-		$resvalue['cat_seo'] = $seocats[$catq];
 		$catq = get_cur_branch($tree,$catq);
 		$childs = get_childs($tree,$catq['parent_id']);
 		if ($childs) {
@@ -2429,5 +2427,5 @@ define ("BETA_NOTICE", "\n<br />This isn't complete release of source!");
  * Kinokpk.com releaser's version
  * @var string
  */
-define("RELVERSION","3.30 alpha 2");
+define("RELVERSION","3.30 beta");
 ?>

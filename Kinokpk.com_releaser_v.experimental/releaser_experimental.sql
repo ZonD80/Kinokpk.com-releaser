@@ -3539,11 +3539,13 @@ CREATE TABLE IF NOT EXISTS `seorules` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `script` varchar(255) DEFAULT NULL,
   `parameter` varchar(255) DEFAULT NULL,
-  `replace` varchar(255) DEFAULT NULL,
+  `repl` varchar(255) DEFAULT NULL,
+  `unset_params` varchar(255) DEFAULT NULL,
   `sort` int(2) NOT NULL DEFAULT '0',
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `script` (`script`,`parameter`)
+  UNIQUE KEY `script` (`script`,`parameter`),
+  UNIQUE KEY `script_2` (`script`,`sort`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 --

@@ -9,98 +9,67 @@
  */
 
 class REL_SEO {
-	public function __constuct($conf=NULL) {
-		//	if (!$conf) return;
-	}
-	public function make_link() {
-		global $REL_CONFIG;
-		$linkar = func_get_args();
-		$dest = $linkar[0];
-		$script = $dest;
-		unset($linkar[0]);
-		if ($linkar) {
-			/*if ($script=='browse') { unset($dest); }
-			elseif ($script=='details') {
-				$dest='';
+	private $SR, $SO, $SU;
+	function __construct() {
+		global $REL_CACHE, $REL_DB;
+		$cache = $REL_CACHE->get('system','seorules');
+		
+		if ($cache===false) {
+			$cache = array();
+			$res = $REL_DB->query("SELECT script,parameter,repl,sort,unset_params FROM seorules WHERE enabled=1 ORDER BY script,parameter DESC, sort ASC");
+			while ($row = mysql_fetch_assoc($res)) {
+				$cache[] = $row;
 			}
-						elseif ($script=='torrent_info') $dest = 'trackers/';
-			elseif ($script=='exportrelease') $dest = 'export/';
-			elseif (($script<>'download')&&($script<>'details'))*/
-			$dest .= '.php?';
-			//else $dest.='/';
-			foreach ($linkar as $place => $param) {
-				if ($place % 2 == 0) continue;
-				//if (isset($linkar[$place+1])) {
-				/*if ($script=='browse') {
-						if ($param=='cat') {
-							$cats = $this->assoc_cats();
-							$dest.="{$cats[$linkar[$place+1]]}/";
-						}
-						elseif ($param=='relgroup') {
-							$dest.="by_relgroup/{$linkar[$place+1]}/";
-						}
-						elseif ($param=='nofile') {
-							$dest.='releases/nofile';
-						}
-						elseif ($param=='dead') {
-							$dest.="releases/dead";
-						}
-						elseif ($param=='unchecked') {
-							$dest.='releases/unchecked';
-						}
-					}
-					elseif(($script=='download')&&$param=='a') {
-						$dest = 'download.php?a=my';
-					}
-					elseif (($script<>'download')&&($script<>'details')&&($script<>'torrent_info')&&($script<>'exportrelease'))*/
-					$destar[] = "$param={$linkar[$place+1]}";
-					/*else {
-						if ($param=='catname') $dest.="{$linkar[$place+1]}/";
-						elseif ($param=='id') $dest.="{$linkar[$place+1]}/";
-						elseif ($param=='name') $dest.="{$linkar[$place+1]}/";
-						elseif ($param=='dllist') $dest.="statistics-local/";
-						elseif ($param=='info') $dest.="information/";
-					}*/
-				//}
-			}
-			//if (($script<>'download')&&($script<>'details')&&($script<>'browse')&&($script<>'torrent_info')&&($script<>'exportrelease') && $destar)
-			$dest .= implode("&",$destar);
+			$REL_CACHE->set('system','seorules',$cache);
 		}
-		/*elseif ($script=='login') $dest = 'login';
-		elseif ($script=='recover') $dest = 'lostpassword';
-		elseif ($script=='logout') $dest = 'byebye';
-		elseif ($script=='signup') $dest = 'welcome';
-		elseif ($script=='browse') $dest = 'releases';*/
-		elseif ($script=='rules')  $dest = '#';
-		elseif ($script=='providers') $dest = '#';
-		elseif ($script=='press') $dest = '#';
-		elseif ($script=='privacy') $dest = '#';
-		elseif ($script=='faq') $dest = '#';
-		else $dest .='.php?';
-		return $REL_CONFIG['defaultbaseurl'].'/'.addslashes($dest);
+		if ($cache) {
+			foreach ($cache as $row) {
+				$this->SR[$row['script']][$row['parameter']] = $row['repl'];
+				$this->SO[$row['script']][$row['sort']] = $row['parameter'];
+				$this->SU[$row['script']][$row['parameter']] = explode(',', $row['unset_params']);
+			}
+		}
 	}
 
 	/**
-	 * Associates categories with its ids
-	 * @param string $type Table to take categories
-	 * @return array Array of categories, keys are ids, values are categories' names
+	 * Links constructor based on seo rules from seoadmin.php. Recevies multiple params, first - is script, next coming pairs is parameter and value. E.g. make_link('browse','cat',4);
+	 * @return string
 	 */
-	public function assoc_cats($type='categories') {
-		global $REL_CACHE;
-		$cats = $REL_CACHE->get('trees','cat_seoassoc_'.$type);
-		if ($cats===false) {
-			$cats=array();
-			$catsrow = sql_query("SELECT id,name,seo_name FROM $type ORDER BY sort ASC");
-			while ($catres= mysql_fetch_assoc($catsrow)) $cats[$catres['id']]=($catres['seo_name']?$catres['seo_name']:translit($catres['name']));
-			$REL_CACHE->set('trees','cat_seoassoc_'.$type,$cats);
+	public function make_link() {
+		global $REL_CONFIG;
+
+		$linkar = func_get_args();
+		$script = $linkar[0];
+
+		if ($this->SR[$script]['{base}']) $destar['{base}'] = $this->SR[$script]['{base}'];
+		else $destar['{base}'] = "$script.php";
+		unset($linkar[0]);
+		if ($linkar) {
+				
+			foreach ($linkar as $place => $param) {
+				if ($place % 2 == 0) continue;
+				if ($this->SR[$script][$param]) {
+					$destar[$param] = sprintf($this->SR[$script][$param],$linkar[$place+1]);
+					if ($this->SU[$script][$param]) {
+						foreach ($this->SU[$script][$param] as $to_unset) unset($destar[$to_unset]);
+					}
+				} else {
+					$destar2[$param] = "$param={$linkar[$place+1]}";
+				}
+			}
 		}
-		return $cats;
+		if ($destar['{base}']) {
+			$dest = $destar['{base}'];
+			unset($destar['{base}']);
+		}
+		if ($destar) {
+			$dest .= addslashes(implode('',$destar2));
+		}
+		if ($destar2) {
+			$dest .= '?'.addslashes(implode('&',$destar2));
+		}
+		return $REL_CONFIG['defaultbaseurl'].'/'.addslashes($dest);
 	}
 
-	public function get_cat_id_by_seoname($search,$type='categories') {
-		global $REL_CACHE;
-		$cats = $this->assoc_cats();
-		return array_search(trim((string)$search),$cats);
-	}
 }
 ?>

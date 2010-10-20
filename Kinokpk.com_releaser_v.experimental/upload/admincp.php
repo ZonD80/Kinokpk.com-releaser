@@ -22,10 +22,14 @@ if (get_user_class() >= UC_SYSOP) {
 	$REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For owners")); ?>
 <table width=100% cellspacing=10 align=center>
 	<tr>
-		<td><small>Я ебаный кролик! А ты?</small></td>
+		<td><a href="<?=$REL_SEO->make_link('configadmin');?>"><b><?=$REL_LANG->_("Global settings");?></b></a></td>
 		<td><a href="<?=$REL_SEO->make_link('blocksadmin');?>"><?=$REL_LANG->_("Blocks administration");?></a></td>
 		<td><a href="<?=$REL_SEO->make_link('templatesadmin');?>"><?=$REL_LANG->_("Skins administration");?></a></td>
-		<td><a href="<?=$REL_SEO->make_link('configadmin');?>"><b><?=$REL_LANG->_("Global settings");?></b></a></td>
+		<td><a href="<?=$REL_SEO->make_link('forumadmin');?>"><b><?=$REL_LANG->_("Forum");?></b></a></td>
+
+	</tr>
+	<tr>
+		<td colspan="4"><a href="<?=$REL_SEO->make_link('seoadmin');?>"><?=$REL_LANG->_("Human Readable URLs configuration (SEO)");?></a></td>
 	</tr>
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('spam');?>"><?=$REL_LANG->_("View private messages");?></a></td>

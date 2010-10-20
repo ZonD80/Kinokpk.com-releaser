@@ -12,12 +12,11 @@
 require_once("include/bittorrent.php");
 
 dbconn();
-
 loggedinorreturn();
+
+if (get_user_class() < UC_SYSOP) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
+
 httpauth();
-if (get_user_class() < UC_SYSOP) {
-	stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
-}
 
 
 $tree = make_tree('forum_categories');
@@ -164,7 +163,7 @@ print("<tr><td>ID</td><td>{$REL_LANG->say_by_key('sort')}</td><td>{$REL_LANG->sa
 $sql = sql_query("SELECT * FROM forum_categories ORDER BY id ASC");
 
 while ($row = mysql_fetch_assoc($sql)) {
-	$catseo = $REL_SEO->assoc_cats();
+	$catseo = ($row['seo_name']?$row['seo_name']:translit($row['name']));
 	$id = $row['id'];
 	$name = $row['name'];
 	$parent = $row['parent_id'];

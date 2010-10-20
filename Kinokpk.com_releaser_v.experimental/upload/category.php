@@ -131,7 +131,7 @@ print("<tr><td>ID</td><td>{$REL_LANG->say_by_key('sort')}</td><td>{$REL_LANG->sa
 $sql = sql_query("SELECT * FROM categories ORDER BY id ASC");
 
 while ($row = mysql_fetch_assoc($sql)) {
-	$catseo = $REL_SEO->assoc_cats();
+	$catseo = ($row['seo_name']?$row['seo_name']:translit($row['name']));
 	$id = $row['id'];
 	$name = $row['name'];
 	$parent = $row['parent_id'];
