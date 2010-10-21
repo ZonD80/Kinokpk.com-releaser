@@ -26,7 +26,7 @@ if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; } else {
 	$content = '<div id="releases-table">';
 
 	$perpage = 9;
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $_SERVER['PHP_SELF'] . "?" );
+	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('index') );
 
 	$resarray = $REL_CACHE->get('block-indextorrents','page'.($page?$page:''));
 	if ($resarray===false) {

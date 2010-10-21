@@ -329,7 +329,7 @@ else {
 
 	}
 	else {
-		list($pagertop, $pagerbottom, $limit) = pager($limited, $count, $REL_SEO->make_link('relgroups','id',$id)."&",array('lastpagedefault' => 1));
+		list($pagertop, $pagerbottom, $limit) = pager($limited, $count, array('relgroups','id',$id),array('lastpagedefault' => 1));
 
 		$subres = sql_query("SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
 												  "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .

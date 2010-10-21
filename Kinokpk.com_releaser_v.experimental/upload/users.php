@@ -23,16 +23,18 @@ $search = htmlspecialchars(trim($search));
 $class = (int) $_GET['class'];
 if ($class == '-' || !is_valid_user_class($class))
 $class = '';
-
+$q[] = 'users';
 if ($search != '' || $class) {
 	$query = "username LIKE '%" . sqlwildcardesc($search) . "%' AND confirmed=1";
 	if ($search)
-	$q = "search=" . $search;
+	$q[] = "search";
+	$q[] = $search;
 }
 
 if (is_valid_user_class($class)) {
 	$query .= " AND class = $class";
-	$q .= ($q ? "&amp;" : "") . "class=$class";
+	$q[] = "class";
+	$q[] = $class;
 }
 
 if ($query) $query = " WHERE ".$query;
@@ -121,7 +123,7 @@ elseif (!isset($_GET['act'])) {
 	$count = mysql_result($res,0);
 	if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); $REL_TPL->stdfoot(); die(); }
 	$perpage = 50;
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, "users.php?".($q?$q.'&amp;':''));
+	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $q);
 
 
 

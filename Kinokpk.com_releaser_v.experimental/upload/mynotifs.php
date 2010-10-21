@@ -136,7 +136,7 @@ if (!$type) {
 	}
 	$limited = 50;
 	$count = @mysql_result(sql_query("SELECT SUM(1) $from"),0);
-	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, $REL_SEO->make_link('mynotifs','type',$type)."&amp;" );
+	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, array('mynotifs','type',$type) );
 
 	$query = sql_query("SELECT $addition $from $limit");
 	print ('<h1>'.$REL_LANG->say_by_key("you_watching_$type").'</h1>');

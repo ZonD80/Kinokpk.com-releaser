@@ -71,6 +71,7 @@ if (!$action) {
 
 	if (!$view_topics) {
 		$tabledata = prepare_for_forumtable($cats,$CAT);
+		
 
 		$REL_TPL->assignByRef('CATEGORIES',$tabledata['categories']);
 		$REL_TPL->assignByRef('FORUMS',$tabledata['forums']);
@@ -81,7 +82,7 @@ if (!$action) {
 		$count = get_row_count('forum_topics',"WHERE category=$curcat");
 		if ($count) {
 			$limited = 25;
-			list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, $REL_SEO->make_link('forum','cat',$curcat,'name',translit($CAT['name']))."&amp;" );
+			list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, array('forum','cat',$curcat,'name',translit($CAT['name'])));
 			$REL_TPL->assignByRef('pagertop', $pagertop);
 			$REL_TPL->assignByRef('pagerbottom', $pagerbottom);
 			$res = $REL_DB->query("SELECT forum_topics.*,(SELECT users.username FROM users WHERE users.id=forum_topics.author) AS aname,(SELECT users.class FROM users WHERE users.id=forum_topics.author) AS aclass, users.username,users.class,comments.added,comments.user FROM forum_topics LEFT JOIN comments ON forum_topics.lastposted_id=comments.id LEFT JOIN users ON comments.user=users.id WHERE category=$curcat AND comments.type='forum' ORDER BY forum_topics.id,comments.added,started DESC $limit") or sqlerr(__FILE__,__LINE__);
@@ -162,7 +163,7 @@ elseif ($action=='viewtopic') {
 			if (in_array($post, $postspage)) $_GET['page'] = $page+1;
 		}
 	}
-	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, $REL_SEO->make_link('forum','a','viewtopic','id',$topic['id'],'subject',$topic['subject'])."&amp;" );
+	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, array('forum','a','viewtopic','id',$topic['id'],'subject',$topic['subject']));
 	$REL_TPL->assignByRef('pagertop', $pagertop);
 	$REL_TPL->assignByRef('pagerbottom', $pagerbottom);
 

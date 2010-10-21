@@ -34,7 +34,7 @@ if (!$count) {
 
 	$perpage = 25;
 
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $REL_SEO->make_link('browse').'?');
+	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('bookmarks'));
 
 	$tree = make_tree();
 

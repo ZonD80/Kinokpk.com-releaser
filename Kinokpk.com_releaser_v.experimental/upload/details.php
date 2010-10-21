@@ -252,7 +252,7 @@ if (! $count) {
 	print ( "</td></tr></table><br /></div>");
 
 } else {
-	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, $REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."&amp;",array ('lastpagedefault' => 1 ) );
+	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, array('details','id',$id,'name',translit($row['name'])),array ('lastpagedefault' => 1 ) );
 
 	$subres = sql_query ( "SELECT c.id, c.type, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = " . "$id AND c.type='rel' GROUP BY c.id ORDER BY c.id $limit" ) or sqlerr ( __FILE__, __LINE__ );
 	$allrows = prepare_for_commenttable($subres,$row['name'],$REL_SEO->make_link('details','id',$id,'name',translit($row['name'])));

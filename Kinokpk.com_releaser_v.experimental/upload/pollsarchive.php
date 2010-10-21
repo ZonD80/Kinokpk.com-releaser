@@ -17,7 +17,7 @@ $spend = "</div></div>";
 
 $count = get_row_count("polls");
 
-list($pagertop, $pagerbottom, $limit) = pager(5, $count, $REL_SEO->make_link('pollsarchive') . $addparam);
+list($pagertop, $pagerbottom, $limit) = pager(5, $count, array('pollsarchive'));
 
 $pollsrow = sql_query("SELECT id FROM polls ORDER BY id DESC $limit");
 

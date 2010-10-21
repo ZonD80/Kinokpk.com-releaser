@@ -176,7 +176,7 @@ if (in_array($type,$allowed_types))
 
 	//------ Make page menu
 
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $REL_SEO->make_link('userhistory','type',$type,'id',$id)."&");
+	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('userhistory','type',$type,'id',$id));
 
 	//------ Get user data
 

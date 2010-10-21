@@ -154,7 +154,7 @@ elseif ($a == 'deleteusers') {
 elseif ($a == 'users') {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('view_users'));
 	$count = get_row_count('rg_subscribes',"WHERE rgid=$id");
-	list($pagertop, $pagerbottom, $limit) = pager(30, $count, $REL_SEO->make_link('rgadmin','id',$id,$addparam,''));
+	list($pagertop, $pagerbottom, $limit) = pager(30, $count, array('rgadmin','id',$id));
 
 	$res = sql_query("SELECT rg_subscribes.*, users.username, users.class FROM rg_subscribes LEFT JOIN users ON rg_subscribes.userid=users.id WHERE rgid = $id ORDER BY valid_until ASC $LIMIT") or sqlerr(__FILE__,__LINE__);
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('view_users'). ' '.@mysql_result(sql_query("SELECT name FROM relgroups WHERE id = $id"),0).$REL_LANG->say_by_key('to_rgadmin'));

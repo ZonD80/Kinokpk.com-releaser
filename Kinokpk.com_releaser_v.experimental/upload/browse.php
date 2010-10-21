@@ -30,6 +30,7 @@ $searchstr = (string) $_GET['search'];
 $cleansearchstr = htmlspecialchars($searchstr);
 if (empty($cleansearchstr))
 unset($cleansearchstr);
+$addparam[] = 'browse';
 
 if (($cat!=0) && is_valid_id($cat)) {
 
@@ -41,30 +42,35 @@ if (($cat!=0) && is_valid_id($cat)) {
 		if ($catq) $catq = implode('OR',$catq);
 
 		$wherea['cat'] = $catq;
-		$addparam .= "cat=$cat&";
+		$addparam[] = 'cat';
+		$addparam[] = $cat;
 	}
 }
 
 if ($dead) {
 	$wherea['dead'] = "torrents.visible = 0";
-	$addparam .= "dead&";
+	$addparam[] = 'dead';
+	$addparam[] = 1;
 	$dead = "''";
 }
 if ($nofile) {
 	$wherea['nofile'] = "torrents.filename = 'nofile'";
-	$addparam .= "nofile&";
+	$addparam[] = 'nofile';
+	$addparam[] = 1;
 	$nofile = "''";
 
 }
 if ($unchecked) {
 	$wherea['unchecked'] = "torrents.moderatedby = 0";
-	$addparam .= "unchecked&";
+	$addparam[] = 'unchecked';
+	$addparam[] = 1;
 	$unchecked = "''";
 }
 
 if ($relgroup) {
 	$wherea['relgroup'] = "torrents.relgroup =  $relgroup";
-	$addparam .= "relgroup=$relgroup&";
+	$addparam[] = 'relgroup';
+	$addparam[] = $relgroup;
 }
 
 if ((get_user_class()>=UC_MODERATOR)) { $modview=true; }
@@ -77,7 +83,8 @@ if (!is_array($wherea) || !$modview) $wherea[] = "torrents.visible=1 AND torrent
 if (isset($cleansearchstr))
 {
 	$wherea['search'] = "torrents.name LIKE '%" . sqlwildcardesc($searchstr) . "%'";
-	$addparam .= "search=" . urlencode($searchstr) . "&amp;";
+	$addparam[] = 'search';
+	$addparam[] = urlencode($searchstr);
 
 }
 
@@ -91,7 +98,7 @@ $row = mysql_fetch_array($res);
 $count = $row[0];
 
 
-list($pagertop, $pagerbottom, $limit) = pager($REL_CONFIG['torrentsperpage'], $count, $REL_SEO->make_link('browse').$addparam);
+list($pagertop, $pagerbottom, $limit) = pager($REL_CONFIG['torrentsperpage'], $count, $addparam);
 
 $query = "SELECT torrents.id, torrents.comments, torrents.freefor, torrents.last_action,".($modview?" torrents.moderated, torrents.moderatedby, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, torrents.visible, torrents.banned,":'')." torrents.category, torrents.images, torrents.free, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.numfiles, torrents.filename, torrents.sticky, torrents.owner, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed, " .
         "users.username, users.class, SUM(trackers.seeders) AS seeders, SUM(trackers.leechers) AS leechers FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id LEFT JOIN users ON torrents.owner = users.id LEFT JOIN trackers ON torrents.id=trackers.torrent".($where?" WHERE $where":'')." GROUP BY torrents.id ORDER BY torrents.sticky DESC, torrents.added DESC $limit";

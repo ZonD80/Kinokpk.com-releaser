@@ -139,7 +139,7 @@ if (!$count) {
 
 }
 else {
-	list($pagertop, $pagerbottom, $limit) = pager($limited, $count, $REL_SEO->make_link('rgnewsoverview','id',$rgnewsid)."&", array(lastpagedefault => 1));
+	list($pagertop, $pagerbottom, $limit) = pager($limited, $count, array('rgnewsoverview','id',$rgnewsid), array(lastpagedefault => 1));
 
 	$subres = sql_query("SELECT nc.type, nc.id, nc.ip, nc.text, nc.ratingsum, nc.user, nc.added, nc.editedby, nc.editedat, u.avatar, u.warned, ".
                   "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS nc LEFT JOIN users AS u ON nc.user = u.id LEFT JOIN sessions ON nc.user=sessions.uid LEFT JOIN users AS e ON nc.editedby = e.id WHERE nc.toid = " .

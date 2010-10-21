@@ -29,8 +29,10 @@ loggedinorreturn();
 $condition = '';
 $countcond = '';
 
-if ($_GET['view'] == 'leechers') {$condition = "AND p.seeder = 0"; $countcond = " WHERE seeder = 0";}
-if ($_GET['view'] == 'seeders') {$condition = "AND p.seeder = 1"; $countcond = " WHERE seeder = 1"; }
+$view = (string)$_GET['view'];
+if (!in_array($view, array('seeders','leechers',''))) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Invalid type of statisitcs'));
+if ($view == 'leechers') {$condition = "AND p.seeder = 0"; $countcond = " WHERE seeder = 0";}
+if ($view == 'seeders') {$condition = "AND p.seeder = 1"; $countcond = " WHERE seeder = 1"; }
 
 
 $count = @mysql_result(sql_query("SELECT SUM(1) FROM peers".$countcond),0);
@@ -38,14 +40,8 @@ $count = @mysql_result(sql_query("SELECT SUM(1) FROM peers".$countcond),0);
 if (!$count) stderr($REL_LANG->say_by_key('error'), "Нет статистики, удовлетворяющей выбранным фильтрам.");
 $torrentsperpage = $REL_CONFIG['torrentsperpage'];
 
-$addparam = strip_tags($_SERVER['QUERY_STRING']);
 
-if ($addparam != "")
-$addparam = $addparam . "&" . $pagerlink;
-else
-$addparam = $pagerlink;
-
-list($pagertop, $pagerbottom, $limit) = pager($torrentsperpage, $count, $REL_SEO->make_link('peers')."?" . $addparam);
+list($pagertop, $pagerbottom, $limit) = pager($torrentsperpage, $count, array('peers','view',$view));
 
 
 $cheaters = sql_query("SELECT p.torrent AS tid, t.name AS tname, p.ip, p.port, p.seeder, p.peer_id, p.userid, u.username, u.class, u.enabled, u.warned, u.donor, u.ratingsum FROM peers AS p INNER JOIN users AS u ON u.id = p.userid INNER JOIN torrents AS t ON t.id = p.torrent WHERE u.enabled = 1 ".$condition." ORDER BY p.last_action DESC $limit") or sqlerr(__FILE__,__LINE__);

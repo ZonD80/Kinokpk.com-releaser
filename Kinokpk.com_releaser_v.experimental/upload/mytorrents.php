@@ -30,7 +30,7 @@ if (!$count) {
 }
 else {
 
-	list($pagertop, $pagerbottom, $limit) = pager(20, $count, $REL_SEO->make_link('mytorrents'));
+	list($pagertop, $pagerbottom, $limit) = pager(20, $count, array('mytorrents'));
 	$tree = make_tree();
 	$res = sql_query("SELECT torrents.images, torrents.comments, SUM(trackers.leechers) AS leechers, SUM(trackers.seeders) AS seeders, torrents.id, torrents.name, filename, numfiles, added, size, views, visible, free, hits, times_completed, category FROM torrents LEFT JOIN trackers ON torrents.id=trackers.torrent $where GROUP BY id ORDER BY id DESC $limit");
 	$resarray = prepare_for_torrenttable($res);

@@ -195,7 +195,7 @@ if (!$count) {
 
 }
 else {
-	list($pagertop, $pagerbottom, $limit) = pager($limited, $count, $REL_SEO->make_link('polloverview','id',$pid)."&", array(lastpagedefault => 1));
+	list($pagertop, $pagerbottom, $limit) = pager($limited, $count, array('polloverview','id',$pid), array(lastpagedefault => 1));
 
 	$subres = sql_query("SELECT pc.type, pc.id, pc.ip, pc.ratingsum, pc.text, pc.user, pc.added, pc.editedby, pc.editedat, u.avatar, u.warned, ".
                   "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS pc LEFT JOIN users AS u ON pc.user = u.id LEFT JOIN sessions ON pc.user=sessions.uid LEFT JOIN users AS e ON pc.editedby = e.id WHERE pc.toid = " .

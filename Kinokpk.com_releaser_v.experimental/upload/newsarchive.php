@@ -16,7 +16,7 @@ $REL_TPL->stdhead("Архив новостей");
 $count = get_row_count("news");
 $perpage = 20; //Сколько новостей на страницу
 
-list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $_SERVER["PHP_SELF"] . "?");
+list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('newsarchive'));
 $resource = sql_query("SELECT news.* , SUM(1) FROM news LEFT JOIN comments ON comments.toid = news.id WHERE comments.type='news' GROUP BY news.id ORDER BY news.added DESC $limit");
 
 print("<div id='news-table'>");

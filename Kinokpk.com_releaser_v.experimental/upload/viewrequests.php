@@ -118,7 +118,7 @@ if ($requestorid <> NULL) {
 
 		$perpage = 50;
 
-		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $_SERVER["PHP_SELF"] ."?" .(isset($_GET['category'])?"category={$categ}&":"")."sort=" . $sort . "&" );
+		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, (isset($_GET['category'])?array('viewrequests','category',$categ,'sort',$sort):array('viewrequests','sort',$sort)) );
 
 		print("<tr><td class=\"index\" colspan=\"15\">");
 		print($pagertop);

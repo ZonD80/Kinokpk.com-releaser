@@ -19,6 +19,7 @@ stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 $REL_TPL->stdhead("Административный поиск");
 print "<h1>Административный поиск</h1>\n";
 
+$q[] = 'usersearch';
 if ($_GET['h'])
 {
 	$REL_TPL->begin_frame("Инструкция<font color=#009900> - Читать обязательно</font>");
@@ -289,7 +290,8 @@ $highlight = " bgcolor=#BBAF9B";
 	  	}
 	  	$where_is .= $name_is.")";
 	  }
-	  $q .= ($q ? "&amp;" : "") . "n=".urlencode(trim(htmlspecialchars($_GET['n'])));
+	  $q[] ="n";
+	  $q[] = urlencode(trim(htmlspecialchars((string)$_GET['n'])));
 		}
 
 		// ratio
@@ -322,7 +324,8 @@ $highlight = " bgcolor=#BBAF9B";
 
 				$ratiotype = (int) $_GET['rt'];
 
-				$q .= ($q ? "&amp;" : "") . "rt=$ratiotype";
+				$q[] ="rt";
+				$q[] = $ratiotype;
 
 				if ($ratiotype == "3")
 
@@ -344,7 +347,8 @@ $highlight = " bgcolor=#BBAF9B";
 
 					$where_is .= " BETWEEN $ratio AND $ratio2";
 
-					$q .= ($q ? "&amp;" : "") . "r2=$ratio2";
+					$q[] ="r2";
+					$q[] = $ratio2;
 
 				}
 
@@ -362,7 +366,8 @@ $highlight = " bgcolor=#BBAF9B";
 
 			}
 
-			$q .= ($q ? "&amp;" : "") . "r=$ratio";
+			$q[] ="r";
+			$q[] = $ratio;
 
 		}
 
@@ -391,7 +396,8 @@ $highlight = " bgcolor=#BBAF9B";
 	  	}
 			}
 			$where_is .= $email_is.")";
-			$q .= ($q ? "&amp;" : "") . "em=".urlencode(trim(htmlspecialchars($_GET['em'])));
+			$q[] ="em";
+			$q[] =urlencode(trim(htmlspecialchars((string)$_GET['em'])));
 		}
 
 		//class
@@ -400,7 +406,8 @@ $highlight = " bgcolor=#BBAF9B";
 		if (is_valid_id($class + 1))
 		{
 			$where_is .= (isset($where_is)?" AND ":"")."u.class=$class";
-			$q .= ($q ? "&amp;" : "") . "c=".($class+2);
+			$q[] ="c";
+			$q[] = ($class+2);
 		}
 
 		// IP
@@ -439,9 +446,11 @@ $highlight = " bgcolor=#BBAF9B";
 					die();
 				}
 				$where_is .= (isset($where_is)?" AND ":"")."INET_ATON(u.ip) & INET_ATON('$mask') = INET_ATON('$ip') & INET_ATON('$mask')";
-				$q .= ($q ? "&amp;" : "") . "ma=$mask";
+				$q[] ="ma";
+				$q[] =$mask;
 			}
-			$q .= ($q ? "&amp;" : "") . "ip=$ip";
+			$q[] ="ip";
+			$q[] = $ip;
 		}
 
 
@@ -492,7 +501,8 @@ $highlight = " bgcolor=#BBAF9B";
 	  	}
 	  	$where_is .= $comment_is.")";
 	  }
-	  $q .= ($q ? "&amp;" : "") . "co=".urlencode(trim($_GET['co']));
+	  $q[] ="co";
+	  $q[] =urlencode(trim((string)$_GET['co']));
 		}
 
 		$unit = 1073741824;		// 1GB
@@ -507,9 +517,11 @@ $highlight = " bgcolor=#BBAF9B";
 				$REL_TPL->stdfoot();
 				die();
 			}
-			$q .= ($q ? "&amp;" : "") . "d=$date";
+			$q[] ="d";
+			$q[] = $date;
 			$datetype = (int)$_GET['dt'];
-			$q .= ($q ? "&amp;" : "") . "dt=$datetype";
+			$q[] ="dt";
+			$q[] =$datetype;
 			if ($datetype == "0")
 			// For mySQL 4.1.1 or above use instead
 			// $where_is .= (isset($where_is)?" AND ":"")."DATE(added) = DATE('$date')";
@@ -529,7 +541,8 @@ $highlight = " bgcolor=#BBAF9B";
 							$REL_TPL->stdfoot();
 							die();
 						}
-						$q .= ($q ? "&amp;" : "") . "d2=$date2";
+						$q[] ="d2";
+						$q[] = $date2;
 						$where_is .= " BETWEEN '$date' and '$date2'";
 					}
 					else
@@ -688,11 +701,10 @@ $highlight = " bgcolor=#BBAF9B";
 		$arr = mysql_fetch_row($res);
 		$count = $arr[0];
 
-		$q = isset($q)?($q."&amp;"):"";
 
 		$perpage = 30;
 
-		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, strip_tags($_SERVER["PHP_SELF"])."?".$q);
+		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $q);
 
 		$query .= $limit;
 

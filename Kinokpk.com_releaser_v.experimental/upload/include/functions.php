@@ -1601,12 +1601,12 @@ function deletetorrent($id) {
  * Page navigation header and footer
  * @param int $rpp records per page
  * @param int $count total records
- * @param string $href a link to record
+ * @param string $hrefarray arguments to be passed to REL_SEO->make_link() to make pager link
  * @param array $opts array of options. Default array(0)
  * @return array Array to be used in requested script
  */
-function pager($rpp=25, $count, $href, $opts = array()) {
-	global $REL_LANG;
+function pager($rpp=25, $count, $hrefarray, $opts = array()) {
+	global $REL_LANG, $REL_SEO;
 	$pages = ceil($count / $rpp);
 
 	if (!$opts["lastpagedefault"])
@@ -1633,17 +1633,20 @@ function pager($rpp=25, $count, $href, $opts = array()) {
 		$pagipage = $page ;
 		$start = ($page -1) * $rpp;
 	}
+	$hrefarray[] = 'page';
+	$hrefarray[] = '';
+	$href = call_user_func_array(array($REL_SEO, 'make_link'),$hrefarray);
 	if ($pages>1) {
 		$pagerr ='<div align="center"><div class="paginator" id="paginator1"></div>
 	<div class="paginator_pages">'.sprintf($REL_LANG->say_by_key('pager_text'),$count,$pages,$rpp,($start+1),((($start+$rpp)>$count)?$count:($start+$rpp))).'</div>
 				<script type="text/javascript">
-		pag1 = new Paginator(\'paginator1\', '.$pages.', 15, "'. ($pagipage ) .'", "'.$href.'page=");
+		pag1 = new Paginator(\'paginator1\', '.$pages.', 15, "'. ($pagipage ) .'", "'.$href.'");
 	</script>';
 
 		$pagerre ='<div align="center"><div class="paginator" id="paginator2"></div>
 	<div class="paginator_pages">'.sprintf($REL_LANG->say_by_key('pager_text'),$count,$pages,$rpp,($start+1),((($start+$rpp)>$count)?$count:($start+$rpp))).'</div>
 				<script type="text/javascript">
-		pag2 = new Paginator(\'paginator2\', '.$pages.', 15, "'. ($pagipage ) .'", "'.$href.'page=");
+		pag2 = new Paginator(\'paginator2\', '.$pages.', 15, "'. ($pagipage ) .'", "'.$href.'");
 	</script></div>';
 	}
 	return array($pagerr, $pagerre, "LIMIT $start,$rpp");

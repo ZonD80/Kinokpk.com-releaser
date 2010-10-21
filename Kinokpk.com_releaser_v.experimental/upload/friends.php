@@ -14,6 +14,7 @@ loggedinorreturn();
 
 
 $action = (string)$_GET['action'];
+$q = 'friends';
 if ($action)
 $fid = (int) $_GET['id'];
 else $fid=$CURUSER['id'];
@@ -81,12 +82,14 @@ if ($search != '' || $class) {
 	$querystr = " LEFT JOIN users ON friendid=users.id OR userid=users.id";
 	$query['u'] = "users.username LIKE '%" . sqlwildcardesc($search) . "%' AND users.confirmed=1";
 	if ($search)
-	$q = "search=" . $search;
+	$q[] = "search";
+	$q[] = $search;
 }
 
 if (is_valid_user_class($class)) {
 	$query['c'] = "users.class = $class";
-	$q .= ($q ? "&amp;" : "") . "class=$class";
+	$q[] = 'class';
+	$q[] = $class;
 }
 
 $state='a';
@@ -94,13 +97,15 @@ $state='a';
 if (isset($_GET['pending'])) {
 	$state = 'p';
 	$query['p'] = 'friends.confirmed=0';
-	$q .= ($q ? "&amp;" : "") . "pending";
+	$q[] = 'pending';
+	$q[] = 1;
 }
 elseif (isset($_GET['online'])) {
 	$state = 'o';
 	$querystr = " LEFT JOIN users ON IF(userid={$CURUSER['id']},friendid=users.id,userid=users.id)";
 	$query['o'] = 'users.last_access>'.(time()-300);
-	$q .= ($q ? "&amp;" : "") . "online";
+	$q[] = 'online';
+	$q[] = 1;
 } else $query[] = 'friends.confirmed=1';
 
 $query['def'] = "(userid={$CURUSER['id']} OR friendid=$fid)";
@@ -139,7 +144,7 @@ print("</div>\n");
 
 if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_friends'),'error'); $REL_TPL->stdfoot(); die(); }
 $perpage = 50;
-list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $_SERVER['PHP_SELF'] . "?".$q);
+list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $q);
 
 
 

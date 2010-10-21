@@ -43,7 +43,7 @@ $row = mysql_fetch_array($res);
 $count = $row[0];
 $per_list = 100;
 
-list($pagertop, $pagerbottom, $limit) = pager($per_list, $count, $REL_SEO->make_link('online')."?");
+list($pagertop, $pagerbottom, $limit) = pager($per_list, $count, array('online'));
 $spy_res = sql_query("SELECT url, uid, username, class, ip, useragent FROM sessions WHERE time > $dt ORDER BY uid ASC $limit");
 
 echo "<table  class=\"embedded\" cellspacing=\"0\" cellpadding=\"3\" width=\"100%\"><tr><td class=\"colhead\" align=\"center\" colspan=\"3\">Где находятся пользователи (активность за последние 5 минут)</td></tr>";

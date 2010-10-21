@@ -27,7 +27,7 @@ if (!$count){
 
 $perpage = 50;
 
-list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $REL_SEO->make_link('spam') . $addparam);
+list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('spam'));
 
 $REL_TPL->stdhead("ЛС пользователей");
 

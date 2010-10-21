@@ -68,17 +68,20 @@ if (!$fid) {
 	$class = (int) $_GET['class'];
 	if ($class == '-' || !is_valid_user_class($class))
 	$class = '';
+$q[] ='present';
 
 	if ($search != '' || $class) {
 		$querystr = " LEFT JOIN users ON friendid=users.id";
 		$query_table = $query['u'] = "users.username LIKE '%" . sqlwildcardesc($search) . "%' AND users.confirmed=1";
 		if ($search)
-		$q = "search=" . $search;
+		$q[] = "search";
+		$q[] = $search;
 	}
 
 	if (is_valid_user_class($class)) {
 		$query['c'] = "users.class = $class";
-		$q .= ($q ? "&amp;" : "") . "class=$class";
+		$q[] = "class";
+		$q[] = $class;
 	}
 
 	$query['def'] = "userid={$CURUSER['id']} OR friendid={$CURUSER['id']}";
@@ -109,7 +112,7 @@ if (!$fid) {
 	$count = @mysql_result($res,0);
 	if (!$count) { $REL_TPL->end_frame(); stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_friends'),'error'); $REL_TPL->stdfoot(); die(); }
 	$perpage = 50;
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $_SERVER['PHP_SELF'] . "?".$q);
+	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $q);
 
 
 

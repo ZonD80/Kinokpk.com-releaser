@@ -41,7 +41,7 @@ if (!$count) print("<b>".$REL_LANG->say_by_key('log_file_empty')."</b>\n");
 else
 {
 	$limited = 50;
-	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, $REL_SEO->make_link('log','type',$type)."&amp;");
+	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, array('log','type',$type));
 
 	$res = sql_query("SELECT txt, added FROM `sitelog` WHERE type = ".sqlesc($type)." ORDER BY `added` DESC $limit") or sqlerr(__FILE__, __LINE__);
 	print("<h1>".$REL_LANG->say_by_key('logs')."| <a href=\"".$REL_SEO->make_link('log')."\">к типам логов</a></h1>\n");

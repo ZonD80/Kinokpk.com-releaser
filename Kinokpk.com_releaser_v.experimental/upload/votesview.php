@@ -22,7 +22,7 @@ if ($_GET[requestid])
 	$row = mysql_fetch_array($res2);
 	$count = $row[0];
 	$perpage = 50;
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $_SERVER["PHP_SELF"] ."?" );
+	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('votesview') );
 	$res = sql_query("SELECT users.id as userid,users.username, users.ratingsum, users.class, requests.id as requestid, requests.request FROM addedrequests INNER JOIN users ON addedrequests.userid = users.id INNER JOIN requests ON addedrequests.requestid = requests.id WHERE addedrequests.requestid =$requestid $limit") or sqlerr(__FILE__, __LINE__);
 	$REL_TPL->stdhead("Голосовавшие");
 	$res2 = sql_query("SELECT request FROM requests WHERE id=$requestid");

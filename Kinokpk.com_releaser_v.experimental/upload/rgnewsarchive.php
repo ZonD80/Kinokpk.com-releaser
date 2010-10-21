@@ -46,7 +46,7 @@ if ($relgroup['private']) {
 $count = get_row_count("rgnews"," WHERE relgroup=$rgid");
 $perpage = 20; //Сколько новостей на страницу
 
-list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $REL_SEO->make_link('rgnewsarchive'));
+list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('rgnewsarchive'));
 $resource = sql_query("SELECT rgnews.* , SUM(1) FROM rgnews LEFT JOIN comments ON comments.toid = rgnews.id WHERE comments.type='rgnews' GROUP BY rgnews.id ORDER BY rgnews.added DESC $limit");
 
 print("<div id='rgnews-table'>");
