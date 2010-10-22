@@ -41,7 +41,7 @@ class REL_SEO {
 		$linkar = func_get_args();
 		$script = $linkar[0];
 
-		if ($this->SR[$script]['{base}']) $destar['{base}'] = $this->SR[$script]['{base}'];
+		if (isset($this->SR[$script]['{base}'])) $destar['{base}'] = $this->SR[$script]['{base}'];
 		else $destar['{base}'] = "$script.php";
 		unset($linkar[0]);
 		if ($linkar) {
@@ -58,12 +58,12 @@ class REL_SEO {
 				}
 			}
 		}
-		if ($destar['{base}']) {
+		if (isset($destar['{base}'])) {
 			$dest = $destar['{base}'];
 			unset($destar['{base}']);
 		}
 		if ($destar) {
-			$dest .= addslashes(implode('',$destar2));
+			$dest .= addslashes(implode('',$destar));
 		}
 		if ($destar2) {
 			$dest .= '?'.addslashes(implode('&',$destar2));
