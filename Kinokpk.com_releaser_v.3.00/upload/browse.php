@@ -119,7 +119,7 @@ $ids = implode(",",$ids);
 
 $rqueryarray = array();
 
-$rquery = sql_query("SELECT id, category, comments, freefor, SUM(trackers.seeders) AS seeders, SUM(trackers.leechers) AS leechers FROM torrents LEFT JOIN trackers ON torrents.id=trackers.torrent WHERE id IN ($ids) GROUP BY id");
+$rquery = sql_query("SELECT torrents.id, category, comments, freefor, SUM(trackers.seeders) AS seeders, SUM(trackers.leechers) AS leechers FROM torrents LEFT JOIN trackers ON torrents.id=trackers.torrent WHERE torrents.id IN ($ids) GROUP BY torrents.id");
 
 $CACHEARRAY['pron_cats'] = explode(',',$CACHEARRAY['pron_cats']); //pron
 
