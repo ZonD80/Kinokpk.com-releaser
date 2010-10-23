@@ -79,7 +79,7 @@ function prepare_for_forumtable($cats,$curcat = array('id'=>0)) {
 	}
 	// end, now making post counts and another
 
-	$res = $REL_DB->query("SELECT forum_topics.category, SUM(forum_topics.comments) AS posts, SUM(1) AS topics, forum_topics.id, forum_topics.lastposted_id, forum_topics.subject, comments.user, comments.added, users.username, users.class FROM forum_topics LEFT JOIN comments ON forum_topics.lastposted_id=comments.id LEFT JOIN users ON comments.user = users.id WHERE comments.type='forum' GROUP BY forum_topics.category");
+	$res = $REL_DB->query("SELECT forum_topics.category, SUM(forum_topics.comments) AS posts, SUM(1) AS topics, forum_topics.id, forum_topics.lastposted_id, forum_topics.subject, comments.user, comments.added, users.username, users.class FROM forum_topics LEFT JOIN comments ON forum_topics.lastposted_id=comments.id LEFT JOIN users ON comments.user = users.id WHERE comments.type='forum' GROUP BY forum_topics.category,forum_topics.started") or sqlerr(__FILE__,__LINE__);
 	while ($row = mysql_fetch_assoc($res)) {
 		$return['forumsdata'][$row['category']] = array('posts'=>$row['posts'],'topics'=>$row['topics'] ,'user'=>"<a href=\"{$REL_SEO->make_link('userdetails','id',$row['user'],'name',$row['username'])}\">".get_user_class_color($row['class'], $row['username'])."</a>", 'added'=>$row['added'],'lastposted_id'=>$row['lastposted_id'],'subject'=>$row['subject'],'id'=>$row['id']);
 	}
