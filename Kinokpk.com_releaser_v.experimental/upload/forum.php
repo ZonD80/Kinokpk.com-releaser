@@ -127,7 +127,7 @@ elseif ($action=='newtopic') {
 	       "," . sqlesc(getip()) . ", 'forum')") or sqlerr(__FILE__,__LINE__);
 		$newid = mysql_insert_id();
 		sql_query("UPDATE forum_topics SET lastposted_id=$newid WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
-		$topiclink = $REL_SEO->make_link('forum','a','viewtopic','id',$to_id,'subject',$topictitle);
+		$topiclink = $REL_SEO->make_link('forum','a','viewtopic','id',$to_id,'subject',translit($topictitle));
 		safe_redirect($topiclink,2);
 		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Topic with title "%s" in "%s" successfully created, you will be reditected to it in 2 seconds. If not, click <a href="%s">on this link</a>',$topictitle,$CAT['name'],$topiclink),'success');
 	}

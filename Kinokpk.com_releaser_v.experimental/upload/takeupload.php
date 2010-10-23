@@ -275,7 +275,7 @@ if ($_POST['nofile']) {
 
 	$REL_CACHE->clearGroupCache('block-indextorrents');
 
-	sql_query("INSERT INTO notifs (checkid, userid, type) VALUES ($id, $CURUSER[id], 'comments')") or sqlerr(__FILE__,__LINE__);
+	sql_query("INSERT INTO notifs (checkid, userid, type) VALUES ($id, $CURUSER[id], 'relcomments')") or sqlerr(__FILE__,__LINE__);
 	@sql_query("DELETE FROM files WHERE torrent = $id");
 
 	if ($_POST['nofile']) {

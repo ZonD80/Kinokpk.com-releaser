@@ -981,7 +981,10 @@ function user_session() {
 		$dt_all = time() - $secs_all; // Сегодня минус количество дней
 
 		foreach ($allowed_types as $type) {
-			if ($type=='unread'){
+			if ($type=='torrents') {
+				$addition = " AND moderatedby<>0";
+			}
+			elseif ($type=='unread'){
 				$addition = "location=1 AND receiver={$CURUSER['id']} AND unread=1 AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))"; $table='messages'; $noadd=true;
 			}
 			elseif ($type=='inbox'){
@@ -2416,6 +2419,54 @@ function translit($st,$replace_spaces = true) {
 	if ($replace_spaces) $st = str_replace(" ","_",$st);
 	return $st;
 }
+
+/**
+ * Encodes data in json (useful for windows-1251 codepage)
+ * @param mixed $var Data to encode
+ * @return array JSON encoded data
+ */
+
+function json_safe_encode($var)
+{
+	return json_encode(json_fix_cyr($var));
+}
+
+function _unescape($str){//функция делает декодирование данных, которые были закодированы js-функцией escape
+		$escape_chars = "0410 0430 0411 0431 0412 0432 0413 0433 0490 0491 0414 0434 0415 0435 0401 0451 0404 0454 0416 0436 0417 0437 0418 0438 0406 0456 0419 0439 041A 043A 041B 043B 041C 043C 041D 043D 041E 043E 041F 043F 0420 0440 0421 0441 0422 0442 0423 0443 0424 0444 0425 0445 0426 0446 0427 0447 0428 0448 0429 0449 042A 044A 042B 044B 042C 044C 042D 044D 042E 044E 042F 044F"; 
+		$russian_chars = "А а Б б В в Г г Ґ ґ Д д Е е Ё ё Є є Ж ж З з И и І і Й й К к Л л М м Н н О о П п Р р С с Т т У у Ф ф Х х Ц ц Ч ч Ш ш Щ щ Ъ ъ Ы ы Ь ь Э э Ю ю Я я"; 
+		$e = explode(" ",$escape_chars); 
+		$r = explode(" ",$russian_chars); 
+		$rus_array = explode("%u",$str); 
+		$new_word = str_replace($e,$r,$rus_array); 
+		$new_word = str_replace("%20"," ",$new_word); 
+		$result=implode("",$new_word);
+
+		return $result; 
+	}
+/**
+ * Fixes json windows-1251 encode
+ * @param mixed $var Data to encode
+ * @return array JSON encoded data
+ */
+function json_fix_cyr($var)
+{
+	if (is_array($var)) {
+		$new = array();
+		foreach ($var as $k => $v) {
+			$new[json_fix_cyr($k)] = json_fix_cyr($v);
+		}
+		$var = $new;
+	} elseif (is_object($var)) {
+		$vars = get_object_vars($var);
+		foreach ($vars as $m => $v) {
+			$var->$m = json_fix_cyr($v);
+		}
+	} elseif (is_string($var)) {
+		$var = iconv('cp1251', 'utf-8', $var);
+	}
+	return $var;
+}
+
 /**
  * Outputs beta warning. Default false.
  * @var boolean
