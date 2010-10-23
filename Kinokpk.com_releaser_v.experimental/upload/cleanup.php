@@ -141,15 +141,17 @@ $REL_CONFIGrow = sql_query("SELECT * FROM cache_stats WHERE cache_name IN ('site
 
 while ($REL_CONFIGres = mysql_fetch_assoc($REL_CONFIGrow)) $REL_CONFIG[$REL_CONFIGres['cache_name']] = $REL_CONFIGres['cache_value'];
 $REL_CONFIG['lang'] = $REL_CONFIG['default_language'];
-/* @var object links parser/adder/changer for seo */
-require_once(ROOT_PATH . 'classes/seo/seo.class.php');
-$REL_SEO = new REL_SEO();
 
 require_once(ROOT_PATH . 'classes/cache/cache.class.php');
 require_once(ROOT_PATH .  'classes/cache/fileCacheDriver.class.php');
 /* @var object general cache object */
 $REL_CACHE=new Cache();
 $REL_CACHE->addDriver(NULL, new FileCacheDriver());
+
+/* @var object links parser/adder/changer for seo */
+require_once(ROOT_PATH . 'classes/seo/seo.class.php');
+$REL_SEO = new REL_SEO();
+
 /* @var object language system */
 require_once(ROOT_PATH . 'classes/lang/lang.class.php');
 $REL_LANG = new REL_LANG($REL_CONFIG);

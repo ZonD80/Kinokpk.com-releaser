@@ -106,7 +106,7 @@ if (!isset($_POST['save']) && !isset($_POST['reset'])){
 	$REL_TPL->end_frame();
 }
 elseif (isset($_POST['reset'])) {
-	sql_query("UPDATE cron SET cron_value=0 WHERE cron_name IN ('last_cleanup','last_remotecheck','in_cleanup','in_remotecheck','num_cleaned','num_checked','remote_lastchecked')");
+	sql_query("UPDATE cron SET cron_value=0 WHERE cron_name IN ('last_cleanup','last_remotecheck','in_cleanup','in_remotecheck','num_cleaned','num_checked')");
 	stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('cron_state_reseted'));
 }
 elseif (isset($_POST['save'])) {
