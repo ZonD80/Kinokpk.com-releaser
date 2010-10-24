@@ -22,7 +22,7 @@ list($seeding,$downloaded) = mysql_fetch_array($query);
 $seeding = (int)$seeding;
 $downloaded = (int)$downloaded;
 
-if ($CURUSER['ratingsum']>$REL_CRON['rating_max']) { $formula = $REL_LANG->_('Your rating is upper then %s, automatic rating increase disabled. You can increase your rating by active commenting, releasing and receiving ratings from another users',$REL_CRON['rating_max']); $nodetails=true; }
+if (($CURUSER['ratingsum']>$REL_CRON['rating_max'])&&($downloaded<=($seeding+$CURUSER['discount']))) { $formula = $REL_LANG->_('Your rating is upper then %s, automatic rating increase disabled. You can increase your rating by active commenting, releasing and receiving ratings from another users',$REL_CRON['rating_max']); $nodetails=true; }
 elseif (!$downloaded && !$seeding) { $formula = $REL_LANG->say_by_key('no_formula'); $nodetails = true; }
 elseif ($downloaded && !$seeding) { $formula = $REL_LANG->say_by_key('rating_disconnected'); $nodetails = true; }
 elseif ($downloaded>($seeding+$CURUSER['discount']))
