@@ -3458,7 +3458,7 @@ CREATE TABLE IF NOT EXISTS `retrackers` (
   `id` int(3) unsigned NOT NULL AUTO_INCREMENT,
   `sort` int(3) NOT NULL DEFAULT '0',
   `announce_url` varchar(500) NOT NULL,
-  `mask` varchar(60) NOT NULL,
+  `mask` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 

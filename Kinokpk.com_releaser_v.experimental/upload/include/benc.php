@@ -60,8 +60,13 @@ function make_dc_magnet($tiger_hash,$filename,$filesize,$hubs){
 function get_retrackers($all = false, $table = 'retrackers') {
 	global $IPCHECK;
 	$ip = getip();
-	$row = sql_query("SELECT announce_url, mask FROM $table ORDER BY sort ASC");
-	while ($res = mysql_fetch_assoc($row)) { $rtarray[] = $res; if ($all) $return[] = $res['announce_url']; }
+	$res = sql_query("SELECT announce_url, mask FROM $table ORDER BY sort ASC");
+	while ($row = mysql_fetch_assoc($res)) {
+		$masks = explode(',',$row['mask']);
+		foreach ($masks as $mask)
+		$rtarray[] = array('announce_url'=>$row['announce_url'],'mask'=>$mask); 
+		if ($all) $return[] = $row['announce_url']; 
+	}
 
 	if (!$rtarray) return array();
 
