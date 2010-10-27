@@ -109,7 +109,7 @@ if ($action == "add")
 			safe_redirect($returnto);
 			stderr($REL_LANG->_('Successfull'),$REL_LANG->_('Comment added'),'success'); }
 			else {
-				$subres = sql_query ( "SELECT c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.toid, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.id=$newid AND c.type='$type'" ) or sqlerr ( __FILE__, __LINE__ );
+				$subres = sql_query ( "SELECT c.id, c.type, c.ip, c.ratingsum, c.text, c.user, c.added, c.toid, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.id=$newid AND c.type='$type'" ) or sqlerr ( __FILE__, __LINE__ );
 				//$link = $allowed_links[$type].$allrows[0]['toid'];
 				$allrows = prepare_for_commenttable($subres,$name,$returnto);
 				$IS_MODERATOR = (get_user_class()>=UC_MODERATOR);

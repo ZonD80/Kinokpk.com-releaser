@@ -6,4 +6,4 @@
 <tr><td align="center">
 <input type="hidden" name="to_id" value="{$to_id}"/>
 <input type="submit" id="sumbit_button" value="{$REL_LANG->_('Submit comment')}" />
-</td></tr></table></form>
+</td></tr></td></tr></table></form>

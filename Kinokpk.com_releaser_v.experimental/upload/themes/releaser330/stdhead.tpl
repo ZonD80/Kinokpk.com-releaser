@@ -41,8 +41,7 @@
 <![endif]-->
 <!-- Theme as it is -->
 </head>
-<body>
-<h1>TESTING LABORATORY #1, DO NOT REGISTER HERE</h1>
+<body class="bg">
 {if $OFFLINE}
 <h1>Site offline!</h1>
 {/if}
@@ -53,7 +52,7 @@
     <div class="header1">
       <div class="header3">
         <div class="header2">
-          <div class="logo"><a href="{$REL_CONFIG.defaultbaseurl}"><img src="themes/{$REL_CONFIG.ss_uri}/images/spacer.gif" height="60" width="217" border="0" alt="{$REL_LANG->say_by_key('tbhome')}" title="{$REL_LANG->say_by_key('tbhome')}" /></a></div>
+          <div class="logo"><a href="{$REL_CONFIG.defaultbaseurl}"><img src="themes/{$REL_CONFIG.ss_uri}/images/spacer.gif" height="60" width="217" border="0" alt="{$REL_LANG->_('Go to home page')}" title="{$REL_LANG->_('Go to home page')}" /></a></div>
           <div class="cp"></div>
           <div class="banner"><a href="contact.php"><img src="http://dev.kinokpk.com/images/b468_dev.jpg" border="0" alt="ТБ" /></a></div>
         </div>
@@ -62,63 +61,64 @@
     <!--Меню-->
     <div class="tmenur">
       <ul class="topmenu" id="topmenu">
-        <li><a href="{$REL_CONFIG.defaultbaseurl}/">{$REL_LANG->say_by_key('homepage')}</a></li>
-        <li><a rel="tmlnk3" href="{$REL_SEO->make_link('browse')}">{$REL_LANG->say_by_key('browse')}</a></li>
+        <li><a href="{$REL_CONFIG.defaultbaseurl}/">{$REL_LANG->_('Main')}</a></li>
+        <li><a rel="tmlnk3" href="{$REL_SEO->make_link('browse')}">{$REL_LANG->_('Releasers')}</a></li>
         <li><a rel="tmlnk4" href="#">Меню</a></li>
-        {if $CURUSER}    
-        <li><a rel="tmlnk1" href="{$REL_SEO->make_link('my')}">{$REL_LANG->say_by_key('user_menu')}</a></li>
-        <li><a rel="tmlnk2" href="{$REL_SEO->make_link('staff')}">{$REL_LANG->say_by_key('staff')}</a></li>
-         <li><a rel="tmlnk5"  href="{$REL_SEO->make_link('mynotifs')}">{$REL_LANG->_("Notifications")}{if $REL_NOTIFS.total} ({$REL_NOTIFS.total}){/if}</a></li>    
-
-        {else}
-        <li><a rel="tmlnk1" href="{$REL_SEO->make_link('signup')}">{$REL_LANG->say_by_key('signup')}</a></li>
-        <li><a rel="tmlnk1" href="{$REL_SEO->make_link('login')}">{$REL_LANG->say_by_key('login')}</a></li>
+        {if $CURUSER}
+        <li><a rel="tmlnk5"  href="{$REL_SEO->make_link('mynotifs')}">{$REL_LANG->_("Notifications")}{if $REL_NOTIFS.total} ({$REL_NOTIFS.total}){/if}</a></li> 
+        <li><a rel="tmlnk1" href="{$REL_SEO->make_link('my')}">{$REL_LANG->_('Personal menu')}</a></li>
+        <li><a rel="tmlnk2" href="{$REL_SEO->make_link('staff')}">{$REL_LANG->_('Staff')}</a></li>
+        {/if}
+        {if !$CURUSER}
+        <li><a rel="tmlnk1" href="{$REL_SEO->make_link('signup')}">{$REL_LANG->_('Registration')}</a></li>
+        <li><a rel="tmlnk1" href="{$REL_SEO->make_link('login')}">{$REL_LANG->_('Login')}</a></li>
         {/if}
       </ul>
     </div>
       {if $CURUSER}
     <div id="tmlnk1" class="submenu">
       <ul class="reset">
-        <li><a href="{$REL_SEO->make_link('my')}"><span>{$REL_LANG->say_by_key('account_settings')}</span></a></li>
-        <li><a href="{$REL_SEO->make_link('bookmarks')}"><span>{$REL_LANG->say_by_key('bookmarks')}</span></a></li>
-        <li><a href="{$REL_SEO->make_link('myrating')}"><span>{$REL_LANG->say_by_key('my_rating')}</span></a></li>
-        <li><a href="{$REL_SEO->make_link('present')}"><span>{$REL_LANG->say_by_key('gifts_friends')}</span></a></li>
-        <li><a href="{$REL_SEO->make_link('mytorrents')}"><span>{$REL_LANG->say_by_key('mine_torrents')}</span></a></li>
-        <li><a href="{$REL_SEO->make_link('subnet')}"><span>{$REL_LANG->say_by_key('neighbours')}</span></a></li>
-        <li><a href="{$REL_SEO->make_link('friends')}"><span>{$REL_LANG->say_by_key('personal_lists')}</span></a></li>
-        <li><a href="{$REL_SEO->make_link('invite')}"><span>{$REL_LANG->say_by_key('invite')}</span></a></li>
-        <li><a href="{$REL_SEO->make_link('users')}"><span>{$REL_LANG->say_by_key('users')}</span></a></li>
-        <li><a href="{$REL_SEO->make_link('logout')}"><span>{$REL_LANG->say_by_key('logout')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('my')}"><span>{$REL_LANG->_('Account settings')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('bookmarks')}"><span>{$REL_LANG->_('Bookmarks')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('myrating')}"><span>{$REL_LANG->_('My rating')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('present')}"><span>{$REL_LANG->_('Present Friens')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('mytorrents')}"><span>{$REL_LANG->_('My Releases')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('subnet')}"><span>{$REL_LANG->_('Neighbors')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('friends')}"><span>{$REL_LANG->_('Personal list')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('invite')}"><span>{$REL_LANG->_('Invite')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('users')}"><span>{$REL_LANG->_('Users')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('logout')}"><span>{$REL_LANG->_('Logout')}</span></a></li>
       </ul>
     </div>
     {/if}
     {if $IS_MODERATOR}
     <div id="tmlnk2" class="submenu">
       <ul class="reset">
-        <li><a href="{$REL_SEO->make_link('admincp')}"><span>Админка</span></a></li>
+        <li><a href="{$REL_SEO->make_link('admincp')}"><span>Admin</span></a></li>
       </ul>
     </div>
     {/if}
     <div id="tmlnk3" class="submenu">
       <ul class="reset">
-        <li><a href="{$REL_SEO->make_link('upload')}"><span>{$REL_LANG->say_by_key('upload_torrent')}</span></a></li>
-        <li><a href="{$REL_SEO->make_link('relgroups')}"><span>{$REL_LANG->say_by_key('relgroups')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('upload')}"><span>{$REL_LANG->_('Upload torrent')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('relgroups')}"><span>{$REL_LANG->_('Release groups')}</span></a></li>
       </ul>
     </div>
-    <div id="tmlnk4" class="submenu">
-      <ul class="reset">
-        <li><a href="#"><span>{$REL_LANG->say_by_key('rules')}</span></a></li>
-        <li><a href="{$REL_SEO->make_link('faq')}"><span>{$REL_LANG->say_by_key('faq')}</span></a></li>
-        <li><a href="{$REL_SEO->make_link('topten')}"><span>{$REL_LANG->say_by_key('topten')}</span></a></li>
-      </ul>
-    </div>
-                    <div id="tmlnk5" class="submenu">
+    
+    <div id="tmlnk5" class="submenu">
           <ul class="reset">
 	{foreach from=$REL_NOTIFS.notifs key=notify item=ncount}
 		<li><a href="{if $notify<>'unread'}{$REL_SEO->make_link('mynotifs','type',$notify)}{else}{$REL_SEO->make_link('message')}{/if}">{$REL_LANG->_(ucfirst($notify))}: {$ncount}</a></li>
 		{/foreach}
           </ul>
         </div>
+    <div id="tmlnk4" class="submenu">
+      <ul class="reset">
+        <li><a href="#"><span>{$REL_LANG->_('Rules')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('faq')}"><span>{$REL_LANG->_('FAQ')}</span></a></li>
+        <li><a href="{$REL_SEO->make_link('topten')}"><span>{$REL_LANG->_('Top 10')}</span></a></li>
+      </ul>
+    </div>
     <script type="text/javascript">cssdropdown.startchrome("topmenu")</script>
     <!--/Меню-->
     <div class="search" align="right">
@@ -135,12 +135,12 @@
     <div class="cont">
     <table width="100%" border="0" class="bottom" style="vertical-align:top;">
     <tr>
-      {*<!--<td class="bottom" width="200" valign="top"> {show_blocks('l')} </td>-->*}
+      <!--<td class="bottom" width="200" valign="top"> {show_blocks('l')} </td>-->
       <td valign="top" class="bottom"> {if $access_overrided}
         <div align="center">
           <table border="0" cellspacing="0" cellpadding="10" bgcolor="green">
             <tr>
-              <td style="padding: 10px; background: white; border: 1px solid #3B5998;"><b><a href="{$REL_SEO->make_link('restoreclass')}"><font color="#3B5998">{$REL_LANG->say_by_key('lower_class')}</font></a></b> </td>
+              <td style="padding: 10px; background: white; border: 1px solid #3B5998;"><b><a href="{$REL_SEO->make_link('restoreclass')}"><font color="#3B5998">{$REL_LANG->_('Your current status is low. Click here to go back.')}</font></a></b> </td>
             </tr>
           </table>
         </div>
