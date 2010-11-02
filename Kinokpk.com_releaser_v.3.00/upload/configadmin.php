@@ -86,7 +86,7 @@ if (!isset($_GET['action'])){
 
 	print('<tr><td align="center" colspan="2" class="colhead">Прочее</td></tr>');
 
-	print('<tr><td>Попробовать автоматически получить трейлер фильма с кинопоиск.ру:<br/><small>*Работает только, если в описании релиза есть ссылка вида http://www.kinopoisk.ru/level/1/film/ID_фильма</small></td><td><select name="use_ttl"><option value="1" '.($CACHEARRAY['use_kinopoisk_trailers']==1?"selected":"").'>Да</option><option value="0" '.($CACHEARRAY['use_kinopoisk_trailers']==0?"selected":"").'>Нет</option></select></td></tr>');
+	print('<tr><td>Попробовать автоматически получить трейлер фильма с кинопоиск.ру:<br/><small>*Работает только, если в описании релиза есть ссылка вида http://www.kinopoisk.ru/level/1/film/ID_фильма</small></td><td><select name="use_kinopoisk_trailers"><option value="1" '.($CACHEARRAY['use_kinopoisk_trailers']==1?"selected":"").'>Да</option><option value="0" '.($CACHEARRAY['use_kinopoisk_trailers']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>Количество релизов в списке релизов на страницу:<br /><small>*при изменении этого параметра необходимо очистить кеш browse</small></td><td><input type="text" name="torrentsperpage" size="3" value="'.$CACHEARRAY['torrentsperpage'].'">релизов</td></tr>');
 	print('<tr><td>Использовать TTL (авто удаление мертвых торрентов):</td><td><select name="use_ttl"><option value="1" '.($CACHEARRAY['use_ttl']==1?"selected":"").'>Да</option><option value="0" '.($CACHEARRAY['use_ttl']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>Использовать систему ограничения личеров по времени:</td><td><select name="use_wait"><option value="1" '.($CACHEARRAY['use_wait']==1?"selected":"").'>Да</option><option value="0" '.($CACHEARRAY['use_wait']==0?"selected":"").'>Нет</option></select></td></tr>');
@@ -102,7 +102,7 @@ elseif ($_GET['action'] == 'save'){
 'forumname','yourcopy','pm_max','default_language',
 'avatar_max_width','avatar_max_height','default_theme','nc','deny_signup','allow_invite_signup',
 'use_ttl','use_email_act','use_wait','use_lang','use_captcha','use_blocks','use_gzip','use_ipbans','smtptype',
-'as_timeout','as_check_messages','use_integration','debug_mode','ipb_cookie_prefix','announce_packed','pron_cats','register_timezone','default_notifs','default_emailnotifs');
+'as_timeout','as_check_messages','use_integration','debug_mode','ipb_cookie_prefix','announce_packed','pron_cats','register_timezone','default_notifs','default_emailnotifs','use_kinopoisk_trailers');
 	$int_param = array('exporttype','forumurl','forum_bin_id','defuserclass','not_found_export_id','emo_dir','ipb_password_priority');
 	$captcha_param = array('re_publickey','re_privatekey');
 
