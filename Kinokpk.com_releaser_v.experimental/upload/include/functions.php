@@ -2087,7 +2087,7 @@ function send_comment_notifs($id,$page,$type) {
 
 	$subject = sqlesc($REL_LANG->say_by_key('new_comment'));
 	$msg = sqlesc(sprintf($REL_LANG->say_by_key('comment_notice_'.$type),$page));
-	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
+	//sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
 	sql_query("INSERT INTO cron_emails (email, subject, body) SELECT users.email, $subject, $msg FROM notifs LEFT JOIN users ON userid=users.id WHERE checkid = $id AND type='$type' AND FIND_IN_SET('$type',emailnotifs) AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
 	return;
 }
@@ -2096,7 +2096,7 @@ function send_comment_notifs($id,$page,$type) {
  * Sends email notifications. This is a part of notification system
  * @param string $type notification type
  * @param string $text notification text
- * @param int $id id of user to be discarded from notify. Default is 0 as 'to all'
+ * @param int $id id of user to be notified. Default is 0 as 'to all, except current user'
  * @return void
  * @todo check messages sending
  */
@@ -2104,7 +2104,7 @@ function send_notifs($type,$text = '',$id = 0) {
 	global $REL_LANG, $CURUSER, $REL_CONFIG, $REL_SEO;
 
 	$subject = sqlesc($REL_LANG->say_by_key('new_'.$type));
-	$msg = sqlesc($REL_LANG->say_by_key('notice_'.$type).$text."<hr/ ><a href=\"".$REL_SEO->make_link($REL_CONFIG['defaultbaseurl'])."\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->_('You can always configure your notifications in <a href="%s">notification settings</a> of your account.',$REL_SEO->make_link("mynotifs","settings"))}</div>");
+	$msg = sqlesc($REL_LANG->say_by_key('notice_'.$type).$text."<hr/ ><a href=\"".$REL_SEO->make_link('index')."\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->_('You can always configure your notifications in <a href="%s">notification settings</a> of your account.',$REL_SEO->make_link("mynotifs","settings"))}</div>");
 	//	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
 	sql_query("INSERT INTO cron_emails (email, subject, body) SELECT users.email, $subject, $msg FROM users WHERE FIND_IN_SET('$type',emailnotifs) AND ".(!$id?"id != ".(int)$CURUSER['id']:"id = $id")) or sqlerr(__FILE__,__LINE__);
 }

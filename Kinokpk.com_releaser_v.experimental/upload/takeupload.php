@@ -321,9 +321,9 @@ EOD;
 
 	if (get_user_class() < UC_UPLOADER) {
 		write_sys_msg($CURUSER['id'],sprintf($REL_LANG->say_by_key('uploaded_body'),"<a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($torrent))."\">$torrent</a>"),$REL_LANG->say_by_key('uploaded'));
-		send_notifs('unchecked',nl2br($body),$CURUSER['id']);
+		send_notifs('unchecked',nl2br($body));
 	} else {
-		send_notifs('torrents',format_comment($descr),$CURUSER['id']);
+		send_notifs('torrents',format_comment($descr));
 	}
 
 

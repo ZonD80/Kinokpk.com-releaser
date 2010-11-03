@@ -42,7 +42,7 @@ if ($action == 'add') {
 
 
 	write_sys_msg($fid,sprintf($REL_LANG->say_by_key('friend_notice'),$curusername,$fiid,$fiid),$REL_LANG->say_by_key('friend_notice_subject')." ({$CURUSER['username']})");
-
+	send_notifs('friends','',$fid);
 	stderr($REL_LANG->say_by_key('success'),sprintf($REL_LANG->say_by_key('user_notice_sent'),$username),'success');
 
 

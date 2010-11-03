@@ -44,7 +44,7 @@ if (isset($_GET['settings'])) {
 	</div>
 ");
 		}
-		print('<div align="center" colspan="3"><input type="submit" value="'.$REL_LANG->say_by_key('go').'"</div></div></form>');
+		print('<div align="center" colspan="3">'.$REL_LANG->_("<b>Attention:</b> Email-based notifications are sending only when you are monitoring comments, topics, e.g., due our carefully antispam policy").'<br/><input type="submit" value="'.$REL_LANG->say_by_key('go').'"/></div></div></form>');
 		$REL_TPL->end_frame();
 		$REL_TPL->stdfoot();
 		die();
