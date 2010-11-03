@@ -155,7 +155,6 @@ INSERT INTO `cache_stats` (`cache_name`, `cache_value`) VALUES
 ('siteemail', 'bot@kinokpk.com'),
 ('sitename', 'Kinokpk.com releaser 3.30 new installation'),
 ('siteonline', '1'),
-('smtptype', 'advanced'),
 ('torrentsperpage', '25'),
 ('ttl_days', '28'),
 ('use_blocks', '1'),
@@ -418,7 +417,7 @@ INSERT INTO `cron` (`cron_name`, `cron_value`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `cron_emails` (
-  `email` varchar(255) NOT NULL,
+  `emails` text NOT NULL,
   `subject` varchar(255) NOT NULL,
   `body` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251;

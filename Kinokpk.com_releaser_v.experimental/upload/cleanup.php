@@ -203,9 +203,10 @@ require_once(ROOT_PATH . "include/createsitemap.php");
 $emails = sql_query("SELECT * FROM cron_emails");
 
 while ($message = mysql_fetch_assoc($emails)) {
-	sent_mail($message['email'], $message['subject'].' | '.$REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], $message['subject'], $message['body']) or write_log("Sending mail to {$message['email']} <font color=\"red\">FAILED</font>",'emailnotifs_cron');
+	if (strpos(',', $message['emails'])) sent_mail('', $message['subject'].' | '.$REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], $message['subject'], $message['body'],$message['emails']);
+	else sent_mail($message['emails'], $message['subject'].' | '.$REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], $message['subject'], $message['body']);
+	
 }
-
 sql_query("TRUNCATE TABLE cron_emails");
 // delete expiried relgroups subsribes
 sql_query("DELETE FROM rg_subscribes WHERE valid_until<$time AND valid_until<>0");

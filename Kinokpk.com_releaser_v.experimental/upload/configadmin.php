@@ -43,7 +43,6 @@ if (!isset($_GET['action'])){
 	print('<tr><td>'.$REL_LANG->_("Templates cache lifetime").':</td><td><input name="cache_template_time" size="3" value="'.$REL_CONFIG['cache_template_time'].'">'.$REL_LANG->_("Seconds").'</td></tr>');
 	
 	print('<tr><td>Использовать систему банов по IP/Подсетям:</td><td><select name="use_ipbans"><option value="1" '.($REL_CONFIG['use_ipbans']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_ipbans']==0?"selected":"").'>Нет</option></select></td></tr>');
-	print('<tr><td>Тип SMTP:</td><td><input type="text" name="smtptype" size="10" value="'.$REL_CONFIG['smtptype'].'"></td></tr>');
 	print('<tr><td>Бинарный формат пиров в анонсере:</td><td><select name="announce_packed"><option value="1" '.($REL_CONFIG['announce_packed']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['announce_packed']==0?"selected":"").'>Нет</option></select> По умолчанию, Да</td></tr>');
 
 	print('<tr><td align="center" colspan="2" class="colhead">Настройки регистрации</td></tr>');
@@ -97,7 +96,7 @@ elseif ($_GET['action'] == 'save'){
 	$reqparametres = array('forum_enabled','torrentsperpage','maxusers','max_torrent_size','max_images','defaultbaseurl','siteemail','adminemail','sitename','description','keywords',
 'yourcopy','pm_max','default_language','static_language','siteonline','cache_template','cache_template_time',
 'avatar_max_width','avatar_max_height','default_theme','use_dc','deny_signup','allow_invite_signup',
-'use_ttl','use_email_act','use_captcha','use_blocks','use_gzip','use_ipbans','smtptype',
+'use_ttl','use_email_act','use_captcha','use_blocks','use_gzip','use_ipbans',
 'as_timeout','as_check_messages','debug_mode','debug_language','debug_template','announce_packed','pron_cats','register_timezone','site_timezone','low_comment_hide','sign_length','default_notifs','default_emailnotifs','use_kinopoisk_trailers');
 	$captcha_param = array('re_publickey','re_privatekey');
 

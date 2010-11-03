@@ -11,6 +11,7 @@ DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` = 'use_integration';
 DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` = 'use_lang';
 DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` =  'use_sessions';
 DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` =  'use_wait';
+DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` =  'smtptype';
 update orbital_blocks set bposition='t' where bposition='c';
 update news set comments=(SELECT COUNT(*) FROM comments WHERE type='news' AND toid=news.id) where id=id
 update comments set type='rel' where type='';

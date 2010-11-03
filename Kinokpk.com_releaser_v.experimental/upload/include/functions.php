@@ -1292,71 +1292,25 @@ function convert_local_urls($link) {
  * @param string $fromemail sender email
  * @param string $subject subject of message
  * @param string $body body of message, excluding <html> and <body> tags
- * @param string $multiple multiple receivers? Default false
- * @param string $multiplemail Multiple receivers mail adresses separated by space
+ * @param string $multiplemail Multiple receivers mail adresses separated by comma
  * @todo Normal SMTP functionality
  * @return boolean True or false while sending email
  */
-function sent_mail($to,$fromname,$fromemail,$subject,$body,$multiple=false,$multiplemail='') {
-	global $REL_CONFIG,$smtp,$smtp_host,$smtp_port,$smtp_from,$smtpaddress,$accountname,$accountpassword, $REL_LANG;
-	$REL_LANG->load();
-	# Sent Mail Function v.05 by xam (This function to help avoid spam-filters.)
-	$result = true;
-	$body = "<html>\n<body>\n"./*convert_local_urls(*/$body/*)*/."</body>\n</html>\n";
-	if ($REL_CONFIG['smtptype'] == 'default') {
-		@mail($to, $subject, $body, "From: $fromemail") or $result = false;
-	} elseif ($REL_CONFIG['smtptype'] == 'advanced') {
-		# Is the OS Windows or Mac or Linux?
-		if (strtoupper(substr(PHP_OS,0,3)=='WIN')) {
-			$eol="\r\n";
-			$windows = true;
-		}
-		elseif (strtoupper(substr(PHP_OS,0,3)=='MAC'))
-		$eol="\r";
-		else
-		$eol="\n";
-		$mid = md5(getip() . $fromname);
-		$name = $_SERVER["SERVER_NAME"];
-		$headers .= "From: \"$fromname\" <$fromemail>".$eol;
-		$headers .= "Reply-To: \"$fromname\" <$fromemail>".$eol;
-		$headers .= "Return-Path: $fromname <$fromemail>".$eol;
-		$headers .= "Message-ID: <$mid.thesystem@$name>".$eol;
-		$headers .= "X-Mailer: PHP v".phpversion().$eol;
-		$headers .= "MIME-Version: 1.0".$eol;
-		$headers .= "Content-Type: text/html; charset=\"windows-1251\"".$eol;
-		$headers .= "X-Sender: PHP".$eol;
-		if ($multiple)
-		$headers .= "Bcc: $multiplemail.$eol";
-		if ($smtp) {
-			ini_set('SMTP', $smtp_host);
-			ini_set('smtp_port', $smtp_port);
-			if ($windows)
-			ini_set('sendmail_from', $smtp_from);
-		}
-		//$headers = iconv("windows-1251","utf8",$headers);
-		@mail($to, $subject, $body, $headers) or $result = false;
-
-		ini_restore(SMTP);
-		ini_restore(smtp_port);
-		if ($windows)
-		ini_restore(sendmail_from);
-	} elseif ($REL_CONFIG['smtptype'] == 'external') {
-		require_once(ROOT_PATH . 'include/smtp/smtp.lib.php');
-		$mail = new smtp;
-		$mail->debug(true);
-		$mail->open($smtp_host, $smtp_port);
-		if (!empty($accountname) && !empty($accountpassword))
-		$mail->auth($accountname, $accountpassword);
-		$mail->from($REL_CONFIG['siteemail']);
-		$mail->to($to);
-		$mail->subject($subject);
-		$mail->body($body);
-		$result = $mail->send();
-		$mail->close();
-	} else
-	$result = false;
-	if (!$result) write_log("Sent email to $to ($subject) <b>failed</b>",'email');
-	return $result;
+function sent_mail($to,$fromname,$fromemail,$subject,$body,$multiplemail='') {
+	global $REL_CONFIG;
+	require_once ROOT_PATH."classes/mail/dSendMail2.inc.php";
+	$m = new dSendMail2;
+	$m->setCharset('windows-1251');
+	$m->setSubject($subject);
+	$m->setFrom($fromemail);
+	$m->setMessage($body);
+	if ($multiplemail) {
+		$m->setTo($REL_CONFIG['siteemail']);
+		$m->setBcc($multiplemail);
+		$m->groupAmnt = 10;
+		$m->delay     = 0;
+	} else $m->setTo($to);
+	$m->send();
 }
 
 /**
@@ -2083,13 +2037,17 @@ function assoc_full_cats($type='categories') {
  * @return void
  */
 function send_comment_notifs($id,$page,$type) {
-	global $REL_LANG, $CURUSER;
+	global $REL_LANG, $CURUSER, $REL_DB;
 
-	$subject = sqlesc($REL_LANG->say_by_key('new_comment'));
-	$msg = sqlesc(sprintf($REL_LANG->say_by_key('comment_notice_'.$type),$page));
-	//sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
-	sql_query("INSERT INTO cron_emails (email, subject, body) SELECT users.email, $subject, $msg FROM notifs LEFT JOIN users ON userid=users.id WHERE checkid = $id AND type='$type' AND FIND_IN_SET('$type',emailnotifs) AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
-	return;
+	$emailssql = $REL_DB->query("SELECT GROUP_CONCAT(users.email) FROM notifs LEFT JOIN users ON userid=users.id WHERE checkid = $id AND type='$type' AND FIND_IN_SET('$type',emailnotifs) AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
+	$emails = mysql_result($emailssql, 0);
+	if ($emails) {
+		$emails = sqlesc($emails);
+		$subject = sqlesc($REL_LANG->say_by_key('new_comment'));
+		$msg = sqlesc(sprintf($REL_LANG->say_by_key('comment_notice_'.$type),$page));
+		//sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
+		sql_query("INSERT INTO cron_emails (emails, subject, body) VALUES ($emails, $subject, $msg)") or sqlerr(__FILE__,__LINE__);
+	}
 }
 
 /**
@@ -2101,12 +2059,17 @@ function send_comment_notifs($id,$page,$type) {
  * @todo check messages sending
  */
 function send_notifs($type,$text = '',$id = 0) {
-	global $REL_LANG, $CURUSER, $REL_CONFIG, $REL_SEO;
+	global $REL_LANG, $CURUSER, $REL_CONFIG, $REL_SEO, $REL_DB;
 
-	$subject = sqlesc($REL_LANG->say_by_key('new_'.$type));
-	$msg = sqlesc($REL_LANG->say_by_key('notice_'.$type).$text."<hr/ ><a href=\"".$REL_SEO->make_link('index')."\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->_('You can always configure your notifications in <a href="%s">notification settings</a> of your account.',$REL_SEO->make_link("mynotifs","settings"))}</div>");
-	//	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
-	sql_query("INSERT INTO cron_emails (email, subject, body) SELECT users.email, $subject, $msg FROM users WHERE FIND_IN_SET('$type',emailnotifs) AND ".(!$id?"id != ".(int)$CURUSER['id']:"id = $id")) or sqlerr(__FILE__,__LINE__);
+	$emailssql = $REL_DB->query("SELECT GROUP_CONCAT(users.email) FROM users WHERE FIND_IN_SET('$type',emailnotifs) AND ".(!$id?"id != ".(int)$CURUSER['id']:"id = $id")) or sqlerr(__FILE__,__LINE__);
+	$emails = mysql_result($emailssql, 0);
+	if ($emails) {
+		$emails = sqlesc($emails);
+		$subject = sqlesc($REL_LANG->say_by_key('new_'.$type));
+		$msg = sqlesc($REL_LANG->say_by_key('notice_'.$type).$text."<hr/ ><a href=\"".$REL_SEO->make_link('index')."\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->_('You can always configure your notifications in <a href="%s">notification settings</a> of your account.',$REL_SEO->make_link("mynotifs","settings"))}</div>");
+		//	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
+		$REL_DB->query("INSERT INTO cron_emails (emails, subject, body) VALUES ($emails,$subject, $msg)") or sqlerr(__FILE__,__LINE__);
+	}
 }
 
 /**
@@ -2432,17 +2395,17 @@ function json_safe_encode($var)
 }
 
 function _unescape($str){//функция делает декодирование данных, которые были закодированы js-функцией escape
-		$escape_chars = "0410 0430 0411 0431 0412 0432 0413 0433 0490 0491 0414 0434 0415 0435 0401 0451 0404 0454 0416 0436 0417 0437 0418 0438 0406 0456 0419 0439 041A 043A 041B 043B 041C 043C 041D 043D 041E 043E 041F 043F 0420 0440 0421 0441 0422 0442 0423 0443 0424 0444 0425 0445 0426 0446 0427 0447 0428 0448 0429 0449 042A 044A 042B 044B 042C 044C 042D 044D 042E 044E 042F 044F"; 
-		$russian_chars = "А а Б б В в Г г Ґ ґ Д д Е е Ё ё Є є Ж ж З з И и І і Й й К к Л л М м Н н О о П п Р р С с Т т У у Ф ф Х х Ц ц Ч ч Ш ш Щ щ Ъ ъ Ы ы Ь ь Э э Ю ю Я я"; 
-		$e = explode(" ",$escape_chars); 
-		$r = explode(" ",$russian_chars); 
-		$rus_array = explode("%u",$str); 
-		$new_word = str_replace($e,$r,$rus_array); 
-		$new_word = str_replace("%20"," ",$new_word); 
-		$result=implode("",$new_word);
+	$escape_chars = "0410 0430 0411 0431 0412 0432 0413 0433 0490 0491 0414 0434 0415 0435 0401 0451 0404 0454 0416 0436 0417 0437 0418 0438 0406 0456 0419 0439 041A 043A 041B 043B 041C 043C 041D 043D 041E 043E 041F 043F 0420 0440 0421 0441 0422 0442 0423 0443 0424 0444 0425 0445 0426 0446 0427 0447 0428 0448 0429 0449 042A 044A 042B 044B 042C 044C 042D 044D 042E 044E 042F 044F";
+	$russian_chars = "А а Б б В в Г г Ґ ґ Д д Е е Ё ё Є є Ж ж З з И и І і Й й К к Л л М м Н н О о П п Р р С с Т т У у Ф ф Х х Ц ц Ч ч Ш ш Щ щ Ъ ъ Ы ы Ь ь Э э Ю ю Я я";
+	$e = explode(" ",$escape_chars);
+	$r = explode(" ",$russian_chars);
+	$rus_array = explode("%u",$str);
+	$new_word = str_replace($e,$r,$rus_array);
+	$new_word = str_replace("%20"," ",$new_word);
+	$result=implode("",$new_word);
 
-		return $result; 
-	}
+	return $result;
+}
 /**
  * Fixes json windows-1251 encode
  * @param mixed $var Data to encode
