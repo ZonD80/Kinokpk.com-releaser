@@ -14,7 +14,7 @@ loggedinorreturn();
 
 
 $action = (string)$_GET['action'];
-$q = 'friends';
+$q[] = 'friends';
 if ($action)
 $fid = (int) $_GET['id'];
 else $fid=$CURUSER['id'];
