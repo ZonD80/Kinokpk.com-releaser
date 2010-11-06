@@ -25,7 +25,12 @@ class REL_LANG {
 	 * @var boolean
 	 */
 	private $DEBUG;
-
+	
+	/**
+	 * Already parsed languages for file mode. Used to prevent double parse of languages
+	 * @var array
+	 */
+	private $parsed_langs;
 
 
 	/**
@@ -37,8 +42,16 @@ class REL_LANG {
 		if ($REL_CONFIG['debug_language']) $this->DEBUG=true; else $this->DEBUG=false;
 		$this->lang[$REL_CONFIG['lang']]=array();
 		$this->language = $REL_CONFIG['lang'];
-		$this->load('en',$REL_CONFIG['static_language']);
-		if ($this->language<>'en') $this->load($this->language,$REL_CONFIG['static_language']);
+		if ($REL_CONFIG['static_language']) {
+			$langfiles = explode(',',$REL_CONFIG['static_language']);
+			foreach ($langfiles as $langs) {
+				$langdata = explode('=',$langs);
+				$this->load($langdata[0],$langdata[1]);
+			}
+		} else {
+			$this->load('en');
+			if ($this->language<>'en') $this->load($this->language);
+		}
 		return true;
 	}
 
@@ -99,7 +112,6 @@ class REL_LANG {
 	private function parse_langfile($file,$language='en') {
 		global $REL_SEO;
 		if (@in_array($file,$this->parsed_langs[$language])) return;
-		if ($language<>'en') $this->parse_langfile($file,'en');
 		$parse = @file($file,FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
 		if (!$parse) {
 			print ("FATAL ERROR: no language ($language) for file $file.");
@@ -145,7 +157,7 @@ class REL_LANG {
 	public function export_langfile($lang) {
 		global $REL_CONFIG;
 		header("Content-type: text/plain");
-		header("Content-Disposition: attachment;filename=laguage_$lang.txt");
+		header("Content-Disposition: attachment;filename=$lang.lang");
 		header("Content-Transfer-Encoding: binary");
 		header('Pragma: no-cache');
 		header('Expires: 0');

@@ -218,7 +218,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user` int(10) unsigned NOT NULL DEFAULT '0',
   `toid` int(10) unsigned NOT NULL DEFAULT '0',
-  `type` varchar(255) DEFAULT NULL,
+  `type` varchar(255) NOT NULL DEFAULT '',
   `added` int(10) NOT NULL,
   `text` text NOT NULL,
   `editedby` int(10) unsigned NOT NULL DEFAULT '0',

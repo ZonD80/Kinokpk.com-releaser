@@ -19,11 +19,6 @@ httpauth();
 
 define("NO_WYSIWYG",true);
 
-/**
- * Prepares data to use in SQL-query
- * @param array $arr data
- * @return array Prepared data
- */
 function prepare_data($arr) {
 		$stripped = array('title','blockfile','which','custom_tpl');
 		$intval = array('weight');

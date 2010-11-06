@@ -16,17 +16,15 @@
 {$REL_LANG->_("You are viewing as moderator")}:<br/>
 {$row.text}{/if}{else}{$row.text}
 {/if}
-{if $row.info}
-	<div class="userinfo">
-			{$row.info}
-	</div>
-	{/if}
 {if $row.editedby}<p><font size=1 class=small>{$REL_LANG->_("Last edited by")} <a href="{$REL_SEO->make_link('userdetails','id',$row.editedby,'username', $row.editedbyname)}"><b>{$row.editedbyname}</b></a> {mkprettytime($row.editedat)} ({get_elapsed_time($row.editedat,false)} {$REL_LANG->say_by_key('ago')})</font></p>{/if}
+{if $row.info}
+<hr/>{$row.info}
+{/if}
 </td></tr><tr><td class="colhead" align="center" colspan="2">
 <div style="float: left; width: auto;">
 {if $CURUSER}[<a href="javascript:quote_comment('{$row.username}');" class="altlink_white">{$REL_LANG->_("Quote selected")}</a>] [<a href="{$REL_SEO->make_link('comments','action','quote','cid',$row.id)}" class="altlink_white">{$REL_LANG->_("Quote")}</a>]{/if}
-{if $row.user == $CURUSER.id || $IS_MODERATOR}[<a href="{$REL_SEO->make_link('comments', 'action', 'edit','cid',$row.id)}" class="altlink_white">{$REL_LANG->_("Edit")}</a>]{/if}
-{if $IS_MODERATOR} [<a href="{$REL_SEO->make_link('comments', 'action','delete','cid[]',$row.id)}" onClick="return delete_comment({$row.id});" class="altlink_white">{$REL_LANG->_("Delete")}</a>]
+{if $row.user == $CURUSER.id || $IS_MODERATOR}[<a href="{$REL_SEO->make_link($row.type, 'action', 'edit','cid',$row.id)}" class="altlink_white">{$REL_LANG->_("Edit")}</a>]{/if}
+{if $IS_MODERATOR} [<a href="{$REL_SEO->make_link($row.type, 'action','delete','cid[]',$row.id)}" onClick="return delete_comment({$row.id});" class="altlink_white">{$REL_LANG->_("Delete")}</a>]
 {$row.reportarea}
 IP: {if $row.ip}<a href="{$REL_SEO->make_link('usersearch','ip',$row.ip)}" class="altlink_white">{$row.ip}</a>{else}{$REL_LANG->_("Unknown")}{/if}{/if}
 </div>
