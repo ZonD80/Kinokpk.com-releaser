@@ -228,8 +228,7 @@ CREATE TABLE `seorules`(
 	`sort` int(2) NOT NULL  DEFAULT '0' , 
 	`enabled` tinyint(1) NOT NULL  DEFAULT '1' , 
 	PRIMARY KEY (`id`) , 
-	UNIQUE KEY `script`(`script`,`parameter`) , 
-	UNIQUE KEY `script_2`(`script`,`sort`) 
+	UNIQUE KEY `script`(`script`,`parameter`)
 ) ENGINE=InnoDB DEFAULT CHARSET='cp1251';
 
 

@@ -13,7 +13,7 @@ class REL_SEO {
 	function __construct() {
 		global $REL_CACHE, $REL_DB;
 		$cache = $REL_CACHE->get('system','seorules');
-		
+
 		if ($cache===false) {
 			$cache = array();
 			$res = $REL_DB->query("SELECT script,parameter,repl,sort,unset_params FROM seorules WHERE enabled=1 ORDER BY script,parameter DESC, sort ASC");
@@ -25,7 +25,7 @@ class REL_SEO {
 		if ($cache) {
 			foreach ($cache as $row) {
 				$this->SR[$row['script']][$row['parameter']] = $row['repl'];
-				$this->SO[$row['script']][$row['sort']] = $row['parameter'];
+				$this->SO[$row['script']][$row['parameter']] = $row['sort'];
 				$this->SU[$row['script']][$row['parameter']] = explode(',', $row['unset_params']);
 			}
 		}
@@ -41,17 +41,17 @@ class REL_SEO {
 		$linkar = func_get_args();
 		$script = $linkar[0];
 
-		if (isset($this->SR[$script]['{base}'])) $destar['{base}'] = $this->SR[$script]['{base}'];
+		if (isset($this->SR[$script]['{base}'])) $destar[0] = $this->SR[$script]['{base}'];
 		else $destar['{base}'] = "$script.php";
 		unset($linkar[0]);
 		if ($linkar) {
-				
+
 			foreach ($linkar as $place => $param) {
 				if ($place % 2 == 0) continue;
 				if ($this->SR[$script][$param]) {
-					$destar[$param] = sprintf($this->SR[$script][$param],$linkar[$place+1]);
+					$destar[$this->SO[$script][$param]] = sprintf($this->SR[$script][$param],$linkar[$place+1]);
 					if ($this->SU[$script][$param]) {
-						foreach ($this->SU[$script][$param] as $to_unset) unset($destar[$to_unset]);
+						foreach ($this->SU[$script][$param] as $to_unset) unset($destar[$this->SO[$script][$to_unset]]);
 					}
 				} else {
 					$destar2[$param] = "$param={$linkar[$place+1]}";
@@ -62,6 +62,7 @@ class REL_SEO {
 			$dest = $destar['{base}'];
 			unset($destar['{base}']);
 		}
+		ksort($destar);
 		if ($destar) {
 			$dest .= addslashes(implode('',$destar));
 		}

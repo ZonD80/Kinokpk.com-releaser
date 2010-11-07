@@ -39,7 +39,7 @@ if ($action=='genrewrites') {
 	$type = (string)trim($_GET['type']);
 	
 	$pages_for = explode(',','index,bookmarks,browse,friends,mytorrents,newsarchive,newsoverview,online,peers,polloverview,pollsarchive,present,relgroups,requests,rgnewsarchive,rgnewsoverview,topten,userhistory,users,viewrequests,votesview');
-	if (!$type) $REL_TPL->stderr($REL_LANG->_('Select server type'),$REL_LANG->_('Please select server type to generate rewrites:<br/><a href="%s">Apache</a> | <a href="%s">Nginx</a>',$REL_SEO->make_link('seoadmin','a','genrewrites','type','apache'),$REL_SEO->make_link('seoadmin','a','genrewrites','type','nginx')));
+	if (!$type) $REL_TPL->stderr($REL_LANG->_('Select server type'),$REL_LANG->_('Please select server type to generate rewrites:<br/><a href="%s">Apache</a> | <a href="%s">Nginx</a>',$REL_SEO->make_link('seoadmin','a','genrewrites','type','apache'),$REL_SEO->make_link('seoadmin','a','genrewrites','type','nginx')),'success');
 	elseif ($type=='apache') {
 		die ('apache configuration listing');
 	}
@@ -62,7 +62,7 @@ if ($action=='react') {
 	$arr = array_map('intval',(array)$_POST['order']);
 	if (!$arr) stderr($REL_LANG->_("Error"),$REL_LANG->_("Missing form data"));
 	foreach ($arr as $bid=>$order) {
-		sql_query("UPDATE seorules SET sort=$order WHERE id=".(int)$bid);
+		sql_query("UPDATE seorules SET sort=$order WHERE id=".(int)$bid) or sqlerr(__FILE__,__LINE__);
 	}
 	$REL_CACHE->clearCache('system','seorules');
 	safe_redirect($REL_SEO->make_link("seoadmin"),1);
