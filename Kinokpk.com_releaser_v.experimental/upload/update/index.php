@@ -27,7 +27,7 @@ require_once(ROOT_PATH.'include/bittorrent.php');
 	$REL_DB = new REL_DB($mysql_host, $mysql_user, $mysql_pass, $mysql_db, $mysql_charset);
 	
 $step = (int)$_GET['step'];
-
+$REL_CACHE->set('system','seorules',array());
 	/* @var object links parser/adder/changer for seo */
 	require_once(ROOT_PATH . 'classes/seo/seo.class.php');
 	$REL_SEO = new REL_SEO();
@@ -81,6 +81,10 @@ if (!$step) {
 	hr();
 	print $REL_LANG->_("This update will clear all themes settings and set theme with id=1 to all users due highest code changes");
 	hr();
+	print $REL_LANG->_("This update will convert database engine to InnoDB");
+	hr();
+	print $REL_LANG->_("This update will convert pages to forum posts, pages categories to forum categories");
+	hr();
 	print $REL_LANG->_("Next step will change database schema");
 	hr();
 	cont(1);
@@ -104,7 +108,7 @@ elseif ($step==1) {
 		}
 	}
 
-	print $REL_LANG->_('<font color="green">This step of installation was successed</font>');
+	print $REL_LANG->_('<font color="green">This step of update was successed</font>');
 	hr();
 	print $REL_LANG->_("Next step will change database schema");
 	hr();
@@ -114,16 +118,16 @@ elseif ($step==1) {
 }
 
 elseif ($step==2) {
-  $export = array('pollcomments'=>'poll', 'newscomments'=>'news', 'usercomments'=>'userid', 'reqcomments'=>'request', 'rgcomments'=>'relgroup','rgnewscomments'=>'rgnews');
+  $export = array('pollcomments'=>'poll', 'newscomments'=>'news', 'usercomments'=>'userid', 'reqcomments'=>'request', 'rgcomments'=>'relgroup','rgnewscomments'=>'rgnews', 'pagecomments'=>'page');
   foreach (array_keys($export) as $exp) {
-    $REL_DB->query("INSERT INTO comments (user, toid, added, text, ip, type) SELECT user, {$export[$exp]}, added, text, ip, '".str_replace('comments','',$exp)."' FROM $exp") or die($REL_LANG->_("SQL error happened").' ['.mysql_errno().']: ' . mysql_error(). ',<hr/>'.$REL_LANG->_("Query").': '.$query.'<hr/>'.$REL_LANG->_('Recover with backup and <a href="javascript:history.go(-1);">try again</a> please'));
+    $REL_DB->query("INSERT INTO comments (user, toid, added, text, ip, type) SELECT user, {$export[$exp]}, added, text, ip, '".($exp=='pagecomments'?'forum':str_replace('comments','',$exp))."' FROM $exp") or die($REL_LANG->_("SQL error happened").' ['.mysql_errno().']: ' . mysql_error(). ',<hr/>'.$REL_LANG->_("Query").': '.$query.'<hr/>'.$REL_LANG->_('Recover with backup and <a href="javascript:history.go(-1);">try again</a> please'));
     print $REL_LANG->_("%s moved",$exp);
     hr();
     $REL_DB->query("DROP table $exp") or die($REL_LANG->_("SQL error happened").' ['.mysql_errno().']: ' . mysql_error(). ',<hr/>'.$REL_LANG->_("Query").': '.$query.'<hr/>'.$REL_LANG->_('Recover with backup and <a href="javascript:history.go(-1);">try again</a> please'));
     print $REL_LANG->_("%s table dropped",$exp);
     hr();
     }
-    	print $REL_LANG->_('<font color="green">This step of installation was successed</font>');
+    	print $REL_LANG->_('<font color="green">This step of update was successed</font>');
 	hr();
 	print $REL_LANG->_("Next step will change database schema");
 	hr();
@@ -147,7 +151,7 @@ $REL_DB->query("update users set notifs='".implode(',',$notifs)."',emailnotifs='
 print $REL_LANG->_('User with id %s updated',$row['id']);
 hr();
 }
-    	print $REL_LANG->_('<font color="green">This step of installation was successed</font>');
+    	print $REL_LANG->_('<font color="green">This step of update was successed</font>');
 	hr();
 	print $REL_LANG->_("Next step will change database schema");
 	hr();
@@ -162,7 +166,7 @@ $REL_DB->query("UPDATE orbital_blocks SET which=".sqlesc(str_replace('ihome','in
 print $REL_LANG->_("Block with id %s done",$row['bid']);
 hr();
 }
-    	print $REL_LANG->_('<font color="green">This step of installation was successed</font>');
+    	print $REL_LANG->_('<font color="green">This step of update was successed</font>');
 	hr();
 	print $REL_LANG->_("Next step will install languages");
 	hr();
@@ -172,16 +176,32 @@ hr();
 elseif ($step==5) {
 $REL_LANG->import_langfile(ROOT_PATH.'install/lang/import/en.lang','en');
 $REL_LANG->import_langfile(ROOT_PATH.'install/lang/import/ru.lang','ru');
-    	print $REL_LANG->_('<font color="green">This step of installation was successed</font>');
+    	print $REL_LANG->_('<font color="green">This step of update was successed</font>');
 	hr();
-	print $REL_LANG->_("Next step will clear caches and finalize update");
-	hr();
-	print $REL_LANG->_("Next step will convert block display settings");
+	print $REL_LANG->_("Next step will update comment counters and set forums last posts to valid");
 	hr();
 	cont(6);
 }
-
 elseif ($step==6) {
+  $REL_DB->query("UPDATE forum_topics SET lastposted_id = (SELECT MAX(id) FROM comments WHERE type='forum' AND toid=forum_topics.id)")  or die($REL_LANG->_("SQL error happened").' ['.mysql_errno().']: ' . mysql_error(). ',<hr/>'.$REL_LANG->_("Query").': '.$query.'<hr/>'.$REL_LANG->_('Recover with backup and <a href="javascript:history.go(-1);">try again</a> please'));
+  print $REL_LANG->_("Forum data updated");
+  hr();
+  	$allowed_types = array(''=>'torrents','poll'=>'polls','news'=>'news','user'=>'users','req'=>'requests','rg'=>'relgroups','rgnews'=>'rgnews','forum'=>'forum_topics');
+	foreach ($allowed_types AS $ctype=>$table) {
+		sql_query("UPDATE $table SET comments = (SELECT SUM(1) FROM comments WHERE type='$ctype' AND toid=$table.id) WHERE $table.id=$table.id");
+		$num_changed = mysql_affected_rows();
+		$to_msg .= $REL_LANG->_("Difference in %s was %s<br/>",$REL_LANG->_($ctype.'comments'),$num_changed);
+	}
+	print $to_msg;
+	hr();
+	print $REL_LANG->_('<font color="green">This step of update was successed</font>');
+	hr();
+	print $REL_LANG->_('Next step will clear caches and finalize update');
+	hr();
+	cont(7);
+}
+
+elseif ($step==7) {
   $REL_CACHE->clearAllCache();
   print $REL_LANG->_('<h1>Update to 3.30 complete. Please delete "install" and "update" folders from your server.</h1>');
   hr();

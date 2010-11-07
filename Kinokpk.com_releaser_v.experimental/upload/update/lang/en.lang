@@ -1,1 +1,28 @@
 continue=Continue
+updater_head=Kinokpk.com releaser 3.00 to 3.30 updater
+step=step
+register_globals_off=Turn off register globals, noob!
+gnu_agree=You must agree with the following GNU GPLv3 licence to continue
+make_backup=Please do not forget to make some backups before update
+upd_ch1=This update will clear all themes settings and set theme with id=1 to all users due highest code changes
+innodb_ch=This update will convert database engine to InnoDB
+upd_ch2=This update will convert pages to forum posts, pages categories to forum categories
+database_affected=Next step will change database schema
+sqlerr=SQL error happened
+Query=Query
+backup_recover=Recover with backup and <a href="javascript:history.go(-1);">try again</a> please
+okay=<font color="green">This step of update was successed</font>
+upd_ch3=Next step will convert comments to new storing structure
+moved=%s moved
+dropped=%s table dropped
+upd_ch4=Next step will convert notification methods
+user_upd=User with id %s updated
+upd_ch5=Next step will convert block display settings
+block_done=Block with id %s done
+upd_ch6=Next step will install languages
+upd_ch7=Next step will update comment counters and set forums last posts to valid
+forum_updated=Forum data updated
+comment_diff=Difference in %s was %s<br/>
+upd_ch8=Next step will clear caches and finalize update
+update_complete=<h1>Update to 3.30 complete. Please delete "install" and "update" folders from your server.</h1>
+donate=Donate to project:

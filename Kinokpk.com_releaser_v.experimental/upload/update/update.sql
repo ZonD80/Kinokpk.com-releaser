@@ -1,18 +1,36 @@
+/* Alter table in target */
+ALTER TABLE `addedrequests` ENGINE=InnoDB; 
+
+/* Alter table in target */
+ALTER TABLE `bannedemails` ENGINE=InnoDB; 
+
+/* Alter table in target */
+ALTER TABLE `bans` ENGINE=InnoDB; 
+
+/* Alter table in target */
+ALTER TABLE `bookmarks` ENGINE=InnoDB; 
+
+/* Alter table in target */
+ALTER TABLE `cache_stats` ENGINE=InnoDB; 
+
+/* Alter table in target */
 ALTER TABLE `categories` 
 	ADD COLUMN `seo_name` varchar(80)  COLLATE cp1251_general_ci NULL after `name`, 
 	CHANGE `image` `image` varchar(255)  COLLATE cp1251_general_ci NOT NULL after `seo_name`, 
 	CHANGE `parent_id` `parent_id` int(10)   NOT NULL DEFAULT '0' after `image`, 
-	DROP COLUMN `forum_id`, 
-	DROP COLUMN `disable_export` ; 
+	CHANGE `forum_id` `forum_id` smallint(5)   NOT NULL DEFAULT '0' after `parent_id`, 
+	CHANGE `disable_export` `disable_export` tinyint(1)   NOT NULL DEFAULT '0' after `forum_id`, ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `censoredtorrents` ENGINE=InnoDB; 
 
-
+/* Alter table in target */
 ALTER TABLE `comments` 
 	ADD COLUMN `toid` int(10) unsigned   NOT NULL DEFAULT '0' after `user`;
 
 update comments set toid=torrent;
 
-	ALTER TABLE `comments` 
+ALTER TABLE `comments` 	 
 	ADD COLUMN `type` varchar(255)  COLLATE cp1251_general_ci NOT NULL DEFAULT '' after `toid`, 
 	CHANGE `added` `added` int(10)   NOT NULL after `type`, 
 	CHANGE `text` `text` text  COLLATE cp1251_general_ci NOT NULL after `added`, 
@@ -22,32 +40,47 @@ update comments set toid=torrent;
 	CHANGE `ip` `ip` varchar(15)  COLLATE cp1251_general_ci NOT NULL after `ratingsum`, 
 	DROP COLUMN `torrent`, 
 	DROP COLUMN `post_id`, 
-	DROP KEY `torrent`, 
-	add KEY `torrent`(`toid`) ; 
+	DROP KEY `torrent`, add KEY `torrent`(`toid`), ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `countries` ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `cron` ENGINE=InnoDB; 
+
+/* Alter table in target */
+ALTER TABLE `cron_emails` 
+	ADD COLUMN `emails` text  COLLATE cp1251_general_ci NOT NULL first, 
+	CHANGE `subject` `subject` varchar(255)  COLLATE cp1251_general_ci NOT NULL after `emails`, 
+	DROP COLUMN `email`, ENGINE=InnoDB; 
+
+/* Create table in target */
 CREATE TABLE `dchubs`(
 	`id` int(3) unsigned NOT NULL  auto_increment , 
 	`sort` int(3) NOT NULL  DEFAULT '0' , 
 	`announce_url` varchar(500) COLLATE cp1251_general_ci NOT NULL  , 
 	`mask` varchar(60) COLLATE cp1251_general_ci NOT NULL  , 
 	PRIMARY KEY (`id`) 
-) ENGINE=MyISAM DEFAULT CHARSET='cp1251';
+) ENGINE=InnoDB DEFAULT CHARSET='cp1251';
 
 
-CREATE TABLE `forum_categories`(
-	`id` int(10) unsigned NOT NULL  auto_increment , 
-	`sort` int(10) NOT NULL  DEFAULT '0' , 
-	`name` varchar(255) COLLATE cp1251_general_ci NOT NULL  , 
-	`seo_name` varchar(255) COLLATE cp1251_general_ci NULL  , 
-	`image` varchar(255) COLLATE cp1251_general_ci NOT NULL  , 
-	`parent_id` int(10) NOT NULL  DEFAULT '0' , 
-	`class` int(2) NOT NULL  DEFAULT '0' , 
-	PRIMARY KEY (`id`) 
-) ENGINE=MyISAM DEFAULT CHARSET='cp1251';
+/* Drop in Second database */
+DROP TABLE `faq`; 
 
+/* Alter table in target */
+ALTER TABLE `files` ENGINE=InnoDB; 
 
+RENAME TABLE  `pagescategories` TO  `forum_categories` ;
 
+/* Alter table in target */
+ALTER TABLE `forum_categories` 
+	ADD COLUMN `seo_name` varchar(255)  COLLATE cp1251_general_ci NULL after `name`, 
+	CHANGE `image` `image` varchar(255)  COLLATE cp1251_general_ci NOT NULL after `seo_name`, 
+	CHANGE `parent_id` `parent_id` int(10)   NOT NULL DEFAULT '0' after `image`, 
+	CHANGE `class` `class` int(2)   NOT NULL DEFAULT '0' after `parent_id`, 
+	DROP COLUMN `class_edit`, ENGINE=InnoDB; 
+
+/* Create table in target */
 CREATE TABLE `forum_topics`(
 	`id` int(10) unsigned NOT NULL  auto_increment , 
 	`subject` varchar(255) COLLATE cp1251_general_ci NULL  , 
@@ -59,22 +92,36 @@ CREATE TABLE `forum_topics`(
 	`closedate` int(10) NOT NULL  DEFAULT '0' , 
 	`category` int(5) unsigned NOT NULL  DEFAULT '0' , 
 	PRIMARY KEY (`id`) 
-) ENGINE=MyISAM DEFAULT CHARSET='cp1251';
+) ENGINE=InnoDB DEFAULT CHARSET='cp1251';
 
+insert into forum_topics (id,subject,comments,author,started,category) SELECT id,name,comments,owner,added,category FROM pages;
+ 
+/* Alter table in target */
+ALTER TABLE `friends` ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `invites` ENGINE=InnoDB; 
+
+/* Create table in target */
 CREATE TABLE `languages`(
 	`lkey` varchar(255) COLLATE cp1251_general_ci NOT NULL  , 
 	`ltranslate` varchar(2) COLLATE cp1251_general_ci NOT NULL  , 
 	`lvalue` text COLLATE cp1251_general_ci NOT NULL  , 
 	UNIQUE KEY `key`(`lkey`,`ltranslate`) 
-) ENGINE=MyISAM DEFAULT CHARSET='cp1251';
+) ENGINE=InnoDB DEFAULT CHARSET='cp1251';
 
 
+/* Alter table in target */
+ALTER TABLE `messages` ENGINE=InnoDB; 
 
+/* Alter table in target */
 ALTER TABLE `news` 
-	ADD COLUMN `comments` int(10) unsigned   NOT NULL DEFAULT '0' after `subject`; 
+	ADD COLUMN `comments` int(10) unsigned   NOT NULL DEFAULT '0' after `subject`, ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `notifs` ENGINE=InnoDB; 
 
+/* Alter table in target */
 ALTER TABLE `orbital_blocks` 
 	CHANGE `title` `title` varchar(60)  COLLATE cp1251_general_ci NOT NULL after `bid`, 
 	CHANGE `content` `content` text  COLLATE cp1251_general_ci NOT NULL after `title`, 
@@ -88,9 +135,12 @@ ALTER TABLE `orbital_blocks`
 	ADD COLUMN `custom_tpl` varchar(255)  COLLATE cp1251_general_ci NULL after `which`, 
 	DROP COLUMN `bkey`, 
 	DROP COLUMN `time`, 
-	DROP COLUMN `action`; 
+	DROP COLUMN `action`, ENGINE=InnoDB; 
 
+/* Drop in Second database */
+DROP TABLE `pages`; 
 
+/* Alter table in target */
 ALTER TABLE `peers` 
 	CHANGE `peer_id` `peer_id` varchar(40)  COLLATE cp1251_general_ci NOT NULL after `torrent`, 
 	CHANGE `seeder` `seeder` tinyint(1)   NOT NULL DEFAULT '0' after `port`, 
@@ -107,12 +157,19 @@ ALTER TABLE `peers`
 	DROP COLUMN `connectable`, 
 	DROP COLUMN `agent`, 
 	DROP COLUMN `passkey`, 
-	DROP KEY `connectable`; 
+	DROP KEY `connectable`, ENGINE=InnoDB; 
 
-
+/* Alter table in target */
 ALTER TABLE `polls` 
-	ADD COLUMN `comments` int(10) unsigned   NOT NULL DEFAULT '0' after `public`; 
+	ADD COLUMN `comments` int(10) unsigned   NOT NULL DEFAULT '0' after `public`, ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `polls_structure` ENGINE=InnoDB; 
+
+/* Alter table in target */
+ALTER TABLE `polls_votes` ENGINE=InnoDB; 
+
+/* Create table in target */
 CREATE TABLE `presents`(
 	`id` int(10) unsigned NOT NULL  auto_increment , 
 	`userid` int(10) unsigned NOT NULL  DEFAULT '0' , 
@@ -120,30 +177,48 @@ CREATE TABLE `presents`(
 	`type` varchar(100) COLLATE cp1251_general_ci NULL  , 
 	`msg` varchar(255) COLLATE cp1251_general_ci NOT NULL  , 
 	PRIMARY KEY (`id`) 
-) ENGINE=MyISAM DEFAULT CHARSET='cp1251';
+) ENGINE=InnoDB DEFAULT CHARSET='cp1251';
 
 
+/* Alter table in target */
+ALTER TABLE `ratings` ENGINE=InnoDB; 
+
+/* Alter table in target */
 ALTER TABLE `relgroups` 
-	ADD COLUMN `comments` int(10) unsigned   NOT NULL DEFAULT '0' after `subscribe_length`; 
+	ADD COLUMN `comments` int(10) unsigned   NOT NULL DEFAULT '0' after `subscribe_length`, ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `reltemplates` ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `reports` ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `requests` ENGINE=InnoDB; 
+
+/* Alter table in target */
 ALTER TABLE `retrackers` 
-	CHANGE `mask` `mask` text  COLLATE cp1251_general_ci NOT NULL after `announce_url`; 
+	CHANGE `mask` `mask` text  COLLATE cp1251_general_ci NOT NULL after `announce_url`, ENGINE=InnoDB; 
 
-
+/* Alter table in target */
 ALTER TABLE `rg_invites` 
 	CHANGE `rgid` `rgid` int(5)   NOT NULL DEFAULT '0' after `inviter`, 
 	CHANGE `invite` `invite` varchar(32)  COLLATE cp1251_general_ci NOT NULL after `rgid`, 
 	CHANGE `time_invited` `time_invited` int(10)   NOT NULL after `invite`, 
 	DROP COLUMN `inviteid`, 
-	DROP COLUMN `confirmed`; 
+	DROP COLUMN `confirmed`, ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `rg_subscribes` ENGINE=InnoDB; 
 
-
+/* Alter table in target */
 ALTER TABLE `rgnews` 
-	ADD COLUMN `comments` int(10) unsigned   NOT NULL DEFAULT '0' after `subject`; 
+	ADD COLUMN `comments` int(10) unsigned   NOT NULL DEFAULT '0' after `subject`, ENGINE=InnoDB; 
 
+/* Drop in Second database */
+DROP TABLE `rules`; 
+
+/* Create table in target */
 CREATE TABLE `seorules`(
 	`id` int(10) unsigned NOT NULL  auto_increment , 
 	`script` varchar(255) COLLATE cp1251_general_ci NULL  , 
@@ -155,19 +230,30 @@ CREATE TABLE `seorules`(
 	PRIMARY KEY (`id`) , 
 	UNIQUE KEY `script`(`script`,`parameter`) , 
 	UNIQUE KEY `script_2`(`script`,`sort`) 
-) ENGINE=MyISAM DEFAULT CHARSET='cp1251';
+) ENGINE=InnoDB DEFAULT CHARSET='cp1251';
 
 
+/* Alter table in target */
+ALTER TABLE `sessions` ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `sitelog` ENGINE=InnoDB; 
+
+/* Alter table in target */
 ALTER TABLE `snatched` 
 	CHANGE `startedat` `startedat` int(10)   NOT NULL after `torrent`, 
 	CHANGE `completedat` `completedat` int(10)   NOT NULL after `startedat`, 
 	CHANGE `finished` `finished` tinyint(1)   NOT NULL DEFAULT '0' after `completedat`, 
 	DROP COLUMN `uploaded`, 
-	DROP COLUMN `downloaded`; 
+	DROP COLUMN `downloaded`, ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `stamps` ENGINE=InnoDB; 
 
+/* Alter table in target */
+ALTER TABLE `stylesheets` ENGINE=InnoDB; 
 
+/* Alter table in target */
 ALTER TABLE `torrents` 
 	ADD COLUMN `tiger_hash` varbinary(38)   NULL after `info_hash`, 
 	CHANGE `name` `name` varchar(255)  COLLATE cp1251_general_ci NOT NULL after `tiger_hash`, 
@@ -198,15 +284,15 @@ ALTER TABLE `torrents`
 	CHANGE `freefor` `freefor` text  COLLATE cp1251_general_ci NOT NULL after `moderatedby`, 
 	CHANGE `relgroup` `relgroup` int(5)   NOT NULL after `freefor`, 
 	CHANGE `online` `online` text  COLLATE cp1251_general_ci NOT NULL after `relgroup`, 
-	DROP COLUMN `topic_id`; 
+	DROP COLUMN `topic_id`, ENGINE=InnoDB; 
 
-
+/* Alter table in target */
 ALTER TABLE `trackers` 
 	ADD COLUMN `method` varchar(10)  COLLATE cp1251_general_ci NOT NULL DEFAULT 'local' after `state`, 
 	ADD COLUMN `remote_method` varchar(10)  COLLATE cp1251_general_ci NOT NULL DEFAULT 'N/A' after `method`, 
-	CHANGE `num_failed` `num_failed` int(5) unsigned   NOT NULL DEFAULT '0' after `remote_method`; 
+	CHANGE `num_failed` `num_failed` int(5) unsigned   NOT NULL DEFAULT '0' after `remote_method`, ENGINE=InnoDB; 
 
-
+/* Alter table in target */
 ALTER TABLE `users` 
 	CHANGE `privacy` `privacy` enum('strong','normal','highest')  COLLATE cp1251_general_ci NOT NULL DEFAULT 'normal' after `editsecret`, 
 	CHANGE `supportfor` `supportfor` text  COLLATE cp1251_general_ci NULL after `class`, 
@@ -253,7 +339,7 @@ ALTER TABLE `users`
 	DROP COLUMN `uploaded`, 
 	DROP COLUMN `downloaded`, 
 	DROP KEY `downloaded`, 
-	DROP KEY `uploaded`; 
+	DROP KEY `uploaded`, ENGINE=InnoDB; 
 	
 DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` = 'defuserclass';
 DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` = 'emo_dir';
@@ -269,6 +355,9 @@ DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` = 'use_lang';
 DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` =  'use_sessions';
 DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` =  'use_wait';
 DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` =  'smtptype';
+DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` =  'default_emailnotifs';
+DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` =  'default_notifs';
+
 update orbital_blocks set bposition='t' where bposition='c';
 update news set comments=(SELECT COUNT(*) FROM comments WHERE type='news' AND toid=news.id) where id=id;
 update comments set type='rel' where type='' or type=null;
@@ -281,3 +370,14 @@ insert into stylesheets (uri,name) VALUES ('releaser330','Kinokpk.com releaser 3
 update users set stylesheet=1;
 update cache_stats set cache_value='releaser330' where cache_name='default_theme';
 update orbital_blocks set which='' where which='all';
+INSERT INTO `cache_stats` (`cache_name`, `cache_value`) VALUES
+('cache_template', '0'),
+('cache_template_time', '100'),
+('debug_language', '0'),
+('debug_template', '0'),
+('default_emailnotifs', 'unread,torrents,friends'),
+('default_notifs', 'unread,torrents,relcomments,pollcomments,newscomments,usercomments,reqcomments,rgcomments,pages,pagecomments,friends'),
+('forum_enabled', '1'),
+('low_comment_hide', '-3');
+INSERT INTO `cache_stats` (`cache_name`, `cache_value`) VALUES
+('sign_length', '250');

@@ -20,7 +20,7 @@ if ($CURUSER)  $content = "<a class=\"menu\" href=\"".$REL_SEO->make_link('my').
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('index')."\">&nbsp;".$REL_LANG->say_by_key('homepage')."</a>"
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('browse','unchecked','')."\">&nbsp;".$REL_LANG->say_by_key('test_releaser')."</a>"
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('viewrequests')."\">&nbsp;".$REL_LANG->say_by_key('requests')."</a>"
-."<a class=\"menu\" href=\"{$REL_CONFIG['forumurl']}/index.php\">&nbsp;".$REL_LANG->say_by_key('forum')." {$REL_CONFIG['forumname']}</a>"
+."<a class=\"menu\" href=\"".$REL_SEO->make_link('forum')."\">&nbsp;".$REL_LANG->say_by_key('forum')."</a>"
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('testport')."\">&nbsp;".$REL_LANG->say_by_key('check_port')."</a>"
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('topten')."\">&nbsp;".$REL_LANG->say_by_key('topten')."</a>"
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('bookmarks')."\">&nbsp;".$REL_LANG->say_by_key('bookmarks')."</a>"
@@ -29,8 +29,7 @@ if ($CURUSER)  $content = "<a class=\"menu\" href=\"".$REL_SEO->make_link('my').
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('formats')."\">&nbsp;".$REL_LANG->say_by_key('formats')."</a>";
 else
 $content = "<center>
-<a href=\"".$REL_SEO->make_link('login')."\"><font size=\"3\"><b><u>Войти</u></b></font></a><br /><br />
-Вы можете использовать логин и пароль форума {$REL_CONFIG['forumname']} для авторизации.<br /><hr /><br />
+<a href=\"".$REL_SEO->make_link('login')."\"><font size=\"3\"><b><u>Войти</u></b></font></a><hr /><br />
 У вас нет аккаунта?<br />
 <a href=\"".$REL_SEO->make_link('signup')."\"><u>Зарегистрируйтесь</u></a> прямо сейчас!</center><br /><br />"
 
