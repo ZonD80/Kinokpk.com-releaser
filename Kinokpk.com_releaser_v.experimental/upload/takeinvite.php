@@ -51,7 +51,7 @@ $body = "Ваш друг или подруга с ником {$CURUSER['username']} пригласили вас заре
 
 sql_query("INSERT INTO invites (inviter, invite, time_invited) VALUES (" . implode(", ", array_map("sqlesc", array($id, $hash, time()))) . ")") or sqlerr(__FILE__,__LINE__);
 
-sql_query("INSERT INTO cron_emails (email, subject, body) VALUES (".sqlesc($email).",".sqlesc($subject).",".sqlesc($body).")") or sqlerr(__FILE__,__LINE__);
+sql_query("INSERT INTO cron_emails (emails, subject, body) VALUES (".sqlesc($email).",".sqlesc($subject).",".sqlesc($body).")") or sqlerr(__FILE__,__LINE__);
 
 safe_redirect($REL_SEO->make_link('invite','id',$id));
 
