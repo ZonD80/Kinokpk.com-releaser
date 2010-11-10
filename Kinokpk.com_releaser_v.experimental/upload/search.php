@@ -36,20 +36,57 @@ function defvar($default_value, $waited){//если отсутствуют данные - отдает знач
 }
 ?>
 <style type="text/css" charset="utf-8" media="screen">
-	#searchBox form {position: relative;}
-	#searchBox form input.txt {display: block;padding: 4px 6px;width: 300px;border: 1px solid #ececec;}
-	#searchBox form input.sbmt {position: absolute;left: 320px;top: 3px;}
-	#searchBox div.results ol li {margin-bottom: 1em;}
-	#searchBox div.results ol li p {margin: 0;}
-	#searchBox div.results ol li p b {color: #72B11F;}
-	#searchBox div.pages {margin: 2em 0;font-size: 13px;}
-	#searchBox div.pages * {padding-left: 5px;}
-	#searchBox div.pages a {text-decoration: none;}
-	#searchBox div.pages b {color: #72B11F;}
+#searchBox form {
+	position: relative;
+}
+
+#searchBox form input.txt {
+	display: block;
+	padding: 4px 6px;
+	width: 300px;
+	border: 1px solid #ececec;
+}
+
+#searchBox form input.sbmt {
+	position: absolute;
+	left: 320px;
+	top: 3px;
+}
+
+#searchBox div.results ol li {
+	margin-bottom: 1em;
+}
+
+#searchBox div.results ol li p {
+	margin: 0;
+}
+
+#searchBox div.results ol li p b {
+	color: #72B11F;
+}
+
+#searchBox div.pages {
+	margin: 2em 0;
+	font-size: 13px;
+}
+
+#searchBox div.pages * {
+	padding-left: 5px;
+}
+
+#searchBox div.pages a {
+	text-decoration: none;
+}
+
+#searchBox div.pages b {
+	color: #72B11F;
+}
 </style>
-<script type="text/javascript" src="/js/search.js" charset="utf-8"></script>
+<script
+	type="text/javascript" src="/js/search.js" charset="utf-8"></script>
 <div id="searchBox">
-	<p>Чтобы воспользоваться поиском, необходимо включить поддержку JavaScript.</p>
+<p>Чтобы воспользоваться поиском, необходимо включить поддержку
+JavaScript.</p>
 </div>
 
 <script type="text/javascript"><!--
@@ -58,36 +95,35 @@ function defvar($default_value, $waited){//если отсутствуют данные - отдает знач
 //--></script>
 
 
- 
 
-      
+
+
 <?
 $REL_TPL->stdfoot();
 /*
-<div id="cse" style="width: 100%;">Loading</div>
-<script src="http://www.google.com/jsapi" type="text/javascript"></script>
-<script type="text/javascript">
-  google.load('search', '1', {language : 'ru'});
-  google.setOnLoadCallback(function() {
-    var customSearchControl = new google.search.CustomSearchControl('009791040494294785573:arqdadcdep0');
-    customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
-    customSearchControl.draw('cse');
-  }, true);
-</script>
- 
  <div id="cse" style="width: 100%;">Loading</div>
-<script src="http://www.google.com/jsapi" type="text/javascript"></script>
-<script type="text/javascript">
-  google.load('search', '1', {language : 'ru'});
-  google.setOnLoadCallback(function() {
-    var customSearchControl = new google.search.CustomSearchControl('009791040494294785573:c0dpnnjm6w8');
-    customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
-    customSearchControl.draw('cse');
-  }, true);
+ <script src="http://www.google.com/jsapi" type="text/javascript"></script>
+ <script type="text/javascript">
+ google.load('search', '1', {language : 'ru'});
+ google.setOnLoadCallback(function() {
+ var customSearchControl = new google.search.CustomSearchControl('009791040494294785573:arqdadcdep0');
+ customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+ customSearchControl.draw('cse');
+ }, true);
+ </script>
+
+ <div id="cse" style="width: 100%;">Loading</div>
+ <script src="http://www.google.com/jsapi" type="text/javascript"></script>
+ <script type="text/javascript">
+ google.load('search', '1', {language : 'ru'});
+ google.setOnLoadCallback(function() {
+ var customSearchControl = new google.search.CustomSearchControl('009791040494294785573:c0dpnnjm6w8');
+ customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+ customSearchControl.draw('cse');
+ }, true);
 </script>
  
       
 */
 ?>
 
- 

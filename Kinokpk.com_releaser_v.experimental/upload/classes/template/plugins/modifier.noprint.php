@@ -18,7 +18,7 @@
  */
 function smarty_modifier_noprint($string)
 {
-    return '';
+	return '';
 }
 
 ?>

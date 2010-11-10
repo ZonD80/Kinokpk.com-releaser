@@ -57,9 +57,9 @@ function show_blocks($position) {
 		continue;
 		if ($block['expire']&&time()>$block['expire']) continue;
 		if ($block ["which"]) {
-		$which = explode ( ",", $block ["which"] );
-		$module_name = str_replace ( ".php", "", basename ( $_SERVER ["PHP_SELF"] ) );
-		if (!in_array($module_name,$which)) continue;
+			$which = explode ( ",", $block ["which"] );
+			$module_name = str_replace ( ".php", "", basename ( $_SERVER ["PHP_SELF"] ) );
+			if (!in_array($module_name,$which)) continue;
 		}
 
 		$blockid = explode ( ".", $_COOKIE ["hidebid"] );
@@ -92,7 +92,7 @@ function show_blocks($position) {
 			$contenta = "<center>{$REL_LANG->_("No file/content for this block")}</center>";
 		}
 		$contenta = $contenta.'</div>';
-		
+
 		$REL_TPL->assignByRef('title',$blocktitlea);
 		$REL_TPL->assignByRef('content',$contenta);
 		if ($block['custom_tpl']) $REL_TPL->display($block['custom_tpl'].'.tpl');

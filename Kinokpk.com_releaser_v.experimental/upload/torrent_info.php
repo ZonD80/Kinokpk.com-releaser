@@ -76,13 +76,13 @@ while (list($tracker,$lastchecked,$state,$method,$remote_method,$seeders,$leeche
 		$data[$i]['remote_method'] = 'N/A';
 		$data[$i]['num_failed'] = 'N/A';
 	}
-	else { 
-	$data[$i]['tracker']=$tracker;   
-	$data[$i]['state'] = $state;
-	$data[$i]['method'] = $method;
-	$data[$i]['remote_method'] = $remote_method;
-	$data[$i]['num_failed'] = $num_failed;
-	 }
+	else {
+		$data[$i]['tracker']=$tracker;
+		$data[$i]['state'] = $state;
+		$data[$i]['method'] = $method;
+		$data[$i]['remote_method'] = $remote_method;
+		$data[$i]['num_failed'] = $num_failed;
+	}
 
 	$data[$i]['lastchecked'] = get_elapsed_time($lastchecked)." {$REL_LANG->say_by_key('ago')}";
 	$data[$i]['seeders'] = $seeders;
@@ -251,9 +251,9 @@ li span.title {
 
 		// Start table
 		/*print("<table cellspacing=\"0\" cellpadding=\"0\" class=\"tabs\"><tbody><tr>
-		 <td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"details.php?id=$id\">Описание</a></td>
-		 <td class=\"tab\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"torrent_info.php?id=$id\">Данные о торренте</a></td>
-		 <td class=\"tab3\"> </td></tr></tbody></table>\n");*/
+		<td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"details.php?id=$id\">Описание</a></td>
+		<td class=\"tab\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"torrent_info.php?id=$id\">Данные о торренте</a></td>
+		<td class=\"tab3\"> </td></tr></tbody></table>\n");*/
 		print("<table width=100% border=1 cellspacing=0 cellpadding=5>");
 
 		print("<td>");
@@ -343,7 +343,7 @@ compactMenu('colapse',false,'');
 
 		<?
 		// Standard html footers
-	
+
 }
 elseif (isset($_GET['dllist'])) {
 	$downloaders = array();

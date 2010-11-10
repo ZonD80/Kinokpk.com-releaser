@@ -84,4 +84,4 @@ $REL_TPL->stdhead("Общее сообщение", false);
 </table>
 					<?
 					$REL_TPL->stdfoot();
-		?>
+					?>

@@ -72,7 +72,7 @@ if (get_user_class() >= UC_ADMINISTRATOR) { ?>
 		<td><a href="<?=$REL_SEO->make_link('news');?>"><?=$REL_LANG->_("Add a news");?></a>
 		| <a href="<?=$REL_SEO->make_link('newsarchive');?>"><?=$REL_LANG->_("View all news");?></a></td>
 		<td colspan="3"><a href="<?=$REL_SEO->make_link('recountadmin');?>"><?=$REL_LANG->_("Recount/sync database values");?></a></td>
-		
+
 
 	</tr>
 </table>

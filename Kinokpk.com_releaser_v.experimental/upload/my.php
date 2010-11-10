@@ -37,7 +37,7 @@ print("<h1>".$REL_LANG->say_by_key('my_mail_updated')."</h1>\n");
 <div id="my_table">
 <h2><?=$REL_LANG->say_by_key('account_settings')?></h2>
 
-	<script	type="text/javascript">
+<script type="text/javascript">
 	<!--//
 	// on DOM ready
 	

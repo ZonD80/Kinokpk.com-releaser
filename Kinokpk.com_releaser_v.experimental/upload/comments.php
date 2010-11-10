@@ -85,7 +85,7 @@ if ($action == "add")
 
 			}
 		}
-	
+
 		if (REL_AJAX)
 		$text = iconv('utf-8','windows-1251',$text);
 		// ANITSPAM SYSTEM END
@@ -101,7 +101,7 @@ if ($action == "add")
 		sql_query("UPDATE {$allowed_types[$type]} SET comments = comments + 1".($type=='forum'?", lastposted_id=$newid":'')." WHERE id = $to_id") or sqlerr(__FILE__,__LINE__);
 		clear_comment_caches($type);
 		/////////////////—À≈∆≈Õ»≈ «¿  ŒÃÃ≈Õ“¿Ã»/////////////////
-		
+
 		send_comment_notifs($to_id,"<a href=\"$returnto\">$name</a>","{$type}comments");
 
 		/////////////////—À≈∆≈Õ»≈ «¿  ŒÃÃ≈Õ“¿Ã»/////////////////
@@ -236,25 +236,25 @@ elseif ($action == "delete")
 		$res = sql_query("SELECT toid,type FROM comments WHERE id=$commentid")  or sqlerr(__FILE__,__LINE__);
 		$arr = mysql_fetch_array($res);
 		if ($arr) {
-		$to_id = $arr["toid"];
-		$type = $arr['type'];
+			$to_id = $arr["toid"];
+			$type = $arr['type'];
 		}
 		else
 		stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 		sql_query("DELETE FROM comments WHERE id=$commentid") or sqlerr(__FILE__,__LINE__);
 		if ($to_id && mysql_affected_rows() > 0) {
-		sql_query("UPDATE {$allowed_types[$type]} SET comments = comments - 1 WHERE id = $to_id") or sqlerr(__FILE__,__LINE__);
-		if ($type=='forum') {
-			
-			$check = mysql_fetch_assoc($REL_DB->query("SELECT (SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id>$commentid ORDER BY id ASC LIMIT 1) AS next, (SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id<$commentid ORDER BY id DESC LIMIT 1) AS prev"));
-			//die(var_dump($check));
-			if (!$check['next']&&!$check['prev']) $REL_DB->query("DELETE FROM forum_topics WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
-			elseif (!$check['next']) {
-				$REL_DB->query("UPDATE forum_topics SET lastposted_id={$check['prev']} WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
+			sql_query("UPDATE {$allowed_types[$type]} SET comments = comments - 1 WHERE id = $to_id") or sqlerr(__FILE__,__LINE__);
+			if ($type=='forum') {
+					
+				$check = mysql_fetch_assoc($REL_DB->query("SELECT (SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id>$commentid ORDER BY id ASC LIMIT 1) AS next, (SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id<$commentid ORDER BY id DESC LIMIT 1) AS prev"));
+				//die(var_dump($check));
+				if (!$check['next']&&!$check['prev']) $REL_DB->query("DELETE FROM forum_topics WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
+				elseif (!$check['next']) {
+					$REL_DB->query("UPDATE forum_topics SET lastposted_id={$check['prev']} WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
+				}
 			}
-		}
-		clear_comment_caches($type);
+			clear_comment_caches($type);
 		}
 	}
 	if (!REL_AJAX)

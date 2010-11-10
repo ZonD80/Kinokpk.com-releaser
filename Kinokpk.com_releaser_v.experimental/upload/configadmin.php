@@ -25,7 +25,7 @@ if (!isset($_GET['action'])){
 
 	print('<tr><td>'.$REL_LANG->_("Is site online?").':</td><td><select name="siteonline"><option value="1" '.($REL_CONFIG['siteonline']==1?"selected":"").'>'.$REL_LANG->_("Yes").'</option><option value="0" '.($REL_CONFIG['siteonline']==0?"selected":"").'>'.$REL_LANG->_("No").'</option></select></td></tr>');
 	print('<tr><td>'.$REL_LANG->_("Is forum enabled?").':</td><td><select name="forum_enabled"><option value="1" '.($REL_CONFIG['forum_enabled']==1?"selected":"").'>'.$REL_LANG->_("Yes").'</option><option value="0" '.($REL_CONFIG['forum_enabled']==0?"selected":"").'>'.$REL_LANG->_("No").'</option></select>'.$REL_LANG->_('<a href="%s">Go to forum administration</a>',$REL_SEO->make_link('forumadmin')).'</td></tr>');
-	
+
 	print('<tr><td>Адрес сайта (без /):</td><td><input type="text" name="defaultbaseurl" size="30" value="'.$REL_CONFIG['defaultbaseurl'].'"> <br/>Например, "http://www.kinokpk.com"</td></tr>');
 	print('<tr><td>Название сайта (title):</td><td><input type="text" name="sitename" size="80" value="'.$REL_CONFIG['sitename'].'"> <br/>Например, "Релизер японских тушканчиков"</td></tr>');
 	print('<tr><td>Описание сайта (meta description):</td><td><input type="text" name="description" size="80" value="'.$REL_CONFIG['description'].'"> <br/>Например, "Самые шустрые тушканчики скачать тута"</td></tr>');
@@ -36,12 +36,12 @@ if (!isset($_GET['action'])){
 	print('<tr><td>Стандартная тема для гостей и регистрирующихся (themes/%тема%):</td><td><input type="text" name="default_theme" size="10" value="'.$REL_CONFIG['default_theme'].'"> По умолчанию "kinokpk"</td></tr>');
 	print('<tr><td>Ваш копирайт для отображения внизу страницы:<br /><small>*вы можете использовать шаблон <b>{datenow}</b> для показа текущего года</small></td><td><input type="text" name="yourcopy" size="60" value="'.$REL_CONFIG['yourcopy'].'"> <br/>Например, "&copy; 2008-{datenow} Мой Мосх"</td></tr>');
 	print('<tr><td>'.$REL_LANG->_("Site timezone").':</td><td>'.list_timezones('site_timezone',$REL_CONFIG['site_timezone']).'</td></tr>');
-	
+
 	print('<tr><td>Использовать систему блоков (отключать не рекомендуется):</td><td><select name="use_blocks"><option value="1" '.($REL_CONFIG['use_blocks']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_blocks']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>Использовать gzip сжатие для страниц:</td><td><select name="use_gzip"><option value="1" '.($REL_CONFIG['use_gzip']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_gzip']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>'.$REL_LANG->_("Cache templates").':</td><td><select name="cache_template"><option value="1" '.($REL_CONFIG['cache_template']==1?"selected":"").'>'.$REL_LANG->_("Yes").'</option><option value="0" '.($REL_CONFIG['cache_template']==0?"selected":"").'>'.$REL_LANG->_("No").'</option></select></td></tr>');
 	print('<tr><td>'.$REL_LANG->_("Templates cache lifetime").':</td><td><input name="cache_template_time" size="3" value="'.$REL_CONFIG['cache_template_time'].'">'.$REL_LANG->_("Seconds").'</td></tr>');
-	
+
 	print('<tr><td>Использовать систему банов по IP/Подсетям:</td><td><select name="use_ipbans"><option value="1" '.($REL_CONFIG['use_ipbans']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_ipbans']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>Бинарный формат пиров в анонсере:</td><td><select name="announce_packed"><option value="1" '.($REL_CONFIG['announce_packed']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['announce_packed']==0?"selected":"").'>Нет</option></select> По умолчанию, Да</td></tr>');
 
@@ -79,7 +79,7 @@ if (!isset($_GET['action'])){
 	print('<tr><td>'.$REL_LANG->_("SQL/Cron debug").':</td><td><select name="debug_mode"><option value="1" '.($REL_CONFIG['debug_mode']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['debug_mode']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>'.$REL_LANG->_("Language debug").':</td><td><select name="debug_language"><option value="1" '.($REL_CONFIG['debug_language']==1?"selected":"").'>'.$REL_LANG->_("Yes").'</option><option value="0" '.($REL_CONFIG['debug_language']==0?"selected":"").'>'.$REL_LANG->_("No").'</option></select> <a href="'.$REL_SEO->make_link('langadmin').'">'.$REL_LANG->_("Language administration tools").'</a></td></tr>');
 	print('<tr><td>'.$REL_LANG->_("Template debug").':</td><td><select name="debug_template"><option value="1" '.($REL_CONFIG['debug_template']==1?"selected":"").'>'.$REL_LANG->_("Yes").'</option><option value="0" '.($REL_CONFIG['debug_template']==0?"selected":"").'>'.$REL_LANG->_("No").'</option></select></td></tr>');
-	
+
 	print('<tr><td align="center" colspan="2" class="colhead">Прочее</td></tr>');
 
 	print('<tr><td>Попробовать автоматически получить трейлер фильма с кинопоиск.ру:<br/><small>*Работает только, если в описании релиза есть ссылка вида http://www.kinopoisk.ru/level/1/film/ID_фильма</small></td><td><select name="use_kinopoisk_trailers"><option value="1" '.($REL_CONFIG['use_kinopoisk_trailers']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_kinopoisk_trailers']==0?"selected":"").'>Нет</option></select></td></tr>');

@@ -21,48 +21,48 @@ if ($action=='my') {
 	if (!mysql_num_rows ( $r ))	stderr($REL_LANG->_("Error"),$REL_LANG->_("You have not downloaded any releases yet"));
 	$fileDir = './';
 
-require_once(ROOT_PATH."classes/zip/Zip.php");
-if (strlen($CURUSER['passkey']) != 32) {
-	$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
-	sql_query("UPDATE users SET passkey=".sqlesc($CURUSER[passkey])." WHERE id=".sqlesc($CURUSER[id]));
-}
-$fileTime = date("D, d M Y H:i:s T");
-$zip = new Zip();
-$zip->setComment($REL_LANG->_("Your downloaded torrents on %s",mkprettytime(time())));
-$retrackers = get_retrackers();
+	require_once(ROOT_PATH."classes/zip/Zip.php");
+	if (strlen($CURUSER['passkey']) != 32) {
+		$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
+		sql_query("UPDATE users SET passkey=".sqlesc($CURUSER[passkey])." WHERE id=".sqlesc($CURUSER[id]));
+	}
+	$fileTime = date("D, d M Y H:i:s T");
+	$zip = new Zip();
+	$zip->setComment($REL_LANG->_("Your downloaded torrents on %s",mkprettytime(time())));
+	$retrackers = get_retrackers();
 
 	while  ($row = mysql_fetch_assoc($r)) {
-			$fn = "torrents/{$row['id']}.torrent";
-			sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = ".sqlesc($row['id']));
-			$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/announce.php?passkey=".$CURUSER['passkey'];
-$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent={$row['id']} AND tracker<>'localhost'");
-while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
+		$fn = "torrents/{$row['id']}.torrent";
+		sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = ".sqlesc($row['id']));
+		$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/announce.php?passkey=".$CURUSER['passkey'];
+		$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent={$row['id']} AND tracker<>'localhost'");
+		while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
 
-//var_dump($retrackers);
-if ($retrackers) foreach ($retrackers as $announce)
-if (!in_array($announce,$announce_urls_list)) $announce_urls_list[] = $announce;
-put_announce_urls($dict,$announce_urls_list);
+		//var_dump($retrackers);
+		if ($retrackers) foreach ($retrackers as $announce)
+		if (!in_array($announce,$announce_urls_list)) $announce_urls_list[] = $announce;
+		put_announce_urls($dict,$announce_urls_list);
 
-$dict['type'] = 'dictionary';
+		$dict['type'] = 'dictionary';
 
-$dict['value']['info'] = bdec_file($fn, (1024*1024));
+		$dict['value']['info'] = bdec_file($fn, (1024*1024));
 
 
-$dict['value']['comment']=bdec(benc_str( $REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name'])))); // change torrent comment  to URL
-$dict['value']['created by']=bdec(benc_str( $row['owner'])); // change created by
-$dict['value']['creation date']=bdec(benc_int($row['added'])); // change created on
-$dict['value']['publisher']=bdec(benc_str( $row['owner'])); // change publisher
-$dict['value']['publisher.utf-8']=bdec(benc_str( $row['owner'])); // change publisher.utf-8
-$dict['value']['publisher-url']=bdec(benc_str( $REL_SEO->make_link('userdetails','id',$row['userid'],'username',$row['owner']))); // change publisher-url
-$dict['value']['publisher-url.utf-8']=bdec(benc_str($REL_SEO->make_link('userdetails','id',$row['userid'],'username',$row['owner']))); // change publisher-url.utf-8
-$zip->addFile(benc($dict), str_replace('/','---',translit($row['name']))."-{$row['id']}-{$_SERVER['HTTP_HOST']}.torrent",$row['added']);//,$row['name']);
-unset($dict);
-unset($announce_urls_list);
+		$dict['value']['comment']=bdec(benc_str( $REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name'])))); // change torrent comment  to URL
+		$dict['value']['created by']=bdec(benc_str( $row['owner'])); // change created by
+		$dict['value']['creation date']=bdec(benc_int($row['added'])); // change created on
+		$dict['value']['publisher']=bdec(benc_str( $row['owner'])); // change publisher
+		$dict['value']['publisher.utf-8']=bdec(benc_str( $row['owner'])); // change publisher.utf-8
+		$dict['value']['publisher-url']=bdec(benc_str( $REL_SEO->make_link('userdetails','id',$row['userid'],'username',$row['owner']))); // change publisher-url
+		$dict['value']['publisher-url.utf-8']=bdec(benc_str($REL_SEO->make_link('userdetails','id',$row['userid'],'username',$row['owner']))); // change publisher-url.utf-8
+		$zip->addFile(benc($dict), str_replace('/','---',translit($row['name']))."-{$row['id']}-{$_SERVER['HTTP_HOST']}.torrent",$row['added']);//,$row['name']);
+		unset($dict);
+		unset($announce_urls_list);
 	}
 	$zip->finalize(); // as we are not using getZipData or getZipFile, we need to call finalize ourselves.
 
-$zip->sendZip("torrents-".date('d.m.Y-H.i')."-{$_SERVER['HTTP_HOST']}.zip");
-die();
+	$zip->sendZip("torrents-".date('d.m.Y-H.i')."-{$_SERVER['HTTP_HOST']}.zip");
+	die();
 }
 if (!is_valid_id($_GET['id'])) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 

@@ -20,6 +20,6 @@
  */
 function smarty_modifier_count_words($string)
 {
-    return str_word_count($string);
+	return str_word_count($string);
 }
 ?>

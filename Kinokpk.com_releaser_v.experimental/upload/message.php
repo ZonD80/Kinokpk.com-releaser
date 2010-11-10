@@ -169,9 +169,9 @@ if ($action == "viewmailbox") {
 	?>
 	<tr class="colhead">
 		<td class="colhead">&nbsp;</td>
-		<td colspan="6" align="right" width="100%" class="colhead" /><input
-			type="hidden" name="box" value="<?=$mailbox?>" /> <input
-			type="submit" name="delete"
+		<td colspan="6" align="right" width="100%" class="colhead" />
+		<input type="hidden" name="box" value="<?=$mailbox?>" />
+		<input type="submit" name="delete"
 			title="<?=$REL_LANG->say_by_key('delete_marked_messages');?>"
 			value="<?=$REL_LANG->say_by_key('delete');?>"
 			onClick="return confirm('<?=$REL_LANG->say_by_key('sure_mark_delete');?>')" />
@@ -184,7 +184,8 @@ if ($action == "viewmailbox") {
 			onClick="return confirm('Архивировать выбранные сообщения? (они не будут удалены системой автоматически)')" />
 		<input type="submit" name="unarchive" title="Разархивировать"
 			value="Разархивировать"
-			onClick="return confirm('Разархивировать выбранные сообщения? (они будут удалены системой автоматически)')" /></td>
+			onClick="return confirm('Разархивировать выбранные сообщения? (они будут удалены системой автоматически)')" />
+		</td>
 
 	</tr>
 </table>

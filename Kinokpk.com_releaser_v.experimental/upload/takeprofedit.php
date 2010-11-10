@@ -168,12 +168,12 @@ if ($changedemail) {
 Если вы НЕ совершали действий, указанных в этом письме, то проигнорируйте это письмо.
 
 Если вы действительно хотите изменить e-mail, то проследуйте по следующей ссылке:
-{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('confirmemail','id',$CURUSER['id'],'confirmcode',$hash,'email',$obemail)}
+	{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('confirmemail','id',$CURUSER['id'],'confirmcode',$hash,'email',$obemail)}
 
 EOD;
 
-sent_mail($email, $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], "{$REL_CONFIG['defaultbaseurl']} подтверждение изменения профиля", $body);
-$string.= "<br /><h2>".$REL_LANG->say_by_key('my_mail_sent')."</h2>";
+	sent_mail($email, $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], "{$REL_CONFIG['defaultbaseurl']} подтверждение изменения профиля", $body);
+	$string.= "<br /><h2>".$REL_LANG->say_by_key('my_mail_sent')."</h2>";
 }
 
 sql_query("UPDATE users SET " . implode(",", $updateset) . " WHERE id = " . $CURUSER["id"]) or sqlerr(__FILE__,__LINE__);

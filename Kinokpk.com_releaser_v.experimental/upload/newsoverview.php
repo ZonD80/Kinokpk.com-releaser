@@ -82,13 +82,13 @@ if (isset($_GET['id'])) {
 
 
 
-$REL_TPL->assignByRef('to_id',$newsid);
-$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $newsid, 'newscomments' ));
-$REL_TPL->assign('textbbcode',textbbcode('text'));
-$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('News'));
-$FORM_TYPE = 'news';
-$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-$REL_TPL->display('commenttable_form.tpl');
+	$REL_TPL->assignByRef('to_id',$newsid);
+	$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $newsid, 'newscomments' ));
+	$REL_TPL->assign('textbbcode',textbbcode('text'));
+	$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('News'));
+	$FORM_TYPE = 'news';
+	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+	$REL_TPL->display('commenttable_form.tpl');
 
 }
 

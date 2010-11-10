@@ -21,9 +21,9 @@ require_once(ROOT_PATH.'include/functions.php');
 $time = time();
 
 // connection closed
-	/* @var database object */
-	require_once(ROOT_PATH . 'classes/database/database.class.php');
-	$REL_DB = new REL_DB($mysql_host, $mysql_user, $mysql_pass, $mysql_db, $mysql_charset);
+/* @var database object */
+require_once(ROOT_PATH . 'classes/database/database.class.php');
+$REL_DB = new REL_DB($mysql_host, $mysql_user, $mysql_pass, $mysql_db, $mysql_charset);
 
 
 $cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('in_cleanup','autoclean_interval','max_dead_torrent_time','pm_delete_sys_days','pm_delete_user_days','signup_timeout','ttl_days','announce_interval','delete_votes','rating_freetime','rating_enabled','rating_perleech','rating_perseed','rating_checktime','rating_dislimit','promote_rating','rating_max')");
@@ -205,7 +205,7 @@ $emails = sql_query("SELECT * FROM cron_emails");
 while ($message = mysql_fetch_assoc($emails)) {
 	if (strpos(',', $message['emails'])) sent_mail('', $message['subject'].' | '.$REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], $message['subject'], $message['body'],$message['emails']);
 	else sent_mail($message['emails'], $message['subject'].' | '.$REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], $message['subject'], $message['body']);
-	
+
 }
 sql_query("TRUNCATE TABLE cron_emails");
 // delete expiried relgroups subsribes

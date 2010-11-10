@@ -68,7 +68,7 @@ if (!$fid) {
 	$class = (int) $_GET['class'];
 	if ($class == '-' || !is_valid_user_class($class))
 	$class = '';
-$q[] ='present';
+	$q[] ='present';
 
 	if ($search != '' || $class) {
 		$querystr = " LEFT JOIN users ON friendid=users.id";

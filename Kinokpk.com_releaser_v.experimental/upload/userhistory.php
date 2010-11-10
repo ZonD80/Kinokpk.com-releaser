@@ -182,8 +182,8 @@ if (in_array($type,$allowed_types))
 
 	if ($type<>'friends'&&$type<>'presents') {
 		$REL_TPL->stdhead($REL_LANG->say_by_key('history_'.$type)." {$REL_LANG->_("From")} {$user['username']}");
-			if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
-		
+		if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
+
 		$REL_TPL->begin_frame($REL_LANG->say_by_key('history_'.$type).sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 		$query = "SELECT comments.id, comments.toid, comments.type, comments.ip, comments.ratingsum, comments.text, comments.user, comments.added, comments.editedby, comments.editedat, users.avatar, users.warned, users.username, users.title, users.class, users.donor, users.enabled, users.ratingsum AS urating, users.gender, users.last_access, e.username AS editedbyname, $name[$type] FROM comments LEFT JOIN users ON comments.user = users.id LEFT JOIN users AS e ON comments.editedby = e.id{$leftjoin[$type]} WHERE $where ORDER BY $order $limit";
 		$res = sql_query($query) or sqlerr(__FILE__,__LINE__);
@@ -214,8 +214,8 @@ if (in_array($type,$allowed_types))
 			$presents[] = $prrow;
 		}
 		$REL_TPL->stdhead($REL_LANG->_("History of user presents"));
-			if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
-		
+		if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
+
 		$REL_TPL->begin_frame($REL_LANG->_("History of user presents").sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 		$switch_pr = array('torrent'=>'Release','ratingsum'=>"Amount of rating",'discount'=>"Amount of discount");
 
@@ -237,8 +237,8 @@ if (in_array($type,$allowed_types))
 	}
 	elseif ($type=='friends') {
 		$REL_TPL->stdhead($REL_LANG->say_by_key('history_friends').' '.$user['username']);
-			if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
-		
+		if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
+
 		$REL_TPL->begin_frame($REL_LANG->say_by_key('history_friends').' '.$user['username'].sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 
 		$res = sql_query("SELECT IF (friends.userid={$id},friends.friendid,friends.userid) AS friend, (SELECT 1 FROM friends WHERE (userid=friend AND friendid={$CURUSER['id']}) OR (friendid=friend AND userid={$CURUSER['id']})) AS myfriend, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON IF (friends.userid={$id},u.id=friendid,u.id=userid) LEFT JOIN countries AS c ON c.id = u.country WHERE $where ORDER BY friends.id DESC $limit") or sqlerr(__FILE__, __LINE__);

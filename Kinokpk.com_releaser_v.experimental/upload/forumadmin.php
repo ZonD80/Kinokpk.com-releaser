@@ -84,7 +84,7 @@ elseif (isset($_GET['editid'])) {
 	print("<tr><td>{$REL_LANG->say_by_key('image')}:</td><td align='left'><input type='text' size=60 name='category_pic' value='{$row['image']}'></td></tr>");
 	print("<tr><td>{$REL_LANG->say_by_key('sort')}</td><td align='left'><input type='text' size=60 name='category_sort' value='{$row['sort']}'></td></tr>");
 	print("<tr><td>{$REL_LANG->_("Access level")}</td>");
-		// class selection
+	// class selection
 
 	$classsel = '<td><select name="category_class"><option value="-1">'.get_user_class_name(-1).'</option>';
 
@@ -137,7 +137,7 @@ if(isset($_GET['add'])) {
 	print("<tr><td>{$REL_LANG->say_by_key('image')}:</td><td align='left'><input type='text' size=60 name='category_pic'/></td></tr>");
 	print("<tr><td>{$REL_LANG->say_by_key('sort')}</td><td align='left'><input type='text' size=60 name='category_sort'/></td></tr>");
 	print("<tr><td>{$REL_LANG->_("Access level")}</td>");
-		// class selection
+	// class selection
 
 	$classsel = '<td><select name="category_class"><option value="-1">'.get_user_class_name(-1).'</option>';
 

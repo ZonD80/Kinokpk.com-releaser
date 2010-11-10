@@ -24,11 +24,11 @@ httpauth();
  * @return array Prepared data
  */
 function prepare_data($arr) {
-		$stripped = array('script','parameter','repl','unset_params');
-		foreach ($stripped as $k) $arr[$k] = sqlesc(trim(htmlspecialchars((string)$arr[$k])));
-		$arr['sort'] = intval($arr['sort']);
-		$arr['enabled'] = ($arr['enabled']?1:0);
-		return $arr;
+	$stripped = array('script','parameter','repl','unset_params');
+	foreach ($stripped as $k) $arr[$k] = sqlesc(trim(htmlspecialchars((string)$arr[$k])));
+	$arr['sort'] = intval($arr['sort']);
+	$arr['enabled'] = ($arr['enabled']?1:0);
+	return $arr;
 }
 $action = trim((string)$_GET['a']);
 $id = (int)$_GET['id'];
@@ -37,7 +37,7 @@ if ($action&&!in_array($action,$allowed_actions)) stderr($REL_LANG->_('Error'),$
 
 if ($action=='genrewrites') {
 	$type = (string)trim($_GET['type']);
-	
+
 	$pages_for = explode(',','index,bookmarks,browse,friends,mytorrents,newsarchive,newsoverview,online,peers,polloverview,pollsarchive,present,relgroups,requests,rgnewsarchive,rgnewsoverview,topten,userhistory,users,viewrequests,votesview');
 	if (!$type) $REL_TPL->stderr($REL_LANG->_('Select server type'),$REL_LANG->_('Please select server type to generate rewrites:<br/><a href="%s">Apache</a> | <a href="%s">Nginx</a>',$REL_SEO->make_link('seoadmin','a','genrewrites','type','apache'),$REL_SEO->make_link('seoadmin','a','genrewrites','type','nginx')),'success');
 	elseif ($type=='apache') {

@@ -18,21 +18,21 @@
  * @param array $params parameters
  * @param object $smarty Smarty object
  * @param object $template template object
- * @return string 
+ * @return string
  */
 function smarty_function_popup_init($params, $smarty, $template)
 {
-    $zindex = 1000;
-    
-    if (!empty($params['zindex'])) {
-        $zindex = $params['zindex'];
-    }
-    
-    if (!empty($params['src'])) {
-        return '<div id="overDiv" style="position:absolute; visibility:hidden; z-index:'.$zindex.';"></div>' . "\n"
-         . '<script type="text/javascript" language="JavaScript" src="'.$params['src'].'"></script>' . "\n";
-    } else {
-        trigger_error("popup_init: missing src parameter",E_USER_WARNING);
-    }
+	$zindex = 1000;
+
+	if (!empty($params['zindex'])) {
+		$zindex = $params['zindex'];
+	}
+
+	if (!empty($params['src'])) {
+		return '<div id="overDiv" style="position:absolute; visibility:hidden; z-index:'.$zindex.';"></div>' . "\n"
+		. '<script type="text/javascript" language="JavaScript" src="'.$params['src'].'"></script>' . "\n";
+	} else {
+		trigger_error("popup_init: missing src parameter",E_USER_WARNING);
+	}
 }
 ?>

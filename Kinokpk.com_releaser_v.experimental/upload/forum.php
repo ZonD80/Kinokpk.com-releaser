@@ -71,7 +71,7 @@ if (!$action) {
 
 	if (!$view_topics) {
 		$tabledata = prepare_for_forumtable($cats,$CAT);
-		
+
 
 		$REL_TPL->assignByRef('CATEGORIES',$tabledata['categories']);
 		$REL_TPL->assignByRef('FORUMS',$tabledata['forums']);
@@ -89,7 +89,7 @@ if (!$action) {
 			while ($row = mysql_fetch_assoc($res)) {
 				$tabledata[] = array('id'=>$row['id'],'subject'=>$row['subject'],'posts'=>$row['comments'],'started'=>mkprettytime($row['started']),'author'=>"<a href=\"{$REL_SEO->make_link('userdetails','id',$row['author'],'name',$row['aname'])}\">".get_user_class_color($row['aclass'],$row['aname'])."</a>",'lastposted_time'=>mkprettytime($row['added']),'lastposted_user'=>"<a href=\"{$REL_SEO->make_link('userdetails','id',$row['user'],'name',$row['username'])}\">".get_user_class_color($row['class'],$row['username'])."</a>", 'lastposted_id'=>$row['lastposted_id']);
 			}
-							
+				
 			$REL_TPL->assignByRef('TOPICS',$tabledata);
 			$REL_TPL->output('topicmode');
 		}

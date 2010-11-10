@@ -20,16 +20,16 @@ httpauth();
 define("NO_WYSIWYG",true);
 
 function prepare_data($arr) {
-		$stripped = array('title','blockfile','which','custom_tpl');
-		$intval = array('weight');
-		foreach ($stripped as $k) $arr[$k] = sqlesc(trim(htmlspecialchars((string)$arr[$k])));
-		$arr['expire'] = (int)strtotime((string)$arr['expire']);
-		$arr['content'] = sqlesc((string)$arr['content']);
-		foreach ($intval as $k) $arr[$k] = (int)$arr[$k];
-		$arr['view'] = sqlesc(implode(',',array_keys((array)$arr['view'])));
-		$arr['active'] = ($arr['active']?1:0);
-		$arr['bposition'] = sqlesc(substr((string)$arr['bposition'],0,1));
-		return $arr;
+	$stripped = array('title','blockfile','which','custom_tpl');
+	$intval = array('weight');
+	foreach ($stripped as $k) $arr[$k] = sqlesc(trim(htmlspecialchars((string)$arr[$k])));
+	$arr['expire'] = (int)strtotime((string)$arr['expire']);
+	$arr['content'] = sqlesc((string)$arr['content']);
+	foreach ($intval as $k) $arr[$k] = (int)$arr[$k];
+	$arr['view'] = sqlesc(implode(',',array_keys((array)$arr['view'])));
+	$arr['active'] = ($arr['active']?1:0);
+	$arr['bposition'] = sqlesc(substr((string)$arr['bposition'],0,1));
+	return $arr;
 }
 $action = trim((string)$_GET['a']);
 $id = (int)$_GET['id'];

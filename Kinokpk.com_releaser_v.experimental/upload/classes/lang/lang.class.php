@@ -25,7 +25,7 @@ class REL_LANG {
 	 * @var boolean
 	 */
 	private $DEBUG;
-	
+
 	/**
 	 * Already parsed languages for file mode. Used to prevent double parse of languages
 	 * @var array
