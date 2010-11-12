@@ -101,6 +101,10 @@ $resp .= ($compact ? benc_str($plist) : '') . (substr($peer_id, 0, 4) == '-BC0' 
 
 $updateset = array();
 $snatch_updateset = array();
+
+$selfsql = mysql_query('SELECT seeder FROM peers WHERE '.$selfwhere) or sqlerr(__FILE__,__LINE__);
+$self = mysql_fetch_assoc($selfsql);
+
 if ($event == 'stopped') {
 
 	mysql_query('DELETE FROM peers WHERE '.$selfwhere) or sqlerr(__FILE__,__LINE__);
@@ -116,8 +120,6 @@ if (($event == 'completed' || !$left) && !$SNcompleted) {
 	$updateset[] = 'times_completed = times_completed + 1';
 	$snatch_updateset[] = "finished = 1";
 }
-$selfsql = mysql_query('SELECT seeder FROM peers WHERE '.$selfwhere) or sqlerr(__FILE__,__LINE__);
-$self = mysql_fetch_assoc($selfsql);
 
 if ($self['seeder'] != $seeder) {
 	if ($seeder) {
@@ -147,8 +149,10 @@ if ($seeder) {
 	$updateset[] = 'visible = 1';
 	$updateset[] = 'last_action = '.$time;
 }
-if ($trupdateset)
-mysql_query('UPDATE LOW_PRIORITY trackers SET ' . join(", ", $trupdateset) . ' WHERE torrent = '.$torrentid.' AND tracker="localhost"') or sqlerr(__FILE__,__LINE__);
+if ($trupdateset) {
+   	$trupdateset[] = 'lastchecked = '.$time;
+	mysql_query('UPDATE LOW_PRIORITY trackers SET ' . join(", ", $trupdateset) . ' WHERE torrent = '.$torrentid.' AND tracker="localhost"') or sqlerr(__FILE__,__LINE__);
+}
 
 if ($updateset)
 mysql_query('UPDATE LOW_PRIORITY torrents SET ' . join(", ", $updateset) . ' WHERE id = '.$torrentid) or sqlerr(__FILE__,__LINE__);
