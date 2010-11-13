@@ -1286,7 +1286,7 @@ function convert_local_urls($link) {
 	return preg_replace ( "#\\<a(.*?)href(\\s*)\\=(\\s*)(\"|')(?!http://)(.*?)(\"|')(.*?)\\>#si", "<a\\1href=\\4" . $REL_CONFIG['defaultbaseurl'].'/' . "\\5\\6\\7>", $link );
 }
 /**
- * Sens email message(s)
+ * Sends email message(s)
  * @param string $to receiver email
  * @param string $fromname sender name
  * @param string $fromemail sender email
@@ -1310,7 +1310,7 @@ function sent_mail($to,$fromname,$fromemail,$subject,$body,$multiplemail='') {
 		$m->groupAmnt = 10;
 		$m->delay     = 0;
 	} else $m->setTo($to);
-	$m->send();
+	return $m->send();
 }
 
 /**
