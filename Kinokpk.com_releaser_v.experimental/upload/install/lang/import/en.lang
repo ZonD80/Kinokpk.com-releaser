@@ -176,6 +176,7 @@ Comments list=Comments list
 comments_and_social=Comments.<br /><br />Social activity<br /><br />Filesharing
 comments_for=Comments to
 comment_cant_be_empty=Comment cannot be empty!
+comment_notice_forumcomments=New reply was added to topic "%s", to view it click on topic name
 comment_notice_newscomments=New comment was added to news %s. To discard comment notifications visit news\' page
 comment_notice_pagecomments=New comments was added to page %s. To discard comment notifications view page
 comment_notice_pollcomments=New comment was added to poll %s. To discard comment notifications visit poll\'s page
@@ -268,7 +269,7 @@ downloading_torrent=Downloading a torrent
 download_notice=Downloading this release you rating will decrease by %s , and will become %s. Remember, that with %s rating you can\'t
 download_torrent=Download torrent!
 download_zip_again=You can download all previous releases in one ZIP-archive without rating decrease<br/><a href="%s">View downloaded releases</a> or <a href="%s">Download ZIP-archive with torrents</a>
-down_formula=Вы раздаете %s релизов, откупились от %s, что в сумме меньше, чем скачали (%s скачанных релизов), поэтому Ваш рейтинг изменяется на
+down_formula=Вы раздаете %s релизов, с учетом скидки в %s релизов, что в сумме меньше, чем скачали (%s скачанных релизов), поэтому Ваш рейтинг изменяется на
 down_levels=The lower level of restriction
 down_notice=In rating a %s , you can not download releases, and at %s Your account will be disabled
 down_size=Down size
@@ -322,6 +323,7 @@ formats=File formats
 form_contact=Form of contact
 form_contact_for_admin=The form for communication with the Administration
 forum=Forum
+Forum topic=Forum topic
 Forumcomments=Forumcomments
 forum_home_link=<a href="%s">Forum home</a>
 forum_id=IPB\'s forum ID
@@ -653,7 +655,6 @@ none_yet=Nobody
 nonfree=Pay (For entry into the group have something to pay)
 nothing_found=Nothing was found
 notice_friends=One of the users of our site that offered you friendship! You can confirm or deny this on your "My Friends"
-notice_pages=The site has just created a new page, you can see a list of pages
 notice_reports=The new complaint has just been submitted. You can look it in the administrator-panel under "Complaint"
 notice_torrents=The site has a new release
 notice_unread=You have new private message
@@ -1263,4 +1264,4 @@ you_watching_unread=You are currently viewing: unread PM
 you_watching_usercomments=You are currently viewing: the new comments to the users
 you_watching_users=You are currently viewing: the new user
 zodiac=Zodiac
-// langfile (en) from http://www.torrentsbook.com created at 05/11/2010 18:23:43
+// langfile (en) from http://www.torrentsbook.com created at 12/11/2010 21:42:08
