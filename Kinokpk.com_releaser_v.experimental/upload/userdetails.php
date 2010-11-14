@@ -165,7 +165,7 @@ print ( '<table width="100%"><tr><td width="100%" style="vertical-align: top;">'
 
 $REL_TPL->begin_main_frame ();
 
-print ( "<tr><td colspan=\"2\" align=\"center\"><p><h1 style=\"margin:0px\">$user[username]" . get_user_icons ( $user, true ) . "</h1>" . (($user ['class'] < UC_ADMINISTRATOR) ? reportarea ( $id, 'users' ) : '') . "</p>\n" );
+print ( "<tr><td colspan=\"2\" align=\"center\">".($user['avatar']&&$CURUSER['avatars']?"<br/><img src=\"{$user['avatar']}\" title=\"{$REL_LANG->_("Avatar of %s",$user['username'])}\"/><br/>":'')."<p><h1 style=\"margin:0px\">$user[username]" . get_user_icons ( $user, true ) . "</h1>" . (($user ['class'] < UC_ADMINISTRATOR) ? reportarea ( $id, 'users' ) : '') . "</p>\n" );
 
 if (! $enabled)
 print ( "<p><b>Этот аккаунт отключен</b> Причина: " . $user ['dis_reason'] . "</p>\n" );
@@ -180,7 +180,7 @@ elseif ($CURUSER ["id"] != $user ["id"]) {
 }
 print ( "<p>" . ratearea ( $user ['ratingsum'], $user ['id'], 'users', $CURUSER['id'] ) . "$country</p>" );
 
-print ( '<table width=100% border=1 cellspacing=0 cellpadding=5>
+print ( '<div class="sp-wrap"><div class="sp-head folded clickable">'.$REL_LANG->_("Open information").'</div><div class="sp-body"><table width=100% border=1 cellspacing=0 cellpadding=5>
 <tr><td class=rowhead width=1%>Зарегистрирован</td><td align=left width=99%>' . $joindate . '</td></tr>
 <tr><td class=rowhead>Последний раз был на трекере</td><td align=left>' . $lastseen . '</td></tr>' );
 
@@ -221,8 +221,6 @@ if ($user ["website"])
 print ( "<tr><td class=\"rowhead\">Сайт</td><td align=\"left\">" . makesafe ( $user [website] ) . "</a></td></tr>\n" );
 //if ($user['donated'] > 0 && (get_user_class() >= UC_MODERATOR || $CURUSER["id"] == $user["id"]))
 //  print("<tr><td class=rowhead>Donated</td><td align=left>$$user[donated]</td></tr>\n");
-if ($user ["avatar"])
-print ( "<tr><td class=\"rowhead\">Аватар</td><td align=left><img src=\"" . $user ["avatar"] . "\"></td></tr>\n" );
 print ( "<tr><td class=\"rowhead\">Класс</td><td align=\"left\"><b>" . get_user_class_color ( $user ["class"], get_user_class_name ( $user ["class"] ) ) . ($user ["title"] != "" ? " / <span style=\"color: purple;\">{$user["title"]}</span>" : "") . "</b></td></tr>\n" );
 print ( "<tr><td class=\"rowhead\">Пол</td><td align=\"left\">$gender</td></tr>\n" );
 //мод предупреждений
@@ -274,12 +272,12 @@ print ( "<tr valign=\"top\"><td colspan=\"2\"><div class=\"sp-wrap\"><div class=
 if ($user ["info"])
 print ( "<tr valign=\"top\"><td align=\"left\" colspan=\"2\" class=\"text\" bgcolor=\"#F4F4F0\">" . format_comment ( $user ["info"] ) . "</td></tr>\n" );
 
-if ($CURUSER ["id"] != $user ["id"])
-$showpmbutton = 1;
-elseif ($user ["acceptpms"] == "friends") {
+if ($user ["acceptpms"] == "friends") {
 	$r = sql_query ( "SELECT id FROM friends WHERE userid = $user[id] AND friendid = $CURUSER[id]" ) or sqlerr ( __FILE__, __LINE__ );
 	$showpmbutton = (mysql_num_rows ( $r ) == 1 ? 1 : 0);
-}
+} elseif ($CURUSER ["id"] != $user ["id"])
+$showpmbutton = 1;
+
 if ($showpmbutton)
 print ( "<tr><td align=right><b>Связь</b></td><td align=center><form method=\"get\" action=\"".$REL_SEO->make_link('message')."\">
         <input type=\"hidden\" name=\"receiver\" value=" . $user ["id"] . "> 
@@ -290,7 +288,7 @@ print ( "<tr><td align=right><b>Связь</b></td><td align=center><form method=\"ge
         <input type=submit value=\"Послать e-mail\" style=\"height: 23px\">
         </form>" : '') . "</td></tr>" );
 
-print ( "</table>\n" );
+print ( "</table></div>\n" );
 print ( '</td><td>' );
 
 $REL_TPL->begin_frame ();
@@ -361,6 +359,7 @@ $REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('User'));
 $FORM_TYPE = 'user';
 $REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 $REL_TPL->display('commenttable_form.tpl');
+print '</table>';
 $REL_TPL->end_frame ();
 
 if (get_user_class () >= UC_MODERATOR && $user ["class"] < get_user_class ()) {

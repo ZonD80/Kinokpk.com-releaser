@@ -39,5 +39,4 @@ foreach ($reqarray as $requests) {
 
 $content .= "</td></tr></table></td></tr></table>";
 
-$blocktitle = "<font color=\"red\">Стол заказов</font>";
 ?>

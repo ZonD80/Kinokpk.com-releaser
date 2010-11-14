@@ -33,5 +33,4 @@ foreach ($ctorrents as $ct) {
 $content .= "<tr><td width=\"200\">".$REL_LANG->say_by_key('warning')."</td></tr></table>";
 $content .= "</td></tr></table>";
 
-$blocktitle = "<font color=\"red\">".$REL_LANG->say_by_key('banned_releases')."</font>";
 ?>

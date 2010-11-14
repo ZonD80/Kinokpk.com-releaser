@@ -76,13 +76,13 @@ while (list($tracker,$lastchecked,$state,$method,$remote_method,$seeders,$leeche
 		$data[$i]['remote_method'] = 'N/A';
 		$data[$i]['num_failed'] = 'N/A';
 	}
-	else {
-		$data[$i]['tracker']=$tracker;
-		$data[$i]['state'] = $state;
-		$data[$i]['method'] = $method;
-		$data[$i]['remote_method'] = $remote_method;
-		$data[$i]['num_failed'] = $num_failed;
-	}
+	else { 
+	$data[$i]['tracker']=$tracker;   
+	$data[$i]['state'] = $state;
+	$data[$i]['method'] = $method;
+	$data[$i]['remote_method'] = $remote_method;
+	$data[$i]['num_failed'] = $num_failed;
+	 }
 
 	$data[$i]['lastchecked'] = get_elapsed_time($lastchecked)." {$REL_LANG->say_by_key('ago')}";
 	$data[$i]['seeders'] = $seeders;
@@ -90,8 +90,8 @@ while (list($tracker,$lastchecked,$state,$method,$remote_method,$seeders,$leeche
 	$i++;
 }
 
-$REL_TPL->stdhead("Данные о торенте");
-print("<h1>Данные о торенте</h1>\n");
+$REL_TPL->stdhead($REL_LANG->_("Information about torrent"));
+$REL_TPL->begin_frame($REL_LANG->_("Information about torrent"));
 print("<div id=\"tabs\"><ul>
 	<li class=\"tab2\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($name))."\"><span>Описание</span></a></li>
 	<li nowrap=\"\" class=\"tab1\"><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name))."\"><span>{$REL_LANG->say_by_key('torrent_info')}</span></a></li>
@@ -102,7 +102,8 @@ if ($data)
 foreach ($data as $tracker)
 print ("<tr><td>".$tracker['tracker']."</td><td>{$tracker['seeders']}</td><td>{$tracker['leechers']}</td><td>".($tracker['seeders']+$tracker['leechers'])."</td><td>{$tracker['lastchecked']}</td><td>".cleanhtml($tracker['state'])."</td><td>{$tracker['method']}</td>".((get_user_class()>=UC_ADMINISTRATOR)?"<td>{$tracker['remote_method']}</td><td>{$tracker['num_failed']}</td>":'')."</tr>");
 //print('</table>');
-else print ('<tr><td colspan="6" align="center">Данный релиз является анонсом или релизом без торрента</td></tr>');
+else print ('<tr><td colspan="6" align="center">'.$REL_LANG->_('This release is announce or releaser without torrent').'</td></tr>');
+print('</table>');
 $REL_TPL->end_frame();
 
 
@@ -245,15 +246,14 @@ li span.title {
 
 		<?php
 
-		$REL_TPL->begin_main_frame();
-
+		
 		$info = bdec_file($fn, (1024*1024));
 
 		// Start table
 		/*print("<table cellspacing=\"0\" cellpadding=\"0\" class=\"tabs\"><tbody><tr>
-		<td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"details.php?id=$id\">Описание</a></td>
-		<td class=\"tab\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"torrent_info.php?id=$id\">Данные о торренте</a></td>
-		<td class=\"tab3\"> </td></tr></tbody></table>\n");*/
+		 <td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"details.php?id=$id\">Описание</a></td>
+		 <td class=\"tab\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"torrent_info.php?id=$id\">Данные о торренте</a></td>
+		 <td class=\"tab3\"> </td></tr></tbody></table>\n");*/
 		print("<table width=100% border=1 cellspacing=0 cellpadding=5>");
 
 		print("<td>");
@@ -343,7 +343,7 @@ compactMenu('colapse',false,'');
 
 		<?
 		// Standard html footers
-
+	
 }
 elseif (isset($_GET['dllist'])) {
 	$downloaders = array();
@@ -360,7 +360,6 @@ elseif (isset($_GET['dllist'])) {
 	tr("<div id=\"leechers\"></div>".$REL_LANG->say_by_key('details_leeching'), dltable($REL_LANG->say_by_key('details_leeching'), $downloaders, $row), 1);
 	print '</table>';
 }
-$REL_TPL->end_main_frame();
 $REL_TPL->stdfoot();
 
 ?>

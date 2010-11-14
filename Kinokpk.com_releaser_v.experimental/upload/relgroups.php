@@ -76,8 +76,8 @@ if (!$id) {
 		?>
 
 <div class="relgroups_table">
-<div class="relgroups_image"><img src="<?=$row['image']?>"
-	title="<?=makesafe($row['name'])?>" /><? $REL_LANG->say_by_key('no_image')?>
+<div class="relgroups_image"><img
+	src="<?=$row['image']?>" title="<?=makesafe($row['name'])?>" /><? $REL_LANG->say_by_key('no_image')?>
 </div>
 <div class="relgroups_name">
 <dl class="clearfix">
@@ -136,7 +136,7 @@ else {
 		if ($row['owners']||$row['members']) {
 			$ownersres = sql_query("SELECT id, username, class FROM users WHERE id IN(".$row['owners'].($row['members']?','.$row['members']:'').")") or sqlerr(__FILE__,__LINE__);
 			if ($row['members']) $row['members'] = explode(',',$row['members']);
-
+				
 			while($ownersrow = mysql_fetch_assoc($ownersres)) if ($row['members'] && in_array($ownersrow['id'],$row['members'])) $members[$ownersrow['id']] = "<a href=\"".$REL_SEO->make_link('userdetails','id',$ownersrow['id'],'username',translit($ownersrow['username']))."\">".get_user_class_color($ownersrow['class'],$ownersrow['username'])."</a>"; else $owners[$ownersrow['id']] = "<a href=\"".$REL_SEO->make_link('userdetails','id',$ownersrow['id'],'username',translit($ownersrow['username']))."\">".get_user_class_color($ownersrow['class'],$ownersrow['username'])."</a>";
 
 			$I_OWNER = (in_array($CURUSER['id'],explode(',',$row['owners']))||(get_user_class()>=UC_ADMINISTRATOR));
@@ -318,7 +318,7 @@ else {
 	$limited = 10;
 
 	if (!$count) {
-
+		
 		print('<div id="newcomment_placeholder">'."<table id=\"comments-table\" class=\"rgcomm\" cellspacing=\"0\" cellPadding=\"5\">");
 		print("<tr><td class=colhead align=\"left\" colspan=\"2\">");
 		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев | <b><u>Новости комментируются отдельно</u></b></div>");
@@ -334,15 +334,15 @@ else {
 		$subres = sql_query("SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
 												  "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .
 												  "$id AND c.type='rg' GROUP BY c.id ORDER BY c.id $limit") or sqlerr(__FILE__, __LINE__);
-		$allrows = prepare_for_commenttable($subres,$row['name'],$REL_SEO->make_link('relgroups','id',$id));
+			$allrows = prepare_for_commenttable($subres,$row['name'],$REL_SEO->make_link('relgroups','id',$id));
 
 
 		print("<table id=\"comments-table\" class=\"rgcomm\" cellspacing=\"0\" cellPadding=\"5\">");
 		print("<tr>
 					<td class=\"colhead_rgcomm\" align=\"center\">");
-		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев | <b><u>Новости комментируются отдельно</u></b></div>");
+					print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев | <b><u>Новости комментируются отдельно</u></b></div>");
 		print("<div align=\"right\"><b>{$REL_LANG->say_by_key('add_comment')}</b></div>");
-		print("</td>
+			print("</td>
 			</tr>");
 
 		print("<tr><td>");
@@ -355,17 +355,17 @@ else {
 
 		print($pagerbottom);
 		print("</td></tr>");
-		//	print("</table>");
+	//	print("</table>");
 
 	}
 
-	$REL_TPL->assignByRef('to_id',$id);
-	$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'rgcomments' ));
-	$REL_TPL->assign('textbbcode',textbbcode('text'));
-	$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release group'));
-	$FORM_TYPE = 'rg';
-	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-	$REL_TPL->display('commenttable_form.tpl');
+$REL_TPL->assignByRef('to_id',$id);
+$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'rgcomments' ));
+$REL_TPL->assign('textbbcode',textbbcode('text'));
+$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release group'));
+$FORM_TYPE = 'rg';
+$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+$REL_TPL->display('commenttable_form.tpl');
 
 
 	?></div>
@@ -424,7 +424,6 @@ else {
 
 		$REL_TPL->end_frame();
 	}
-	print '</table>';
 	$REL_TPL->stdfoot();
 	}
 	elseif ($action=='suggest') {

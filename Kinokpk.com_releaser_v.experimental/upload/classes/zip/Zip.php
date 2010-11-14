@@ -23,6 +23,12 @@ class Zip {
 	private $offset = 0;
 	private $isFinalized = false;
 
+	private $streamFilePath = null;
+	private $streamTimeStamp = null;
+	private $streamComment = null;
+	private $streamFile = null;
+	private $streamData = null;
+	private $streamFileLength = 0;	
 	/**
 	 * Constructor.
 	 *
@@ -66,9 +72,11 @@ class Zip {
 		}
 		$fd=fopen($fileName, "x+b");
 		if (!is_null($this->zipFile)) {
-			$filestat = fstat($this->zipFile);
 			rewind($this->zipFile);
-			fwrite($fd, fread($this->zipFile, $filestat['size']));
+			while(!feof($this->zipFile)) {
+			    fwrite($fd, fread($this->zipFile, 16384));
+			} 
+			
 			fclose($this->zipFile);
 		} else {
 			fwrite($fd, $this->zipData);
@@ -219,18 +227,163 @@ class Zip {
 	}
 
 	/**
+	 * Add a file to the archive at the specified location and file name.
+	 *
+	 * @param string $dataFile    File name/path.
+	 * @param string $filePath    Filepath and name to be used in the archive.
+	 * @param int    $timestamp   (Optional) Timestamp for the added file, if omitted or set to 0, the current time will be used.
+	 * @param string $fileComment (Optional) Comment to be added to the archive for this file. To use fileComment, timestamp must be given.
+	 */
+	public function addLargeFile($dataFile, $filePath, $timestamp = 0, $fileComment = null)   {
+		if ($this->isFinalized) {
+			return;
+		}
+	
+		$this->openStream($filePath, $timestamp, $fileComment);
+
+		$fh = fopen($dataFile, "rb");
+		while(!feof($fh)) {
+		    $this->addStreamData(fread($fh, 16384));
+		} 
+		fclose($fh);
+
+		$this->closeStream();
+	}
+
+	/**
+	 * Create a stream to be used for large entries.
+	 *
+	 * @param string $filePath    Filepath and name to be used in the archive.
+	 * @param int    $timestamp   (Optional) Timestamp for the added file, if omitted or set to 0, the current time will be used.
+	 * @param string $fileComment (Optional) Comment to be added to the archive for this file. To use fileComment, timestamp must be given.
+	 */
+	public function openStream($filePath, $timestamp = 0, $fileComment = null)   {
+		if ($this->isFinalized) {
+			return;
+		}
+
+		if (is_null($this->zipFile)) {
+			$this->zipFile = tmpfile();
+			fwrite($this->zipFile, $this->zipData);
+			$this->zipData = null;
+		}
+		
+		if (strlen($this->streamFilePath) > 0) {
+			closeStream();
+		}
+		$this->streamFile = tempnam(sys_get_temp_dir(), 'Zip');
+		$this->streamData = gzopen($this->streamFile, "w9");
+		$this->streamFilePath = $filePath;
+		$this->streamTimestamp = $timestamp;
+		$this->streamFileComment = $fileComment;
+		$this->streamFileLength = 0;
+	}
+	
+	public function addStreamData($data) {
+		$length = gzwrite($this->streamData, $data, strlen($data));
+		if ($length != strlen($data)) {
+			print "<p>Length mismatch</p>\n";
+		}
+		$this->streamFileLength += $length;
+		return $length;
+	}
+	
+	/**
+	 * Close the current stream.
+	 */
+	public function closeStream() {
+		if ($this->isFinalized || strlen($this->streamFilePath) == 0) {
+			return;
+		}
+		
+		fflush($this->streamData);
+		gzclose($this->streamData);
+		
+		$this->streamFilePath = str_replace("\\", "/", $this->streamFilePath);
+		$dosTime = $this->getDosTime($this->streamTimestamp);
+
+		$gzType = "\x08\x00"; // Compression type 8 = deflate
+		$gpFlags = "\x02\x00"; // General Purpose bit flags for compression type 8 it is: 0=Normal, 1=Maximum, 2=Fast, 3=super fast compression.
+
+		$file_handle = fopen($this->streamFile, "rb");
+		$stats = fstat($file_handle);
+		$eof = $stats['size'];
+		
+		fseek($file_handle, $eof-8);
+		$fileCRC32 = fread($file_handle, 4);
+		$dataLength = $this->streamFileLength;//$gzl[1];
+
+		$eof -= 9;
+		$gzLength = $eof-10;
+		
+		fseek($file_handle, 10);
+
+		$zipEntry  = $this->localFileHeader;
+		$zipEntry .= "\x0a\x00"; // Version needed to extract
+		$zipEntry .= $gpFlags . $gzType . $dosTime;
+		$zipEntry .= $fileCRC32;
+		$zipEntry .= pack("V", $gzLength);
+		$zipEntry .= pack("V", $dataLength);
+		$zipEntry .= pack("v", strlen($this->streamFilePath) ); // File name length
+		$zipEntry .= "\x00\x00"; // Extra field length
+		$zipEntry .= $this->streamFilePath; // FileName . Extra field
+
+		fwrite($this->zipFile, $zipEntry);
+
+		while(!feof($file_handle)) {
+		    fwrite($this->zipFile, fread($file_handle, 16384));
+		} 
+
+		$fileCommentLength = (is_null($this->streamFileComment) ? 0 : strlen($this->streamFileComment));
+		$newOffset = $this->offset + strlen($zipEntry) + $gzLength + 9;
+
+		$cdEntry  = $this->centralFileHeader;
+		$cdEntry .= "\x00\x00"; // Made By Version
+		$cdEntry .= "\x0a\x00"; // Version Needed to extract
+		$cdEntry .= $gpFlags . $gzType . $dosTime;
+		$cdEntry .= $fileCRC32;
+		$cdEntry .= pack("V", $gzLength);
+		$cdEntry .= pack("V", $dataLength);
+		$cdEntry .= pack("v", strlen($this->streamFilePath)); // Filename length
+		$cdEntry .= "\x00\x00"; // Extra field length
+		$cdEntry .= pack("v", $fileCommentLength); // File comment length
+		$cdEntry .= "\x00\x00"; // Disk number start
+		$cdEntry .= "\x00\x00"; // internal file attributes
+		$cdEntry .= pack("V", 32 ); // External file attributes
+		$cdEntry .= pack("V", $this->offset ); // Relative offset of local header
+		$cdEntry .= $this->streamFilePath; // FileName . Extra field
+		if (!is_null($this->streamFileComment)) {
+			$cdEntry .= $this->streamFileComment; // Comment
+		}
+
+		$this->cdRec[] = $cdEntry;
+		$this->offset = $newOffset;
+
+		unlink($this->streamFile);
+		$this->streamFile = null;
+		$this->streamData = null;
+		$this->streamFilePath = null;
+		$this->streamTimestamp = null;
+		$this->streamFileComment = null;
+		$this->streamFileLength = 0;
+	}
+
+	/**
 	 * Close the archive.
 	 * A closed archive can no longer have new files added to it.
 	 */
 	public function finalize() {
 		if(!$this->isFinalized) {
+			if (strlen($this->streamFilePath) > 0) {
+				$this->closeStream();
+			}
 			$cd = implode("", $this->cdRec);
 			if (is_null($this->zipFile)) {
 				$this->zipData .= $cd . $this->endOfCentralDirectory
-				. pack("v", sizeof($this->cdRec))
-				. pack("v", sizeof($this->cdRec))
-				. pack("V", strlen($cd))
-				. pack("V", $this->offset);
+					. pack("v", sizeof($this->cdRec))
+					. pack("v", sizeof($this->cdRec))
+					. pack("V", strlen($cd))
+					. pack("V", $this->offset);
 				if (!is_null($this->zipComment)) {
 					$this->zipData .= pack("v", strlen($this->zipComment)) . $this->zipComment;
 				} else {
@@ -306,38 +459,41 @@ class Zip {
 			$this->finalize();
 		}
 
-		if (!headers_sent($headerFile, $headerLine)) {
-			if (ini_get('zlib.output_compression')) {
-				ini_set('zlib.output_compression', 'Off');
-			}
+		if (!headers_sent($headerFile, $headerLine) or die("<p><strong>Error:</strong> Unable to send file $fileName. HTML Headers have already been sent from <strong>$headerFile</strong> in line <strong>$headerLine</strong></p>")) {
+			if (ob_get_contents() === false or die("\n<p><strong>Error:</strong> Unable to send file <strong>$fileName.epub</strong>. Output buffer contains the following text (typically warnings or errors):<br>" . ob_get_contents() . "</p>")) {
+				if (ini_get('zlib.output_compression')) {
+					ini_set('zlib.output_compression', 'Off');
+				}
 
-			$length = 0;
-			if (is_null($this->zipFile)) {
-				$length = strlen($this->zipData);
-			} else {
-				$filestat = fstat($this->zipFile);
-				$length = $filestat['size'];
-			}
+				header('Pragma: public');
+				header("Last-Modified: " . date($this->headerDateFormat, $this->date));
+				header("Expires: 0");
+				header("Accept-Ranges: bytes");
+				header("Connection: close");
+				header("Content-Type: application/zip");
+				header('Content-Disposition: attachment; filename="' . $fileName . '";' );
+				header("Content-Transfer-Encoding: binary");
+				header("Content-Length: ". $this->getArchiveSize());
 
-			header('Pragma: public');
-			header("Last-Modified: " . date($this->headerDateFormat, $this->date));
-			header("Expires: 0");
-			header("Accept-Ranges: bytes");
-			header("Connection: close");
-			header("Content-Type: application/zip");
-			header('Content-Disposition: attachment; filename="' . $fileName . '";' );
-			header("Content-Transfer-Encoding: binary");
-			header("Content-Length: ". $length);
+				if (is_null($this->zipFile)) {
+					echo $this->zipData;
+				} else {
+					rewind($this->zipFile);
 
-			if (is_null($this->zipFile)) {
-				echo $this->zipData;
-			} else {
-				rewind($this->zipFile);
-				echo fread($this->zipFile, $length);
+					while(!feof($this->zipFile)) {
+					    echo fread($this->zipFile, 16384);
+					} 
+				}
 			}
-		} else {
-			echo "\n<p><strong>Error:</strong> Unable to send file $fileName. HTML Headers have already been sent from <strong>$headerFile</strong> in line <strong>$headerLine</strong></p>\n";
 		}
+	}
+	
+	public function getArchiveSize() {
+		if (is_null($this->zipFile)) {
+			return strlen($this->zipData);
+		}
+		$filestat = fstat($this->zipFile);
+		return $filestat['size'];
 	}
 
 	/**
@@ -351,7 +507,7 @@ class Zip {
 		$date = ($timestamp == 0 ? getdate() : getDate($timestamp));
 		if ($date["year"] >= 1980) {
 			return pack("V", (($date["mday"] + ($date["mon"] << 5) + (($date["year"]-1980) << 9)) << 16) |
-			(($date["seconds"] >> 1) + ($date["minutes"] << 5) + ($date["hours"] << 11)));
+				(($date["seconds"] >> 1) + ($date["minutes"] << 5) + ($date["hours"] << 11)));
 		}
 		return "\x00\x00\x00\x00";
 	}
