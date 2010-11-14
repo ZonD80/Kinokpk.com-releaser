@@ -2,7 +2,7 @@
 /**
  * Class to create and manage a Zip file.
  *
- * Based on CreateZipFile by Rochak Chauhan  www.rochakchauhan.com (http://www.phpclasses.org/browse/package/2322.html)
+ * Inspired by CreateZipFile by Rochak Chauhan  www.rochakchauhan.com (http://www.phpclasses.org/browse/package/2322.html)
  * and
  * http://www.pkware.com/documents/casestudies/APPNOTE.TXT Zip file specification.
  *
@@ -23,6 +23,7 @@ class Zip {
 	private $offset = 0;
 	private $isFinalized = false;
 
+	private $streamChunkSize = 65536;
 	private $streamFilePath = null;
 	private $streamTimeStamp = null;
 	private $streamComment = null;
@@ -74,7 +75,7 @@ class Zip {
 		if (!is_null($this->zipFile)) {
 			rewind($this->zipFile);
 			while(!feof($this->zipFile)) {
-			    fwrite($fd, fread($this->zipFile, 16384));
+			    fwrite($fd, fread($this->zipFile, $this->streamChunkSize));
 			} 
 			
 			fclose($this->zipFile);
@@ -97,53 +98,7 @@ class Zip {
 		if ($this->isFinalized) {
 			return;
 		}
-		$dosTime = $this->getDosTime($timestamp);
-
-		$directoryPath = str_replace("\\", "/", $directoryPath);
-
-		$zipEntry  = $this->localFileHeader;
-		$zipEntry .= "\x0a\x00"; // Version needed to extract
-		$zipEntry .= "\x00\x00"; // General Purpose bit flags, 0 for compression type 0
-		$zipEntry .= "\x00\x00"; // Compression type 0 = stored
-		$zipEntry .= $dosTime;
-		$zipEntry .= "\x00\x00\x00\x00"; // compression CRC32
-		$zipEntry .= "\x00\x00\x00\x00"; // compressedLength
-		$zipEntry .= "\x00\x00\x00\x00"; // uncompressedLength
-		$zipEntry .= pack("v", strlen($directoryPath) ); // Filename length
-		$zipEntry .= "\x00\x00"; // Extra field length
-		$zipEntry .= $directoryPath; // FileName . Extra field
-
-		if (is_null($this->zipFile)) {
-			$this->zipData .= $zipEntry;
-		} else {
-			fwrite($this->zipFile, $zipEntry);
-		}
-		$fileCommentLength = (is_null($fileComment) ? 0 : strlen($fileComment));
-		$newOffset = $this->offset + strlen($zipEntry);
-
-		$cdEntry  = $this->centralFileHeader;
-		$cdEntry .= "\x00\x00"; // Made By Version
-		$cdEntry .= "\x0a\x00"; // Version Needed to extract
-		$cdEntry .= "\x00\x00"; // General Purpose bit flags
-		$cdEntry .= "\x00\x00"; // Compression type 0 = stored
-		$cdEntry .= $dosTime;
-		$cdEntry .= "\x00\x00\x00\x00"; // compression CRC32
-		$cdEntry .= "\x00\x00\x00\x00"; // compressedLength
-		$cdEntry .= "\x00\x00\x00\x00"; // uncompressedLength
-		$cdEntry .= pack("v", strlen($directoryPath) ); // Filename length
-		$cdEntry .= "\x00\x00"; // Extra field length
-		$cdEntry .= pack("v", $fileCommentLength ); // File comment length
-		$cdEntry .= "\x00\x00"; // Disk number start
-		$cdEntry .= "\x00\x00"; // internal file attributes
-		$cdEntry .= pack("V", 16 );// External file attributes
-		$cdEntry .= pack("V", $this->offset ); // Relative offset of local header
-		$cdEntry .= $directoryPath;// FileName . Extra field
-		if (!is_null($fileComment)) {
-			$cdEntry .= $fileComment; // Comment
-		}
-
-		$this->cdRec[] = $cdEntry;
-		$this->offset = $newOffset;
+		$this->buildZipEntry($directoryPath, $fileComment, "\x00\x00", "\x00\x00", $timestamp, "\x00\x00\x00\x00", 0, 0, 16);
 	}
 
 	/**
@@ -158,13 +113,11 @@ class Zip {
 		if ($this->isFinalized) {
 			return;
 		}
-		$filePath = str_replace("\\", "/", $filePath);
-		$dosTime = $this->getDosTime($timestamp);
 
 		$gzType = "\x08\x00"; // Compression type 8 = deflate
 		$gpFlags = "\x02\x00"; // General Purpose bit flags for compression type 8 it is: 0=Normal, 1=Maximum, 2=Fast, 3=super fast compression.
 		$dataLength = strlen($data);
-		$fileCRC32 = crc32($data);
+		$fileCRC32 = pack("V", crc32($data));
 
 		$gzData = gzcompress($data);
 		$gzData = substr( substr($gzData, 0, strlen($gzData) - 4), 2); // gzcompress adds a 2 byte header and 4 byte CRC we can't use.
@@ -184,46 +137,12 @@ class Zip {
 			$this->zipData = null;
 		}
 
-		$zipEntry  = $this->localFileHeader;
-		$zipEntry .= "\x0a\x00"; // Version needed to extract
-		$zipEntry .= $gpFlags . $gzType . $dosTime;
-		$zipEntry .= pack("V", $fileCRC32);
-		$zipEntry .= pack("V", $gzLength);
-		$zipEntry .= pack("V", $dataLength);
-		$zipEntry .= pack("v", strlen($filePath) ); // File name length
-		$zipEntry .= "\x00\x00"; // Extra field length
-		$zipEntry .= $filePath; // FileName . Extra field
-		$zipEntry .= $gzData;
-
+		$this->buildZipEntry($filePath, $fileComment, $gpFlags, $gzType, $timestamp, $fileCRC32, $gzLength, $dataLength, 32);
 		if (is_null($this->zipFile)) {
-			$this->zipData .= $zipEntry;
+			$this->zipData .= $gzData;
 		} else {
-			fwrite($this->zipFile, $zipEntry);
+			fwrite($this->zipFile, $gzData);
 		}
-		$fileCommentLength = (is_null($fileComment) ? 0 : strlen($fileComment));
-		$newOffset = $this->offset + strlen($zipEntry);
-
-		$cdEntry  = $this->centralFileHeader;
-		$cdEntry .= "\x00\x00"; // Made By Version
-		$cdEntry .= "\x0a\x00"; // Version Needed to extract
-		$cdEntry .= $gpFlags . $gzType . $dosTime;
-		$cdEntry .= pack("V", $fileCRC32);
-		$cdEntry .= pack("V", $gzLength);
-		$cdEntry .= pack("V", $dataLength);
-		$cdEntry .= pack("v", strlen($filePath)); // Filename length
-		$cdEntry .= "\x00\x00"; // Extra field length
-		$cdEntry .= pack("v", $fileCommentLength); // File comment length
-		$cdEntry .= "\x00\x00"; // Disk number start
-		$cdEntry .= "\x00\x00"; // internal file attributes
-		$cdEntry .= pack("V", 32 ); // External file attributes
-		$cdEntry .= pack("V", $this->offset ); // Relative offset of local header
-		$cdEntry .= $filePath; // FileName . Extra field
-		if (!is_null($fileComment)) {
-			$cdEntry .= $fileComment; // Comment
-		}
-
-		$this->cdRec[] = $cdEntry;
-		$this->offset = $newOffset;
 	}
 
 	/**
@@ -243,7 +162,7 @@ class Zip {
 
 		$fh = fopen($dataFile, "rb");
 		while(!feof($fh)) {
-		    $this->addStreamData(fread($fh, 16384));
+		    $this->addStreamData(fread($fh, $this->streamChunkSize));
 		} 
 		fclose($fh);
 
@@ -299,9 +218,6 @@ class Zip {
 		fflush($this->streamData);
 		gzclose($this->streamData);
 		
-		$this->streamFilePath = str_replace("\\", "/", $this->streamFilePath);
-		$dosTime = $this->getDosTime($this->streamTimestamp);
-
 		$gzType = "\x08\x00"; // Compression type 8 = deflate
 		$gpFlags = "\x02\x00"; // General Purpose bit flags for compression type 8 it is: 0=Normal, 1=Maximum, 2=Fast, 3=super fast compression.
 
@@ -313,52 +229,16 @@ class Zip {
 		$fileCRC32 = fread($file_handle, 4);
 		$dataLength = $this->streamFileLength;//$gzl[1];
 
-		$eof -= 9;
 		$gzLength = $eof-10;
+		$eof -= 9;
 		
 		fseek($file_handle, 10);
 
-		$zipEntry  = $this->localFileHeader;
-		$zipEntry .= "\x0a\x00"; // Version needed to extract
-		$zipEntry .= $gpFlags . $gzType . $dosTime;
-		$zipEntry .= $fileCRC32;
-		$zipEntry .= pack("V", $gzLength);
-		$zipEntry .= pack("V", $dataLength);
-		$zipEntry .= pack("v", strlen($this->streamFilePath) ); // File name length
-		$zipEntry .= "\x00\x00"; // Extra field length
-		$zipEntry .= $this->streamFilePath; // FileName . Extra field
-
-		fwrite($this->zipFile, $zipEntry);
-
+		$this->buildZipEntry($this->streamFilePath, $this->streamFileComment, $gpFlags, $gzType, $this->streamTimestamp, $fileCRC32, $gzLength, $dataLength, 32);
 		while(!feof($file_handle)) {
-		    fwrite($this->zipFile, fread($file_handle, 16384));
+		    fwrite($this->zipFile, fread($file_handle, $this->streamChunkSize));
 		} 
-
-		$fileCommentLength = (is_null($this->streamFileComment) ? 0 : strlen($this->streamFileComment));
-		$newOffset = $this->offset + strlen($zipEntry) + $gzLength + 9;
-
-		$cdEntry  = $this->centralFileHeader;
-		$cdEntry .= "\x00\x00"; // Made By Version
-		$cdEntry .= "\x0a\x00"; // Version Needed to extract
-		$cdEntry .= $gpFlags . $gzType . $dosTime;
-		$cdEntry .= $fileCRC32;
-		$cdEntry .= pack("V", $gzLength);
-		$cdEntry .= pack("V", $dataLength);
-		$cdEntry .= pack("v", strlen($this->streamFilePath)); // Filename length
-		$cdEntry .= "\x00\x00"; // Extra field length
-		$cdEntry .= pack("v", $fileCommentLength); // File comment length
-		$cdEntry .= "\x00\x00"; // Disk number start
-		$cdEntry .= "\x00\x00"; // internal file attributes
-		$cdEntry .= pack("V", 32 ); // External file attributes
-		$cdEntry .= pack("V", $this->offset ); // Relative offset of local header
-		$cdEntry .= $this->streamFilePath; // FileName . Extra field
-		if (!is_null($this->streamFileComment)) {
-			$cdEntry .= $this->streamFileComment; // Comment
-		}
-
-		$this->cdRec[] = $cdEntry;
-		$this->offset = $newOffset;
-
+		
 		unlink($this->streamFile);
 		$this->streamFile = null;
 		$this->streamData = null;
@@ -378,30 +258,22 @@ class Zip {
 				$this->closeStream();
 			}
 			$cd = implode("", $this->cdRec);
-			if (is_null($this->zipFile)) {
-				$this->zipData .= $cd . $this->endOfCentralDirectory
+			
+			$cdRec = $cd . $this->endOfCentralDirectory
 					. pack("v", sizeof($this->cdRec))
 					. pack("v", sizeof($this->cdRec))
 					. pack("V", strlen($cd))
-					. pack("V", $this->offset);
-				if (!is_null($this->zipComment)) {
-					$this->zipData .= pack("v", strlen($this->zipComment)) . $this->zipComment;
-				} else {
-					$this->zipData .= "\x00\x00";
-				}
+					. pack("V", $this->offset); 
+			if (!is_null($this->zipComment)) {
+				$cdRec .= pack("v", strlen($this->zipComment)) . $this->zipComment;
 			} else {
-				fwrite($this->zipFile, $cd);
-				fwrite($this->zipFile, $this->endOfCentralDirectory);
-				fwrite($this->zipFile, pack("v", sizeof($this->cdRec)));
-				fwrite($this->zipFile, pack("v", sizeof($this->cdRec)));
-				fwrite($this->zipFile, pack("V", strlen($cd)));
-				fwrite($this->zipFile, pack("V", $this->offset));
-				if (!is_null($this->zipComment)) {
-					fwrite($this->zipFile, pack("v", strlen($this->zipComment)));
-					fwrite($this->zipFile, $this->zipComment);
-				} else {
-					fwrite($this->zipFile, "\x00\x00");
-				}
+				$cdRec .= "\x00\x00";
+			}
+					
+			if (is_null($this->zipFile)) {
+				$this->zipData .= $cdRec;
+			} else {
+				fwrite($this->zipFile, $cdRec);
 				fflush($this->zipFile);
 			}
 			$this->isFinalized = true;
@@ -481,7 +353,7 @@ class Zip {
 					rewind($this->zipFile);
 
 					while(!feof($this->zipFile)) {
-					    echo fread($this->zipFile, 16384);
+					    echo fread($this->zipFile, $this->streamChunkSize);
 					} 
 				}
 			}
@@ -510,6 +382,59 @@ class Zip {
 				(($date["seconds"] >> 1) + ($date["minutes"] << 5) + ($date["hours"] << 11)));
 		}
 		return "\x00\x00\x00\x00";
+	}
+
+	/**
+	 * Build the Zip file structures
+	 * 
+	 * @param unknown_type $filePath
+	 * @param unknown_type $fileComment
+	 * @param unknown_type $gpFlags
+	 * @param unknown_type $gzType
+	 * @param unknown_type $timestamp
+	 * @param unknown_type $fileCRC32
+	 * @param unknown_type $gzLength
+	 * @param unknown_type $dataLength
+	 * @param integer $extFileAttr 16 for directories, 32 for files.
+	 */
+	private function buildZipEntry($filePath, $fileComment, $gpFlags, $gzType, $timestamp, $fileCRC32, $gzLength, $dataLength, $extFileAttr) {
+		$filePath = str_replace("\\", "/", $filePath);
+		$fileCommentLength = (is_null($fileComment) ? 0 : strlen($fileComment));
+		$dosTime = $this->getDosTime($timestamp);
+		
+		$zipEntry  = $this->localFileHeader;
+		$zipEntry .= "\x14\x00"; // Version needed to extract
+		$zipEntry .= $gpFlags . $gzType . $dosTime. $fileCRC32;
+		$zipEntry .= pack("VV", $gzLength, $dataLength);
+		$zipEntry .= pack("v", strlen($filePath) ); // File name length
+		$zipEntry .= "\x00\x00"; // Extra field length
+		$zipEntry .= $filePath; // FileName . Extra field
+
+		if (is_null($this->zipFile)) {
+			$this->zipData .= $zipEntry;
+		} else {
+			fwrite($this->zipFile, $zipEntry);
+		}
+				
+		$cdEntry  = $this->centralFileHeader;
+		$cdEntry .= "\x00\x00"; // Made By Version
+		$cdEntry .= "\x14\x00"; // Version Needed to extract
+		$cdEntry .= $gpFlags . $gzType . $dosTime. $fileCRC32;
+		$cdEntry .= pack("VV", $gzLength, $dataLength);
+		$cdEntry .= pack("v", strlen($filePath)); // Filename length
+		$cdEntry .= "\x00\x00"; // Extra field length
+		$cdEntry .= pack("v", $fileCommentLength); // File comment length
+		$cdEntry .= "\x00\x00"; // Disk number start
+		$cdEntry .= "\x00\x00"; // internal file attributes
+		$cdEntry .= pack("V", $extFileAttr ); // External file attributes
+		$cdEntry .= pack("V", $this->offset ); // Relative offset of local header
+		$cdEntry .= $filePath; // FileName . Extra field
+		if (!is_null($fileComment)) {
+			$cdEntry .= $fileComment; // Comment
+		}
+
+		$this->cdRec[] = $cdEntry;
+		$this->offset += strlen($zipEntry) + $gzLength;
 	}
 }
 ?>

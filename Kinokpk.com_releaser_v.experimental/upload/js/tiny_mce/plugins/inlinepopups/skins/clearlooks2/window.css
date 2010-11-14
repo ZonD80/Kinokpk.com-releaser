@@ -44,7 +44,7 @@
 	left: 0;
 	opacity: 0.5;
 	-ms-filter: 'alpha(opacity=50)';
-	filter: alpha(opacity = 50)
+	filter: alpha(opacity =   50)
 }
 
 .clearlooks2_modalBlocker {
@@ -56,7 +56,7 @@
 	background: #FFF;
 	opacity: 0.6;
 	-ms-filter: 'alpha(opacity=60)';
-	filter: alpha(opacity = 60);
+	filter: alpha(opacity =   60);
 	display: none
 }
 

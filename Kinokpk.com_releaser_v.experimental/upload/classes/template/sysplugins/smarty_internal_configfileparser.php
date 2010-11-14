@@ -518,7 +518,7 @@ class Smarty_Internal_Configfileparser#line 79 "smarty_internal_configfileparser
 	function yy_find_shift_action($iLookAhead)
 	{
 		$stateno = $this->yystack[$this->yyidx]->stateno;
-		 
+			
 		/* if ($this->yyidx < 0) return self::YY_NO_ACTION;  */
 		if (!isset(self::$yy_shift_ofst[$stateno])) {
 			// no shift actions

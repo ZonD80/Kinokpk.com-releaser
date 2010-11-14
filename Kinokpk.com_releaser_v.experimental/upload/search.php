@@ -121,9 +121,9 @@ $REL_TPL->stdfoot();
  customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
  customSearchControl.draw('cse');
  }, true);
-</script>
- 
-      
-*/
+ </script>
+
+
+ */
 ?>
 

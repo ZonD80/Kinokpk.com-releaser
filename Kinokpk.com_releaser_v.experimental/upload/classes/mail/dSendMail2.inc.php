@@ -78,7 +78,7 @@ class dSendMail2 extends htmlMimeMail{
 		if($attach) foreach($attach as $att){
 			if(!isset($att[1]))
 			die("Attach precisa ser: Array(Array(filename, filedata), Array(filename, filedata), ...)");
-				
+
 			$this->autoAttachFile($att[0], $att[1]);
 		}
 
@@ -290,21 +290,21 @@ class dSendMail2 extends htmlMimeMail{
 				if(substr($cbResult, 0, 4) == 'STOP')
 				break;
 			}
-				
+
 			$headers = $orHeaders;
 			if($hasBcc){
 				$headbcc   = join(",", array_slice($parts_bcc, ($loopPart-1)*$loopSize, $loopSize));
 				$headers[] = "Bcc: $headbcc";
 				$this->_log("+ Destinos ocultos: {$headbcc}");
 			}
-				
+
 			if($this->delay && $loopPart > 1){
 				$this->_log("+ Aguardando {$this->delay} para nao sobrecarregar servidor");
 				sleep($this->delay);
 			}
 			$headersJoined = implode("\n", $headers);
 			$result = $this->callMail($subject, $headersJoined);
-				
+
 			$this->_log("+ Resultado do envio: ".(($result===true)?"Sucesso!":"Falha no envio."));
 			if(!$result){
 				$this->_log("FALHA CRÍTICA: O loop #{$loopPart} (total de {$totalLoops}) naão foi entregue com sucesso.");
@@ -313,7 +313,7 @@ class dSendMail2 extends htmlMimeMail{
 				break;
 			}
 			unset($headers, $headersJoined, $result, $headbcc);
-				
+
 			if($callBack){
 				$cbResult = call_user_func($callBack, 'LoopEnd', $loopPart, $totalLoops);
 				$this->_log("Resultado do callback LoopEnd: {$cbResult}");
@@ -371,7 +371,7 @@ class dSendMail2 extends htmlMimeMail{
 		if($importImages){
 			if($importImages && strpos($baseDir, '/') === null)
 			die("dSendMail2 - importHTML() - Parâmetro '\$baseDir' deve ter um caminho absoluto, não relativo. Atualmente, '{$baseDir}'.");
-				
+
 			$tags    = preg_match_all("/<.+?(src|background)=[\"']?(.+?)[\"' ].*?>/is", $body, $out);
 			if($tags) foreach($out[2] as $addFile){
 				if(strpos($addFile, "://"))
@@ -479,7 +479,7 @@ class dSendMail2 extends htmlMimeMail{
 		}
 		else{
 			$this->_log("Enviando através de SMTP");
-				
+
 			$user = $this->sendThrough[2];
 			$pass = $this->sendThrough[3];
 			if($user){
@@ -487,7 +487,7 @@ class dSendMail2 extends htmlMimeMail{
 				$realm = isset($user[1])?$user[1]:false;
 				$user  = $user[0];
 			}
-				
+
 			$smtp = new smtp_class;
 			$smtp->host_name = $this->sendThrough[0];
 			$smtp->host_port = $this->sendThrough[1];
@@ -502,19 +502,19 @@ class dSendMail2 extends htmlMimeMail{
 			$smtp->user     = $user?$user :false;
 			$smtp->realm    = $user?$realm:false;
 			$smtp->password = $user?$pass :false;
-				
+
 			$arheader = $this->_convertStrHeaderToArray($headersJoined);
 			if(!isset($arheader['From']))   $arheader['From']    = $this->headers['From'];
 			if(!isset($arheader['To']))     $arheader['To']      = $this->to;
 			if(!isset($arheader['Subject']))$arheader['Subject'] = $subject;
 			if(!isset($arheader['Date']))   $arheader['Date']    = date('r');
-				
+
 			$bccTo = false;
 			if(isset($arheader['Bcc'])){
 				$bccTo = $arheader['Bcc'];
 				unset($arheader['Bcc']);;
 			}
-				
+
 			$newheader = Array();
 			foreach($arheader as $key=>$headerline){
 				$newheader[] = "{$key}: {$headerline}";
@@ -533,10 +533,10 @@ class dSendMail2 extends htmlMimeMail{
 		if($this->logFolder){
 			if(!is_writable($this->logFolder))
 			die("Impossível enviar e-mails - Pasta de log sem permissões. ($this->logFolder)");
-				
+
 			if(!$this->logFile)
 			$this->logFile = fopen("{$this->logFolder}/log-".date('d.m.Y-H.i.s').'-'.substr(uniqid(), -4).".txt", "a+");
-				
+
 			$toLog  = date('d/m/Y H:i:s')." ".trim($event)."\r\n";
 			fwrite($this->logFile, $toLog);
 		}
@@ -1471,7 +1471,7 @@ class Mail_mimePart {
 			srand((double)microtime()*1000000);
 			$boundary = '=_' . md5(uniqid(rand()) . microtime());
 			$this->_headers['Content-Type'] .= ';' . MAIL_MIMEPART_CRLF . "\t" . 'boundary="' . $boundary . '"';
-				
+
 			// Add body parts to $subparts
 			for ($i = 0; $i < count($this->_subparts); $i++) {
 				$headers = array();
@@ -1481,11 +1481,11 @@ class Mail_mimePart {
 				}
 				$subparts[] = implode(MAIL_MIMEPART_CRLF, $headers) . MAIL_MIMEPART_CRLF . MAIL_MIMEPART_CRLF . $tmp['body'];
 			}
-				
+
 			$encoded['body'] = '--' . $boundary . MAIL_MIMEPART_CRLF .
 			implode('--' . $boundary . MAIL_MIMEPART_CRLF, $subparts) .
                                '--' . $boundary.'--' . MAIL_MIMEPART_CRLF;
-				
+
 		} else {
 			$encoded['body'] = $this->_getEncodedData($this->_body, $this->_encoding) . MAIL_MIMEPART_CRLF . MAIL_MIMEPART_CRLF;
 		}

@@ -183,7 +183,7 @@
 .defaultSkin .mceButtonDisabled .mceIcon {
 	opacity: 0.3;
 	-ms-filter: 'alpha(opacity=30)';
-	filter: alpha(opacity = 30)
+	filter: alpha(opacity =   30)
 }
 
 .defaultSkin .mceButtonLabeled {
@@ -331,7 +331,7 @@
 	{
 	opacity: 0.3;
 	-ms-filter: 'alpha(opacity=30)';
-	filter: alpha(opacity = 30)
+	filter: alpha(opacity =   30)
 }
 
 .defaultSkin .mceSplitButtonActive a.mceAction {
@@ -509,7 +509,7 @@
 	z-index: 1000;
 	opacity: 0.5;
 	-ms-filter: 'alpha(opacity=50)';
-	filter: alpha(opacity = 50);
+	filter: alpha(opacity =   50);
 	background: #FFF
 }
 

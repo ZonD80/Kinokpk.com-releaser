@@ -6,6 +6,8 @@
 <style type="text/css">
 {
 literal
+
+
 }
 body,h1,h2,td,th,p {
 	font-family: sans-serif;
@@ -85,6 +87,8 @@ td {
 }
 {/
 literal
+
+
 }
 </style>
 </head>
@@ -100,6 +104,10 @@ literal
 {$template['compile_time']|string_format:"%.5f"}) (render
 {$template['render_time']|string_format:"%.5f"}) (cache
 {$template['cache_time']|string_format:"%.5f"}) </span> <br> {/foreach}
+
+
+
+
 
 
 

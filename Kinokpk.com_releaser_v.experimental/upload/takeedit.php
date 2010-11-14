@@ -48,11 +48,11 @@ if (isset($_GET['checkonly'])) {
 			$bfooter = <<<EOD
 „тобы посмотреть релиз, перейдите по этой ссылке:
 
-			{$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
+{$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
 
 EOD;
-			$descr = format_comment($row['descr']).nl2br($bfooter);
-			send_notifs('torrents',format_comment($descr));
+$descr = format_comment($row['descr']).nl2br($bfooter);
+send_notifs('torrents',format_comment($descr));
 		}
 
 		die($REL_LANG->say_by_key('checked_by').'<a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username'])).'">'.get_user_class_color(get_user_class(),$CURUSER['username']).'</a> <a onclick="return ajaxcheck();" href="'.$REL_SEO->make_link('takeedit','checkonly','','id',$id).'">'.$REL_LANG->say_by_key('uncheck').'</a>'.$return);
@@ -360,11 +360,11 @@ if ((get_user_class() >= UC_UPLOADER) && isset($_POST['approve'])) {
 		$bfooter = <<<EOD
 „тобы посмотреть релиз, перейдите по этой ссылке:
 
-		{$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
+{$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
 
 EOD;
-		$descr = "<hr/>".format_comment($row['descr']).nl2br($bfooter);
-		send_notifs('torrents',format_comment($descr));
+$descr = "<hr/>".format_comment($row['descr']).nl2br($bfooter);
+send_notifs('torrents',format_comment($descr));
 	}
 } else $updateset[] = "moderatedby = 0";
 

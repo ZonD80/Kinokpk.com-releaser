@@ -304,45 +304,45 @@ if ($_POST['nofile']) {
 
 Информация о Релизе:
 -------------------------------------------------------------------------------
-$forumdesc
+	$forumdesc
 -------------------------------------------------------------------------------
 EOD;
 
-$bfooter = <<<EOD
+	$bfooter = <<<EOD
 Чтобы посмотреть релиз, перейдите по этой ссылке:
 
-{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}
+	{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}
 
 EOD;
 
-$body .= $bfooter;
-$descr .= nl2br($bfooter);
+	$body .= $bfooter;
+	$descr .= nl2br($bfooter);
 
 
-if (get_user_class() < UC_UPLOADER) {
-	write_sys_msg($CURUSER['id'],sprintf($REL_LANG->say_by_key('uploaded_body'),"<a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($torrent))."\">$torrent</a>"),$REL_LANG->say_by_key('uploaded'));
-	send_notifs('unchecked',nl2br($body));
-} else {
-	send_notifs('torrents',format_comment($descr));
-}
+	if (get_user_class() < UC_UPLOADER) {
+		write_sys_msg($CURUSER['id'],sprintf($REL_LANG->say_by_key('uploaded_body'),"<a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($torrent))."\">$torrent</a>"),$REL_LANG->say_by_key('uploaded'));
+		send_notifs('unchecked',nl2br($body));
+	} else {
+		send_notifs('torrents',format_comment($descr));
+	}
 
 
-$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/".$REL_SEO->make_link('announce','passkey',$CURUSER['passkey']);
-$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
-while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
+	$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/".$REL_SEO->make_link('announce','passkey',$CURUSER['passkey']);
+	$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
+	while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
 
-$retrackers = get_retrackers();
-//var_dump($retrackers);
-if ($retrackers) foreach ($retrackers as $announce)
-if (!in_array($announce,$announce_urls_list)) $announce_urls_list[] = $announce;
+	$retrackers = get_retrackers();
+	//var_dump($retrackers);
+	if ($retrackers) foreach ($retrackers as $announce)
+	if (!in_array($announce,$announce_urls_list)) $announce_urls_list[] = $announce;
 
-$link = make_magnet($infohash,makesafe($torrent),$announce_urls_list);
+	$link = make_magnet($infohash,makesafe($torrent),$announce_urls_list);
 
-if ($REL_CRON['rating_enabled']) { $msg = sprintf($REL_LANG->say_by_key('upload_notice'),$REL_CRON['rating_perrelease'],$id,$link); }
-else $msg = sprintf($REL_LANG->say_by_key('upload_notice_norating'),$id,$link);
+	if ($REL_CRON['rating_enabled']) { $msg = sprintf($REL_LANG->say_by_key('upload_notice'),$REL_CRON['rating_perrelease'],$id,$link); }
+	else $msg = sprintf($REL_LANG->say_by_key('upload_notice_norating'),$id,$link);
 
 
-safe_redirect($REL_SEO->make_link('details','id',$id,'name',$torrent),3);
-stderr($REL_LANG->say_by_key('uploaded'),$msg.($anarray?"<img src=\"".$REL_SEO->make_link('remote_check','id',$id)."\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
+	safe_redirect($REL_SEO->make_link('details','id',$id,'name',$torrent),3);
+	stderr($REL_LANG->say_by_key('uploaded'),$msg.($anarray?"<img src=\"".$REL_SEO->make_link('remote_check','id',$id)."\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
 
-?>
+	?>

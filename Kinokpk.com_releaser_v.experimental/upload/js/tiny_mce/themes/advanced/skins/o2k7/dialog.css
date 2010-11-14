@@ -149,7 +149,7 @@ a.browse span.disabled {
 	border: 1px solid white;
 	opacity: 0.3;
 	-ms-filter: 'alpha(opacity=30)';
-	filter: alpha(opacity = 30)
+	filter: alpha(opacity =   30)
 }
 
 a.browse:hover span.disabled {

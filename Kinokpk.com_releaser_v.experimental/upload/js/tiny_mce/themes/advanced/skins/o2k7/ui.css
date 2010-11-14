@@ -199,7 +199,7 @@
 .o2k7Skin .mceButtonDisabled .mceIcon {
 	opacity: 0.3;
 	-ms-filter: 'alpha(opacity=30)';
-	filter: alpha(opacity = 30)
+	filter: alpha(opacity =   30)
 }
 
 .o2k7Skin .mceButtonLabeled {
@@ -330,7 +330,7 @@
 .o2k7Skin .mceSplitButtonDisabled .mceAction {
 	opacity: 0.3;
 	-ms-filter: 'alpha(opacity=30)';
-	filter: alpha(opacity = 30)
+	filter: alpha(opacity =   30)
 }
 
 .o2k7Skin .mceSplitButtonActive {
@@ -503,7 +503,7 @@
 	z-index: 1000;
 	opacity: 0.5;
 	-ms-filter: 'alpha(opacity=30)';
-	filter: alpha(opacity = 50);
+	filter: alpha(opacity =   50);
 	background: #FFF
 }
 

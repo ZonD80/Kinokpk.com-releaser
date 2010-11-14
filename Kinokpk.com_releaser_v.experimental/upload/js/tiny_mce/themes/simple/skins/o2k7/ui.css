@@ -81,7 +81,7 @@
 .o2k7SimpleSkin .mceButtonDisabled span {
 	opacity: 0.3;
 	-ms-filter: 'alpha(opacity=30)';
-	filter: alpha(opacity = 30)
+	filter: alpha(opacity =   30)
 }
 
 /* Separator */
