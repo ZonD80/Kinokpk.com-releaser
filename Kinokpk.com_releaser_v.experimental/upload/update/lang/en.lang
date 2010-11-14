@@ -26,3 +26,4 @@ comment_diff=Difference in %s was %s<br/>
 upd_ch8=Next step will clear caches and finalize update
 update_complete=<h1>Update to 3.30 complete. Please delete "install" and "update" folders from your server.</h1>
 donate=Donate to project:
+max_len=To increase maximum availabe user notifications set <br/><pre>group_concat_max_len</pre> value in your mysql configuration at least to 1Mbyte

@@ -211,6 +211,8 @@ elseif ($step==7) {
 	$REL_CACHE->clearAllCache();
 	print $REL_LANG->_('<h1>Update to 3.30 complete. Please delete "install" and "update" folders from your server.</h1>');
 	hr();
+	print $REL_LANG->_('To increase maximum availabe user notifications set <br/><pre>group_concat_max_len</pre> value in your mysql configuration at least to 1Mbyte');
+	hr();
 	print $REL_LANG->_("Donate to project:");
 	?>
 <p><pre>¬ы всегда можете помочь материально создателю движка (по вашему желанию), реквизиты:
