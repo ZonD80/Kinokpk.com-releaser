@@ -3064,7 +3064,7 @@ function get_trailer($descr) {
       'name':               'trailer_player'
    };
 
-   swfobject.embedSWF('swf/player-viral.swf', 'trailer_player', '{$flashcode['width']}', '{$flashcode['height']}', '9', 'false', flashvars, params, attributes);
+   swfobject.embedSWF('http://tr.kinopoisk.ru/js/jw/player-licensed.swf', 'trailer_player', '{$flashcode['width']}', '{$flashcode['height']}', '9', 'false', flashvars, params, attributes);
 </script>";			else $online=false;
 		}
 
