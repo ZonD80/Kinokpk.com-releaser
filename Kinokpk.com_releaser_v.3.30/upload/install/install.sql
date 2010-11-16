@@ -369,7 +369,7 @@ CREATE TABLE IF NOT EXISTS `cron` (
 INSERT INTO `cron` (`cron_name`, `cron_value`) VALUES
 ('announce_interval', 15),
 ('autoclean_interval', 900),
-('cron_is_native', 0),
+('cron_is_native', 1),
 ('delete_votes', 1440),
 ('in_cleanup', 0),
 ('in_remotecheck', 0),

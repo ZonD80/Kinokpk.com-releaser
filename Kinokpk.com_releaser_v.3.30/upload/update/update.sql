@@ -363,7 +363,7 @@ update comments set type='rel' where type='' or type=null;
 update notifs set type='relcomments' where type='comments';
 insert into cache_stats (cache_name,cache_value) VALUES ('site_timezone',3);
 insert into cache_stats (cache_name,cache_value) VALUES ('static_language','');
-
+insert into cron (cron_name,cron_value) VALUES ('cron_is_native',1);
 truncate table stylesheets;
 insert into stylesheets (uri,name) VALUES ('releaser330','Kinokpk.com releaser 3.30 original');
 update users set stylesheet=1;
