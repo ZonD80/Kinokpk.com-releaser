@@ -1,5 +1,0 @@
-Redirect http://torrentsbook.com/ http://www.torrentsbook.com/
-<Files ~ "\.php~">
-	order deny,allow
-	deny from all
-</Files>

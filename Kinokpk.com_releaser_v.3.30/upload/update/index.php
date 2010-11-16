@@ -160,12 +160,17 @@ elseif($step==3) {
 	cont(4);
 }
 elseif($step==4) {
+	// kinopoisk.ru player fix
+	$res = $REL_DB->query("SELECT id,online FROM torrents where online<>'' ORDER BY id DESC");
+	while ($row = mysql_fetch_assoc($res)) {
+		$REL_DB->query('update torrents set online='.sqlesc(str_replace('swf/player.swf','http://tr.kinopoisk.ru/js/jw/player-licensed.swf',$row['online'])).' where id='.$row['id']);
+	}
 	$res = $REL_DB->query("SELECT bid,which,view FROM orbital_blocks WHERE which LIKE '%ihome%'") or die($REL_LANG->_("SQL error happened").' ['.mysql_errno().']: ' . mysql_error(). ',<hr/>'.$REL_LANG->_("Query").': '.$query.'<hr/>'.$REL_LANG->_('Recover with backup and <a href="javascript:history.go(-1);">try again</a> please'));
-$view_change = array(
-0 => '-1,0,1,2,3,4,5,6',
-1 => '0,1,2,3,4,5,6',
-2 => '4,5,6',
-3 => '-1,4,5,6');
+	$view_change = array(
+	0 => '-1,0,1,2,3,4,5,6',
+	1 => '0,1,2,3,4,5,6',
+	2 => '4,5,6',
+	3 => '-1,4,5,6');
 	while ($row = mysql_fetch_assoc($res)) {
 		$REL_DB->query("UPDATE orbital_blocks SET which=".sqlesc(str_replace('ihome','index',$row['which'])).", view=".sqlesc($view_change[$row['view']])." WHERE bid={$row['bid']}") or die($REL_LANG->_("SQL error happened").' ['.mysql_errno().']: ' . mysql_error(). ',<hr/>'.$REL_LANG->_("Query").': '.$query.'<hr/>'.$REL_LANG->_('Recover with backup and <a href="javascript:history.go(-1);">try again</a> please'));
 		print $REL_LANG->_("Block with id %s done",$row['bid']);

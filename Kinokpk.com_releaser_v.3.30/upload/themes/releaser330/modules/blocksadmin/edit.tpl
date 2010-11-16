@@ -35,15 +35,14 @@ $('#'+div).val($('#'+div).val()+value+',');
 	<a href="javascript:add_value('t','where');">{$REL_LANG->_("Top")}</a>, <a href="javascript:add_value('d','where');">{$REL_LANG->_("Down")}</a>, <a href="javascript:add_value('l','where');">{$REL_LANG->_("Left")}</a>, <a href="javascript:add_value('r','where');">{$REL_LANG->_("Right")}</a></td>
 	
 	</tr>
-	<tr><td class="rowhead">{$REL_LANG->_('Visible for<br/>check nothing to allow all')}:</td><td>
+	<tr><td class="rowhead">{$REL_LANG->_('Visible for')}<br/>{$REL_LANG->_('Check nothing to allow all')}:</td><td>
 	{foreach key=cid item=cname from=$user_classes}
 	<input type="checkbox" name="arr[view][{$cid}]"{if in_array($cid,$block.view)} checked{/if}>{$cname}</option>
 	{/foreach}</select>
 	</td></tr>
 	<tr>
 		<td class="rowhead">{$REL_LANG->_('Content')}:<br/><small><a
-			href="javascript:wysiwygjs();">{$REL_LANG->_('Enable WYSIWYG
-		editor')}</a></small></td>
+			href="javascript:wysiwygjs();">{$REL_LANG->_('Enable WYSIWYG editor')}</a></small></td>
 		<td>{$block.content}</td>
 	</tr>
 	<tr>

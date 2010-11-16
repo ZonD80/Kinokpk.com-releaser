@@ -76,9 +76,9 @@ elseif ($action=='recountcomments') {
 	stderr($REL_LANG->_("Successfull"),$to_msg,'success');
 }
 
-/*$REL_TPL->*/$REL_TPL->stdhead($REL_LANG->_('Recounter'));
-$REL_TPL->begin_frame('This page allows you to sync database values');
+$REL_TPL->stdhead($REL_LANG->_('Recounter'));
+$REL_TPL->begin_frame($REL_LANG->_('This page allows you to sync database values'));
 $REL_TPL->output();
 $REL_TPL->end_frame();
-/*$REL_TPL->*/$REL_TPL->stdfoot();
+$REL_TPL->stdfoot();
 ?>

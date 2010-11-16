@@ -2434,7 +2434,7 @@ function json_fix_cyr($var)
  * Outputs beta warning. Default false.
  * @var boolean
  */
-define ("BETA", true);
+define ("BETA", false);
 /**
  * Beta warning as it is
  * @var string
@@ -2444,5 +2444,5 @@ define ("BETA_NOTICE", "\n<br />This isn't complete release of source!");
  * Kinokpk.com releaser's version
  * @var string
  */
-define("RELVERSION","3.30 beta");
+define("RELVERSION","3.30");
 ?>
