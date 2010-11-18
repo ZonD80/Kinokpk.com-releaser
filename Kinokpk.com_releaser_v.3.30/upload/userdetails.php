@@ -168,7 +168,7 @@ $REL_TPL->begin_main_frame ();
 print ( "<tr><td colspan=\"2\" align=\"center\">".($user['avatar']&&$CURUSER['avatars']?"<br/><img src=\"{$user['avatar']}\" title=\"{$REL_LANG->_("Avatar of %s",$user['username'])}\"/><br/>":'')."<p><h1 style=\"margin:0px\">$user[username]" . get_user_icons ( $user, true ) . "</h1>" . (($user ['class'] < UC_ADMINISTRATOR) ? reportarea ( $id, 'users' ) : '') . "</p>\n" );
 
 if (! $enabled)
-print ( "<p><b>Этот аккаунт отключен</b> Причина: " . $user ['dis_reason'] . "</p>\n" );
+print ( "<p><b>Этот аккаунт отключен</b><br/>Причина: " . $user ['dis_reason'] . "</p>\n" );
 elseif ($CURUSER ["id"] != $user ["id"]) {
 	$r = sql_query ( "SELECT id FROM friends WHERE (userid=$id AND friendid={$CURUSER['id']}) OR (friendid = $id AND userid={$CURUSER['id']})" ) or sqlerr ( __FILE__, __LINE__ );
 	list ( $friend ) = mysql_fetch_array ( $r );
