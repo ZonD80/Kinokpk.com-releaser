@@ -475,13 +475,18 @@ elseif ($action == 'takemessage') {
 		}
 	}
 	// ANTISPAM SYSTEM END
-	$pms = sql_query ( "SELECT SUM(1) FROM messages WHERE (receiver = $receiver AND location=1) OR (sender = $receiver AND saved = 1)" );
+			$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
+		$dt_system = time() - $secs_system; // Сегодня минус количество дней
+		$secs_all = $REL_CRON['pm_delete_user_days']*86400; // Количество дней
+		$dt_all = time() - $secs_all; // Сегодня минус количество дней
+		
+	$pms = sql_query ( "SELECT (SELECT SUM(1) FROM messages WHERE location=1 AND receiver={$receiver} AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))) + (SELECT SUM(1) FROM messages WHERE saved=1 AND sender={$receiver} AND IF(archived_receiver<>1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all)))") or sqlerr(__FILE__,__LINE__);
 	$pms = (int)mysql_result ( $pms, 0 );
 	if ($pms >= $REL_CONFIG ['pm_max'])
 	stderr ( $REL_LANG->say_by_key('error'), "Ящик личных сообщений получателя заполнен, вы не можете отправить ему сообщение." );
 
 	if ($save) {
-		$pms = sql_query ( "SELECT SUM(1) FROM messages WHERE (receiver = " . $CURUSER ['id'] . " AND location=1) OR (sender = " . $CURUSER ['id'] . " AND saved = 1)" );
+		$pms = sql_query ( "SELECT (SELECT SUM(1) FROM messages WHERE location=1 AND receiver={$CURUSER['id']} AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))) + (SELECT SUM(1) FROM messages WHERE saved=1 AND sender={$CURUSER['id']} AND IF(archived_receiver<>1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all)))") or sqlerr(__FILE__,__LINE__);
 		$pms = (int)mysql_result ( $pms, 0 );
 		if ($pms >= $REL_CONFIG ['pm_max'])
 		stderr ( "Невозможно сохранить сообщение", "Ваш ящик личных сообщений заполнен, максимальное кол-во {$REL_CONFIG['pm_max']}. Вы не можете отправить сообщение, вам необходимо очистить ящик личных сообщений" );

@@ -1591,20 +1591,66 @@ function pager($rpp=25, $count, $hrefarray, $opts = array()) {
 		$start = ($page -1) * $rpp;
 	}
 	$hrefarray[] = 'page';
-	$hrefarray[] = '';
+	$hrefarray[] = '%number%';
 	$href = call_user_func_array(array($REL_SEO, 'make_link'),$hrefarray);
 	if ($pages>1) {
-		$pagerr ='<div align="center"><div class="paginator" id="paginator1"></div>
-	<div class="paginator_pages">'.sprintf($REL_LANG->say_by_key('pager_text'),$count,$pages,$rpp,($start+1),((($start+$rpp)>$count)?$count:($start+$rpp))).'</div>
-				<script type="text/javascript">
-		pag1 = new Paginator(\'paginator1\', '.$pages.', 15, "'. ($pagipage ) .'", "'.$href.'");
-	</script>';
+		$pagerr = "<script type=\"text/javascript\">
 
-		$pagerre ='<div align="center"><div class="paginator" id="paginator2"></div>
-	<div class="paginator_pages">'.sprintf($REL_LANG->say_by_key('pager_text'),$count,$pages,$rpp,($start+1),((($start+$rpp)>$count)?$count:($start+$rpp))).'</div>
-				<script type="text/javascript">
-		pag2 = new Paginator(\'paginator2\', '.$pages.', 15, "'. ($pagipage ) .'", "'.$href.'");
-	</script></div>';
+		$(document).ready(function (){
+		$('#paginator1').paginator({pagesTotal:$pages, 
+
+										pagesSpan:15, 
+
+										pageCurrent:$pagipage, 
+
+										baseUrl: '$href',
+										
+										lang: {
+
+											next  : '{$REL_LANG->_('Next')}',
+
+											last  : '{$REL_LANG->_('Last')}',
+
+											prior : '{$REL_LANG->_('Prev')}',
+
+											first : '{$REL_LANG->_('First')}',
+
+											arrowRight : String.fromCharCode(8594),
+
+											arrowLeft  : String.fromCharCode(8592)
+
+										}});
+										
+		$('#paginator2').paginator({pagesTotal:$pages, 
+
+										pagesSpan:15, 
+
+										pageCurrent:$pagipage, 
+
+										baseUrl: '$href',
+										
+										lang: {
+
+											next  : '{$REL_LANG->_('Next')}',
+
+											last  : '{$REL_LANG->_('Last')}',
+
+											prior : '{$REL_LANG->_('Prev')}',
+
+											first : '{$REL_LANG->_('First')}',
+
+											arrowRight : String.fromCharCode(8594),
+
+											arrowLeft  : String.fromCharCode(8592)
+
+										}});
+	});
+</script>";
+		$pagerr .='<div class="paginator" id="paginator1"></div>
+	<div class="paginator_pages">'.sprintf($REL_LANG->say_by_key('pager_text'),$count,$pages,$rpp,($start+1),((($start+$rpp)>$count)?$count:($start+$rpp))).'</div>';
+
+		$pagerre ='<div class="paginator" id="paginator2"></div>
+	<div class="paginator_pages">'.sprintf($REL_LANG->say_by_key('pager_text'),$count,$pages,$rpp,($start+1),((($start+$rpp)>$count)?$count:($start+$rpp))).'</div>';
 	}
 	return array($pagerr, $pagerre, "LIMIT $start,$rpp");
 }
