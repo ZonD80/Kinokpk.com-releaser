@@ -17,7 +17,7 @@ loggedinorreturn ();
 
 
 function bark($msg) {
-	global $REL_LANG;
+	global $REL_LANG, $REL_TPL;
 	$REL_TPL->stdhead( $REL_LANG->say_by_key('error') );
 	$REL_TPL->stdmsg ( $REL_LANG->say_by_key('error'), $msg );
 	$REL_TPL->stdfoot();
