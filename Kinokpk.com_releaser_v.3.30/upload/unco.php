@@ -41,8 +41,8 @@ if( mysql_num_rows($res) != 0 )
 		print'<a href="'.$REL_SEO->make_link('userdetails','id',$row['id'],'username',translit($row['username'])).'"><td><center>' . $row['username'] . '</center></td></a>';
 		print'<td align=center>&nbsp;&nbsp;&nbsp;&nbsp;' . $row['email'] . '</td>';
 		print'<td align=center>&nbsp;&nbsp;&nbsp;&nbsp;' . mkprettytime($row['added']) . '</td>';
-		print'<td align=center><select name=confirm><option value="0">'.$REL_LANG->say_by_key('not_confirmed').'</option><option value="1">'.$REL_LANG->say_by_key('confirmed').'</option></select></td>';
-		print'<td align=center><input type=submit value="OK" style=\'height: 20px; width: 40px\'>';
+		print'<td align=center><select name="confirm"><option value="0">'.$REL_LANG->say_by_key('not_confirmed').'</option><option value="1">'.$REL_LANG->say_by_key('confirmed').'</option></select></td>';
+		print'<td align=center><input type="submit" value="OK" style=\'height: 20px; width: 40px\'>';
 		print'</form></tr>';
 	}
 	print '</table>';

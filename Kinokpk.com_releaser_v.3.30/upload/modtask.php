@@ -191,14 +191,11 @@ elseif ($action == "edituser") {
 	if (!is_valid_id($userid))
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	$updateset[] = "confirmed = " . $confirm;
-	$updateset[] = "last_login = ".sqlesc(time());
-	$updateset[] = "last_access = ".sqlesc(time());
-	//print("UPDATE users SET " . implode(", ", $updateset) . " WHERE id=$userid");
 	write_log("Пользователь {$CURUSER['username']} произвел действия над пользователем c ID $userid, параметры:<br/> <pre>".var_export($updateset,true)."</pre>",'modtask');
 	sql_query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
 	$returnto = makesafe($_POST["returnto"]);
 
-	safe_redirect(" $returnto");
+	safe_redirect($returnto);
 }
 
 puke();

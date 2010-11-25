@@ -158,7 +158,7 @@ elseif ($a == 'users') {
 
 	$res = sql_query("SELECT rg_subscribes.*, users.username, users.class FROM rg_subscribes LEFT JOIN users ON rg_subscribes.userid=users.id WHERE rgid = $id ORDER BY valid_until ASC $LIMIT") or sqlerr(__FILE__,__LINE__);
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('view_users'). ' '.@mysql_result(sql_query("SELECT name FROM relgroups WHERE id = $id"),0).$REL_LANG->say_by_key('to_rgadmin'));
-	begin_table();
+	$REL_TPL->begin_table();
 
 	print ('<tr><td class="colhead">'.$REL_LANG->say_by_key('signup_username').'</td><td class="colhead">'.$REL_LANG->say_by_key('subscribe_until').'</td><td class="colhead">'.$REL_LANG->say_by_key('actions').'</td></tr>');
 	print("<tr><td class=\"index\" colspan=\"4\">");
