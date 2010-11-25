@@ -34,5 +34,5 @@ if ($CURUSER) {
 		print ("</table>");
 	}
 }
-stdfoot();
+$REL_TPL->stdfoot();
 ?>
