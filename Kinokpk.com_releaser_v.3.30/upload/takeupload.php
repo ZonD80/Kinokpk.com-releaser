@@ -311,7 +311,7 @@ EOD;
 	$bfooter = <<<EOD
 „тобы посмотреть релиз, перейдите по этой ссылке:
 
-	{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}
+	{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}
 
 EOD;
 

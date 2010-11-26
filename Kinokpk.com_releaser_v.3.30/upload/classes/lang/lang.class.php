@@ -35,7 +35,7 @@ class REL_LANG {
 
 	/**
 	 * Class constructor, loads main language file
-	 * @param string $language Language to use
+	 * @param string $REL_CONFIG Configuration to use
 	 * @return boolean True
 	 */
 	function __construct($REL_CONFIG) {
