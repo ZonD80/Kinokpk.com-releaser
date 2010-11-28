@@ -773,7 +773,7 @@ function dbconn($lightmode = false) {
 	require_once(ROOT_PATH . 'include/ctracker.php');
 	/**
 	 * This is original copyright, please leave it alone. Remember, that the Developers worked hard for weeks, drank ~143 litres of a beer (hoegaarden, baltica 7 and jiguli) and ate more then 19.9 kilogrammes of hamburgers to present this source. Don't be evil (C) Google
-	 * @var constant Copyright of Kinokpk.com releaser
+   * @var constant Copyright of Kinokpk.com releaser
 	 */
 	define ("TBVERSION", ($REL_CONFIG['yourcopy']?str_replace("{datenow}",date("Y"),$REL_CONFIG['yourcopy']).". ":"")."<br />Powered by <a class=\"copyright\" target=\"_blank\" href=\"http://www.kinokpk.com\">Kinokpk.com</a> <a class=\"copyright\" target=\"_blank\" href=\"http://dev.kinokpk.com\">releaser</a> ".RELVERSION." &copy; 2008-".date("Y").".");
 

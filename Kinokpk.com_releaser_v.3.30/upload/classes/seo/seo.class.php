@@ -32,13 +32,17 @@ class REL_SEO {
 	}
 
 	/**
-	 * Links constructor based on seo rules from seoadmin.php. Recevies multiple params, first - is script, next coming pairs is parameter and value. E.g. make_link('browse','cat',4);
+	 * Links constructor based on seo rules from seoadmin.php. Recevies multiple params, first - is script, next coming pairs is parameter and value. E.g. make_link('browse','cat',4);, or an array of params, e.g. make_link(array('browse','cat',4)), like pager();
+	 * @see pager();
 	 * @return string
 	 */
 	public function make_link() {
 		global $REL_CONFIG;
 
 		$linkar = func_get_args();
+		if (is_array($linkar[0]))
+      $linkar = $linkar[0];
+
 		$script = $linkar[0];
 
 		if (isset($this->SR[$script]['{base}'])) $destar[0] = $this->SR[$script]['{base}'];

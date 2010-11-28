@@ -22,15 +22,27 @@ if ($REL_CRON['rating_enabled']) $allowed_types = array('torrent','discount','ra
 
 $type = trim((string)$_GET['type']);
 
+$q[] ='present';
 
-$addparam = ($type?'&amp;type='.$type:'').($fid?'&amp;id='.$fid:'').($to?'&amp;to='.$to:'');
+if ($type) {
+  $q[] = 'type';
+  $q[] = $type;
+}
+if ($fid) {
+  $q[] = 'id';
+  $q[] = $fid;
+}
+if ($to) {
+  $q[] = 'to';
+  $q[] = $to;
+}
 
 if (!$type) {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('presents'));
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('what_present'));
-
-	print('<table border="1" align="center">'.($REL_CRON['rating_enabled']?'<tr><td align="center"><a href="'.$REL_SEO->make_link('present','type','torrent').$addparam.'">'.$REL_LANG->say_by_key('big_present_torrent').'</a></td><td align="center"><a href="'.$REL_SEO->make_link('present','type','discount').$addparam.'">'.$REL_LANG->say_by_key('big_present_discount').'</a></td>
-  ':'').'<td align="center"><a href="'.$REL_SEO->make_link('present','type','ratingsum').$addparam.'">'.$REL_LANG->say_by_key('big_present_ratingsum').'</a></td></tr></table>');
+//var_Dump(array_merge($q,array('type','ratingsum')));
+	print('<table border="1" align="center">'.($REL_CRON['rating_enabled']?'<tr><td align="center"><a href="'.$REL_SEO->make_link(array_merge($q,array('type','torrent'))).'">'.$REL_LANG->say_by_key('big_present_torrent').'</a></td><td align="center"><a href="'.$REL_SEO->make_link(array_merge($q,array('type','discount'))).'">'.$REL_LANG->say_by_key('big_present_discount').'</a></td>
+  ':'').'<td align="center"><a href="'.$REL_SEO->make_link(array_merge($q,array('type','ratingsum'))).'">'.$REL_LANG->say_by_key('big_present_ratingsum').'</a></td></tr></table>');
 	$REL_TPL->end_frame();
 	$REL_TPL->stdfoot();
 	die();
@@ -68,7 +80,6 @@ if (!$fid) {
 	$class = (int) $_GET['class'];
 	if ($class == '-' || !is_valid_user_class($class))
 	$class = '';
-	$q[] ='present';
 
 	if ($search != '' || $class) {
 		$querystr = " LEFT JOIN users ON friendid=users.id";
@@ -145,7 +156,7 @@ if (!$fid) {
 		print ('<a href="'.$REL_SEO->make_link('friends','action','confirm','id',$arr['id']).'">'.$REL_LANG->say_by_key('confirm').'</a>');
 
 
-		print ('</td><td>'.($arr['fconf']?"<a href=\"".$REL_SEO->make_link('present','id',$arr['friend']).$addparam."\">{$REL_LANG->say_by_key('select_present')}</a>":$REL_LANG->say_by_key('user_unconfirmed')));
+		print ('</td><td>'.($arr['fconf']?"<a href=\"{$REL_SEO->make_link(array_merge($q,array('id',$arr['friend'])))}\">{$REL_LANG->say_by_key('select_present')}</a>":$REL_LANG->say_by_key('user_unconfirmed')));
 		print ('</td></tr>');
 	}
 	print("</table>\n");
