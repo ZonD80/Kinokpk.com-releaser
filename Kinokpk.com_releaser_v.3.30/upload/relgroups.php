@@ -152,7 +152,7 @@ else {
 <div align="center"><?=makesafe($row['name']) ?>&nbsp;&nbsp;<?   print(ratearea($row['ratingsum'],$row['id'],'relgroups',($I_OWNER?$row['id']:0))."");?></div>
 <div align="right" style="margin-top: -22px;"><a
 	href="<?=$REL_SEO->make_link('relgroups');?>"><img
-	src="/themes/kinokpk/images/strelka.gif" border="0"
+	src="/themes/<?php print $REL_CONFIG['ss_uri'];?>/images/strelka.gif" border="0"
 	title="Вернуться к просмотру групп"
 	style="margin-top: 5px; margin-right: 5px;" /></a></div>
 
