@@ -378,5 +378,5 @@ INSERT INTO `cache_stats` (`cache_name`, `cache_value`) VALUES
 ('default_notifs', 'unread,torrents,relcomments,pollcomments,newscomments,usercomments,reqcomments,rgcomments,pages,pagecomments,friends'),
 ('forum_enabled', '1'),
 ('low_comment_hide', '-3'),
-('sign_length', '250')
+('sign_length', '250'),
 ('use_dc',0);

@@ -25,46 +25,23 @@ dbconn();
 function search($source,$text)
 {
 	$result = false;
-	/* регулярное выражение для рус названия (Терминатор) */
-	$searchfilms = "#<a class=\"all\" href=\"/level/1/film/(.*?)a>#si";
+	$source = strip_tags($source,'<a>');
+	$source = str_replace("\n",'',$source);
+	//die($source);
+	//<a href="/level/1/film/507/sr/1/">Терминатор</a>, 1984     The Terminator,
+	$searchfilms = "#<a href=\"\/level\/1\/film\/([0-9]+)\/sr\/1\/\">(.*?)<\/a>#si";
 
-
-	/*регулярное выражение для англ названия (...Terminator)*/
-	$searchfilms2 = "#<font color=\"\#999999\">(.*?)</font>#si";
-
-	/*регулярное выражение для выборки года*/
-	$searchyear = "#\[year\]/(\d{4})/#si";
-
-	/*регулярное выражение для выборки айдишника фильма на кинопоиске
-	 если после поиска фильма результат только один, и в параметре $source
-	 передайтся страница фильма вместо страницы поиска (Антидурь, Аустерлиц)*/
-	$search_one_id = "#img src=\"/images/film/([0-9]+)\.jpg#si";
 	preg_match_all ($searchfilms, $source, $matches);
-	preg_match_all($searchfilms2, $source, $matches2);
-	preg_match_all($searchyear, $source, $matches_y);
+	$matches = $matches[0];
+	//var_dump($matches);
 
-
-	if (!$matches[1]){
-		preg_match_all($search_one_id, $source, $matches_one);
-		$parsID = $matches_one[1][0];
-		//Сразу перенаправляем на страницу результат по id (Антидурь, Аустерлиц)
-		header ("Location: js/tiny_mce/plugins/kinopoisk/kinopoisk.php?id=$parsID");
-	}
-
-	else{
-		//Есть несколько вариантов поиска, даём выбрать подходящий фильм
-		$temparray = $matches[1];
-
-		foreach ($temparray as $key2 => $tempresult){
-
-			$result[$key2] = $tempresult;
-
-			$result[$key2] = preg_replace("#(.*?)/sr/1/\">(.*?)</#is", "<a href=\"js/tiny_mce/plugins/kinopoisk/kinopoisk.php?id=$1\">$2</a>", $result[$key2])."   (".$matches_y[1][$key2].")   ".$matches2[1][$key2]."   (".$matches_y[1][$key2].")";
+	if ($matches) {
+		foreach ($matches as $filmlink) {
+			if ($filmlink)
+			$return[] = preg_replace("#\/level\/1\/film\/(.*?)\/sr\/1\/\">(.*?)<\/a>#is", "js/tiny_mce/plugins/kinopoisk/kinopoisk.php?id=$1\">$2</a>", $filmlink);
 		}
+		return $return;
 	}
-
-	return $result;
-
 }
 
 
@@ -161,7 +138,7 @@ $page = new Snoopy;
 if (isset($_GET['filmname'])) {
 	$film = RawUrlEncode($_GET['filmname']);
 	$filmsafe = htmlspecialchars($_GET['filmname']);
-	$page->fetch("http://www.kinopoisk.ru/index.php?kp_query={$film}&x=0&y=0");
+	$page->fetch("http://www.kinopoisk.ru/index.php?kp_query={$film}");
 	$source = $page->results;
 	if (!$source) die('Nothing found!');
 

@@ -21,9 +21,9 @@ require_once(ROOT_PATH.'include/functions.php');
 $time = time();
 
 // connection closed
-/* @var database object */
-require_once(ROOT_PATH . 'classes/database/database.class.php');
-$REL_DB = new REL_DB($mysql_host, $mysql_user, $mysql_pass, $mysql_db, $mysql_charset);
+	/* @var database object */
+	require_once(ROOT_PATH . 'classes/database/database.class.php');
+	$REL_DB = new REL_DB($mysql_host, $mysql_user, $mysql_pass, $mysql_db, $mysql_charset);
 
 
 $cronrow = sql_query("SELECT * FROM cron WHERE cron_name IN ('in_cleanup','autoclean_interval','max_dead_torrent_time','pm_delete_sys_days','pm_delete_user_days','signup_timeout','ttl_days','announce_interval','delete_votes','rating_freetime','rating_enabled','rating_perleech','rating_perseed','rating_checktime','rating_dislimit','promote_rating','rating_max')");
@@ -74,7 +74,7 @@ sql_query("UPDATE trackers SET seeders = ".(int)$torrents[$id]['seeders'].", lee
 //Удаляем системные прочтенные сообщения старше n дней
 $secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
 $dt_system = time() - $secs_system; // Сегодня минус количество дней
-sql_query("DELETE FROM messages WHERE archived = 0 AND archived_receiver = 0 AND unread = 0 AND added < $dt_system") or sqlerr(__FILE__, __LINE__);
+sql_query("DELETE FROM messages WHERE sender = 0 AND archived = 0 AND archived_receiver = 0 AND unread = 0 AND added < $dt_system") or sqlerr(__FILE__, __LINE__);
 //Удаляем ВСЕ прочтенные сообщения старше n дней
 $secs_all = $REL_CRON['pm_delete_user_days']*86400; // Количество дней
 $dt_all = time() - $secs_all; // Сегодня минус количество дней
@@ -83,7 +83,7 @@ sql_query("DELETE FROM messages WHERE unread = 0 AND archived = 0 AND archived_r
 
 // delete unconfirmed users if timeout.
 $deadtime = time() - ($REL_CRON['signup_timeout']*86400);
-$res = sql_query("SELECT id FROM users WHERE confirmed=0 AND added < $deadtime AND last_login < $deadtime AND last_access < $deadtime") or sqlerr(__FILE__,__LINE__);
+$res = sql_query("SELECT id FROM users WHERE confirmed=0 AND last_access < $deadtime") or sqlerr(__FILE__,__LINE__);
 if (mysql_num_rows($res) > 0) {
 	while ($arr = mysql_fetch_array($res)) {
 		delete_user($arr['id']);
@@ -92,7 +92,7 @@ if (mysql_num_rows($res) > 0) {
 	}
 }
 //отключение предупрежденных пользователей (у тех у кого 5 звезд)
-$res = sql_query("SELECT id, username, modcomment FROM users WHERE num_warned > 4 AND enabled = 1 ") or sqlerr(__FILE__,__LINE__);
+/*$res = sql_query("SELECT id, username, modcomment FROM users WHERE num_warned > 4 AND enabled = 1 ") or sqlerr(__FILE__,__LINE__);
 $num = mysql_num_rows($res);
 while ($arr = mysql_fetch_assoc($res)) {
 	$modcom = sqlesc(date("Y-m-d") . " - Отключен системой (5 и более предупреждений) " . "\n". $arr[modcomment]);
@@ -100,7 +100,7 @@ while ($arr = mysql_fetch_assoc($res)) {
 	sql_query("UPDATE users SET modcomment = $modcom WHERE id = $arr[id]") or sqlerr(__FILE__, __LINE__);
 	write_log("Пользователь $arr[username] был отключен системой (5 и более предупреждений)","tracker");
 }
-
+*/
 // Update user ratings
 if ($REL_CRON['rating_enabled']) {
 	$useridssql = sql_query("SELECT peers.userid AS id, users.discount FROM peers LEFT JOIN users ON peers.userid=users.id WHERE (".time()."-added)>".($REL_CRON['rating_freetime']*86400)." AND users.class<> ".UC_VIP." AND enabled=1 AND (".time()."-last_checked)>".($REL_CRON['rating_checktime']*60));
@@ -205,7 +205,7 @@ $emails = sql_query("SELECT * FROM cron_emails");
 while ($message = mysql_fetch_assoc($emails)) {
 	if (strpos(',', $message['emails'])) sent_mail('', $message['subject'].' | '.$REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], $message['subject'], $message['body'],$message['emails']);
 	else sent_mail($message['emails'], $message['subject'].' | '.$REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], $message['subject'], $message['body']);
-
+	
 }
 sql_query("TRUNCATE TABLE cron_emails");
 // delete expiried relgroups subsribes
