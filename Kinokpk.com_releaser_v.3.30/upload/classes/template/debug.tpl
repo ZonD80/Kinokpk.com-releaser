@@ -85,8 +85,8 @@ td {
 #table_config_vars th {
 	color: maroon;
 }
-{/
-literal
+{
+/literal
 
 
 }
