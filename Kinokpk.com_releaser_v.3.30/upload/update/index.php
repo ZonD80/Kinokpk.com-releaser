@@ -12,11 +12,11 @@ define('ROOT_PATH',str_replace('update','',dirname(__FILE__)));
 
 if ($_GET['setlang']) {
 	setcookie('lang',(string)$_GET['setlang']);
-	print('<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1251" /></head><a href="index.php">Продолжить / Continue</a></html>');
+	print('<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1251" /></head><a href="index.php">Продолжить / Continue / Продовжити</a></html>');
 	die();
 }
 if (!$_COOKIE['lang'] || (strlen($_COOKIE['lang'])>2)) {
-	print("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1251\" /></head><h1>Выберите язык / Choose a language: <a href=\"index.php?setlang=ru\">Русский</a>, <a href=\"index.php?setlang=en\">English</a></h1></html>");
+	print("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1251\" /></head><h1>Выберите язык / Choose a language / Виберіть мову: <a href=\"index.php?setlang=ru\">Русский</a>, <a href=\"index.php?setlang=en\">English</a>, <a href=\"index.php?setlang=ua\">Український</a></h1></html>");
 	die();
 }
 
@@ -33,7 +33,7 @@ require_once(ROOT_PATH . 'classes/seo/seo.class.php');
 $REL_SEO = new REL_SEO();
 
 $REL_CONFIG['lang'] = substr(trim((string)$_COOKIE['lang']),0,2);
-$REL_CONFIG['static_language'] = 'ru=update/lang/ru.lang,en=update/lang/en.lang';
+$REL_CONFIG['static_language'] = 'ru=update/lang/ru.lang,en=update/lang/en.lang,ua=update/lang/ua.lang';
 /* @var object language system */
 require_once(ROOT_PATH . 'classes/lang/lang.class.php');
 $REL_LANG = new REL_LANG($REL_CONFIG);
@@ -187,6 +187,7 @@ elseif($step==4) {
 elseif ($step==5) {
 	$REL_LANG->import_langfile(ROOT_PATH.'install/lang/import/en.lang','en');
 	$REL_LANG->import_langfile(ROOT_PATH.'install/lang/import/ru.lang','ru');
+	$REL_LANG->import_langfile(ROOT_PATH.'install/lang/import/ua.lang','ua');
 	print $REL_LANG->_('<font color="green">This step of update was successed</font>');
 	hr();
 	print $REL_LANG->_("Next step will update comment counters and set forums last posts to valid");
