@@ -19,7 +19,7 @@ $feeds->setAuthor($REL_CONFIG['adminemail']." (Site Admin)");
 $feeds->setTitle($REL_CONFIG['sitename']);
 $feeds->setChannelLink($REL_CONFIG['defaultbaseurl']."/rss.php");
 $feeds->setLink($REL_CONFIG['defaultbaseurl']);
-$feeds->setDescription($REL_CONFIG['sitename'].iconv("windows-1251","utf-8"," - новости ATOM 1.0"));
+$feeds->setDescription($REL_CONFIG['sitename'].iconv("windows-1251","utf-8",$REL_LANG->_("News")));
 $feeds->setID($REL_CONFIG['defaultbaseurl']."/rss.php");
 
 $res = sql_query("SELECT torrents.id,torrents.name,torrents.descr,torrents.images, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage, IF((torrents.relgroup=0) OR (relgroups.private=0),1,0) AS relgroup_allowed FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id WHERE visible=1 AND banned=0 AND moderatedby<>0 ORDER BY torrents.added DESC LIMIT 5");
@@ -34,7 +34,7 @@ while ($row = mysql_fetch_assoc($res)) {
 	$items=true;
 	if ($row['images']) $image = array_shift(explode(",",$row['images'])); else $image='pic/noimage.gif';
 	$content='<table width="100%" border="1"><tr><td valign="top"><img src="'.$image.'" width="100" title="'.makesafe($row['name']).'"></td><td>'.format_comment($row['descr'],true).'</td></tr></table>';
-	$feeds->addItem(new FeedItem($REL_CONFIG['defaultbaseurl']."/details.php?id={$row['id']}", iconv("windows-1251","utf-8",$row['name']), $REL_CONFIG['defaultbaseurl']."/details.php?id={$row['id']}", iconv("windows-1251","utf-8",$content)));
+	$feeds->addItem(new FeedItem(htmlspecialchars($REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))), iconv("windows-1251","utf-8",$row['name']), htmlspecialchars($REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))), iconv("windows-1251","utf-8",$content)));
 
 }
 if (!$items)
