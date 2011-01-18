@@ -33,9 +33,9 @@ $REL_TPL->stdhead("Редактирование Релиза \"" . makesafe($row["name"]) . "\"");
 ?>
 <script type="text/javascript" language="javascript">
 
-function openwindow(location)
+function openwindow()
 {
- window.open("<?=$REL_CONFIG['defaultbaseurl']?>/<?=$REL_SEO->make_link('"+location+"','id',$id)?>","mywindow","width=250,height=250");
+ window.open("<?php print $REL_SEO->make_link('takean','id',$id); ?>","mywindow","width=250,height=250");
 }
 </script>
 <?php
@@ -118,7 +118,7 @@ if (($CURUSER["id"] != $row["owner"]) && (get_user_class() < UC_MODERATOR) && !$
 	tr("Релиз без торрента", "<input type=\"checkbox\" name=\"nofile\" ".$word." value=\"1\">Релиз без торрента ; Размер (МБ) <input type=\"text\" name=\"nofilesize\" value=\"" . $nofsize . "\" size=\"20\" />", 1);
 
 	if (get_user_class() >= UC_UPLOADER)
-	tr("Защита от правообладателей","<a href=\"javascript:openwindow('takean')\">Анонимизировать / восстановить обладателя релиза</a> (откроется новое окошко)",1,1);
+	tr("Защита от правообладателей","<a href=\"javascript:openwindow()\">Анонимизировать / восстановить обладателя релиза</a> (откроется новое окошко)",1,1);
 
 	print("<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"{$REL_LANG->say_by_key('edit')}\" style=\"height: 25px; width: 100px\"> <input type=reset value=\"Обратить изменения\" style=\"height: 25px; width: 100px\"></td></tr>\n");
 	print("</table>\n");
