@@ -19,4 +19,10 @@ $mysql_db = '';
 $mysql_charset = 'CP1251';
 
 define("COOKIE_SECRET",'');
+
+/**
+ * Set cache driver, available "native" and "memcached" now
+ * @var string
+ */
+define("REL_CACHEDRIVER",'native');
 ?>

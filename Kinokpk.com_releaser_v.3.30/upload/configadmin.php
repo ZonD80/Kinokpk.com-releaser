@@ -41,7 +41,8 @@ if (!isset($_GET['action'])){
 	print('<tr><td>Использовать gzip сжатие для страниц:</td><td><select name="use_gzip"><option value="1" '.($REL_CONFIG['use_gzip']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_gzip']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>'.$REL_LANG->_("Cache templates").':</td><td><select name="cache_template"><option value="1" '.($REL_CONFIG['cache_template']==1?"selected":"").'>'.$REL_LANG->_("Yes").'</option><option value="0" '.($REL_CONFIG['cache_template']==0?"selected":"").'>'.$REL_LANG->_("No").'</option></select></td></tr>');
 	print('<tr><td>'.$REL_LANG->_("Templates cache lifetime").':</td><td><input name="cache_template_time" size="3" value="'.$REL_CONFIG['cache_template_time'].'">'.$REL_LANG->_("Seconds").'</td></tr>');
-
+	print('<tr><td>'.$REL_LANG->_("Cache driver").':</td><td>'.$REL_LANG->_(REL_CACHEDRIVER).', '.$REL_LANG->_('You can change it in include/secrets.php').'</td></tr>');
+	
 	print('<tr><td>Использовать систему банов по IP/Подсетям:</td><td><select name="use_ipbans"><option value="1" '.($REL_CONFIG['use_ipbans']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['use_ipbans']==0?"selected":"").'>Нет</option></select></td></tr>');
 	print('<tr><td>Бинарный формат пиров в анонсере:</td><td><select name="announce_packed"><option value="1" '.($REL_CONFIG['announce_packed']==1?"selected":"").'>Да</option><option value="0" '.($REL_CONFIG['announce_packed']==0?"selected":"").'>Нет</option></select> По умолчанию, Да</td></tr>');
 

@@ -125,8 +125,10 @@ bugs_site=Bugs site
 bulk_email=Bulk E-mail
 bytes=bytes
 cache=Cache
+Cache driver=Cache driver
 Cache templates=Cache templates
 cache_cleared=Cache cleared
+cache_driver_change=You can change it in include/secrets.php
 cache_templates_life=Templates cache lifetime
 cannot_discount=You can not get farmed, since quantity of the releases downloaded by you and so exceeds quantity of your farmed
 cannot_edit_friends=You cannot make action not over the friends
@@ -247,6 +249,7 @@ cron_state_reseted=Cron-function settings successfully reseted
 cur_tree=Current section categories
 Custom template=Custom template
 date=Date
+Date of change=Date of change
 DC Hubs administration=DC Hubs administration
 dc_admin_notice=This is panel for Direct Connect Hubs administration, you can enable/disable DC feature <a href="%s">in main configuration</a>
 dc_admin_title=Direct Connect Hubs admincp
@@ -349,6 +352,7 @@ file_size=<br />File Size: <b> %s kilobyte. </b><hr /><div style="text-align: ce
 filled=Filled in?
 filled_by=Filled out
 fill_form=Fill out the form correctly.
+First=First
 flag=Flag
 footer_ratiopopup=Go to <a href="%s">My rating stats</a> or <a href="%s">exchange rating to discount</a>
 forced_cleaning=Forced Cleaning
@@ -426,6 +430,8 @@ history_downloaded=Downloaded releases
 history_friends=Friends
 history_leeching=Leeching at present
 history_newscomments=Comments to the news
+history_nicknames=Nickname changes
+history_nicknames_of=History of nickname changes for %s
 history_pagecomments=Comments to the pages
 history_pages=Created page
 history_pollcomments=Comments to the polls
@@ -522,6 +528,7 @@ language tools=Language tools
 language_charset=windows-1251
 lang_imp_notice=Language to be imported, e.g. 'ru,en,ua'
 large_tags=Large tags
+Last=Last
 Last edited by=Last edited by
 Last post=Last post
 Last post by=Last post by
@@ -571,6 +578,7 @@ mass_mailing=Mass mailing from the user
 max_avatar_size=The dimensions of avatar has to be no more than %dx%d pixels.
 max_file_size=Max file size
 members=Member
+memcached=memcached
 menu=Menu
 menu_header=<a href="reltemplatesadmin.php">List of all templates</a> / <a href="reltemplatesadmin.php?action=add">Add new</a>
 message=<b>Message</b>:
@@ -898,7 +906,7 @@ present_torrent=Present Torrent!
 present_torrents=Present torrents
 present_to_friend=<img src="pic/presents/present.gif" title="Present torrent to friend!" alt="image" style="border: 0px;" />&nbsp; Present torrent to friend!
 present_upload=Present apload
-prev=Preview
+prev=Prev
 preview=Preview
 privacy_highest=Highest. Your profile is totally closed from users, except your friends
 privacy_level_error=This user uses privacy level, you need to <a href="%s">Become friend of %s</a> to view this page
@@ -1090,6 +1098,7 @@ social_downloaded=Download(s)
 social_friends=Friends
 social_leeching=Leeching
 social_newscomments=To news
+social_nicknames=Nickname changes
 social_pagecomments=To pages
 social_pages=Created pages
 social_pollcomments=To polls
@@ -1343,4 +1352,4 @@ you_watching_unread=You are currently viewing: unread PM
 you_watching_usercomments=You are currently viewing: the new comments to the users
 you_watching_users=You are currently viewing: the new user
 zodiac=Zodiac
-// langfile (en) from http://www.torrentsbook.com created at 16/11/2010 17:12:42
+// langfile (en) from http://www.torrentsbook.com created at 19/01/2011 19:55:29

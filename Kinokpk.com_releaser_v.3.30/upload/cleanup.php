@@ -142,11 +142,17 @@ $REL_CONFIGrow = sql_query("SELECT * FROM cache_stats WHERE cache_name IN ('site
 while ($REL_CONFIGres = mysql_fetch_assoc($REL_CONFIGrow)) $REL_CONFIG[$REL_CONFIGres['cache_name']] = $REL_CONFIGres['cache_value'];
 $REL_CONFIG['lang'] = $REL_CONFIG['default_language'];
 
-require_once(ROOT_PATH . 'classes/cache/cache.class.php');
-require_once(ROOT_PATH .  'classes/cache/fileCacheDriver.class.php');
 /* @var object general cache object */
+require_once(ROOT_PATH . 'classes/cache/cache.class.php');
 $REL_CACHE=new Cache();
-$REL_CACHE->addDriver(NULL, new FileCacheDriver());
+if (REL_CACHEDRIVER=='native') {
+	require_once(ROOT_PATH .  'classes/cache/fileCacheDriver.class.php');
+	$REL_CACHE->addDriver(NULL, new FileCacheDriver());
+}
+elseif (REL_CACHEDRIVER=='memcached') {
+	require_once(ROOT_PATH .  'classes/cache/MemCacheDriver.class.php');
+	$REL_CACHE->addDriver(NULL, new MemCacheDriver());
+}
 
 /* @var object links parser/adder/changer for seo */
 require_once(ROOT_PATH . 'classes/seo/seo.class.php');

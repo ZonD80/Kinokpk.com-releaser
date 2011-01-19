@@ -12,11 +12,17 @@
 if(!defined('IN_ANNOUNCE'))
 die('Hacking attempt!');
 require_once(ROOT_PATH . 'include/secrets.php');
+/* @var object general cache object */
 require_once(ROOT_PATH . 'classes/cache/cache.class.php');
-require_once(ROOT_PATH .  'classes/cache/fileCacheDriver.class.php');
 $REL_CACHE=new Cache();
-$REL_CACHE->addDriver('file', new FileCacheDriver());
-require_once(ROOT_PATH.'classes/bans/ipcheck.class.php');
+if (REL_CACHEDRIVER=='native') {
+	require_once(ROOT_PATH .  'classes/cache/fileCacheDriver.class.php');
+	$REL_CACHE->addDriver(NULL, new FileCacheDriver());
+}
+elseif (REL_CACHEDRIVER=='memcached') {
+	require_once(ROOT_PATH .  'classes/cache/MemCacheDriver.class.php');
+	$REL_CACHE->addDriver(NULL, new MemCacheDriver());
+}
 
 /**
  * Bencoded error message with exit

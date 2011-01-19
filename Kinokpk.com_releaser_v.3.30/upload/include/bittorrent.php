@@ -39,11 +39,17 @@ require_once(ROOT_PATH . 'include/functions.php');
 $tstart = microtime(true); // Start time
 
 require_once(ROOT_PATH . 'include/secrets.php');
-require_once(ROOT_PATH . 'classes/cache/cache.class.php');
-require_once(ROOT_PATH .  'classes/cache/fileCacheDriver.class.php');
 /* @var object general cache object */
+require_once(ROOT_PATH . 'classes/cache/cache.class.php');
 $REL_CACHE=new Cache();
-$REL_CACHE->addDriver(NULL, new FileCacheDriver());
+if (REL_CACHEDRIVER=='native') {
+	require_once(ROOT_PATH .  'classes/cache/fileCacheDriver.class.php');
+	$REL_CACHE->addDriver(NULL, new FileCacheDriver());
+}
+elseif (REL_CACHEDRIVER=='memcached') {
+	require_once(ROOT_PATH .  'classes/cache/MemCacheDriver.class.php');
+	$REL_CACHE->addDriver(NULL, new MemCacheDriver());
+}
 // TinyMCE security
 require_once(ROOT_PATH . 'include/htmLawed.php');
 // Ban system

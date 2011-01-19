@@ -126,8 +126,10 @@ bugs_site=Баги на сайте
 bulk_email=Массовый E-mail
 bytes=байт
 cache=Кэш
+Cache driver=Метод кеширования
 Cache templates=Кешировать шаблоны?
 cache_cleared=Кеш очищен
+cache_driver_change=Вы можете поменять драйвер в include/secrets.php
 cache_templates_life=Время жизни кеша шаблонов
 cannot_discount=Вы не можете получить скидку, т.к. количество скачанных вами релизов и так превышает количество вашей скидки
 cannot_edit_friends=Вы не можете производить действия не над своими друзьями
@@ -248,6 +250,7 @@ cron_state_reseted=Сброс статистики произошел успешно
 cur_tree=Текущее дерево категорий страниц
 Custom template=Особый шаблон
 date=Дата
+Date of change=Время изменения
 DC Hubs administration=Администрирование DC-хабов
 dc_admin_notice=Эта панель используется для администрирования DC-хабов. Включить/отключить возможность использования DirectConnect можно в <a href="%s">общих настройках</a>
 dc_admin_title=Администрирование DC-хабов
@@ -351,6 +354,7 @@ file_size=<br />Размер файла: <b> %s кб. </b><hr /><div style="text-align: cente
 filled=Выполнен?
 filled_by=Выполнил
 fill_form=Пожалуйста заполняйте форму корректно.
+First=Первая
 flag=Флаг
 footer_ratiopopup=Перейти к <a href="%s">Моему рейтингу</a> или <a href="%s">Обмену рейтинга на скидку</a>
 forced_cleaning=Принудительная Очистка Релизера
@@ -428,6 +432,8 @@ history_downloaded=Скачанные релизы
 history_friends=Друзья
 history_leeching=Качает в данный момент
 history_newscomments=Комментарии к новостям
+history_nicknames=История смены ников
+history_nicknames_of=История смены ников для %s
 history_pagecomments=Комментарии страницам
 history_pages=Созданные страницы
 history_pollcomments=Комментарии к опросам
@@ -524,6 +530,7 @@ language tools=Управление языком
 language_charset=windows-1251
 lang_imp_notice=Язык для импортирования, напр. 'ru, en, ua'
 large_tags=Большие теги
+Last=Последняя
 Last edited by=Последние изменение от
 Last post=Последний ответ
 Last post by=Последний ответ от
@@ -573,6 +580,7 @@ mass_mailing=Массовое сообщение от пользователя
 max_avatar_size=Размеры аватары должны быть не более %dx%d пикселей.
 max_file_size=Максимальный размер файла (динамические ссылки запрещены)
 members=Члены
+memcached=memcached
 menu=Меню
 menu_header=<a href="reltemplatesadmin.php">Список шаблонов</a> / <a href="reltemplatesadmin.php?action=add">Добавить новый</a>
 message=<b>Сообщение</b>:
@@ -1090,6 +1098,7 @@ social_downloaded=Скачал(а)
 social_friends=Друзей
 social_leeching=Качает
 social_newscomments=К новостям
+social_nicknames=Менял ник, раз
 social_pagecomments=К страницам
 social_pages=Созданных страниц
 social_pollcomments=К опросам
@@ -1344,4 +1353,4 @@ you_watching_unread=Вы просматриваете: непрочитанные ЛС
 you_watching_usercomments=Вы просматриваете: новые комментарии к пользователям
 you_watching_users=Вы просматриваете: новые пользователи
 zodiac=Знак зодиака
-// langfile (ru) from http://www.torrentsbook.com created at 16/11/2010 17:13:12
+// langfile (ru) from http://www.torrentsbook.com created at 19/01/2011 19:55:59
