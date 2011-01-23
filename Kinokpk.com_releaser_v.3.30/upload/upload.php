@@ -50,26 +50,26 @@ if (!$cat) {			stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('inva
 
 if (strlen($CURUSER['passkey']) != 32) {
 	$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
-	sql_query("UPDATE users SET passkey='$CURUSER[passkey]' WHERE id=$CURUSER[id]");
+	$REL_DB->query("UPDATE xbt_users SET torrent_pass=".sqlesc($CURUSER[passkey])." WHERE uid=".sqlesc($CURUSER[id]));
 }
 
 ?>
 <script type="text/javascript">
 //<!--
-function checkname(element,is_sending) {
-	var clicked;
-	if (!clicked) {
-		 element.value = '';
-		clicked = true;
+function checkname() {
+	pcre = /(.*?) \/ (.*?) \([0-9-]+\) \[(.*?)\]/g;
+	ERRORTEXT = "<?php print $REL_LANG->_("Release name does not corresponding to rule, please change it and try again:");?>"+"\n\n"+$("#namematch").text();
+	if (!pcre.test($("#name").val())) {
+		alert(ERRORTEXT);
+		$("#name").focus();
+		return false;
 	}
-	if (is_sending) {
-
-		}
+	else return true;
 }
 //-->
 </script>
 <form name="upload" enctype="multipart/form-data"
-	action="<?=$REL_SEO->make_link('takeupload');?>" method="post">
+	action="<?=$REL_SEO->make_link('takeupload');?>" method="post" onsubmit="return checkname();">
 <table border="1" cellspacing="0" cellpadding="5">
 	<input type="hidden" name="type[]" value="<?=$type?>" />
 	<tr>
@@ -81,7 +81,7 @@ function checkname(element,is_sending) {
 	if (get_user_class()>=UC_UPLOADER && $REL_CONFIG['use_dc'])
 	tr($REL_LANG->say_by_key('tiger_hash'),"<input type=\"text\" size=\"60\" maxlength=\"38\" name=\"tiger_hash\" value=\"{$row['tiger_hash']}\"><br/>".$REL_LANG->say_by_key('tiger_hash_notice'),1);
 
-	tr($REL_LANG->say_by_key('torrent_name')."<font color=\"red\">*</font>", "<input type=\"text\" name=\"name\" size=\"80\" value=\"Русский / Original (год или диапазон годов) [качество, примечание]\"/><br />(".$REL_LANG->say_by_key('taken_from_torrent').")\n", 1);
+	tr($REL_LANG->say_by_key('torrent_name')."<font color=\"red\">*</font>", "<input type=\"text\" id=\"name\" name=\"name\" size=\"80\" value=\"Русский / Original (год или диапазон годов) [качество, примечание]\"/><br /><div id=\"namematch\">{$REL_LANG->_("Example")}: ".$REL_LANG->say_by_key('taken_from_torrent')."</div>\n", 1);
 
 	$imagecontent = '<br />';
 

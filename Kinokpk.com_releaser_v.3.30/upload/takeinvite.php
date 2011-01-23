@@ -1,4 +1,12 @@
-<?
+<?php
+/**
+ * Invites processor
+ * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
+ * @package Kinokpk.com releaser
+ * @author ZonD80 <admin@kinokpk.com>
+ * @copyright (C) 2008-now, ZonD80, Germany, TorrentsBook.com
+ * @link http://dev.kinokpk.com
+ */
 
 require_once("include/bittorrent.php");
 
@@ -45,7 +53,7 @@ if ($check) stderr($REL_LANG->say_by_key('error'),'Такой email уже зарегестриров
 $subject = "Приглашение на {$REL_CONFIG['sitename']}";
 $body = "Ваш друг или подруга с ником {$CURUSER['username']} пригласили вас зарегестрироваться на {$REL_CONFIG['sitename']}<br/>
 Для регистрации пройдите по этой ссылке:
-<a href=\"{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('signup')}\">{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('signup')}</a><br/>
+<a href=\"{$REL_SEO->make_link('signup')}\">{$REL_SEO->make_link('signup')}</a><br/>
 Используйте следующий код приглашения:<b>$hash</b><hr/>
 Спасибо за внимание, с уважением {$REL_CONFIG['sitename']}";
 

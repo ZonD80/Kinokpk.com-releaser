@@ -70,7 +70,7 @@ if (!empty($_POST["name"]))
 $torrent = unesc((string)$_POST["name"]); else bark("Вы не ввели название релиза");
 
 if (!preg_match("#(.*?) \/ (.*?) \([0-9-]+\) \[(.*?)\]#si",$torrent))
-bark ("Имя релиза оформлено не по шаблону:<br/>{$REL_LANG->say_by_key('taken_from_torrent')}");
+bark ("{$REL_LANG->_("Release name does not corresponding to rule, please change it and try again:")}<br/>{$REL_LANG->say_by_key('taken_from_torrent')}");
 
 if ($_POST['nofile']) {} else {
 	$tmpname = $f["tmp_name"];
@@ -252,6 +252,8 @@ if ($_POST['nofile']) {
 		bark("mysql puked: ".mysql_error());
 	}
 	$id = mysql_insert_id();
+	
+	$REL_DB->query("INSERT INTO xbt_files (fid,info_hash) VALUES ($id,'".pack('H*', $infohash)."')");
 
 	//insert localhost tracker
 	if (!$_POST['nofile']) sql_query("INSERT INTO trackers (torrent,tracker) VALUES ($id,'localhost')");

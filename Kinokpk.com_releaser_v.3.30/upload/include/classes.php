@@ -53,7 +53,7 @@ function get_user_class_color($class, $username)
 		case UC_GUEST:
 			return "<i>{$REL_LANG->_('Guest')}</i>";
 			break;
-
+				
 	}
 	return "$username";
 }

@@ -223,7 +223,7 @@ else {
 }
 
 sql_query("INSERT INTO presents (userid,presenter,type,msg) VALUES ($fid,{$CURUSER['id']},".sqlesc($type).",".sqlesc($reason).")");
-write_sys_msg($fid,sprintf($REL_LANG->say_by_key('presented'),$curusername,sprintf($REL_LANG->say_by_key('presented_'.$type),(($type=='torrent')?"<a href=\"".$REL_SEO->make_link('details','id',$to)."\">{$freeres['name']}</a>":$to)),$CURUSER['id']),$REL_LANG->say_by_key('presents'));
+write_sys_msg($fid,sprintf($REL_LANG->say_by_key_to($fid,'presented'),$curusername,sprintf($REL_LANG->say_by_key_to($fid,'presented_'.$type),(($type=='torrent')?"<a href=\"".$REL_SEO->make_link('details','id',$to)."\">{$freeres['name']}</a>":$to)),$CURUSER['id']),$REL_LANG->say_by_key_to($fid,'presents'));
 
 stdmsg($REL_LANG->say_by_key('success'),sprintf($REL_LANG->say_by_key('you_success_presented'),$friendname));
 $REL_TPL->stdfoot();

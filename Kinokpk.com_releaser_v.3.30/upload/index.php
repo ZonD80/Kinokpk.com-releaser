@@ -14,9 +14,9 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('homepage'));
 
 //print("<table width=\"100%\" class=\"main\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"embedded\">");
 /*if (get_user_class()==UC_SYSOP) {
- print '<pre>';
- print_r($CURUSER);
- YEAH BABY IT'S COOL!
- }*/
+	print '<pre>';
+	print_r($CURUSER);
+	YEAH BABY IT'S COOL!
+}*/
 $REL_TPL->stdfoot();
 ?>

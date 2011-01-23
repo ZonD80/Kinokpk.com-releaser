@@ -158,7 +158,7 @@ elseif ($a == 'users') {
 
 	$res = sql_query("SELECT rg_subscribes.*, users.username, users.class FROM rg_subscribes LEFT JOIN users ON rg_subscribes.userid=users.id WHERE rgid = $id ORDER BY valid_until ASC $LIMIT") or sqlerr(__FILE__,__LINE__);
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('view_users'). ' '.@mysql_result(sql_query("SELECT name FROM relgroups WHERE id = $id"),0).$REL_LANG->say_by_key('to_rgadmin'));
-	$REL_TPL->begin_table();
+	begin_table();
 
 	print ('<tr><td class="colhead">'.$REL_LANG->say_by_key('signup_username').'</td><td class="colhead">'.$REL_LANG->say_by_key('subscribe_until').'</td><td class="colhead">'.$REL_LANG->say_by_key('actions').'</td></tr>');
 	print("<tr><td class=\"index\" colspan=\"4\">");
@@ -182,7 +182,7 @@ elseif ($a == 'deleteuser') {
 	if (!$userid) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 	$notify=isset($_GET['notify']);
 	sql_query("DELETE FROM rg_subscribes WHERE userid=$userid AND rgid=$id") or sqlerr(__FILE__,__LINE__);
-	if ($notify) write_sys_msg($userid,sprintf($REL_LANG->say_by_key('delete_notify'),"<a href=\"".$REL_SEO->make_link('relgroups','id',$id,'name',translit($group['name']))."\">{$group['name']}</a>"),$REL_LANG->say_by_key('notify_subject'));
+	if ($notify) write_sys_msg($userid,sprintf($REL_LANG->say_by_key_to($userid,'delete_notify'),"<a href=\"".$REL_SEO->make_link('relgroups','id',$id,'name',translit($group['name']))."\">{$group['name']}</a>"),$REL_LANG->say_by_key_to($userid,'notify_subject'));
 	stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('delete_user_ok').($notify?" {$REL_LANG->say_by_key('notify_send')}":''),'success');
 
 }

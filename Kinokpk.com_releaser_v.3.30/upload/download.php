@@ -16,6 +16,8 @@ loggedinorreturn();
 
 $action = trim((string)$_GET['a']);
 if (!$action) $action = trim((string)$_POST['a']);
+
+
 if ($action=='my') {
 	$r = sql_query ( "SELECT snatched.torrent AS id, torrents.name, users.username AS owner, torrents.added, torrents.owner AS userid FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent LEFT JOIN users ON torrents.owner=users.id WHERE snatched.finished=1 AND snatched.userid = {$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']} GROUP BY id ORDER BY id" ) or sqlerr ( __FILE__, __LINE__ );
 	if (!mysql_num_rows ( $r ))	stderr($REL_LANG->_("Error"),$REL_LANG->_("You have not downloaded any releases yet"));
@@ -24,17 +26,27 @@ if ($action=='my') {
 	require_once(ROOT_PATH."classes/zip/Zip.php");
 	if (strlen($CURUSER['passkey']) != 32) {
 		$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
-		sql_query("UPDATE users SET passkey=".sqlesc($CURUSER[passkey])." WHERE id=".sqlesc($CURUSER[id]));
+		$REL_DB->query("UPDATE xbt_users SET torrent_pass=".sqlesc($CURUSER[passkey])." WHERE uid=".sqlesc($CURUSER[id]));
 	}
 	$fileTime = date("D, d M Y H:i:s T");
 	$zip = new Zip();
 	$zip->setComment($REL_LANG->_("Your downloaded torrents on %s",mkprettytime(time())));
 	$retrackers = get_retrackers();
 
+	$xbt_config_sql = $REL_DB->query("SELECT name,value FROM xbt_config WHERE name IN ('listen_ipa','listen_port','auto_register')");
+	while ($row = mysql_fetch_assoc($xbt_config_sql)) {
+		$xbt_config[$row['name']] = $row['value'];
+	}
+
 	while  ($row = mysql_fetch_assoc($r)) {
 		$fn = "torrents/{$row['id']}.torrent";
 		sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = ".sqlesc($row['id']));
-		$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/announce.php?passkey=".$CURUSER['passkey'];
+			
+		if ($REL_CONFIG['use_xbt']) {
+			$announce_urls_list[] = ($xbt_config['listen_ipa']=='*'?$REL_CONFIG['defaultbaseurl']:"http://{$xbt_config['listen_ipa']}").":{$xbt_config['listen_port']}/".($xbt_config['auto_register']?'':"{$CURUSER['passkey']}/")."announce";
+		} else {
+			$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/announce.php?passkey=".$CURUSER['passkey'];
+		}
 		$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent={$row['id']} AND tracker<>'localhost'");
 		while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
 
@@ -134,10 +146,19 @@ if ($dc_magnet) {
 
 if (strlen($CURUSER['passkey']) != 32) {
 	$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
-	sql_query("UPDATE users SET passkey=".sqlesc($CURUSER[passkey])." WHERE id=".sqlesc($CURUSER[id]));
+	$REL_DB->query("UPDATE xbt_users SET torrent_pass=".sqlesc($CURUSER[passkey])." WHERE uid=".sqlesc($CURUSER[id]));
 }
 
-$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/announce.php?passkey=".$CURUSER['passkey'];
+$xbt_config_sql = $REL_DB->query("SELECT name,value FROM xbt_config WHERE name IN ('listen_ipa','listen_port','auto_register')");
+while ($xbtrow = mysql_fetch_assoc($xbt_config_sql)) {
+	$xbt_config[$xbtrow['name']] = $xbtrow['value'];
+}
+if ($REL_CONFIG['use_xbt']) {
+	$announce_urls_list[] = ($xbt_config['listen_ipa']=='*'?$REL_CONFIG['defaultbaseurl']:"http://{$xbt_config['listen_ipa']}").":{$xbt_config['listen_port']}/".($xbt_config['auto_register']?'':"{$CURUSER['passkey']}/")."announce";
+} else {
+	$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/announce.php?passkey=".$CURUSER['passkey'];
+}
+
 $announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
 while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
 

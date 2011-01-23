@@ -772,8 +772,8 @@ function dbconn($lightmode = false) {
 	// INCLUDE SECURITY BACK-END
 	require_once(ROOT_PATH . 'include/ctracker.php');
 	/**
-	 * This is original copyright, please leave it alone. Remember, that the Developers worked hard for weeks, drank ~143 litres of a beer (hoegaarden, baltica 7 and jiguli) and ate more then 19.9 kilogrammes of hamburgers to present this source. Don't be evil (C) Google
-   * @var constant Copyright of Kinokpk.com releaser
+	 * This is original copyright, please leave it alone. Remember, that the Developers worked hard for weeks, drank ~67 litres of a beer (hoegaarden and baltica 7) and ate more then 15.1 kilogrammes of hamburgers to present this source. Don't be evil (C) Google
+	 * @var constant Copyright of Kinokpk.com releaser
 	 */
 	define ("TBVERSION", ($REL_CONFIG['yourcopy']?str_replace("{datenow}",date("Y"),$REL_CONFIG['yourcopy']).". ":"")."<br />Powered by <a class=\"copyright\" target=\"_blank\" href=\"http://www.kinokpk.com\">Kinokpk.com</a> <a class=\"copyright\" target=\"_blank\" href=\"http://dev.kinokpk.com\">releaser</a> ".RELVERSION." &copy; 2008-".date("Y").".");
 
@@ -825,7 +825,7 @@ function userlogin() {
 
 	}
 	$id = (int) $_COOKIE["uid"];
-	$res = sql_query("SELECT users.*,stylesheets.uri FROM users LEFT JOIN stylesheets ON users.stylesheet = stylesheets.id WHERE users.id = $id AND confirmed=1");// or die(mysql_error());
+	$res = sql_query("SELECT users.*, xbt_users.torrent_pass AS passkey, stylesheets.uri FROM users LEFT JOIN xbt_users ON users.id=xbt_users.uid LEFT JOIN stylesheets ON users.stylesheet = stylesheets.id WHERE users.id = $id AND confirmed=1");// or die(mysql_error());
 	$row = mysql_fetch_assoc($res);
 	if (!$row) {
 		$REL_CONFIG['ss_uri'] = $REL_CONFIG['default_theme'];
@@ -1297,18 +1297,19 @@ function convert_local_urls($link) {
  * @return boolean True or false while sending email
  */
 function sent_mail($to,$fromname,$fromemail,$subject,$body,$multiplemail='') {
+//return true;
 	global $REL_CONFIG;
 	require_once ROOT_PATH."classes/mail/dSendMail2.inc.php";
 	$m = new dSendMail2;
 	$m->setCharset('windows-1251');
 	$m->setSubject($subject);
-	$m->setFrom($fromemail);
+	$m->setFrom($fromemail,$REL_CONFIG['sitename']);
 	$m->setMessage($body);
 	if ($multiplemail) {
 		$m->setTo($REL_CONFIG['siteemail']);
 		$m->setBcc($multiplemail);
 		$m->groupAmnt = 10;
-		$m->delay     = 0;
+		$m->delay     = 1;
 	} else $m->setTo($to);
 	return $m->send();
 }
@@ -1542,11 +1543,14 @@ function loggedinorreturn() {
  * @param int $id id for torrent to be deleted
  */
 function deletetorrent($id) {
-	global $CURUSER, $REL_SEO;
+	global $CURUSER, $REL_SEO, $REL_DB;
 	sql_query("DELETE FROM notifs WHERE checkid = $id AND type='relcomments'") or sqlerr(__FILE__,__LINE__);
 	sql_query("DELETE FROM torrents WHERE id = $id");
 	sql_query("DELETE FROM bookmarks WHERE id = $id");
 	sql_query("DELETE FROM comments WHERE toid = $id AND type='rel'");
+	$REL_DB->query("DELETE FROM xbt_files WHERE fid=$id");
+	$REL_DB->query("DELETE FROM xbt_files_users WHERE fid=$id");
+	//$REL_DB->query("DELETE FROM xbt_files WHERE fid=$id");
 	foreach(explode(".","snatched.peers.files.trackers") as $x)
 	sql_query("DELETE FROM $x WHERE torrent = $id");
 	@unlink("torrents/$id.torrent");
@@ -2089,8 +2093,8 @@ function send_comment_notifs($id,$page,$type) {
 	$emails = mysql_result($emailssql, 0);
 	if ($emails) {
 		$emails = sqlesc($emails);
-		$subject = sqlesc($REL_LANG->say_by_key('new_comment'));
-		$msg = sqlesc(sprintf($REL_LANG->say_by_key('comment_notice_'.$type),$page));
+		$subject = sqlesc($REL_LANG->say_by_key_to($id,'new_comment'));
+		$msg = sqlesc(sprintf($REL_LANG->say_by_key_to($id,'comment_notice_'.$type),$page));
 		//sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
 		sql_query("INSERT INTO cron_emails (emails, subject, body) VALUES ($emails, $subject, $msg)") or sqlerr(__FILE__,__LINE__);
 	}
@@ -2107,14 +2111,15 @@ function send_comment_notifs($id,$page,$type) {
 function send_notifs($type,$text = '',$id = 0) {
 	global $REL_LANG, $CURUSER, $REL_CONFIG, $REL_SEO, $REL_DB;
 
-	$emailssql = $REL_DB->query("SELECT GROUP_CONCAT(users.email) FROM users WHERE FIND_IN_SET('$type',emailnotifs) AND ".(!$id?"id != ".(int)$CURUSER['id']:"id = $id")) or sqlerr(__FILE__,__LINE__);
-	$emails = mysql_result($emailssql, 0);
+	$emailssql = $REL_DB->query("SELECT GROUP_CONCAT(users.email),users.language FROM users WHERE FIND_IN_SET('$type',emailnotifs) AND ".(!$id?"id != ".(int)$CURUSER['id']:"id = $id")." GROUP BY users.language") or sqlerr(__FILE__,__LINE__);
+	while (list($emails,$language) = mysql_fetch_array($emailssql)) {	
 	if ($emails) {
 		$emails = sqlesc($emails);
-		$subject = sqlesc($REL_LANG->say_by_key('new_'.$type));
-		$msg = sqlesc($REL_LANG->say_by_key('notice_'.$type).$text."<hr/ ><a href=\"".$REL_SEO->make_link('index')."\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->_('You can always configure your notifications in <a href="%s">notification settings</a> of your account.',$REL_SEO->make_link("mynotifs","settings"))}</div>");
+		$subject = sqlesc($REL_LANG->say_by_key('new_'.$type,$language));
+		$msg = sqlesc($REL_LANG->say_by_key('notice_'.$type,$language).$text."<hr/ ><a href=\"".$REL_SEO->make_link('index')."\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->_lang($language,'You can always configure your notifications in <a href="%s">notification settings</a> of your account.',$REL_SEO->make_link("mynotifs","settings"))}</div>");
 		//	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
 		$REL_DB->query("INSERT INTO cron_emails (emails, subject, body) VALUES ($emails,$subject, $msg)") or sqlerr(__FILE__,__LINE__);
+	}
 	}
 }
 
@@ -2480,7 +2485,7 @@ function json_fix_cyr($var)
  * Outputs beta warning. Default false.
  * @var boolean
  */
-define ("BETA", false);
+define ("BETA", true);
 /**
  * Beta warning as it is
  * @var string
@@ -2490,5 +2495,5 @@ define ("BETA_NOTICE", "\n<br />This isn't complete release of source!");
  * Kinokpk.com releaser's version
  * @var string
  */
-define("RELVERSION","3.30");
+define("RELVERSION","3.30/XBTT alpha");
 ?>

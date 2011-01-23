@@ -41,7 +41,7 @@ if ($action == 'add') {
 	if (mysql_errno()==1062) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('already_in_private_group'));
 
 
-	write_sys_msg($fid,sprintf($REL_LANG->say_by_key('friend_notice'),$curusername,$fiid,$fiid),$REL_LANG->say_by_key('friend_notice_subject')." ({$CURUSER['username']})");
+	write_sys_msg($fid,sprintf($REL_LANG->say_by_key_to($fid,'friend_notice'),$curusername,$fiid,$fiid),$REL_LANG->say_by_key_to($fid,'friend_notice_subject')." ({$CURUSER['username']})");
 	send_notifs('friends','',$fid);
 	stderr($REL_LANG->say_by_key('success'),sprintf($REL_LANG->say_by_key('user_notice_sent'),$username),'success');
 
@@ -52,7 +52,8 @@ elseif ($action == 'deny'){
 	$frar = mysql_fetch_assoc($frarq);
 	if (!$frar) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('cannot_edit_friends'));
 
-	write_sys_msg((($frar['userid']<>$CURUSER['id'])?$frar['userid']:$frar['friendid']),sprintf($REL_LANG->say_by_key('friend_deny'),$curusername),$REL_LANG->say_by_key('friendship_cancelled')." ({$CURUSER['username']})");
+	$send_to = (($frar['userid']<>$CURUSER['id'])?$frar['userid']:$frar['friendid']);
+	write_sys_msg($send_to,sprintf($REL_LANG->say_by_key_to($send_to,'friend_deny'),$curusername),$REL_LANG->say_by_key_to($send_to,'friendship_cancelled')." ({$CURUSER['username']})");
 
 	sql_query("DELETE FROM friends WHERE id=$fid");
 	stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('friend_deleted'),'success');

@@ -37,7 +37,7 @@ print("<h1>".$REL_LANG->say_by_key('my_mail_updated')."</h1>\n");
 <div id="my_table">
 <h2><?=$REL_LANG->say_by_key('account_settings')?></h2>
 
-<script type="text/javascript">
+	<script	type="text/javascript">
 	<!--//
 	// on DOM ready
 	
@@ -277,10 +277,9 @@ div("Сменить пасскей","<input type=checkbox class=\"styled\" name=resetpasskey v
 
 if (strlen($CURUSER['passkey']) != 32) {
 	$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
-	sql_query("UPDATE users SET passkey='$CURUSER[passkey]' WHERE id=$CURUSER[id]");
+	$REL_DB->query("UPDATE xbt_users SET torrent_pass=".sqlesc($CURUSER[passkey])." WHERE uid=".sqlesc($CURUSER[id]));
 }
 div("Мой пасскей","<b>$CURUSER[passkey]</b>", 1,'my_title','my_name');
-div("Привязать IP к пасскею", "<input type=checkbox class=\"styled\" name=passkey_ip" . ($CURUSER["passkey_ip"] != "" ? " checked" : "") . "> Включив эту опцию вы можете защитить себя от неавторизованной закакачки по вашему пасскею привязав его к IP. Если ваш IP динамический - не включайте эту опцию.<br />На данный момент ваш IP: <b>".getip()."</b>", 1,'my_title','my_name');
 div("Старый пароль", "<input type=\"password\" name=\"oldpassword\" size=\"50\" />", 1,'my_title','my_name');
 div("Сменить пароль", "<input type=\"password\" name=\"chpassword\" size=\"50\" />", 1,'my_title','my_name');
 div("Пароль еще раз", "<input type=\"password\" name=\"passagain\" size=\"50\" />", 1,'my_title','my_name');

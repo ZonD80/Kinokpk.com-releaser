@@ -105,7 +105,7 @@ $query = "SELECT torrents.id, torrents.comments, torrents.freefor, torrents.last
 $res = sql_query($query) or sqlerr(__FILE__,__LINE__);
 
 
-$resarray = prepare_for_torrenttable($res);
+	$resarray = prepare_for_torrenttable($res);
 
 if (!$resarray) stderr($REL_LANG->say_by_key('error'),"Ничего не найдено. <a href=\"javascript: history.go(-1)\">Назад</a>");
 

@@ -169,9 +169,9 @@ if ($action == "viewmailbox") {
 	?>
 	<tr class="colhead">
 		<td class="colhead">&nbsp;</td>
-		<td colspan="6" align="right" width="100%" class="colhead" />
-		<input type="hidden" name="box" value="<?=$mailbox?>" />
-		<input type="submit" name="delete"
+		<td colspan="6" align="right" width="100%" class="colhead" /><input
+			type="hidden" name="box" value="<?=$mailbox?>" /> <input
+			type="submit" name="delete"
 			title="<?=$REL_LANG->say_by_key('delete_marked_messages');?>"
 			value="<?=$REL_LANG->say_by_key('delete');?>"
 			onClick="return confirm('<?=$REL_LANG->say_by_key('sure_mark_delete');?>')" />
@@ -184,8 +184,7 @@ if ($action == "viewmailbox") {
 			onClick="return confirm('јрхивировать выбранные сообщени€? (они не будут удалены системой автоматически)')" />
 		<input type="submit" name="unarchive" title="–азархивировать"
 			value="–азархивировать"
-			onClick="return confirm('–азархивировать выбранные сообщени€? (они будут удалены системой автоматически)')" />
-		</td>
+			onClick="return confirm('–азархивировать выбранные сообщени€? (они будут удалены системой автоматически)')" /></td>
 
 	</tr>
 </table>
@@ -475,18 +474,13 @@ elseif ($action == 'takemessage') {
 		}
 	}
 	// ANTISPAM SYSTEM END
-			$secs_system = $REL_CRON['pm_delete_sys_days']*86400; //  оличество дней
-		$dt_system = time() - $secs_system; // —егодн€ минус количество дней
-		$secs_all = $REL_CRON['pm_delete_user_days']*86400; //  оличество дней
-		$dt_all = time() - $secs_all; // —егодн€ минус количество дней
-		
-	$pms = sql_query ( "SELECT (SELECT SUM(1) FROM messages WHERE location=1 AND receiver={$receiver} AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))) + (SELECT SUM(1) FROM messages WHERE saved=1 AND sender={$receiver} AND IF(archived_receiver<>1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all)))") or sqlerr(__FILE__,__LINE__);
+	$pms = sql_query ( "SELECT SUM(1) FROM messages WHERE (receiver = $receiver AND location=1) OR (sender = $receiver AND saved = 1)" );
 	$pms = (int)mysql_result ( $pms, 0 );
 	if ($pms >= $REL_CONFIG ['pm_max'])
 	stderr ( $REL_LANG->say_by_key('error'), "ящик личных сообщений получател€ заполнен, вы не можете отправить ему сообщение." );
 
 	if ($save) {
-		$pms = sql_query ( "SELECT (SELECT SUM(1) FROM messages WHERE location=1 AND receiver={$CURUSER['id']} AND IF(archived_receiver=1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all))) + (SELECT SUM(1) FROM messages WHERE saved=1 AND sender={$CURUSER['id']} AND IF(archived_receiver<>1, 1=1, IF(sender=0,added>$dt_system,added>$dt_all)))") or sqlerr(__FILE__,__LINE__);
+		$pms = sql_query ( "SELECT SUM(1) FROM messages WHERE (receiver = " . $CURUSER ['id'] . " AND location=1) OR (sender = " . $CURUSER ['id'] . " AND saved = 1)" );
 		$pms = (int)mysql_result ( $pms, 0 );
 		if ($pms >= $REL_CONFIG ['pm_max'])
 		stderr ( "Ќевозможно сохранить сообщение", "¬аш €щик личных сообщений заполнен, максимальное кол-во {$REL_CONFIG['pm_max']}. ¬ы не можете отправить сообщение, вам необходимо очистить €щик личных сообщений" );

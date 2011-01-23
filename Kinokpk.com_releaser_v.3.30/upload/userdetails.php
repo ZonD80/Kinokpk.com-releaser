@@ -78,7 +78,7 @@ $presentres = sql_query("SELECT presents.*, users.username, users.class FROM pre
 while ($prrow = mysql_fetch_assoc($presentres)) {
 	$presents[] = $prrow;
 }
-$allowed_types = array ('relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments', 'friends','seeding','leeching','downloaded','uploaded','presents');
+$allowed_types = array ('relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments', 'friends','seeding','leeching','downloaded','uploaded','presents','nicknames');
 
 foreach ($allowed_types as $type) {
 	switch ($type) {
@@ -88,6 +88,7 @@ foreach ($allowed_types as $type) {
 		case 'downloaded' : $sql_query[] = "(SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE snatched.finished=1 AND userid=$id AND torrents.owner<>$id) AS downloaded"; $noq=true; break;
 		case 'uploaded' : $sql_query[] = "(SELECT SUM(1) FROM torrents WHERE owner=$id) AS uploaded"; $noq=true; break;
 		case 'presents' : $sql_query[] = "(SELECT SUM(1) FROM presents WHERE userid=$id) AS presents"; $noq=true; break;
+		case 'nicknames' : $sql_query[] = "(SELECT SUM(1) FROM nickhistory WHERE userid=$id) AS nicknames"; $noq=true; break;
 	}
 	if (!$noq) {
 		$string = (($type!='friends')?"user = $id AND type='".preg_replace('/comments/','',$type)."'":'').$addition;
@@ -184,6 +185,11 @@ print ( '<div class="sp-wrap"><div class="sp-head folded clickable">'.$REL_LANG-
 <tr><td class=rowhead width=1%>Зарегистрирован</td><td align=left width=99%>' . $joindate . '</td></tr>
 <tr><td class=rowhead>Последний раз был на трекере</td><td align=left>' . $lastseen . '</td></tr>' );
 
+
+print ( "<tr><td class=\"rowhead\">{$REL_LANG->say_by_key('comments_and_social')}</td>" );
+
+print ( "<td align=\"left\">$soctable</td></tr>\n" );
+
 if (get_user_class () >= UC_MODERATOR)
 print ( "<tr><td class=\"rowhead\">Email</td><td align=\"left\"><a href=\"mailto:$user[email]\">$user[email]</a></td></tr>\n" );
 if ($addr)
@@ -261,10 +267,6 @@ if ($user ["birthday"] != '0000-00-00') {
 
 }
 
-print ( "<tr><td class=\"rowhead\">{$REL_LANG->say_by_key('comments_and_social')}</td>" );
-
-print ( "<td align=\"left\">$soctable</td></tr>\n" );
-
 
 if ($invitetree)
 print ( "<tr valign=\"top\"><td colspan=\"2\"><div class=\"sp-wrap\"><div class=\"sp-head folded clickable\">Приглашенные</div><div class=\"sp-body\">$invitetree</div></div></td></tr>\n" );
@@ -336,7 +338,7 @@ if (! $count) {
 	print ( "<table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
 	print ( "<tr><td class=\"colhead\" align=\"center\">" );
 	print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>" );
-	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('userdetails','id',$id,'username',translit($user['username']))."#comments\" class=\"altlink_white\">{$REL_LANG->say_by_key('add_comment')}</a></div>" );
+	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('userdetails','id',$id,'username',translit($user['username']))."#comments\" class=\"altlink_white\">{$REL_LANG->_('Add comment to %s',$REL_LANG->_('User'))}</a></div>" );
 	print ( "</td></tr>" );
 
 	print ( "<tr><td>" );

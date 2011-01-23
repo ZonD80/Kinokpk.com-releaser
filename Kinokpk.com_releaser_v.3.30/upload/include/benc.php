@@ -64,8 +64,8 @@ function get_retrackers($all = false, $table = 'retrackers') {
 	while ($row = mysql_fetch_assoc($res)) {
 		$masks = explode(',',$row['mask']);
 		foreach ($masks as $mask)
-		$rtarray[] = array('announce_url'=>$row['announce_url'],'mask'=>$mask);
-		if ($all) $return[] = $row['announce_url'];
+		$rtarray[] = array('announce_url'=>$row['announce_url'],'mask'=>$mask); 
+		if ($all) $return[] = $row['announce_url']; 
 	}
 
 	if (!$rtarray) return array();
@@ -470,7 +470,7 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 	)
 	);
 	$req_uri = $scheme.'://'.$http_host.$http_port.$http_path.($http_params ? '?'.$http_params : '');
-
+	
 	if ( function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1 ) {
 		$context = @stream_context_create($opts);
 		$result = @file_get_contents($req_uri , false, $context);

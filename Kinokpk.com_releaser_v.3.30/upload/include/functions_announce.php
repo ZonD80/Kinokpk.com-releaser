@@ -23,6 +23,7 @@ elseif (REL_CACHEDRIVER=='memcached') {
 	require_once(ROOT_PATH .  'classes/cache/MemCacheDriver.class.php');
 	$REL_CACHE->addDriver(NULL, new MemCacheDriver());
 }
+require_once(ROOT_PATH.'classes/bans/ipcheck.class.php');
 
 /**
  * Bencoded error message with exit

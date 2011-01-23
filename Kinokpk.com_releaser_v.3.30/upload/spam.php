@@ -124,4 +124,4 @@ $REL_TPL->stdhead("ЛС пользователей");
 <br />
 		<?
 		$REL_TPL->stdfoot();
-		?>
+?>

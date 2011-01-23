@@ -43,7 +43,7 @@ if (is_array($_POST["conusr"]))                            {
 	foreach ($ids as $id) {
 		sql_query("INSERT INTO friends (userid,friendid,confirmed) VALUES ({$CURUSER['id']},$id,1)");
 
-		write_sys_msg($id,sprintf($REL_LANG->say_by_key('invite_confirmed'),$REL_CRON['rating_per_invite']),$REL_LANG->say_by_key('invite_confirmed_title'));
+		write_sys_msg($id,sprintf($REL_LANG->say_by_key_to($id,'invite_confirmed'),$REL_CRON['rating_per_invite']),$REL_LANG->say_by_key_to($d,'invite_confirmed_title'));
 	}
 }
 safe_redirect($REL_SEO->make_link('invite','id',$id));

@@ -220,7 +220,7 @@ function ajaxdel(key,lang) {
 	?>
 </table>
 </form>
-	<?php
+<?php
 
 }
 $REL_TPL->stdfoot();

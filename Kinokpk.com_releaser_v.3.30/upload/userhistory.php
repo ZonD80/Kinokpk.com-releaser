@@ -38,7 +38,7 @@ function maketable($res) {
 }
 
 /**
- * Nice prints content with headers, footers, etc, thed dies
+ * Nice prints content with headers, footers, etc, then dies
  * @param string $content Content to be printed
  * @return void
  */
@@ -73,7 +73,7 @@ $type = trim((string)$_GET["type"]);
 
 $perpage = $REL_CONFIG['torrentsperpage'];
 
-$allowed_types = array ('relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments', 'friends','seeding','leeching','downloaded','uploaded','presents');
+$allowed_types = array ('relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments', 'friends','seeding','leeching','downloaded','uploaded','presents','nicknames');
 
 $user = mysql_fetch_assoc(sql_query("SELECT username,class,privacy FROM users WHERE id=$id"));
 
@@ -156,6 +156,10 @@ if (in_array($type,$allowed_types))
 		$where = "friends.confirmed=1 AND (userid=$id OR friendid=$id)";
 		$order = "friends.id DESC";
 	}
+	elseif ($type=='nicknames') {
+		$where = "userid = $id";
+		$order = "date DESC";
+	}
 	else
 	{
 		if (preg_match('/comments/',$type)) $where = "comments.user= $id AND comments.type='".str_replace('comments','',$type)."'";
@@ -164,8 +168,10 @@ if (in_array($type,$allowed_types))
 		$order = "comments.added DESC";
 		else $order = "$type.id DESC";
 	}
-
-	$query = "SELECT SUM(1) FROM ".($type=='presents'||$type=='friends'?$type:'comments')."{$leftjoin[$type]} WHERE $where ORDER BY $order";
+	if ($type=='presents'||$type=='friends') $from_select = $type;
+	elseif ($type=='nicknames') $from_select = 'nickhistory';
+	else $from_select = 'comments';
+	$query = "SELECT SUM(1) FROM ".$from_select."{$leftjoin[$type]} WHERE $where ORDER BY $order";
 
 	$res = sql_query($query) or sqlerr(__FILE__, __LINE__);
 
@@ -180,10 +186,10 @@ if (in_array($type,$allowed_types))
 
 	//------ Get user data
 
-	if ($type<>'friends'&&$type<>'presents') {
+	if ($type<>'friends'&&$type<>'presents'&&$type<>'nicknames') {
 		$REL_TPL->stdhead($REL_LANG->say_by_key('history_'.$type)." {$REL_LANG->_("From")} {$user['username']}");
-		if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
-
+			if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
+		
 		$REL_TPL->begin_frame($REL_LANG->say_by_key('history_'.$type).sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 		$query = "SELECT comments.id, comments.toid, comments.type, comments.ip, comments.ratingsum, comments.text, comments.user, comments.added, comments.editedby, comments.editedat, users.avatar, users.warned, users.username, users.title, users.class, users.donor, users.enabled, users.ratingsum AS urating, users.gender, users.last_access, e.username AS editedbyname, $name[$type] FROM comments LEFT JOIN users ON comments.user = users.id LEFT JOIN users AS e ON comments.editedby = e.id{$leftjoin[$type]} WHERE $where ORDER BY $order $limit";
 		$res = sql_query($query) or sqlerr(__FILE__,__LINE__);
@@ -214,8 +220,8 @@ if (in_array($type,$allowed_types))
 			$presents[] = $prrow;
 		}
 		$REL_TPL->stdhead($REL_LANG->_("History of user presents"));
-		if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
-
+			if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
+		
 		$REL_TPL->begin_frame($REL_LANG->_("History of user presents").sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 		$switch_pr = array('torrent'=>'Release','ratingsum'=>"Amount of rating",'discount'=>"Amount of discount");
 
@@ -237,8 +243,8 @@ if (in_array($type,$allowed_types))
 	}
 	elseif ($type=='friends') {
 		$REL_TPL->stdhead($REL_LANG->say_by_key('history_friends').' '.$user['username']);
-		if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
-
+			if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
+		
 		$REL_TPL->begin_frame($REL_LANG->say_by_key('history_friends').' '.$user['username'].sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 
 		$res = sql_query("SELECT IF (friends.userid={$id},friends.friendid,friends.userid) AS friend, (SELECT 1 FROM friends WHERE (userid=friend AND friendid={$CURUSER['id']}) OR (friendid=friend AND userid={$CURUSER['id']})) AS myfriend, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON IF (friends.userid={$id},u.id=friendid,u.id=userid) LEFT JOIN countries AS c ON c.id = u.country WHERE $where ORDER BY friends.id DESC $limit") or sqlerr(__FILE__, __LINE__);
@@ -273,6 +279,19 @@ if (in_array($type,$allowed_types))
 		$REL_TPL->end_frame();
 		$REL_TPL->stdfoot();
 		die();
+	}
+	
+	elseif ($type=='nicknames') {
+		$nicknames = $REL_DB->query_assoc("SELECT id,nick,date FROM nickhistory WHERE userid=$id");
+		if (!$nicknames) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('This user does not have any nickname changes yet. <a href="%s">Go back to user history</a>',$REL_SEO->make_link('userhistory','id',$id,'name',$user['username'])));
+		
+		$REL_TPL->stdhead($REL_LANG->_('History of nickname changes for %s',$user['username']));
+		$REL_TPL->begin_frame($REL_LANG->_('History of nickname changes for %s',$user['username']));
+		$REL_TPL->assignByRef('nick', $nicknames);
+		$REL_TPL->assign('IS_MODERATOR',get_user_class()>=UC_ADMINISTRATOR);
+		$REL_TPL->output('nicknames');
+		$REL_TPL->end_frame();
+		$REL_TPL->stdfoot();
 	}
 }
 elseif (!isset($_GET['type'])) {

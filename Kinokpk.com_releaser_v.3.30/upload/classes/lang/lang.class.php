@@ -81,6 +81,28 @@ class REL_LANG {
 		return $return.$this->lang[$language][$value];
 
 	}
+	
+	/**
+	 * Say something by key to specific user with him language-specific settings
+	 * @param int $id User id to say to
+	 * @param string $value Key to use
+	 * @param string $language Language to use
+	 * @return string String of a language file
+	 */
+	public function say_by_key_to($id, $value,$language = '') {
+		global $REL_DB;
+		$return = '';
+		if (!$language) {
+			$language = @mysql_result($REL_DB->query("SELECT language FROM users WHERE id={$id}"),0);
+			if (!$language) $language=$this->language;
+		}
+		if (!array_key_exists($value,$this->lang[$language])) $return .= ($this->DEBUG?"*NO_KEY:{$language}* ":'');
+		if (!$this->lang[$language][$value]) { $return .= ($this->DEBUG?"*NO_VALUE:$value* ":'');
+		return $return.$this->lang['en'][$value];
+		}
+		return $return.$this->lang[$language][$value];
+
+	}
 
 	/**
 	 * Parse language from database (cache) into associative array
@@ -194,6 +216,29 @@ class REL_LANG {
 		else return $return.$text;
 
 	}
+	
+	/**
+	 * Formates string to output, like print or spritnf. Many argumets allowed. FIRST is a language, next is as $this->_
+	 * @return string|string Formatted string
+	 */
+	public function _lang() {
+		$args = func_get_args();
+		$lang = $args[0];
+		$text = $args[1];
+		$return = '';
+		if ($this->lang['en'])
+		$key = array_search($text,$this->lang['en']);
+		else return ("*NO_ENGLISH_LANGUAGE*");
+		if (!$key) $return .= ($this->DEBUG?"*NO_KEY_OR_NO_TRANSLATION* ":'');
+		else
+		$text = $this->say_by_key($key,$lang);
+
+		if (count($args)>2) { $args[1] = $text; unset($args[0]);
+		return $return.call_user_func_array("sprintf",$args);
+		}
+		else return $return.$text;
+
+	}
 
 	/**
 	 * Formates string to output, like print or spritnf. Many argumets allowed
@@ -204,9 +249,9 @@ class REL_LANG {
 	public function _to() {
 		/*global $REL_DATABASE;
 		 if (!$REL_DATABASE) die("FATAL ERROR: No database");*/
-
+		global $REL_DB;
 		$args = func_get_args();
-		$langauge = @mysql_result(sql_query("SELECT language FROM users WHERE id={$args[0]}"),0);
+		$langauge = @mysql_result($REL_DB->query("SELECT language FROM users WHERE id={$args[0]}"),0);
 		$text = $args[1];
 		$return = '';
 		$key = array_search($text,$this->lang['en']);

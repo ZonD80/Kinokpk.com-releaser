@@ -30,12 +30,17 @@ puke($REL_LANG->say_by_key('access_denied'));
 $action = (string)$_POST["action"];
 
 if (($action == 'ownsupport') && (get_user_class()>=UC_ADMINISTRATOR)) {
-	$supportfor = ($_POST["support"]?htmlspecialchars($_POST["supportfor"]):'');
+	$supportfor = ($_POST["support"]?htmlspecialchars((string)$_POST["supportfor"]):'');
 	$updateset[] = "supportfor = " . sqlesc($supportfor);
 	sql_query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__, __LINE__);
 	safe_redirect($REL_SEO->make_link('my'),0);
 	stderr($REL_LANG->say_by_key('success'),'Вы успешно сменили себе статус поддержки','success');
 
+}
+elseif (($action == 'delnick') && (get_user_class()>=UC_ADMINISTRATOR)) {
+	$nid = (int)$_POST['id'];
+	$REL_DB->query("DELETE FROM nickhistory WHERE id=$nid");
+	$REL_TPL->stderr($REL_LANG->_('Success'),$REL_LANG->_('Nick deleted from history'));
 }
 elseif ($action == "edituser") {
 	$userid = (int) $_POST["userid"];
@@ -164,7 +169,7 @@ elseif ($action == "edituser") {
 	$updateset[] = "modcomment = " . sqlesc($modcomment);
 	if ($_POST['resetkey']) {
 		$passkey = md5($CURUSER['username'].time().$CURUSER['passhash']);
-		$updateset[] = "passkey = " . sqlesc($passkey);
+		$REL_DB->query("UPDATE xbt_users SET torrent_pass='' WHERE uid=".sqlesc($CURUSER[id]));
 	}
 	write_log("Пользователь {$CURUSER['username']} произвел действия над пользователем с ID <a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',translit($arr['username']))."\">$userid</a>, параметры:<br/> <pre>".var_export($updateset,true)."</pre>",'modtask');
 	sql_query("UPDATE users SET	" . implode(", ", $updateset) . " $birthday WHERE id = $userid") or sqlerr(__FILE__, __LINE__);

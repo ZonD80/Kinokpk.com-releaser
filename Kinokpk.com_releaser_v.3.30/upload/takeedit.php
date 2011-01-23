@@ -118,7 +118,7 @@ foreach(explode(":","type:name") as $v) {
 
 $name = htmlspecialchars((string)($_POST['name']));
 if (!preg_match("#(.*?) \/ (.*?) \([0-9-]+\) \[(.*?)\]#si",$name))
-bark ("Имя релиза оформлено не по шаблону:<br/>{$REL_LANG->say_by_key('taken_from_torrent')}");
+bark ("{$REL_LANG->_("Release name does not corresponding to rule, please change it and try again:")}<br/>{$REL_LANG->say_by_key('taken_from_torrent')}");
 
 if (!is_array($_POST["type"]))
 bark("Ошибка обработки выбранных категорий!");
@@ -277,6 +277,7 @@ if ($update_torrent) {
 		@chmod($fp, 0644);
 	}
 	$updateset[] = "info_hash = " . sqlesc($infohash);
+	$update_xbt_query = "UPDATE xbt_files SET info_hash='".pack('H*', $infohash)."' WHERE fid=$id";
 	$updateset[] = "filename = " . sqlesc($fname);
 	sql_query("DELETE FROM files WHERE torrent = $id");
 	sql_query("DELETE FROM trackers WHERE torrent = ".$id);
@@ -383,6 +384,8 @@ if ($_POST['upd']) $updateset[] = "added = '" . time() . "'";
 
 sql_query("UPDATE torrents SET " . join(",", $updateset) . " WHERE id = $id");
 if (mysql_errno() == 1062) stderr($REL_LANG->say_by_key('error'),'Torrent already uploaded!'); elseif (mysql_errno()) sqlerr(__FILE__,__LINE__);
+
+$REL_DB->query($update_xbt_query);
 
 $REL_CACHE->clearGroupCache('block-indextorrents');
 

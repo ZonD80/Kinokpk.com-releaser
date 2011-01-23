@@ -67,8 +67,11 @@ if ($username<>$CURUSER['username']) {
 	$check = @mysql_result(sql_query("SELECT 1 FROM users WHERE username=".sqlesc($username)),0);
 	if ($check)
 	bark($REL_LANG->_('Sorry, but this username is already in use. Please <a href="javascript:history.go(-1);">try again</a> and select another.'));
-
-	$updateset[] = "username = ".sqlesc($username);
+	
+	$username = sqlesc($username);
+	$updateset[] = "username = ".$username;
+	
+	$REL_DB->query("INSERT INTO nickhistory (userid,nick,date) VALUES ({$CURUSER['id']},$username,".time().")") or sqlerr(__FILE__,__LINE__);
 }
 $acceptpms = (string) $_POST["acceptpms"];
 $deletepms = ($_POST["deletepms"] ? 1 : 0);
@@ -91,9 +94,7 @@ if (!$birthday) stderr($REL_LANG->say_by_key('error'),"Вы указали неверную дату 
 $updateset[] = "birthday = " . sqlesc($birthday);
 
 if ($_POST['resetpasskey'])
-$updateset[] = "passkey=''";
-
-$updateset[] = "passkey_ip = ".($_POST["passkey_ip"] != "" ? sqlesc(getip()) : "''");
+$REL_DB->query("UPDATE xbt_users SET torrent_pass='' WHERE uid=".sqlesc($CURUSER[id]));
 
 $info = trim((string)$_POST["info"]);
 if (!is_valid_id($_POST["stylesheet"])) stderr($REL_LANG->say_by_key('error'),"Неверно выбран стиль оформления");
