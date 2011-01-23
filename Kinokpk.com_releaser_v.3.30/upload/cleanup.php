@@ -72,7 +72,7 @@ if ($torrents) {
 	}
 }
 
-$REL_DB->query("UPDATE trackers SET seeders=0, leechers=0".($ids?" WHERE torrent NOT IN (".implode(',',$ids).")":'')) or sqlerr(__FILE__,__LINE__);
+$REL_DB->query("UPDATE trackers SET seeders=0, leechers=0, lastchecked=$time WHERE tracker='localhost'".($ids?" AND torrent NOT IN (".implode(',',$ids).")":'')) or sqlerr(__FILE__,__LINE__);
 
 /*	//delete inactive user accounts
  $secs = 31*86400;
