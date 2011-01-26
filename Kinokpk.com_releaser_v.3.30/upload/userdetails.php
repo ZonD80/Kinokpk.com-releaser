@@ -85,7 +85,7 @@ foreach ($allowed_types as $type) {
 		case 'friends' : $addition = "(friendid={$id} OR userid={$id}) AND confirmed=1"; break;
 		case 'seeding' : $sql_query[] = "(SELECT SUM(1) FROM peers WHERE seeder=1 AND userid=$id) AS seeding"; $noq=true; break;
 		case 'leeching' : $sql_query[] = "(SELECT SUM(1) FROM peers WHERE seeder=0 AND userid=$id) AS leeching"; $noq=true; break;
-		case 'downloaded' : $sql_query[] = "(SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE snatched.finished=1 AND userid=$id AND torrents.owner<>$id) AS downloaded"; $noq=true; break;
+		case 'downloaded' : $sql_query[] = "(SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE userid=$id AND torrents.owner<>$id) AS downloaded"; $noq=true; break;
 		case 'uploaded' : $sql_query[] = "(SELECT SUM(1) FROM torrents WHERE owner=$id) AS uploaded"; $noq=true; break;
 		case 'presents' : $sql_query[] = "(SELECT SUM(1) FROM presents WHERE userid=$id) AS presents"; $noq=true; break;
 		case 'nicknames' : $sql_query[] = "(SELECT SUM(1) FROM nickhistory WHERE userid=$id) AS nicknames"; $noq=true; break;

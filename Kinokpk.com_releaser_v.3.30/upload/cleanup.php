@@ -60,20 +60,25 @@ $REL_DB->query("UPDATE cron SET cron_value=".time()." WHERE cron_name='last_clea
 $REL_DB->query("UPDATE cron SET cron_value=1 WHERE cron_name='in_cleanup'") or sqlerr(__FILE__,__LINE__);
 
 $torrents = array();
-$res = $REL_DB->query('SELECT fid,SUM(completed) AS seeders,SUM(1) AS peers, MAX(mtime) AS mtime FROM xbt_files_users GROUP BY fid') or sqlerr(__FILE__,__LINE__);
-while ($row = mysql_fetch_array($res)) {
-		$torrents[$row['fid']] = array('seeders'=>$row['seeders'],'leechers'=>($row['peers']-$row['seeders']),'time'=>$row['mtime']);
+$res = $REL_DB->query('SELECT fid,seeders,leechers,mtime FROM xbt_files') or sqlerr(__FILE__,__LINE__);
+while ($row = mysql_fetch_assoc($res)) {
+		$torrents[$row['fid']] = $row;
 }
 
 if ($torrents) {
 	foreach ($torrents AS $id=>$torrent) {
-	$REL_DB->query("UPDATE trackers SET seeders = ".(int)$torrent['seeders'].", leechers = ".(int)$torrent['leechers'].", lastchecked = {$torrent['time']} WHERE torrent = $id AND tracker='localhost'") or sqlerr(__FILE__,__LINE__);
+	$REL_DB->query("UPDATE trackers SET seeders = ".(int)$torrent['seeders'].", leechers = ".(int)$torrent['leechers'].", lastchecked = {$torrent['mtime']} WHERE torrent = $id AND tracker='localhost'") or sqlerr(__FILE__,__LINE__);
 	$ids[] = $id;
 	}
 }
 
 $REL_DB->query("UPDATE trackers SET seeders=0, leechers=0, lastchecked=$time WHERE tracker='localhost'".($ids?" AND torrent NOT IN (".implode(',',$ids).")":'')) or sqlerr(__FILE__,__LINE__);
 
+$res = $REL_DB->query("SELECT torrent, SUM(seeders) AS seeders, SUM(leechers) AS leechers FROM trackers GROUP BY torrent") or sqlerr(__FILE__,__LINE__);
+
+while ($row = mysql_fetch_assoc($res)) {
+	$REL_DB->query("UPDATE torrents SET seeders={$row['seeders']}, leechers={$row['leechers']} WHERE id={$row['torrent']}") or sqlerr(__FILE__,__LINE__);
+}
 /*	//delete inactive user accounts
  $secs = 31*86400;
  $dt = time() - $secs;

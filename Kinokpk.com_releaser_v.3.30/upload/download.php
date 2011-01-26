@@ -19,7 +19,7 @@ if (!$action) $action = trim((string)$_POST['a']);
 
 
 if ($action=='my') {
-	$r = sql_query ( "SELECT snatched.torrent AS id, torrents.name, users.username AS owner, torrents.added, torrents.owner AS userid FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent LEFT JOIN users ON torrents.owner=users.id WHERE snatched.finished=1 AND snatched.userid = {$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']} GROUP BY id ORDER BY id" ) or sqlerr ( __FILE__, __LINE__ );
+	$r = sql_query ( "SELECT snatched.torrent AS id, torrents.name, users.username AS owner, torrents.added, torrents.owner AS userid FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent LEFT JOIN users ON torrents.owner=users.id WHERE snatched.userid = {$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']} GROUP BY id ORDER BY id" ) or sqlerr ( __FILE__, __LINE__ );
 	if (!mysql_num_rows ( $r ))	stderr($REL_LANG->_("Error"),$REL_LANG->_("You have not downloaded any releases yet"));
 	$fileDir = './';
 
@@ -40,7 +40,7 @@ if ($action=='my') {
 
 	while  ($row = mysql_fetch_assoc($r)) {
 		$fn = "torrents/{$row['id']}.torrent";
-		sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = ".sqlesc($row['id']));
+		sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = ".($row['id']));
 			
 		if ($REL_CONFIG['use_xbt']) {
 			$announce_urls_list[] = ($xbt_config['listen_ipa']=='*'?$REL_CONFIG['defaultbaseurl']:"http://{$xbt_config['listen_ipa']}").":{$xbt_config['listen_port']}/".($xbt_config['auto_register']?'':"{$CURUSER['passkey']}/")."announce";
@@ -103,7 +103,7 @@ if ($row['freefor']) {
 
 $already_downloaded = @mysql_result(sql_query("SELECT 1 FROM snatched WHERE torrent = $id AND userid = {$CURUSER['id']}"),0);
 
-$rating_enabled = (($REL_CRON['rating_enabled'] && ((time()-$CURUSER['added'])>($REL_CRON['rating_freetime']*86400)) && ($id<>$CURUSER['last_downloaded']) && ($row['userid']<>$CURUSER['id']) && (get_user_class() <> UC_VIP) && !$userfree && !$row['free'] && !$already_downloaded)?true:false);
+$rating_enabled = (($REL_CRON['rating_enabled'] && ((time()-$CURUSER['added'])>($REL_CRON['rating_freetime']*86400)) && ($row['userid']<>$CURUSER['id']) && (get_user_class() <> UC_VIP) && !$userfree && !$row['free'] && !$already_downloaded)?true:false);
 
 
 if ($rating_enabled && ($CURUSER['ratingsum']<$REL_CRON['rating_downlimit'])) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('rating_low'));
@@ -133,7 +133,9 @@ if (!$magnet && !$dc_magnet) {
 }
 
 sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = ".sqlesc($id));
-if ($rating_enabled) sql_query("UPDATE users SET ratingsum = ratingsum-{$REL_CRON['rating_perdownload']}, last_downloaded=$id WHERE id={$CURUSER['id']}");
+if ($rating_enabled) sql_query("UPDATE users SET ratingsum = ratingsum-{$REL_CRON['rating_perdownload']} WHERE id={$CURUSER['id']}");
+
+$REL_DB->query("INSERT INTO snatched (userid,torrent,completedat) VALUES ({$CURUSER['id']},$id,".time().")");
 
 if ($dc_magnet) {
 	if (!$row['tiger_hash']) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_tiger'));

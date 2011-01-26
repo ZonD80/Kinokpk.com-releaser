@@ -17,7 +17,7 @@ if (! is_valid_id ( $_GET ['id'] ))
 stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 $id = ( int ) $_GET ["id"];
 
-$res = sql_query ("SELECT torrents.category, torrents.free, torrents.ratingsum, torrents.descr, SUM(trackers.seeders) AS seeders, SUM(trackers.leechers) AS leechers, torrents.banned, torrents.info_hash, torrents.tiger_hash, torrents.filename, torrents.last_action AS lastseed, torrents.name, torrents.owner, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.ismulti, torrents.numfiles, torrents.images, torrents.online, torrents.moderatedby, torrents.freefor, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, users.username, users.ratingsum AS userrating, users.class, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed FROM torrents LEFT JOIN users ON torrents.owner = users.id LEFT JOIN trackers ON torrents.id=trackers.torrent LEFT JOIN relgroups ON torrents.relgroup=relgroups.id WHERE torrents.id = $id GROUP BY torrents.id" ) or sqlerr ( __FILE__, __LINE__ );
+$res = sql_query ("SELECT torrents.category, torrents.free, torrents.ratingsum, torrents.descr, torrents.seeders, torrents.leechers, torrents.banned, torrents.info_hash, torrents.tiger_hash, torrents.filename, torrents.last_action AS lastseed, torrents.name, torrents.owner, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.times_completed, torrents.id, torrents.ismulti, torrents.numfiles, torrents.images, torrents.online, torrents.moderatedby, torrents.freefor, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, users.username, users.ratingsum AS userrating, users.class, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed FROM torrents LEFT JOIN users ON torrents.owner = users.id LEFT JOIN relgroups ON torrents.relgroup=relgroups.id WHERE torrents.id = $id GROUP BY torrents.id" ) or sqlerr ( __FILE__, __LINE__ );
 $row = mysql_fetch_array ( $res );
 $owned = $moderator = 0;
 if (get_user_class () >= UC_MODERATOR)
@@ -113,15 +113,14 @@ else {
 		$OUT .= "<strong>{$REL_LANG->say_by_key('views')}:</strong> ". $row ["views"]."<br/>";
 
 		if ($row ['filename'] != 'nofile') {
-			$OUT .= "<strong>{$REL_LANG->say_by_key('hits')}:</strong> {$row ["hits"]}"."<br/>";
-			$OUT .= "<strong>{$REL_LANG->say_by_key('snatched')}:</strong> {$row ["times_completed"]} " . $REL_LANG->say_by_key('times')."<br/>";
+			$OUT .= "<strong>{$REL_LANG->say_by_key('snatched')}:</strong> {$row ["hits"]} " . $REL_LANG->say_by_key('times')."<br/>";
 		}
 		$keepget = "";
-		$uprow = (isset ( $row ["username"] ) ? ("<a href='userdetails.php?id=" . $row ["owner"] . "'>" . get_user_class_color ( $row ['class'], $row ["username"] ) . "</a>") : "<i>Аноним</i>");
+		$uprow = (isset ( $row ["username"] ) ? ("<a href='{$REL_SEO->make_link('userdetails','id',$row ["owner"],'name',$row['username'])}'>" . get_user_class_color ( $row ['class'], $row ["username"] ) . "</a>") : "<i>Аноним</i>");
 
 
-		$OUT .= "<strong>Выложил:</strong>  $uprow $spacer ". ratearea ( $row ['userrating'], $row ['owner'], 'users' ,$CURUSER['id'])."<br/>";
-		$OUT .= "<strong>{$REL_LANG->say_by_key('vote')} за релиз:</strong> $spacer".ratearea ( $row ['ratingsum'], $id, 'torrents',(($row['owner']==$CURUSER['id'])?$id:0) )."<br/>";
+		$OUT .= "<strong>{$REL_LANG->_('Uploader')}:</strong>  $uprow $spacer ". ratearea ( $row ['userrating'], $row ['owner'], 'users' ,$CURUSER['id'])."<br/>";
+		$OUT .= "<strong>{$REL_LANG->say_by_key('vote')}:</strong> $spacer".ratearea ( $row ['ratingsum'], $id, 'torrents',(($row['owner']==$CURUSER['id'])?$id:0) )."<br/>";
 	}
 
 	if ($row ['images']) {
@@ -173,25 +172,6 @@ else {
 	if ($row ['filename'] != 'nofile')
 	tr ( $REL_LANG->say_by_key('downloading') . "<br /><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($row['name']),'dllist',1)."$keepget#seeders\" class=\"sublink\">[" . $REL_LANG->say_by_key('open_list') . "]</a>", $row ["seeders"] . " " . $REL_LANG->say_by_key('seeders_l') . ", " . $row ["leechers"] . " " . $REL_LANG->say_by_key('leechers_l') . " = " . ($row ["seeders"] + $row ["leechers"]) . " " . $REL_LANG->say_by_key('peers_l').'<br/><small>Если торрент мультитрекерный, то возможно мы не успели получить данные о количестве пиров. <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($row['name'])).'">Посмотреть данные о торренте</a></small>', 1 );
 
-	if ($row ["times_completed"] > 0) {
-		$res = sql_query ( "SELECT users.id, users.username, users.title, users.donor, users.enabled, users.warned, users.ratingsum, users.class, snatched.startedat, peers.last_action, snatched.completedat, peers.seeder, snatched.userid FROM snatched LEFT JOIN peers ON (snatched.torrent=peers.torrent AND snatched.userid=peers.userid) INNER JOIN users ON snatched.userid = users.id WHERE snatched.finished=1 AND snatched.torrent =$id AND snatched.userid<>{$row['owner']} ORDER BY users.class DESC $limit" ) or sqlerr ( __FILE__, __LINE__ );
-		$snatched_full = "<table width=100% class=main border=1 cellspacing=0 cellpadding=5>\n";
-		$snatched_full .= "<tr><td class=colhead>Юзер</td><td class=colhead>Рейтинг</td><td class=colhead align=center>Начал / Закончил</td><td class=colhead align=center>Действие</td><td class=colhead align=center>Сидирует</td><td class=colhead align=center>ЛС</td></tr>";
-			
-		while ( $arr = mysql_fetch_assoc ( $res ) ) {
-
-			$snatched_small [] = "<a href=\"".$REL_SEO->make_link('userdetails','id',$arr['userid'],'username',translit($arr["username"]))."\">" . get_user_class_color ( $arr ["class"], $arr ["username"] ) . "</a>";
-			$snatched_full .= "<tr$highlight><td><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['userid'],'username',translit($arr["username"]))."\">" . get_user_class_color ( $arr ["class"], $arr ["username"] ) . "</a>" . get_user_icons ( $arr ) . "</td><td nowrap>".ratearea($arr['ratingsum'],$arr['id'],'users',$CURUSER['id'])."</td><td align=center><nobr>" . mkprettytime($arr ["startedat"]) . "<br />" . mkprettytime($arr ["completedat"]) . "</nobr></td><td align=center><nobr>" . get_elapsed_time($arr ["last_action"]) . "</nobr></td><td align=center>" . ($arr ["seeder"] ? "<b><font color=green>Да</font>" : "<font color=red>Нет</font></b>") . "</td><td align=center><a href=\"".$REL_SEO->make_link('message','action','sendmessage','receiver',$arr['userid'])."\"><img src=pic/button_pm.gif border=\"0\"></a></td></tr>\n";
-		}
-		$snatched_full .= "</table>\n";
-			
-		if ($row ["seeders"] == 0 || ($row ["leechers"] / $row ["seeders"] >= 2))
-		$reseed_button = "<form action=\"".$REL_SEO->make_link('takereseed')."\"><input type=\"hidden\" name=\"torrent\" value=\"$id\" /><input type=\"submit\" value=\"Позвать скачавших\" /></form>";
-		if (! $_GET ["snatched"] == 1)
-		tr ( "Скачавшие<br /><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']),'snatched',1)."#snatched\" class=\"sublink\">[Посмотреть список]</a>", "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td class=bottom width=50%><i>Открыть</i></td></tr></table></div><div class=\"sp-body\">" . @implode ( ", ", $snatched_small ) . $reseed_button . '</div></div>', 1 );
-		else
-		tr ( "Скачавшие<br /><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\" class=\"sublink\" name=\"snatched\">[Cпрятать список]</a>", $snatched_full, 1 );
-	}
 	print ( '<tr><td colspan="2" align="center"><a href="'.$REL_SEO->make_link('present','type','torrent','to',$id).'">' . $REL_LANG->say_by_key('present_to_friend') . '</a></td></tr>' );
 
 

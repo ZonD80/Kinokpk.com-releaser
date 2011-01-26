@@ -56,12 +56,14 @@ insert into xbt_users (uid,torrent_pass) select id,passkey from users;
 insert into cache_stats (cache_name,cahce_value) values ('use_xbt',1);
 
 
-insert into xbt_files (info_hash, mtime, ctime) select info_hash, unix_timestamp(),unix_timestamp() from torrents;
 ALTER TABLE `users`
   DROP `passkey`,
-  DROP `passkey_ip`;
+  DROP `passkey_ip`
+  DROP `last_downloaded`,
+  DROP `last_announced`;
 
-
+ALTER TABLE  `torrents` ADD  `seeders` INT( 5 ) UNSIGNED NOT NULL DEFAULT  '0',
+ADD  `leechers` INT( 5 ) UNSIGNED NOT NULL DEFAULT  '0';
 
 ---------------------------------------------------------------------------------------------
 

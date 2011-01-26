@@ -1,25 +1,11 @@
 <?php
-
-/*
- Project: Kinokpk.com releaser
- This file is part of Kinokpk.com releaser.
- Kinokpk.com releaser is based on TBDev,
- originally by RedBeard of TorrentBits, extensively modified by
- Gartenzwerg and Yuna Scatari.
- Kinokpk.com releaser is free software;
- you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
- Kinokpk.com is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- You should have received a copy of the GNU General Public License
- along with Kinokpk.com releaser; if not, write to the
- Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- MA  02111-1307  USA
- Do not remove above lines!
+/**
+ * "Ask to reseed" processor
+ * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
+ * @package Kinokpk.com releaser
+ * @author ZonD80 <admin@kinokpk.com>
+ * @copyright (C) 2008-now, ZonD80, Germany, TorrentsBook.com
+ * @link http://dev.kinokpk.com
  */
 
 require "include/bittorrent.php";
@@ -29,7 +15,7 @@ loggedinorreturn();
 
 $id = (int) $_GET["torrent"];
 
-$res = sql_query("SELECT SUM(trackers.seeders) AS seeders, torrents.banned, SUM(trackers.leechers) AS leechers, torrents.name, torrents.times_completed, torrents.id, torrents.last_reseed AS lr FROM torrents LEFT JOIN trackers ON torrents.id=trackers.torrent WHERE torrents.id = $id GROUP BY torrents.id") or sqlerr(__FILE__, __LINE__);
+$res = sql_query("SELECT torrents.seeders, torrents.banned, torrents.leechers, torrents.name, torrents.id, torrents.last_reseed AS lr FROM torrents WHERE torrents.id = $id GROUP BY torrents.id") or sqlerr(__FILE__, __LINE__);
 $row = mysql_fetch_array($res);
 
 if (!$row || $row["banned"])
@@ -55,7 +41,7 @@ $msg = sqlesc("Здравствуйте!
 
 Надеюсь на вашу помощь!");
 
-sql_query("INSERT INTO messages (sender, receiver, poster, added, subject, msg) SELECT $CURUSER[id], userid, 0, ".time().", $subject, $msg FROM snatched WHERE torrent = $id AND userid != $CURUSER[id] AND finished = 1") or sqlerr(__FILE__, __LINE__);
+sql_query("INSERT INTO messages (sender, receiver, poster, added, subject, msg) SELECT $CURUSER[id], userid, 0, ".time().", $subject, $msg FROM snatched WHERE torrent = $id AND userid != $CURUSER[id]") or sqlerr(__FILE__, __LINE__);
 
 sql_query("UPDATE torrents SET last_reseed = ".time()." WHERE id = $id") or sqlerr(__FILE__, __LINE__);
 

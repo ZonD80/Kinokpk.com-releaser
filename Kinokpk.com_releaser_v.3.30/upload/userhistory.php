@@ -85,7 +85,7 @@ if (in_array($type,$allowed_types))
 {
 	if ($type=='uploaded') {
 		$cats = assoc_cats ();
-		$r = sql_query ( "SELECT torrents.id, torrents.name, SUM(trackers.seeders) AS seeders, torrents.added, SUM(trackers.leechers) AS leechers, torrents.category FROM torrents LEFT JOIN trackers ON torrents.id=trackers.torrent WHERE owner=$id GROUP BY torrents.id ORDER BY name" ) or sqlerr ( __FILE__, __LINE__ );
+		$r = sql_query ( "SELECT torrents.id, torrents.name, torrents.seeders, torrents.added, torrents.leechers, torrents.category FROM torrents WHERE owner=$id GROUP BY torrents.id ORDER BY name" ) or sqlerr ( __FILE__, __LINE__ );
 		if (mysql_num_rows ( $r )) {
 			$torrents = "<table class=main border=1 cellspacing=0 cellpadding=5>\n" . "<tr><td class=colhead>" . $REL_LANG->say_by_key('type') . "</td><td class=colhead>" . $REL_LANG->say_by_key('name') . "</td>" . ($REL_CONFIG ['use_ttl'] ? "<td class=colhead align=center>" . $REL_LANG->say_by_key('ttl') . "</td>" : "") . "<td class=colhead>" . $REL_LANG->say_by_key('tracker_seeders') . "</td><td class=colhead>" . $REL_LANG->say_by_key('tracker_leechers') . "</td></tr>\n";
 			while ( $a = mysql_fetch_assoc ( $r ) ) {
@@ -109,16 +109,16 @@ if (in_array($type,$allowed_types))
 	}
 	elseif ($type=='downloaded') {
 		$cats = assoc_cats ();
-		$r = sql_query ( "SELECT snatched.torrent AS id, snatched.startedat, snatched.completedat, torrents.name, SUM(trackers.seeders) AS seeders, SUM(trackers.leechers) AS leechers, torrents.category FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent LEFT JOIN trackers ON snatched.torrent=trackers.torrent WHERE snatched.finished=1 AND snatched.userid = $id AND torrents.owner<>$id GROUP BY id ORDER BY id" ) or sqlerr ( __FILE__, __LINE__ );
+		$r = sql_query ( "SELECT snatched.torrent AS id, snatched.completedat, torrents.name, torrents.seeders, torrents.leechers, torrents.category FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent WHERE snatched.userid = $id AND torrents.owner<>$id GROUP BY id ORDER BY id" ) or sqlerr ( __FILE__, __LINE__ );
 		if (mysql_num_rows ( $r )) {
-			$completed = "<table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n" . "<tr><td class=\"colhead\">Тип</td><td class=\"colhead\">Название</td><td class=\"colhead\">Раздающих</td><td class=\"colhead\">Качающих</td><td class=\"colhead\">Начал / Закончил</td></tr>\n";
+			$completed = "<table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n" . "<tr><td class=\"colhead\">Тип</td><td class=\"colhead\">Название</td><td class=\"colhead\">Раздающих</td><td class=\"colhead\">Качающих</td><td class=\"colhead\">{$REL_LANG->_('Date')}</td></tr>\n";
 			if ($id==$CURUSER['id']) $completed.= ('<tr><td align="center" colspan="5">'.$REL_LANG->_('You can download all previous releases in one ZIP-archive without rating decrease<br/><a href="%s">View downloaded releases</a> or <a href="%s">Download ZIP-archive with torrents</a>',$REL_SEO->make_link('userhistory','id',$id,'type','downloaded'),$REL_SEO->make_link('download','a','my')).'</td></tr>');
 			while ( $a = mysql_fetch_array ( $r ) ) {
 				$rescatids = explode ( ',', $a ['category'] );
 				foreach ( $rescatids as $rescatid )
 				$a ['cat_names'] [] = "<a href=\"".$REL_SEO->make_link('browse','cat',$rescatid)."\">" . $cats [$rescatid] . "</a>";
 				$cat = implode ( ',<br />', $a ['cat_names'] );
-				$completed .= "<tr><td style=\"padding: 0px\">$cat</td><td><nobr><a href=\"".$REL_SEO->make_link('details','id',$a["id"],'name',translit($a["name"]))."\"><b>" . $a ["name"] . "</b></a></nobr></td>" . "<td align=\"right\">$a[seeders]</td><td align=\"right\">$a[leechers]</td><td align=\"center\"><nobr>" . mkprettytime ( $a [startedat] ) . "<br />" . mkprettytime ( $a [completedat] ) . "</nobr></td></tr>\n";
+				$completed .= "<tr><td style=\"padding: 0px\">$cat</td><td><nobr><a href=\"".$REL_SEO->make_link('details','id',$a["id"],'name',translit($a["name"]))."\"><b>" . $a ["name"] . "</b></a></nobr></td>" . "<td align=\"right\">$a[seeders]</td><td align=\"right\">$a[leechers]</td><td align=\"center\">" . mkprettytime ( $a [completedat] ) . "</td></tr>\n";
 				$hastorrents = true;
 			}
 			if ($hastorrents) $completed .= "</table>";
@@ -128,7 +128,7 @@ if (in_array($type,$allowed_types))
 	}
 	elseif ($type=='leeching') {
 		$cats = assoc_cats ();
-		$res = sql_query ( "SELECT peers.torrent, added, torrents.name AS torrentname, size, category, SUM(trackers.seeders) AS seeders, SUM(trackers.leechers) AS leechers FROM peers LEFT JOIN torrents ON peers.torrent = torrents.id LEFT JOIN trackers ON peers.torrent=trackers.torrent WHERE userid = $id AND seeder=0 GROUP BY peers.torrent" ) or sqlerr ( __FILE__, __LINE__ );
+		$res = sql_query ( "SELECT peers.torrent, added, torrents.name AS torrentname, size, category, torrents.seeders, torrents.leechers FROM peers LEFT JOIN torrents ON peers.torrent = torrents.id WHERE userid = $id AND seeder=0 GROUP BY peers.torrent" ) or sqlerr ( __FILE__, __LINE__ );
 		if (mysql_num_rows ( $res ) > 0)
 		$leeching = maketable ( $res );
 		if (!$leeching) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
@@ -136,7 +136,7 @@ if (in_array($type,$allowed_types))
 	}
 	elseif ($type=='seeding') {
 		$cats = assoc_cats ();
-		$res = sql_query ( "SELECT peers.torrent, added, torrents.name AS torrentname, size, category, SUM(trackers.seeders) AS seeders, SUM(trackers.leechers) AS leechers FROM peers LEFT JOIN torrents ON peers.torrent = torrents.id LEFT JOIN trackers ON peers.torrent=trackers.torrent WHERE userid = $id AND seeder=1 GROUP BY peers.torrent" ) or sqlerr ( __FILE__, __LINE__ );
+		$res = sql_query ( "SELECT peers.torrent, added, torrents.name AS torrentname, size, category, torrents.seeders, torrents.leechers FROM peers LEFT JOIN torrents ON peers.torrent = torrents.id WHERE userid = $id AND seeder=1 GROUP BY peers.torrent" ) or sqlerr ( __FILE__, __LINE__ );
 		if (mysql_num_rows ( $res ) > 0)
 		$seeding = maketable ( $res );
 		if (!$seeding) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));

@@ -9,7 +9,7 @@ if (!defined('BLOCK_FILE')) {
 $blocktitle = $REL_LANG->say_by_key('helpseed');
 $content .= "<div align=\"center\"><font color=\"#FF6633\"><b>".$REL_LANG->say_by_key('help_seed')."</b></font></div>
 <table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"10\"><tr><td class=\"text\">";
-$res = sql_query("SELECT torrents.id, name, SUM(trackers.seeders) AS seeders, SUM(trackers.leechers) AS leechers FROM torrents LEFT JOIN trackers ON torrents.id = trackers.torrent WHERE (seeders > 0 AND leechers = 0) OR (leechers / seeders >= 4) GROUP BY torrents.id ORDER BY leechers DESC LIMIT 20") or sqlerr(__FILE__, __LINE__);
+$res = sql_query("SELECT id, name, seeders, leechers FROM torrents WHERE (seeders > 0 AND leechers = 0) OR (leechers / seeders >= 4) ORDER BY leechers DESC LIMIT 20") or sqlerr(__FILE__, __LINE__);
 if (mysql_num_rows($res) > 0) {
 	while ($arr = mysql_fetch_assoc($res)) {
 		$torrname = $arr['name'];
