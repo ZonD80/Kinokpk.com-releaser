@@ -9,6 +9,7 @@
  */
 define('ROOT_PATH',str_replace('update','',dirname(__FILE__)));
 
+define('REL_CACHEDRIVER','native');
 
 if ($_GET['setlang']) {
 	setcookie('lang',(string)$_GET['setlang']);
@@ -208,12 +209,74 @@ elseif ($step==6) {
 	hr();
 	print $REL_LANG->_('<font color="green">This step of update was successed</font>');
 	hr();
-	print $REL_LANG->_('Next step will clear caches and finalize update');
+	print $REL_LANG->_('Next step will set cache driver to native, <a target="_blank" href="http://dev.kinokpk.com/viewtopic.php?f=15&t=2470">read more on developer forum</a>. <b>Please set chmod 666 to include/secrets.php before continue.</b>');
 	hr();
 	cont(7);
 }
 
 elseif ($step==7) {
+
+$secret = COOKIE_SECRET;
+
+ 	$dbconfig = <<<HTML
+<?php
+
+/**
+
+ * Passwords. Just for fun
+
+ * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
+
+ * @package Kinokpk.com releaser
+
+ * @author ZonD80 <admin@kinokpk.com>
+
+ * @copyright (C) 2008-now, ZonD80, Germany, TorrentsBook.com
+
+ * @link http://dev.kinokpk.com
+
+ */
+
+
+
+if(!defined('IN_TRACKER') && !defined('IN_ANNOUNCE')) die("Direct access to this page not allowed");
+
+
+
+\$mysql_host = '$mysql_host';
+
+\$mysql_user = '$mysql_user';
+
+\$mysql_pass = '$mysql_pass';
+
+\$mysql_db = '$mysql_db';
+
+\$mysql_charset = '$mysql_charset';
+
+
+define("COOKIE_SECRET",'$secret');
+/**
+ * Set cache driver, available "native" and "memcached" now
+ * @var string
+ */
+define("REL_CACHEDRIVER",'native');
+?>
+HTML;
+
+
+
+	if (file_put_contents(ROOT_PATH.'include/secrets.php', $dbconfig)) {
+		print $REL_LANG->_('Configuration saved to file');
+	} else {
+		print $REL_LANG->_('Configuration DOES NOT saved to file due write error');
+	}
+		print $REL_LANG->_('<font color="green">This step of update was successed</font>');
+	hr();
+	print $REL_LANG->_('Next step will clear caches and finalize update');
+	hr();
+	cont(8);
+}
+elseif ($step==8) {
 	$REL_CACHE->clearAllCache();
 	print $REL_LANG->_('<h1>Update to 3.30 complete. Please delete "install" and "update" folders from your server.</h1>');
 	hr();
