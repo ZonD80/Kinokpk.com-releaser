@@ -27,3 +27,6 @@ upd_ch8=Next step will clear caches and finalize update
 update_complete=<h1>Update to 3.30 complete. Please delete "install" and "update" folders from your server.</h1>
 donate=Donate to project:
 max_len=To increase maximum availabe user notifications set <br/><pre>group_concat_max_len</pre> value in your mysql configuration at least to 1Mbyte
+conf_saved=Configuration saved to file
+conf_not_saved=Configuration DOES NOT saved to file due write error
+upd_ch9=Next step will set cache driver to native, <a target="_blank" href="http://dev.kinokpk.com/viewtopic.php?f=15&t=2470">read more on developer forum</a>. <b>Please set chmod 666 to include/secrets.php before continue.</b>
