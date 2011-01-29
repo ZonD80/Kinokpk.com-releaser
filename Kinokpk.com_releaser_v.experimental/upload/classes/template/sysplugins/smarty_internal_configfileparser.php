@@ -122,13 +122,13 @@ class Smarty_Internal_Configfileparser#line 79 "smarty_internal_configfileparser
     private static $escapes_single = Array('\\' => '\\',
                                           '\'' => '\'');
     private static function parse_single_quoted_string($qstr) {
-        $escaped_string = substr($qstr, 1, mb_strlen($qstr)-2); //remove outer quotes
+        $escaped_string = substr($qstr, 1, strlen($qstr)-2); //remove outer quotes
 
         $ss = preg_split('/(\\\\.)/', $escaped_string, -1, PREG_SPLIT_DELIM_CAPTURE);
 
         $str = "";
         foreach ($ss as $s) {
-            if (mb_strlen($s) === 2 && $s[0] === '\\') {
+            if (strlen($s) === 2 && $s[0] === '\\') {
                 if (isset(self::$escapes_single[$s[1]])) {
                     $s = self::$escapes_single[$s[1]];
                 }
@@ -141,12 +141,12 @@ class Smarty_Internal_Configfileparser#line 79 "smarty_internal_configfileparser
     }
 
     private static function parse_double_quoted_string($qstr) {
-        $inner_str = substr($qstr, 1, mb_strlen($qstr)-2);
+        $inner_str = substr($qstr, 1, strlen($qstr)-2);
         return stripcslashes($inner_str);
     }
 
     private static function parse_tripple_double_quoted_string($qstr) {
-        $inner_str = substr($qstr, 3, mb_strlen($qstr)-6);
+        $inner_str = substr($qstr, 3, strlen($qstr)-6);
         return stripcslashes($inner_str);
     }
 
@@ -164,7 +164,7 @@ class Smarty_Internal_Configfileparser#line 79 "smarty_internal_configfileparser
 
     private function add_global_vars(Array $vars) {
         if (!isset($this->compiler->config_data['vars'])) {
-	    $this->compiler->config_data['vars'] = Array();
+        $this->compiler->config_data['vars'] = Array();
         }
         foreach ($vars as $var) {
             $this->set_var($var, $this->compiler->config_data);
@@ -404,7 +404,7 @@ static public $yy_action = array(
                         $this->yystack[$this->yyidx]->stateno,
                         self::$yyRuleInfo[$yyruleno]['lhs']);
                     if (isset(self::$yyExpectedTokens[$nextstate])) {
-		        $expected = array_merge($expected, self::$yyExpectedTokens[$nextstate]);
+                $expected = array_merge($expected, self::$yyExpectedTokens[$nextstate]);
                             if (in_array($token,
                                   self::$yyExpectedTokens[$nextstate], true)) {
                             $this->yyidx = $yyidx;
@@ -439,8 +439,8 @@ static public $yy_action = array(
             }
             break;
         } while (true);
-	$this->yyidx = $yyidx;
-	$this->yystack = $stack;
+    $this->yyidx = $yyidx;
+    $this->yystack = $stack;
         return array_unique($expected);
     }
 
@@ -868,4 +868,5 @@ static public $yy_action = array(
         } while ($yymajor != self::YYNOCODE && $this->yyidx >= 0);
     }
 }
+
 ?>

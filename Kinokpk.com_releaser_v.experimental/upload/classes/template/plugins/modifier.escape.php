@@ -1,12 +1,11 @@
 <?php
-
 /**
  * Smarty plugin
  * 
  * @package Smarty
  * @subpackage PluginsModifier
  */
-
+ 
 /**
  * Smarty escape modifier plugin
  * 
@@ -30,8 +29,8 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = SMARTY_
             $rep = (array)$replacements;
             foreach ((array)$needles as $key => $needle) {
                 $replacement = $rep[$key];
-                $needle_len = mb_mb_strlen($needle);
-                $replacement_len = mb_mb_strlen($replacement);
+                $needle_len = mb_strlen($needle);
+                $replacement_len = mb_strlen($replacement);
                 $pos = mb_strpos($haystack, $needle, 0);
                 while ($pos !== false) {
                     $haystack = mb_substr($haystack, 0, $pos) . $replacement
@@ -62,21 +61,21 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = SMARTY_
         case 'hex': 
             // escape every character into hex
             $return = '';
-            for ($x = 0; $x < mb_strlen($string); $x++) {
+            for ($x = 0; $x < strlen($string); $x++) {
                 $return .= '%' . bin2hex($string[$x]);
             } 
             return $return;
 
         case 'hexentity':
             $return = '';
-            for ($x = 0; $x < mb_strlen($string); $x++) {
+            for ($x = 0; $x < strlen($string); $x++) {
                 $return .= '&#x' . bin2hex($string[$x]) . ';';
             } 
             return $return;
 
         case 'decentity':
             $return = '';
-            for ($x = 0; $x < mb_strlen($string); $x++) {
+            for ($x = 0; $x < strlen($string); $x++) {
                 $return .= '&#' . ord($string[$x]) . ';';
             } 
             return $return;
@@ -96,7 +95,7 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = SMARTY_
         case 'nonstd': 
             // escape non-standard chars, such as ms document quotes
             $_res = '';
-            for($_i = 0, $_len = mb_strlen($string); $_i < $_len; $_i++) {
+            for($_i = 0, $_len = strlen($string); $_i < $_len; $_i++) {
                 $_ord = ord(substr($string, $_i, 1)); 
                 // non-standard char, escape it
                 if ($_ord >= 126) {

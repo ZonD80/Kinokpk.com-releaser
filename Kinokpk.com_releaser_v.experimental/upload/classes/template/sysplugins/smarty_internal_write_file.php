@@ -1,23 +1,24 @@
 <?php
 
 /**
-* Smarty write file plugin
-* 
-* @package Smarty
-* @subpackage PluginsInternal
-* @author Monte Ohrt 
-*/
+ * Smarty write file plugin
+ * 
+ * @package Smarty
+ * @subpackage PluginsInternal
+ * @author Monte Ohrt 
+ */
+
 /**
-* Smarty Internal Write File Class
-*/
+ * Smarty Internal Write File Class
+ */
 class Smarty_Internal_Write_File {
     /**
-    * Writes file in a save way to disk
-    * 
-    * @param string $_filepath complete filepath
-    * @param string $_contents file content
-    * @return boolean true
-    */
+     * Writes file in a save way to disk
+     * 
+     * @param string $_filepath complete filepath
+     * @param string $_contents file content
+     * @return boolean true
+     */
     public static function writeFile($_filepath, $_contents, $smarty)
     {
         $old_umask = umask(0);
@@ -29,11 +30,17 @@ class Smarty_Internal_Write_File {
         // write to tmp file, then move to overt file lock race condition
         $_tmp_file = tempnam($_dirpath, 'wrt');
 
-        if (!file_put_contents($_tmp_file, $_contents)) {
-            umask($old_umask);
-            throw new Exception("unable to write file {$_tmp_file}");
+	    if (!($fd = @fopen($_tmp_file, 'wb'))) {
+        	$_tmp_file = $_dirpath . DS . uniqid('wrt');
+        	if (!($fd = @fopen($_tmp_file, 'wb'))) {
+            throw new SmartyException("unable to write file {$_tmp_file}");
             return false;
-        } 
+        	}
+   		 }
+
+    	fwrite($fd, $_contents);
+    	fclose($fd);
+
         // remove original file
         if (file_exists($_filepath))
             @unlink($_filepath); 

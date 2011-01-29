@@ -1,55 +1,54 @@
 <?php
 /**
-* Smarty plugin
-* 
-* @package Smarty
-* @subpackage PluginsFunction
-*/
+ * Smarty plugin
+ * 
+ * @package Smarty
+ * @subpackage PluginsFunction
+ */
 
 /**
-* Smarty {mailto} function plugin
-* 
-* Type:     function<br>
-* Name:     mailto<br>
-* Date:     May 21, 2002
-* Purpose:  automate mailto address link creation, and optionally
-*            encode them.<br>
-* 
-* Examples:
-* <pre>
-* {mailto address="me@domain.com"}
-* {mailto address="me@domain.com" encode="javascript"}
-* {mailto address="me@domain.com" encode="hex"}
-* {mailto address="me@domain.com" subject="Hello to you!"}
-* {mailto address="me@domain.com" cc="you@domain.com,they@domain.com"}
-* {mailto address="me@domain.com" extra='class="mailto"'}
-* </pre>
-* 
-* @link http://smarty.php.net/manual/en/language.function.mailto.php {mailto}
-          (Smarty online manual)
-* @version 1.2
-* @author Monte Ohrt <monte at ohrt dot com> 
-* @author credits to Jason Sweat (added cc, bcc and subject functionality) 
-* @param array $params parameters
-* Input:<br>
-*          - address = e-mail address
-*          - text = (optional) text to display, default is address
-*          - encode = (optional) can be one of:
-*                 * none : no encoding (default)
-*                 * javascript : encode with javascript
-*                 * javascript_charcode : encode with javascript charcode
-*                 * hex : encode with hexidecimal (no javascript)
-*          - cc = (optional) address(es) to carbon copy
-*          - bcc = (optional) address(es) to blind carbon copy
-*          - subject = (optional) e-mail subject
-*          - newsgroups = (optional) newsgroup(s) to post to
-*          - followupto = (optional) address(es) to follow up to
-*          - extra = (optional) extra tags for the href link
-* @param object $smarty Smarty object
-* @param object $template template object
-* @return string 
-*/
-function smarty_function_mailto($params, $smarty, $template)
+ * Smarty {mailto} function plugin
+ * 
+ * Type:     function<br>
+ * Name:     mailto<br>
+ * Date:     May 21, 2002
+ * Purpose:  automate mailto address link creation, and optionally
+ *            encode them.<br>
+ * 
+ * Examples:
+ * <pre>
+ * {mailto address="me@domain.com"}
+ * {mailto address="me@domain.com" encode="javascript"}
+ * {mailto address="me@domain.com" encode="hex"}
+ * {mailto address="me@domain.com" subject="Hello to you!"}
+ * {mailto address="me@domain.com" cc="you@domain.com,they@domain.com"}
+ * {mailto address="me@domain.com" extra='class="mailto"'}
+ * </pre>
+ * 
+ * @link http://smarty.php.net/manual/en/language.function.mailto.php {mailto}
+ *          (Smarty online manual)
+ * @version 1.2
+ * @author Monte Ohrt <monte at ohrt dot com> 
+ * @author credits to Jason Sweat (added cc, bcc and subject functionality) 
+ * @param array $params parameters
+ * Input:<br>
+ *          - address = e-mail address
+ *          - text = (optional) text to display, default is address
+ *          - encode = (optional) can be one of:
+ *                 * none : no encoding (default)
+ *                 * javascript : encode with javascript
+ *                 * javascript_charcode : encode with javascript charcode
+ *                 * hex : encode with hexidecimal (no javascript)
+ *          - cc = (optional) address(es) to carbon copy
+ *          - bcc = (optional) address(es) to blind carbon copy
+ *          - subject = (optional) e-mail subject
+ *          - newsgroups = (optional) newsgroup(s) to post to
+ *          - followupto = (optional) address(es) to follow up to
+ *          - extra = (optional) extra tags for the href link
+ * @param object $template template object
+ * @return string 
+ */
+function smarty_function_mailto($params, $template)
 {
     $extra = '';
 
@@ -105,7 +104,7 @@ function smarty_function_mailto($params, $smarty, $template)
         $string = 'document.write(\'<a href="mailto:' . $address . '" ' . $extra . '>' . $text . '</a>\');';
 
         $js_encode = '';
-        for ($x = 0; $x < mb_strlen($string); $x++) {
+        for ($x = 0; $x < strlen($string); $x++) {
             $js_encode .= '%' . bin2hex($string[$x]);
         } 
 
@@ -113,7 +112,7 @@ function smarty_function_mailto($params, $smarty, $template)
     } elseif ($encode == 'javascript_charcode') {
         $string = '<a href="mailto:' . $address . '" ' . $extra . '>' . $text . '</a>';
 
-        for($x = 0, $y = mb_strlen($string); $x < $y; $x++) {
+        for($x = 0, $y = strlen($string); $x < $y; $x++) {
             $ord[] = ord($string[$x]);
         } 
 
@@ -134,7 +133,7 @@ function smarty_function_mailto($params, $smarty, $template)
             return;
         } 
         $address_encode = '';
-        for ($x = 0; $x < mb_strlen($address); $x++) {
+        for ($x = 0; $x < strlen($address); $x++) {
             if (preg_match('!\w!', $address[$x])) {
                 $address_encode .= '%' . bin2hex($address[$x]);
             } else {
@@ -142,7 +141,7 @@ function smarty_function_mailto($params, $smarty, $template)
             } 
         } 
         $text_encode = '';
-        for ($x = 0; $x < mb_strlen($text); $x++) {
+        for ($x = 0; $x < strlen($text); $x++) {
             $text_encode .= '&#x' . bin2hex($text[$x]) . ';';
         } 
 

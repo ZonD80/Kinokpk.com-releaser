@@ -1,7 +1,6 @@
 <?php
 /**
  * Smarty plugin
- * 
  * @package Smarty
  * @subpackage PluginsModifier
  */
@@ -30,8 +29,8 @@ function smarty_modifier_replace($string, $search, $replace)
             $rep = (array)$replacements;
             foreach ((array)$needles as $key => $needle) {
                 $replacement = $rep[$key];
-                $needle_len = mb_mb_strlen($needle);
-                $replacement_len = mb_mb_strlen($replacement);
+                $needle_len = mb_strlen($needle);
+                $replacement_len = mb_strlen($replacement);
                 $pos = mb_strpos($haystack, $needle, 0);
                 while ($pos !== false) {
                     $haystack = mb_substr($haystack, 0, $pos) . $replacement

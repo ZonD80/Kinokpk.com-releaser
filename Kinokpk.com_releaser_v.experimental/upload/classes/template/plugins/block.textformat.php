@@ -1,38 +1,37 @@
 <?php
 /**
-* Smarty plugin to format text blocks
-*
-* @package Smarty
-* @subpackage PluginsBlock
-*/
+ * Smarty plugin to format text blocks
+ *
+ * @package Smarty
+ * @subpackage PluginsBlock
+ */
 
 /**
-* Smarty {textformat}{/textformat} block plugin
-* 
-* Type:     block function<br>
-* Name:     textformat<br>
-* Purpose:  format text a certain way with preset styles
-*            or custom wrap/indent settings<br>
-* 
-* @link http://smarty.php.net/manual/en/language.function.textformat.php {textformat}
-       (Smarty online manual)
-* @param array $params parameters
-* <pre>
-* Params:   style: string (email)
-*            indent: integer (0)
-*            wrap: integer (80)
-*            wrap_char string ("\n")
-*            indent_char: string (" ")
-*            wrap_boundary: boolean (true)
-* </pre>
-* @author Monte Ohrt <monte at ohrt dot com> 
-* @param string $content contents of the block
-* @param object $smarty Smarty object
-* @param boolean &$repeat repeat flag
-* @param object $template template object
-* @return string content re-formatted
-*/
-function smarty_block_textformat($params, $content, $smarty, &$repeat, $template)
+ * Smarty {textformat}{/textformat} block plugin
+ * 
+ * Type:     block function<br>
+ * Name:     textformat<br>
+ * Purpose:  format text a certain way with preset styles
+ *            or custom wrap/indent settings<br>
+ * 
+ * @link http://smarty.php.net/manual/en/language.function.textformat.php {textformat}
+ *       (Smarty online manual)
+ * @param array $params parameters
+ * <pre>
+ * Params:   style: string (email)
+ *            indent: integer (0)
+ *            wrap: integer (80)
+ *            wrap_char string ("\n")
+ *            indent_char: string (" ")
+ *            wrap_boundary: boolean (true)
+ * </pre>
+ * @author Monte Ohrt <monte at ohrt dot com> 
+ * @param string $content contents of the block
+ * @param object $template template object
+ * @param boolean &$repeat repeat flag
+ * @return string content re-formatted
+ */
+function smarty_block_textformat($params, $content, $template, &$repeat)
 {
     if (is_null($content)) {
         return;
@@ -67,7 +66,7 @@ function smarty_block_textformat($params, $content, $smarty, &$repeat, $template
                 break;
 
             default:
-                $smarty->trigger_error("textformat: unknown attribute '$_key'");
+                trigger_error("textformat: unknown attribute '$_key'");
         } 
     } 
 

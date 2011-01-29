@@ -1,6 +1,7 @@
 <?php
 /**
  * Smarty plugin
+ *
  * @package Smarty
  * @subpackage PluginsFunction
  */
@@ -38,10 +39,11 @@
  * @author credit to Jason Sweat <jsweat_php@yahoo.com>
  * @version  1.3
  * @param array
- * @param Smarty
+ * @param object $template template object
  * @return string|null
  */
-function smarty_function_cycle($params, $smarty)
+
+function smarty_function_cycle($params, $template)
 {
     static $cycle_vars;
     
@@ -52,7 +54,7 @@ function smarty_function_cycle($params, $smarty)
             
     if (!in_array('values', array_keys($params))) {
         if(!isset($cycle_vars[$name]['values'])) {
-            $smarty->trigger_error("cycle: missing 'values' parameter");
+            trigger_error("cycle: missing 'values' parameter");
             return;
         }
     } else {
@@ -81,7 +83,7 @@ function smarty_function_cycle($params, $smarty)
     
     if (isset($params['assign'])) {
         $print = false;
-        $smarty->assign($params['assign'], $cycle_array[$cycle_vars[$name]['index']]);
+        $template->assign($params['assign'], $cycle_array[$cycle_vars[$name]['index']]);
     }
         
     if($print) {
@@ -100,4 +102,5 @@ function smarty_function_cycle($params, $smarty)
     
     return $retval;
 }
+
 ?>

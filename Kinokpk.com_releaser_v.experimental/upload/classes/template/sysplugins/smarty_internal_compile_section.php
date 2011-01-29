@@ -1,35 +1,39 @@
 <?php
 /**
-* Smarty Internal Plugin Compile Section
-* 
-* Compiles the {section} {sectionelse} {/section} tags
-* 
-* @package Smarty
-* @subpackage Compiler
-* @author Uwe Tews 
-*/
+ * Smarty Internal Plugin Compile Section
+ * 
+ * Compiles the {section} {sectionelse} {/section} tags
+ * 
+ * @package Smarty
+ * @subpackage Compiler
+ * @author Uwe Tews 
+ */
+
 /**
-* Smarty Internal Plugin Compile Section Class
-*/
+ * Smarty Internal Plugin Compile Section Class
+ */
 class Smarty_Internal_Compile_Section extends Smarty_Internal_CompileBase {
+	// attribute definitions
+    public $required_attributes = array('name', 'loop');
+   	public $shorttag_order = array('name', 'loop');
+    public $optional_attributes = array('start', 'step', 'max', 'show'); 
+
     /**
-    * Compiles code for the {section} tag
-    * 
-    * @param array $args array with attributes from parser
-    * @param object $compiler compiler object
-    * @return string compiled code
-    */
+     * Compiles code for the {section} tag
+     * 
+     * @param array $args array with attributes from parser
+     * @param object $compiler compiler object
+     * @return string compiled code
+     */
     public function compile($args, $compiler)
     {
         $this->compiler = $compiler;
-        $this->required_attributes = array('name', 'loop');
-        $this->optional_attributes = array('start', 'step', 'max', 'show'); 
         // check and get attributes
         $_attr = $this->_get_attributes($args);
 
         $this->_open_tag('section', array('section',$this->compiler->nocache));
-		// maybe nocache because of nocache variables
-		$this->compiler->nocache = $this->compiler->nocache | $this->compiler->tag_nocache;
+        // maybe nocache because of nocache variables
+        $this->compiler->nocache = $this->compiler->nocache | $this->compiler->tag_nocache;
 
         $output = "<?php ";
 
@@ -116,12 +120,12 @@ class Smarty_Internal_Compile_Section extends Smarty_Internal_CompileBase {
 */
 class Smarty_Internal_Compile_Sectionelse extends Smarty_Internal_CompileBase {
     /**
-    * Compiles code for the {sectionelse} tag
-    * 
-    * @param array $args array with attributes from parser
-    * @param object $compiler compiler object
-    * @return string compiled code
-    */
+     * Compiles code for the {sectionelse} tag
+     * 
+     * @param array $args array with attributes from parser
+     * @param object $compiler compiler object
+     * @return string compiled code
+     */
     public function compile($args, $compiler)
     {
         $this->compiler = $compiler; 
@@ -136,24 +140,24 @@ class Smarty_Internal_Compile_Sectionelse extends Smarty_Internal_CompileBase {
 } 
 
 /**
-* Smarty Internal Plugin Compile Sectionclose Class
-*/
+ * Smarty Internal Plugin Compile Sectionclose Class
+ */
 class Smarty_Internal_Compile_Sectionclose extends Smarty_Internal_CompileBase {
     /**
-    * Compiles code for the {/section} tag
-    * 
-    * @param array $args array with attributes from parser
-    * @param object $compiler compiler object
-    * @return string compiled code
-    */
+     * Compiles code for the {/section} tag
+     * 
+     * @param array $args array with attributes from parser
+     * @param object $compiler compiler object
+     * @return string compiled code
+     */
     public function compile($args, $compiler)
     {
         $this->compiler = $compiler; 
         // check and get attributes
         $_attr = $this->_get_attributes($args);
 
- 		// must endblock be nocache?
-		if ($this->compiler->nocache) {
+        // must endblock be nocache?
+        if ($this->compiler->nocache) {
                  $this->compiler->tag_nocache = true;
         }
 
@@ -165,6 +169,5 @@ class Smarty_Internal_Compile_Sectionclose extends Smarty_Internal_CompileBase {
             return "<?php endfor; endif; ?>";
     } 
 } 
-
 
 ?>

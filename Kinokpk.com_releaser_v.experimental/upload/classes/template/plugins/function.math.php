@@ -7,7 +7,6 @@
  * @subpackage PluginsFunction
  */
 
-
 /**
  * Smarty {math} function plugin
  *
@@ -18,11 +17,10 @@
  *          (Smarty online manual)
  * @author   Monte Ohrt <monte at ohrt dot com>
  * @param array $params parameters
- * @param object $smarty Smarty object
  * @param object $template template object
  * @return string|null
  */
-function smarty_function_math($params, $smarty, $template)
+function smarty_function_math($params, $template)
 {
     // be sure equation parameter is present
     if (empty($params['equation'])) {
@@ -53,7 +51,7 @@ function smarty_function_math($params, $smarty, $template)
     foreach($params as $key => $val) {
         if ($key != "equation" && $key != "format" && $key != "assign") {
             // make sure value is not empty
-            if (mb_strlen($val)==0) {
+            if (strlen($val)==0) {
                 trigger_error("math: parameter $key is empty",E_USER_WARNING);
                 return;
             }
@@ -64,7 +62,7 @@ function smarty_function_math($params, $smarty, $template)
             $equation = preg_replace("/\b$key\b/", " \$params['$key'] ", $equation);
         }
     }
-
+    $smarty_math_result = null;
     eval("\$smarty_math_result = ".$equation.";");
 
     if (empty($params['format'])) {
@@ -81,4 +79,5 @@ function smarty_function_math($params, $smarty, $template)
         }
     }
 }
+
 ?>

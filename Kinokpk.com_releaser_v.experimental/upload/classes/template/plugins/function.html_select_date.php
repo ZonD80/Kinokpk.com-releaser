@@ -1,51 +1,47 @@
 <?php
 /**
-* Smarty plugin
-* 
-* @package Smarty
-* @subpackage PluginsFunction
-*/
+ * Smarty plugin
+ * 
+ * @package Smarty
+ * @subpackage PluginsFunction
+ */
 
 /**
-* Smarty {html_select_date} plugin
-* 
-* Type:     function<br>
-* Name:     html_select_date<br>
-* Purpose:  Prints the dropdowns for date selection.
-* 
-* ChangeLog:<br>
-*            - 1.0 initial release
-*            - 1.1 added support for +/- N syntax for begin
-*                 and end year values. (Monte)
-*            - 1.2 added support for yyyy-mm-dd syntax for
-*                 time value. (Jan Rosier)
-*            - 1.3 added support for choosing format for
-*                 month values (Gary Loescher)
-*            - 1.3.1 added support for choosing format for
-*                 day values (Marcus Bointon)
-*            - 1.3.2 support negative timestamps, force year
-*              dropdown to include given date unless explicitly set (Monte)
-*            - 1.3.4 fix behaviour of 0000-00-00 00:00:00 dates to match that
-*              of 0000-00-00 dates (cybot, boots)
-* 
-* @link http://smarty.php.net/manual/en/language.function.html.select.date.php {html_select_date}
-      (Smarty online manual)
-* @version 1.3.4
-* @author Andrei Zmievski 
-* @author Monte Ohrt <monte at ohrt dot com> 
-* @param array $params parameters
-* @param object $smarty Smarty object
-* @param object $template template object
-* @return string 
-*/
-function smarty_function_html_select_date($params, $smarty, $template)
+ * Smarty {html_select_date} plugin
+ * 
+ * Type:     function<br>
+ * Name:     html_select_date<br>
+ * Purpose:  Prints the dropdowns for date selection.
+ * 
+ * ChangeLog:<br>
+ *            - 1.0 initial release
+ *            - 1.1 added support for +/- N syntax for begin
+ *                 and end year values. (Monte)
+ *            - 1.2 added support for yyyy-mm-dd syntax for
+ *                 time value. (Jan Rosier)
+ *            - 1.3 added support for choosing format for
+ *                 month values (Gary Loescher)
+ *            - 1.3.1 added support for choosing format for
+ *                 day values (Marcus Bointon)
+ *            - 1.3.2 support negative timestamps, force year
+ *              dropdown to include given date unless explicitly set (Monte)
+ *            - 1.3.4 fix behaviour of 0000-00-00 00:00:00 dates to match that
+ *              of 0000-00-00 dates (cybot, boots)
+ * 
+ * @link http://smarty.php.net/manual/en/language.function.html.select.date.php {html_select_date}
+ *      (Smarty online manual)
+ * @version 1.3.4
+ * @author Andrei Zmievski 
+ * @author Monte Ohrt <monte at ohrt dot com> 
+ * @param array $params parameters
+ * @param object $template template object
+ * @return string 
+ */
+function smarty_function_html_select_date($params, $template)
 {
     require_once(SMARTY_PLUGINS_DIR . 'shared.escape_special_chars.php');
     require_once(SMARTY_PLUGINS_DIR . 'shared.make_timestamp.php');
     require_once(SMARTY_PLUGINS_DIR . 'function.html_options.php');
-    //$smarty->loadPlugin('Smarty_shared_escape_special_chars');
-    //$smarty->loadPlugin('Smarty_shared_make_timestamp');
-    //$smarty->loadPlugin('Smarty_function_html_options');
 
     /* Default values. */
     $prefix = "Date_";
@@ -169,7 +165,7 @@ function smarty_function_html_select_date($params, $smarty, $template)
             $start_year = strftime('%Y') - $match[2];
         } 
     } 
-    if (mb_strlen($time[0]) > 0) {
+    if (strlen($time[0]) > 0) {
         if ($start_year > $time[0] && !isset($params['start_year'])) {
             // force start year to include given date if not explicitly set
             $start_year = $time[0];
@@ -219,7 +215,7 @@ function smarty_function_html_select_date($params, $smarty, $template)
                 'values' => $month_values,
                 'selected' => (int)$time[1] ? strftime($month_value_format, mktime(0, 0, 0, (int)$time[1], 1, 2000)) : '',
                 'print_result' => false),
-            $smarty, $template);
+                 $template);
         $month_result .= '</select>';
     } 
 
@@ -255,7 +251,7 @@ function smarty_function_html_select_date($params, $smarty, $template)
                 'values' => $day_values,
                 'selected' => $time[2],
                 'print_result' => false),
-            $smarty, $template);
+             $template);
         $day_result .= '</select>';
     } 
 
@@ -302,7 +298,7 @@ function smarty_function_html_select_date($params, $smarty, $template)
                     'values' => $yearvals,
                     'selected' => $time[0],
                     'print_result' => false),
-                $smarty, $template);
+                   $template);
             $year_result .= '</select>';
         } 
     } 
@@ -329,5 +325,6 @@ function smarty_function_html_select_date($params, $smarty, $template)
     } 
 
     return $html_result;
-} 
+}
+
 ?>

@@ -17,7 +17,7 @@ if(!defined("IN_ANNOUNCE") && !defined("IN_TRACKER")) die("Direct access to this
  */
 function hex($string){
 	$hex='';
-	for ($i=0; $i < mb_strlen($string); $i++){
+	for ($i=0; $i < strlen($string); $i++){
 		$hex .= dechex(ord($string[$i]));
 	}
 	return $hex;
@@ -168,7 +168,7 @@ function benc($obj) {
  * @return string Encoded string
  */
 function benc_str($s) {
-	return mb_strlen($s) . ":$s";
+	return strlen($s) . ":$s";
 }
 /**
  * Binary encodes an integer
@@ -230,20 +230,20 @@ function bdec_file($f) {
 function bdec($s) {
 	if (preg_match('/^(\d+):/', $s, $m)) {
 		$l = $m[1];
-		$pl = mb_strlen($l) + 1;
+		$pl = strlen($l) + 1;
 		$v = substr($s, $pl, $l);
 		$ss = substr($s, 0, $pl + $l);
-		if (mb_strlen($v) != $l) return;
-		return array('type' => "string", 'value' => $v, 'mb_strlen' => mb_strlen($ss), 'string' => $ss);
+		if (strlen($v) != $l) return;
+		return array('type' => "string", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
 	}
 	if (preg_match('/^i(\d+)e/', $s, $m)) {
 		$v = $m[1];
 		$ss = "i" . $v . "e";
 		if ($v === "-0")
 		return;
-		if ($v[0] == "0" && mb_strlen($v) != 1)
+		if ($v[0] == "0" && strlen($v) != 1)
 		return;
-		return array('type' => "integer", 'value' => $v, 'mb_strlen' => mb_strlen($ss), 'string' => $ss);
+		return array('type' => "integer", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
 	}
 	switch ($s[0]) {
 		case "l":
@@ -262,7 +262,7 @@ function bdec($s) {
 function bdec_list($s) {
 	if ($s[0] != "l")
 	return;
-	$sl = mb_strlen($s);
+	$sl = strlen($s);
 	$i = 1;
 	$v = array();
 	$ss = "l";
@@ -275,11 +275,11 @@ function bdec_list($s) {
 		if (!isset($ret) || !is_array($ret))
 		return;
 		$v[] = $ret;
-		$i += $ret["mb_strlen"];
+		$i += $ret["strlen"];
 		$ss .= $ret["string"];
 	}
 	$ss .= "e";
-	return array('type' => "list", 'value' => $v, 'mb_strlen' => mb_strlen($ss), 'string' => $ss);
+	return array('type' => "list", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
 }
 /**
  * Binary decodes a dictionary
@@ -289,7 +289,7 @@ function bdec_list($s) {
 function bdec_dict($s) {
 	if ($s[0] != "d")
 	return;
-	$sl = mb_strlen($s);
+	$sl = strlen($s);
 	$i = 1;
 	$v = array();
 	$ss = "d";
@@ -302,7 +302,7 @@ function bdec_dict($s) {
 		if (!isset($ret) || !is_array($ret) || $ret["type"] != "string")
 		return;
 		$k = $ret["value"];
-		$i += $ret["mb_strlen"];
+		$i += $ret["strlen"];
 		$ss .= $ret["string"];
 		if ($i >= $sl)
 		return;
@@ -310,11 +310,11 @@ function bdec_dict($s) {
 		if (!isset($ret) || !is_array($ret))
 		return;
 		$v[$k] = $ret;
-		$i += $ret["mb_strlen"];
+		$i += $ret["strlen"];
 		$ss .= $ret["string"];
 	}
 	$ss .= "e";
-	return array('type' => "dictionary", 'value' => $v, 'mb_strlen' => mb_strlen($ss), 'string' => $ss);
+	return array('type' => "dictionary", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
 }
 
 /**
@@ -355,7 +355,7 @@ function put_announce_urls($dict,$anarray){
 
 	if (is_array($anarray))
 	foreach ($anarray as $announce) {
-		$announces[] = array('type' => 'list', 'value' => array(bdec(benc_str($announce))), 'mb_strlen' => mb_strlen("l".$announce."e"), 'string' => "l".$announce."e");
+		$announces[] = array('type' => 'list', 'value' => array(bdec(benc_str($announce))), 'strlen' => strlen("l".$announce."e"), 'string' => "l".$announce."e");
 		$liststring .= "l".$announce."e";
 	}
 	$dict['value']['announce-list']['type'] = 'list';
@@ -363,7 +363,7 @@ function put_announce_urls($dict,$anarray){
 
 
 	$dict['value']['announce-list']['string'] = "l".$liststring."e";
-	$dict['value']['announce-list']['mb_strlen'] = mb_strlen($dict['value']['announce-list']['string']);
+	$dict['value']['announce-list']['strlen'] = strlen($dict['value']['announce-list']['string']);
 
 }
 
@@ -535,7 +535,7 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 	}
 
 	if($method == 'announce') {
-		return array('tracker' => $http_host, 'seeders' => (is_array($result['value']['peers']['value'])?count($result['value']['peers']['value']):(mb_strlen($result['value']['peers']['value'])/6)), 'leechers' => 0, 'state'=> check_fail($result), 'method' => $method, 'remote_method' => $remote_method);
+		return array('tracker' => $http_host, 'seeders' => (is_array($result['value']['peers']['value'])?count($result['value']['peers']['value']):(strlen($result['value']['peers']['value'])/6)), 'leechers' => 0, 'state'=> check_fail($result), 'method' => $method, 'remote_method' => $remote_method);
 	}
 
 }

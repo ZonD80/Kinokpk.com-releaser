@@ -1,11 +1,11 @@
 <?php
 /**
  * Smarty plugin
- * 
+ *
  * @package Smarty
  * @subpackage PluginsModifier
  */
-
+ 
 /**
  * Smarty truncate modifier plugin
  * 
@@ -30,11 +30,11 @@ function smarty_modifier_truncate($string, $length = 80, $etc = '...',
     if ($length == 0)
         return '';
 
-    if (is_callable('mb_mb_strlen')) {
+    if (is_callable('mb_strlen')) {
         if (mb_detect_encoding($string, 'UTF-8, ISO-8859-1') === 'UTF-8') {
             // $string has utf-8 encoding
-            if (mb_mb_strlen($string) > $length) {
-                $length -= min($length, mb_mb_strlen($etc));
+            if (mb_strlen($string) > $length) {
+                $length -= min($length, mb_strlen($etc));
                 if (!$break_words && !$middle) {
                     $string = preg_replace('/\s+?(\S+)?$/u', '', mb_substr($string, 0, $length + 1));
                 } 
@@ -49,8 +49,8 @@ function smarty_modifier_truncate($string, $length = 80, $etc = '...',
         } 
     } 
     // $string has no utf-8 encoding
-    if (mb_strlen($string) > $length) {
-        $length -= min($length, mb_strlen($etc));
+    if (strlen($string) > $length) {
+        $length -= min($length, strlen($etc));
         if (!$break_words && !$middle) {
             $string = preg_replace('/\s+?(\S+)?$/', '', substr($string, 0, $length + 1));
         } 
