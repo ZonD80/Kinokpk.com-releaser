@@ -107,11 +107,11 @@ $res = sql_query($query) or sqlerr(__FILE__,__LINE__);
 
 	$resarray = prepare_for_torrenttable($res);
 
-if (!$resarray) stderr($REL_LANG->say_by_key('error'),"Ничего не найдено. <a href=\"javascript: history.go(-1)\">Назад</a>");
+if (!$resarray) stderr($REL_LANG->say_by_key('error'),"РќРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ. <a href=\"javascript: history.go(-1)\">РќР°Р·Р°Рґ</a>");
 
 $REL_TPL->stdhead($REL_LANG->say_by_key('browse'));
 
-$REL_TPL->begin_frame('Список релизов '.($modview?'[<a href="'.$REL_SEO->make_link('browse','unchecked','').'">Показать непроверенные релизы отдельно</a>]':''));
+$REL_TPL->begin_frame('РЎРїРёСЃРѕРє СЂРµР»РёР·РѕРІ '.($modview?'[<a href="'.$REL_SEO->make_link('browse','unchecked','').'">РџРѕРєР°Р·Р°С‚СЊ РЅРµРїСЂРѕРІРµСЂРµРЅРЅС‹Рµ СЂРµР»РёР·С‹ РѕС‚РґРµР»СЊРЅРѕ</a>]':''));
 
 
 
@@ -143,9 +143,9 @@ print("<div class=\"friends_search\">
 <!-- Google Search -->
 <form action="http://www.google.com/cse">
     <input name="cx" value="008925083164290612781:gpt7xhlrdou" type="hidden" />
-    <input name="ie" value="windows-1251" type="hidden" />
+    <input name="ie" value="utf-8" type="hidden" />
     <input name="q" size="43" type="text" />
-    <input name="sa" class="button" value="Поиск Google!" type="submit" />
+    <input name="sa" class="button" value="РџРѕРёСЃРє Google!" type="submit" />
 </form>
 <!-- Google Search -->
 </div>
@@ -155,16 +155,16 @@ $REL_TPL->end_frame();
 if (isset($cleansearchstr)){
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('search_results_for')." \"" . $cleansearchstr . "\"\n");
 }else{
-	$REL_TPL->begin_frame('Релизы');
+	$REL_TPL->begin_frame('Р РµР»РёР·С‹');
 }
 
 print("<div id=\"releases-table\">");
 
 
 /* print("<table cellspacing=\"0\" cellpadding=\"0\" class=\"tabs\"><tbody><tr>
- <td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"friends.php\">Общее</a></td>
- <td class=\"tab\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"user_friends_requests.php\">Наше</a></td>
- <td class=\"tab\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"user_friends_requests.php\">Мультитрекер</a></td>
+ <td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"friends.php\">РћР±С‰РµРµ</a></td>
+ <td class=\"tab\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"user_friends_requests.php\">РќР°С€Рµ</a></td>
+ <td class=\"tab\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"user_friends_requests.php\">РњСѓР»СЊС‚РёС‚СЂРµРєРµСЂ</a></td>
  <td class=\"tab3\"> </td></tr></tbody></table>\n");*/
 
 
@@ -178,11 +178,11 @@ if ($count) {
 else {
 	if (isset($cleansearchstr)) {
 		print("<tr><td class=\"index\" colspan=\"12\">".$REL_LANG->say_by_key('nothing_found')."</td></tr>\n");
-		//print("<p>Попробуйте изменить запрос поиска.</p>\n");
+		//print("<p>РџРѕРїСЂРѕР±СѓР№С‚Рµ РёР·РјРµРЅРёС‚СЊ Р·Р°РїСЂРѕСЃ РїРѕРёСЃРєР°.</p>\n");
 	}
 	else {
 		print("<tr><td class=\"index\" colspan=\"12\">".$REL_LANG->say_by_key('nothing_found')."</td></tr>\n");
-		//print("<p>Извините, данная категория пустая.</p>\n");
+		//print("<p>РР·РІРёРЅРёС‚Рµ, РґР°РЅРЅР°СЏ РєР°С‚РµРіРѕСЂРёСЏ РїСѓСЃС‚Р°СЏ.</p>\n");
 	}
 }
 

@@ -17,7 +17,7 @@ httpauth();
 if (get_user_class() < UC_ADMINISTRATOR)
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
-$REL_TPL->stdhead("Общее сообщение", false);
+$REL_TPL->stdhead("РћР±С‰РµРµ СЃРѕРѕР±С‰РµРЅРёРµ", false);
 ?>
 <table class=main width=100% border=0 cellspacing=0 cellpadding=0>
 	<tr>
@@ -35,11 +35,11 @@ $REL_TPL->stdhead("Общее сообщение", false);
 			?>
 		<table cellspacing=0 cellpadding=5>
 			<tr>
-				<td class="colhead" colspan="2">Общее сообщение всем членам
-				администрации и пользователям</td>
+				<td class="colhead" colspan="2">РћР±С‰РµРµ СЃРѕРѕР±С‰РµРЅРёРµ РІСЃРµРј С‡Р»РµРЅР°Рј
+				Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏРј</td>
 			</tr>
 			<tr>
-				<td>Кому отправлять:<br />
+				<td>РљРѕРјСѓ РѕС‚РїСЂР°РІР»СЏС‚СЊ:<br />
 				<table style="border: 0" width="100%" cellpadding="0"
 					cellspacing="0">
 					<tr>
@@ -58,7 +58,7 @@ $REL_TPL->stdhead("Общее сообщение", false);
 				</table>
 				</td>
 			</tr>
-			<TD colspan="2">Тема: <INPUT name="subject" type="text" size="70"></TD>
+			<TD colspan="2">РўРµРјР°: <INPUT name="subject" type="text" size="70"></TD>
 			</TR>
 			<tr>
 				<td align="center"><?print textbbcode("msg",$body);?> <!--<textarea name=msg cols=80 rows=15><?=$body?></textarea>-->
@@ -66,13 +66,13 @@ $REL_TPL->stdhead("Общее сообщение", false);
 			</tr>
 			<tr>
 				<td colspan=2>
-				<div align="center"><b>Отправитель:&nbsp;&nbsp;</b> <?=$CURUSER['username']?>
+				<div align="center"><b>РћС‚РїСЂР°РІРёС‚РµР»СЊ:&nbsp;&nbsp;</b> <?=$CURUSER['username']?>
 				<input name="sender" type="radio" value="self" checked> &nbsp;
-				Система <input name="sender" type="radio" value="system"></div>
+				РЎРёСЃС‚РµРјР° <input name="sender" type="radio" value="system"></div>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2 align=center><input type=submit value="Отправить"
+				<td colspan=2 align=center><input type=submit value="РћС‚РїСЂР°РІРёС‚СЊ"
 					class=btn></td>
 			</tr>
 		</table>

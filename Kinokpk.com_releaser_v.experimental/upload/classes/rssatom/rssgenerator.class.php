@@ -4,7 +4,7 @@
  *
  * Generator strategy which creates XML for RSS
  *
- * @author Mateusz 'MatheW' Wójcik
+ * @author Mateusz 'MatheW' WГіjcik
  * @package    FeedGenerator
  *
  */
@@ -26,7 +26,7 @@ class RSSGenerator implements generator{
 	}
 
 	public function generatorName(){
-		return 'RSS FeedGenerator 1.1 by Mateusz \'MatheW\' Wójcik';
+		return 'RSS FeedGenerator 1.1 by Mateusz \'MatheW\' WГіjcik';
 	}
 
 	/**

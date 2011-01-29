@@ -12,7 +12,7 @@
 require "include/bittorrent.php";
 dbconn();
 loggedinorreturn();
-$REL_TPL->stdhead("Администрация");
+$REL_TPL->stdhead("РђРґРјРёРЅРёСЃС‚СЂР°С†РёСЏ");
 $REL_TPL->begin_main_frame();
 
 // Get current datetime
@@ -42,13 +42,13 @@ while ($arr = mysql_fetch_assoc($res))
 		$col[$arr['class']]=0;
 	}
 }
-$REL_TPL->begin_frame("Администрация");
+$REL_TPL->begin_frame("РђРґРјРёРЅРёСЃС‚СЂР°С†РёСЏ");
 ?>
 <table width=100% cellspacing=0>
 	<tr>
 		<tr>
-			<td class=embedded colspan=11>Вопросы, на которые есть ответы в
-			правилах или FAQ, будут оставлены без внимания.</td>
+			<td class=embedded colspan=11>Р’РѕРїСЂРѕСЃС‹, РЅР° РєРѕС‚РѕСЂС‹Рµ РµСЃС‚СЊ РѕС‚РІРµС‚С‹ РІ
+			РїСЂР°РІРёР»Р°С… РёР»Рё FAQ, Р±СѓРґСѓС‚ РѕСЃС‚Р°РІР»РµРЅС‹ Р±РµР· РІРЅРёРјР°РЅРёСЏ.</td>
 		</tr>
 		<!-- Define table column widths -->
 		<td class=embedded width="125">&nbsp;</td>
@@ -97,25 +97,25 @@ $REL_TPL->begin_frame("Администрация");
 "<td class=embedded><img src=pic/flag/$arr[flagpic] title=$arr[name] border=0 width=19 height=12></td>".
 "<td class=embedded>".htmlspecialchars($arr['supportfor'])."</td></tr>\n";
 	}
-	$REL_TPL->begin_frame("Первая линия поддержки");
+	$REL_TPL->begin_frame("РџРµСЂРІР°СЏ Р»РёРЅРёСЏ РїРѕРґРґРµСЂР¶РєРё");
 	?>
 
 <table width=100% cellspacing=0>
 	<tr>
-		<td class=embedded colspan=11>Общие вопросы лучше задавать этим
-		пользователям. Учтите что они добровольцы, тратящие свое время и силы
-		на помощь вам. Относитесь к ним подобающе.<br />
+		<td class=embedded colspan=11>РћР±С‰РёРµ РІРѕРїСЂРѕСЃС‹ Р»СѓС‡С€Рµ Р·Р°РґР°РІР°С‚СЊ СЌС‚РёРј
+		РїРѕР»СЊР·РѕРІР°С‚РµР»СЏРј. РЈС‡С‚РёС‚Рµ С‡С‚Рѕ РѕРЅРё РґРѕР±СЂРѕРІРѕР»СЊС†С‹, С‚СЂР°С‚СЏС‰РёРµ СЃРІРѕРµ РІСЂРµРјСЏ Рё СЃРёР»С‹
+		РЅР° РїРѕРјРѕС‰СЊ РІР°Рј. РћС‚РЅРѕСЃРёС‚РµСЃСЊ Рє РЅРёРј РїРѕРґРѕР±Р°СЋС‰Рµ.<br />
 		<br />
 		<br />
 		</td>
 	</tr>
 	<!-- Define table column widths -->
 	<tr>
-		<td class=embedded width="30"><b>Пользователь&nbsp;</b></td>
-		<td class=embedded width="5"><b>Активен&nbsp;</b></td>
-		<td class=embedded width="5"><b>Контакт&nbsp;</b></td>
-		<td class=embedded width="85"><b>Язык&nbsp;</b></td>
-		<td class=embedded width="200"><b>Поддержка для&nbsp;</b></td>
+		<td class=embedded width="30"><b>РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ&nbsp;</b></td>
+		<td class=embedded width="5"><b>РђРєС‚РёРІРµРЅ&nbsp;</b></td>
+		<td class=embedded width="5"><b>РљРѕРЅС‚Р°РєС‚&nbsp;</b></td>
+		<td class=embedded width="85"><b>РЇР·С‹Рє&nbsp;</b></td>
+		<td class=embedded width="200"><b>РџРѕРґРґРµСЂР¶РєР° РґР»СЏ&nbsp;</b></td>
 	</tr>
 
 

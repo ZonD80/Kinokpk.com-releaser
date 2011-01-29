@@ -27,7 +27,7 @@ function fix_linked_image_sizes() {
 				images[i]._resized=1;
 				images[i]._width=_width;
 				var div=document.createElement('div');
-				div.innerHTML=_img+'&nbsp;'+'Уменьшено: '+_percent+'% от оригинала [ '+_width+' x '+_height+' ] - Нажмите для просмотра полного изображения';
+				div.innerHTML=_img+'&nbsp;'+'РЈРјРµРЅСЊС€РµРЅРѕ: '+_percent+'% РѕС‚ РѕСЂРёРіРёРЅР°Р»Р° [ '+_width+' x '+_height+' ] - РќР°Р¶РјРёС‚Рµ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° РїРѕР»РЅРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ';
 				div.style.width=images[i].width-(_padding*2)+'px';
 				div.className='resized-linked-image';
 				div.style.textAlign='left';
@@ -39,7 +39,7 @@ function fix_linked_image_sizes() {
 				div._is_div=1;div._resize_id=_count;
 				div.onclick=fix_linked_images_onclick;
 				div.onmouseover=fix_linked_images_mouseover;
-				div.title='Нажмите для просмотра полного изображения';
+				div.title='РќР°Р¶РјРёС‚Рµ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° РїРѕР»РЅРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ';
 				div._src=images[i].src;
 				images[i].parentNode.insertBefore(div,images[i]);
 			}

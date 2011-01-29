@@ -59,25 +59,25 @@ if ($users == "")  $users = 0;
 if ($total == "")  $total = 0;
 $content .= "<table border='0' width='100%'>
              <tr valign='middle'>
-             <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'><b>Последний: </b> $latestuser</td></tr>";
+             <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'><b>РџРѕСЃР»РµРґРЅРёР№: </b> $latestuser</td></tr>";
 if (count($title_who)) {
 	$content .= "<tr valign='middle'>
                     <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>
-                    <b>Кто онлайн: </b><br />".@implode(", ", $title_who)."</td></tr>";
+                    <b>РљС‚Рѕ РѕРЅР»Р°Р№РЅ: </b><br />".@implode(", ", $title_who)."</td></tr>";
 } else {
 	$content .= "<tr valign='middle'>
                     <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>
-                    <b>Кто онлайн: </b><br />Нет пользователей за последние 10 минут.</td></tr>";
+                    <b>РљС‚Рѕ РѕРЅР»Р°Р№РЅ: </b><br />РќРµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ Р·Р° РїРѕСЃР»РµРґРЅРёРµ 10 РјРёРЅСѓС‚.</td></tr>";
 }
 $content .= "<tr valign='middle'>
             <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>
-            <b>В сети: </b><br />";
-$content .= "<img src='pic/info/admin.gif' alt='Администраторы' align='middle' width='16' height='16' />&nbsp;<font color='red'>Админы: $staff</font>&nbsp;";
-$content .= "<img src='pic/info/member.gif' alt='Пользователи' align='middle' width='16' height='16' />&nbsp;Пользователи: $users&nbsp;<br />";
-$content .= "<img src='pic/info/guest.gif' alt='Гости' align='middle' width='16' height='16' />&nbsp;Гости: $guests&nbsp;";
-$content .= "<img src='pic/info/group.gif' alt='Всего' align='middle' width='16' height='16' />&nbsp;Всего: $total</td></tr>";
+            <b>Р’ СЃРµС‚Рё: </b><br />";
+$content .= "<img src='pic/info/admin.gif' alt='РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂС‹' align='middle' width='16' height='16' />&nbsp;<font color='red'>РђРґРјРёРЅС‹: $staff</font>&nbsp;";
+$content .= "<img src='pic/info/member.gif' alt='РџРѕР»СЊР·РѕРІР°С‚РµР»Рё' align='middle' width='16' height='16' />&nbsp;РџРѕР»СЊР·РѕРІР°С‚РµР»Рё: $users&nbsp;<br />";
+$content .= "<img src='pic/info/guest.gif' alt='Р“РѕСЃС‚Рё' align='middle' width='16' height='16' />&nbsp;Р“РѕСЃС‚Рё: $guests&nbsp;";
+$content .= "<img src='pic/info/group.gif' alt='Р’СЃРµРіРѕ' align='middle' width='16' height='16' />&nbsp;Р’СЃРµРіРѕ: $total</td></tr>";
 $content .= "<tr valign='middle'>
             <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>
-            <b>Рекорд: $max_total</b>, зарегестрирован<br/>".mkprettytime($max_time)." (".get_elapsed_time($max_time,false)." {$REL_LANG->say_by_key('ago')})</td></tr></table>";
+            <b>Р РµРєРѕСЂРґ: $max_total</b>, Р·Р°СЂРµРіРµСЃС‚СЂРёСЂРѕРІР°РЅ<br/>".mkprettytime($max_time)." (".get_elapsed_time($max_time,false)." {$REL_LANG->say_by_key('ago')})</td></tr></table>";
 
 ?>

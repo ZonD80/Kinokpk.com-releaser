@@ -38,7 +38,7 @@ function _smarty_regex_replace_check($search)
       $search = substr($search,0,$pos);
     if (preg_match('!([a-zA-Z\s]+)$!s', $search, $match) && (strpos($match[1], 'e') !== false)) {
         /* remove eval-modifier from $search */
-        $search = substr($search, 0, -strlen($match[1])) . preg_replace('![e\s]+!', '', $match[1]);
+        $search = substr($search, 0, -mb_strlen($match[1])) . preg_replace('![e\s]+!', '', $match[1]);
     }
     return $search;
 }

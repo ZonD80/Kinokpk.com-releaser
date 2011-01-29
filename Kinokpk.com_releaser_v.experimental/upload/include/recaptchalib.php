@@ -50,7 +50,7 @@ function _recaptcha_qsencode ($data) {
                 $req .= $key . '=' . urlencode( stripslashes($value) ) . '&';
 
         // Cut the last '&'
-        $req=substr($req,0,strlen($req)-1);
+        $req=substr($req,0,mb_strlen($req)-1);
         return $req;
 }
 
@@ -71,7 +71,7 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
         $http_request  = "POST $path HTTP/1.0\r\n";
         $http_request .= "Host: $host\r\n";
         $http_request .= "Content-Type: application/x-www-form-urlencoded;\r\n";
-        $http_request .= "Content-Length: " . strlen($req) . "\r\n";
+        $http_request .= "Content-Length: " . mb_strlen($req) . "\r\n";
         $http_request .= "User-Agent: reCAPTCHA/PHP\r\n";
         $http_request .= "\r\n";
         $http_request .= $req;
@@ -172,7 +172,7 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 	
 	
         //discard spam submissions
-        if ($challenge == null || strlen($challenge) == 0 || $response == null || strlen($response) == 0) {
+        if ($challenge == null || mb_strlen($challenge) == 0 || $response == null || mb_strlen($response) == 0) {
                 $recaptcha_response = new ReCaptchaResponse();
                 $recaptcha_response->is_valid = false;
                 $recaptcha_response->error = 'incorrect-captcha-sol';
@@ -215,8 +215,8 @@ function recaptcha_get_signup_url ($domain = null, $appname = null) {
 
 function _recaptcha_aes_pad($val) {
 	$block_size = 16;
-	$numpad = $block_size - (strlen ($val) % $block_size);
-	return str_pad($val, strlen ($val) + $numpad, chr($numpad));
+	$numpad = $block_size - (mb_strlen ($val) % $block_size);
+	return str_pad($val, mb_strlen ($val) + $numpad, chr($numpad));
 }
 
 /* Mailhide related code */
@@ -258,9 +258,9 @@ function recaptcha_mailhide_url($pubkey, $privkey, $email) {
 function _recaptcha_mailhide_email_parts ($email) {
 	$arr = preg_split("/@/", $email );
 
-	if (strlen ($arr[0]) <= 4) {
+	if (mb_strlen ($arr[0]) <= 4) {
 		$arr[0] = substr ($arr[0], 0, 1);
-	} else if (strlen ($arr[0]) <= 6) {
+	} else if (mb_strlen ($arr[0]) <= 6) {
 		$arr[0] = substr ($arr[0], 0, 3);
 	} else {
 		$arr[0] = substr ($arr[0], 0, 4);

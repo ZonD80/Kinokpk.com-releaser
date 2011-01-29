@@ -258,7 +258,7 @@ function checkclient($peer_id){
 	}else{
 		$headers = emu_getallheaders();
 	}
-	if (isset($headers['Cookie']) || isset($headers['Accept-Language']) || isset($headers['Accept-Charset']))err('Вы не можете использовать этот клиент. Возможно вы читер.');
+	if (isset($headers['Cookie']) || isset($headers['Accept-Language']) || isset($headers['Accept-Charset']))err('Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚РѕС‚ РєР»РёРµРЅС‚. Р’РѕР·РјРѕР¶РЅРѕ РІС‹ С‡РёС‚РµСЂ.');
 
 	//check by agent
 	$banned = array();
@@ -285,44 +285,44 @@ function checkclient($peer_id){
 
 
 	for($i=0;$i<sizeof($banned);$i++){
-		if(strpos($agent, $banned[$i]) !== false) err("Извините, клиент ".$banned[$i]." запрещен на нашем трекере.");
+		if(strpos($agent, $banned[$i]) !== false) err("РР·РІРёРЅРёС‚Рµ, РєР»РёРµРЅС‚ ".$banned[$i]." Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
 	}
 
 
-	if(strpos($agent, "uTorrent") !== false && strpos($agent, "B") !== false) err("Бета-версии uTorrent запрещены на нашем трекере, используйте стабильные релизы.");
+	if(strpos($agent, "uTorrent") !== false && strpos($agent, "B") !== false) err("Р‘РµС‚Р°-РІРµСЂСЃРёРё uTorrent Р·Р°РїСЂРµС‰РµРЅС‹ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ, РёСЃРїРѕР»СЊР·СѓР№С‚Рµ СЃС‚Р°Р±РёР»СЊРЅС‹Рµ СЂРµР»РёР·С‹.");
 
 	#    //check by peer_id
 
-	if(substr($peer_id, 0, 6) == "exbc\08") err("Клиент BitComet 0.56 запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 4) == "FUTB") err("Клиент FUTB запрещен на нашем трекере."); //patched version of BitComet 0.57 (FUTB- Fuck U TorrentBits)
+	if(substr($peer_id, 0, 6) == "exbc\08") err("РљР»РёРµРЅС‚ BitComet 0.56 Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 4) == "FUTB") err("РљР»РёРµРЅС‚ FUTB Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ."); //patched version of BitComet 0.57 (FUTB- Fuck U TorrentBits)
 	elseif(substr($peer_id, 1, 2) == 'BC' && substr($peer_id, 5, 2) != 70 && substr($peer_id, 5, 2) != 63 && substr($peer_id, 5, 2) != 77 && substr($peer_id, 5, 2) >= 59/* && substr($peer_id, 5, 2) <= 88*/) err("BitComet ".substr($peer_id, 5, 2)." is banned.");
-	elseif(preg_match("/^0P3R4H/", $peer_id)) err("Клиент Opera запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 7) == "exbc\0L") err("Клиент BitLord 1.0 запрещен на нашем трекере..");
-	elseif(substr($peer_id, 0, 7) == "exbcL") err("Клиент BitLord 1.1 запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 3) == "-TS") err("Клиент TorrentStorm запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 5) == "Mbrst") err("Клиент Burst! запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 3) == "-BB") err("Клиент BitBuddy запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 3) == "-SZ") err("Клиент Shareaza запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 5) == "turbo") err("Клиент TurboBT запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 4) == "T03A") err("Клиет BitTornado установленной у вас версии забанен, пожалуйста, обновите клиент.");
-	elseif(substr($peer_id, 0, 4) == "T03B") err("Клиет BitTornado установленной у вас версии забанен, пожалуйста, обновите клиент.");
-	elseif(substr($peer_id, 0, 3 ) == "FRS") err("Клиент Rufus запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 2 ) == "eX") err("Клиент eXeem запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 8 ) == "-TR0005-") err("Клиент Transmission/0.5 запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 8 ) == "-TR0006-") err("Клиент Transmission/0.6 запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 8 ) == "-XX0025-") err("Клиент Transmission/0.6 запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 1 ) == ",") err ("Клиент RAZA запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 3 ) == "-AG") err("Ваш битторрент-клиент запрещен на нашем трекере.");
-	elseif(substr($peer_id, 0, 3 ) == "R34") err("Клиент BTuga/Revolution-3.4 запрещен на нашем трекере.");
-	elseif(preg_match("/MLDonkey\/([0-9]+).([0-9]+).([0-9]+)*/", $peer_id, $matches)) err("MLDonkey не является битторрент-клиентом.");
-	elseif(preg_match("/ed2k_plugin v([0-9]+\\.[0-9]+).*/", $peer_id, $matches)) err("eDonkey не является битторрент-клиентом.");
-	elseif(substr($peer_id, 0, 4) == "exbc") err("Это версия BitComet заблокирована.");
-	elseif(substr($peer_id, 0, 3) == '-FG') err("FlashGet запрещен на нашем трекере.");
+	elseif(preg_match("/^0P3R4H/", $peer_id)) err("РљР»РёРµРЅС‚ Opera Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 7) == "exbc\0L") err("РљР»РёРµРЅС‚ BitLord 1.0 Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ..");
+	elseif(substr($peer_id, 0, 7) == "exbcL") err("РљР»РёРµРЅС‚ BitLord 1.1 Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 3) == "-TS") err("РљР»РёРµРЅС‚ TorrentStorm Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 5) == "Mbrst") err("РљР»РёРµРЅС‚ Burst! Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 3) == "-BB") err("РљР»РёРµРЅС‚ BitBuddy Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 3) == "-SZ") err("РљР»РёРµРЅС‚ Shareaza Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 5) == "turbo") err("РљР»РёРµРЅС‚ TurboBT Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 4) == "T03A") err("РљР»РёРµС‚ BitTornado СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅРѕР№ Сѓ РІР°СЃ РІРµСЂСЃРёРё Р·Р°Р±Р°РЅРµРЅ, РїРѕР¶Р°Р»СѓР№СЃС‚Р°, РѕР±РЅРѕРІРёС‚Рµ РєР»РёРµРЅС‚.");
+	elseif(substr($peer_id, 0, 4) == "T03B") err("РљР»РёРµС‚ BitTornado СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅРѕР№ Сѓ РІР°СЃ РІРµСЂСЃРёРё Р·Р°Р±Р°РЅРµРЅ, РїРѕР¶Р°Р»СѓР№СЃС‚Р°, РѕР±РЅРѕРІРёС‚Рµ РєР»РёРµРЅС‚.");
+	elseif(substr($peer_id, 0, 3 ) == "FRS") err("РљР»РёРµРЅС‚ Rufus Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 2 ) == "eX") err("РљР»РёРµРЅС‚ eXeem Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 8 ) == "-TR0005-") err("РљР»РёРµРЅС‚ Transmission/0.5 Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 8 ) == "-TR0006-") err("РљР»РёРµРЅС‚ Transmission/0.6 Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 8 ) == "-XX0025-") err("РљР»РёРµРЅС‚ Transmission/0.6 Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 1 ) == ",") err ("РљР»РёРµРЅС‚ RAZA Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 3 ) == "-AG") err("Р’Р°С€ Р±РёС‚С‚РѕСЂСЂРµРЅС‚-РєР»РёРµРЅС‚ Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(substr($peer_id, 0, 3 ) == "R34") err("РљР»РёРµРЅС‚ BTuga/Revolution-3.4 Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+	elseif(preg_match("/MLDonkey\/([0-9]+).([0-9]+).([0-9]+)*/", $peer_id, $matches)) err("MLDonkey РЅРµ СЏРІР»СЏРµС‚СЃСЏ Р±РёС‚С‚РѕСЂСЂРµРЅС‚-РєР»РёРµРЅС‚РѕРј.");
+	elseif(preg_match("/ed2k_plugin v([0-9]+\\.[0-9]+).*/", $peer_id, $matches)) err("eDonkey РЅРµ СЏРІР»СЏРµС‚СЃСЏ Р±РёС‚С‚РѕСЂСЂРµРЅС‚-РєР»РёРµРЅС‚РѕРј.");
+	elseif(substr($peer_id, 0, 4) == "exbc") err("Р­С‚Рѕ РІРµСЂСЃРёСЏ BitComet Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅР°.");
+	elseif(substr($peer_id, 0, 3) == '-FG') err("FlashGet Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
 
 	elseif(substr($peer_id, 1, 2) == 'UT'){
 		$UTVersion = (int) substr($peer_id, 3, 4);
-		if($UTVersion<1610)err("uTorrent версии ниже ".$UTVersion." запрещен на нашем трекере.");
-		//elseif($UTVersion>1610 AND $UTVersion<1810)err("uTorrent версии ".$UTVersion." запрещен на нашем трекере.");
+		if($UTVersion<1610)err("uTorrent РІРµСЂСЃРёРё РЅРёР¶Рµ ".$UTVersion." Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
+		//elseif($UTVersion>1610 AND $UTVersion<1810)err("uTorrent РІРµСЂСЃРёРё ".$UTVersion." Р·Р°РїСЂРµС‰РµРЅ РЅР° РЅР°С€РµРј С‚СЂРµРєРµСЂРµ.");
 	}
 
 

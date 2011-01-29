@@ -677,7 +677,7 @@ class Smarty_Internal_Template extends Smarty_Internal_Data {
         } else {
             // get type and name from path
             list($resource_type, $resource_name) = explode(':', $template_resource, 2);
-            if (strlen($resource_type) == 1) {
+            if (mb_strlen($resource_type) == 1) {
                 // 1 char is not resource type, but part of filepath
                 $resource_type = 'file';
                 $resource_name = $template_resource;

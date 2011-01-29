@@ -53,7 +53,7 @@ function smarty_function_math($params, $smarty, $template)
     foreach($params as $key => $val) {
         if ($key != "equation" && $key != "format" && $key != "assign") {
             // make sure value is not empty
-            if (strlen($val)==0) {
+            if (mb_strlen($val)==0) {
                 trigger_error("math: parameter $key is empty",E_USER_WARNING);
                 return;
             }

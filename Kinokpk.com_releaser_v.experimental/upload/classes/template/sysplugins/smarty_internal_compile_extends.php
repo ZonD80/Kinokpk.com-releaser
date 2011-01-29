@@ -60,7 +60,7 @@ class Smarty_Internal_Compile_Extends extends Smarty_Internal_CompileBase {
                 } 
             } 
             $_block_content = str_replace($this->smarty->left_delimiter . '$smarty.block.parent' . $this->smarty->right_delimiter, '%%%%SMARTY_PARENT%%%%',
-                substr($_content, $_result[0][$_start][1] + strlen($_result[0][$_start][0]), $_result[0][$_start + $_end][1] - $_result[0][$_start][1] - + strlen($_result[0][$_start][0])));
+                substr($_content, $_result[0][$_start][1] + mb_strlen($_result[0][$_start][0]), $_result[0][$_start + $_end][1] - $_result[0][$_start][1] - + mb_strlen($_result[0][$_start][0])));
             $this->saveBlockData($_block_content, $_result[0][$_start][0], $compiler->template);
             $_start = $_start + $_end + 1;
         } 

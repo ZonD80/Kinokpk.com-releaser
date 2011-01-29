@@ -27,38 +27,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 	$email = trim(htmlspecialchars((string)$_POST["email"]));
 	if (!$email || !validemail($email))
-	stderr($REL_LANG->say_by_key('error'), "Вы должны ввести email адрес");
+	stderr($REL_LANG->say_by_key('error'), "Р’С‹ РґРѕР»Р¶РЅС‹ РІРІРµСЃС‚Рё email Р°РґСЂРµСЃ");
 	$res = sql_query("SELECT * FROM users WHERE email=" . sqlesc($email) . " LIMIT 1") or sqlerr(__FILE__, __LINE__);
-	$arr = mysql_fetch_array($res) or stderr($REL_LANG->say_by_key('error'), "Email адрес не найден в базе данных.\n");
+	$arr = mysql_fetch_array($res) or stderr($REL_LANG->say_by_key('error'), "Email Р°РґСЂРµСЃ РЅРµ РЅР°Р№РґРµРЅ РІ Р±Р°Р·Рµ РґР°РЅРЅС‹С….\n");
 
 	$sec = mksecret();
 
 	sql_query("UPDATE users SET editsecret=" . sqlesc($sec) . " WHERE id=" . $arr["id"]) or sqlerr(__FILE__, __LINE__);
 	if (!mysql_affected_rows())
-	stderr($REL_LANG->say_by_key('error'), "Ошибка базы данных. Свяжитесь с администратором относительно этой ошибки.");
+	stderr($REL_LANG->say_by_key('error'), "РћС€РёР±РєР° Р±Р°Р·С‹ РґР°РЅРЅС‹С…. РЎРІСЏР¶РёС‚РµСЃСЊ СЃ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂРѕРј РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ СЌС‚РѕР№ РѕС€РёР±РєРё.");
 
 	$hash = md5($sec . $email . $arr["passhash"] . $sec);
 
 	$body = nl2br("
-Вы, или кто-то другой, запросили новый пароль к аккаунту связаному с этим адресом ($email).
+Р’С‹, РёР»Рё РєС‚Рѕ-С‚Рѕ РґСЂСѓРіРѕР№, Р·Р°РїСЂРѕСЃРёР»Рё РЅРѕРІС‹Р№ РїР°СЂРѕР»СЊ Рє Р°РєРєР°СѓРЅС‚Сѓ СЃРІСЏР·Р°РЅРѕРјСѓ СЃ СЌС‚РёРј Р°РґСЂРµСЃРѕРј ($email).
 
-Если это были НЕ вы, проигнорируйте это письмо. Пожалуста не отвечайте.
+Р•СЃР»Рё СЌС‚Рѕ Р±С‹Р»Рё РќР• РІС‹, РїСЂРѕРёРіРЅРѕСЂРёСЂСѓР№С‚Рµ СЌС‚Рѕ РїРёСЃСЊРјРѕ. РџРѕР¶Р°Р»СѓСЃС‚Р° РЅРµ РѕС‚РІРµС‡Р°Р№С‚Рµ.
 
-Если вы подтверждаете этот запрос, перейдите по следующей ссылке:
+Р•СЃР»Рё РІС‹ РїРѕРґС‚РІРµСЂР¶РґР°РµС‚Рµ СЌС‚РѕС‚ Р·Р°РїСЂРѕСЃ, РїРµСЂРµР№РґРёС‚Рµ РїРѕ СЃР»РµРґСѓСЋС‰РµР№ СЃСЃС‹Р»РєРµ:
 
 {$REL_SEO->make_link('recover','confirm',1,'id',$arr["id"],'secret',$hash)}
 
 
-После того как вы это сделаете, ваш пароль будет сброшен и новый пароль будет отправлен вам на E-Mail.
+РџРѕСЃР»Рµ С‚РѕРіРѕ РєР°Рє РІС‹ СЌС‚Рѕ СЃРґРµР»Р°РµС‚Рµ, РІР°С€ РїР°СЂРѕР»СЊ Р±СѓРґРµС‚ СЃР±СЂРѕС€РµРЅ Рё РЅРѕРІС‹Р№ РїР°СЂРѕР»СЊ Р±СѓРґРµС‚ РѕС‚РїСЂР°РІР»РµРЅ РІР°Рј РЅР° E-Mail.
 
 --
 {$REL_CONFIG['sitename']}
 ");
 
-if (sent_mail($arr['email'], $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'],  "{$REL_CONFIG['defaultbaseurl']} восстановление пароля",  wordwrap($body,70))==false) stderr($REL_LANG->say_by_key('error'),"Ошибка при отправке письма");
+if (sent_mail($arr['email'], $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'],  "{$REL_CONFIG['defaultbaseurl']} РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РїР°СЂРѕР»СЏ",  wordwrap($body,70))==false) stderr($REL_LANG->say_by_key('error'),"РћС€РёР±РєР° РїСЂРё РѕС‚РїСЂР°РІРєРµ РїРёСЃСЊРјР°");
 
-stderr($REL_LANG->say_by_key('success'), "Подтверждающее письмо было отправлено.\n" .
-		" Через несколько минут (обычно сразу) вам прийдет письмо с дальнейшими указаниями.",'success');
+stderr($REL_LANG->say_by_key('success'), "РџРѕРґС‚РІРµСЂР¶РґР°СЋС‰РµРµ РїРёСЃСЊРјРѕ Р±С‹Р»Рѕ РѕС‚РїСЂР°РІР»РµРЅРѕ.\n" .
+		" Р§РµСЂРµР· РЅРµСЃРєРѕР»СЊРєРѕ РјРёРЅСѓС‚ (РѕР±С‹С‡РЅРѕ СЃСЂР°Р·Сѓ) РІР°Рј РїСЂРёР№РґРµС‚ РїРёСЃСЊРјРѕ СЃ РґР°Р»СЊРЅРµР№С€РёРјРё СѓРєР°Р·Р°РЅРёСЏРјРё.",'success');
 }
 elseif(isset($_GET['confirm']))
 {
@@ -70,22 +70,22 @@ elseif(isset($_GET['confirm']))
 	$md5 = $_GET["secret"];
 
 	$res = sql_query("SELECT username, email, passhash, editsecret FROM users WHERE id = $id");
-	$arr = mysql_fetch_array($res) or stderr($REL_LANG->say_by_key('error'),"Нет пользователя с таким ID");
+	$arr = mysql_fetch_array($res) or stderr($REL_LANG->say_by_key('error'),"РќРµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ СЃ С‚Р°РєРёРј ID");
 
 	$email = $arr["email"];
 
 	$sec = hash_pad($arr["editsecret"]);
 	if (preg_match('/^ *$/s', $sec))
-	stderr($REL_LANG->say_by_key('error'),"Ошибка вычисления кода подтверждения");
+	stderr($REL_LANG->say_by_key('error'),"РћС€РёР±РєР° РІС‹С‡РёСЃР»РµРЅРёСЏ РєРѕРґР° РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ");
 	if ($md5 != md5($sec . $email . $arr["passhash"] . $sec))
-	stderr($REL_LANG->say_by_key('error'),"Код подтверждения неверен");
+	stderr($REL_LANG->say_by_key('error'),"РљРѕРґ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ РЅРµРІРµСЂРµРЅ");
 
 	// generate new password;
 	$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	$newpassword = "";
 	for ($i = 0; $i < 10; $i++)
-	$newpassword .= $chars[mt_rand(0, strlen($chars) - 1)];
+	$newpassword .= $chars[mt_rand(0, mb_strlen($chars) - 1)];
 
 	$sec = mksecret();
 
@@ -96,45 +96,45 @@ elseif(isset($_GET['confirm']))
 
 
 	if (!mysql_affected_rows())
-	stderr($REL_LANG->say_by_key('error'), "Невозможно обновить данные пользователя. Пожалуста свяжитесь с администратором относительно этой ошибки.");
+	stderr($REL_LANG->say_by_key('error'), "РќРµРІРѕР·РјРѕР¶РЅРѕ РѕР±РЅРѕРІРёС‚СЊ РґР°РЅРЅС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ. РџРѕР¶Р°Р»СѓСЃС‚Р° СЃРІСЏР¶РёС‚РµСЃСЊ СЃ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂРѕРј РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ СЌС‚РѕР№ РѕС€РёР±РєРё.");
 
 	$body = nl2br("
-По вашему запросу на восстановление пароля, вы сгенерировали вам новый пароль.
+РџРѕ РІР°С€РµРјСѓ Р·Р°РїСЂРѕСЃСѓ РЅР° РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РїР°СЂРѕР»СЏ, РІС‹ СЃРіРµРЅРµСЂРёСЂРѕРІР°Р»Рё РІР°Рј РЅРѕРІС‹Р№ РїР°СЂРѕР»СЊ.
 
-Вот ваши новые данные для этого аккаунта:
+Р’РѕС‚ РІР°С€Рё РЅРѕРІС‹Рµ РґР°РЅРЅС‹Рµ РґР»СЏ СЌС‚РѕРіРѕ Р°РєРєР°СѓРЅС‚Р°:
 
-    Пользователь: {$arr["username"]}
-    Пароль:       $newpassword
+    РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ: {$arr["username"]}
+    РџР°СЂРѕР»СЊ:       $newpassword
 
-Вы можете войти на сайт тут: {$REL_SEO->make_link('login')}
+Р’С‹ РјРѕР¶РµС‚Рµ РІРѕР№С‚Рё РЅР° СЃР°Р№С‚ С‚СѓС‚: {$REL_SEO->make_link('login')}
 
 --
 {$REL_CONFIG['sitename']}
 ");
 
-$mail_sent = sent_mail($email,$REL_CONFIG['sitename'],$REL_CONFIG['siteemail'], "{$REL_CONFIG['defaultbaseurl']} данные аккаунта", $body);
+$mail_sent = sent_mail($email,$REL_CONFIG['sitename'],$REL_CONFIG['siteemail'], "{$REL_CONFIG['defaultbaseurl']} РґР°РЅРЅС‹Рµ Р°РєРєР°СѓРЅС‚Р°", $body);
 if (!$mail_sent) stderr($REL_LANG->say_by_key('error'),'Mail not sent, configure smtp/sendmail or contact site admin');
-stderr($REL_LANG->say_by_key('success'), "Новые данные по аккаунту отправлены на E-Mail <b>$email</b>.\n" .
-    "Через несколько минут (обычно сразу) вы получите ваши новые данные.",'success');
+stderr($REL_LANG->say_by_key('success'), "РќРѕРІС‹Рµ РґР°РЅРЅС‹Рµ РїРѕ Р°РєРєР°СѓРЅС‚Сѓ РѕС‚РїСЂР°РІР»РµРЅС‹ РЅР° E-Mail <b>$email</b>.\n" .
+    "Р§РµСЂРµР· РЅРµСЃРєРѕР»СЊРєРѕ РјРёРЅСѓС‚ (РѕР±С‹С‡РЅРѕ СЃСЂР°Р·Сѓ) РІС‹ РїРѕР»СѓС‡РёС‚Рµ РІР°С€Рё РЅРѕРІС‹Рµ РґР°РЅРЅС‹Рµ.",'success');
 }
 else
 {
-	$REL_TPL->stdhead("Восстановление пароля");
+	$REL_TPL->stdhead("Р’РѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РїР°СЂРѕР»СЏ");
 	?>
 <form method="post" action="<?=$REL_SEO->make_link('recover');?>">
 <table border="1" cellspacing="0" cellpadding="5">
 	<tr>
-		<td class="colhead" colspan="2">Восстановление имени пользователя или
-		пароля</td>
+		<td class="colhead" colspan="2">Р’РѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РёРјРµРЅРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё
+		РїР°СЂРѕР»СЏ</td>
 	</tr>
 	<tr>
-		<td colspan="2">Используйте форму ниже для востановления пароля<br />
-		и ваши данные будут отправлены вам на почту.<br />
+		<td colspan="2">РСЃРїРѕР»СЊР·СѓР№С‚Рµ С„РѕСЂРјСѓ РЅРёР¶Рµ РґР»СЏ РІРѕСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ РїР°СЂРѕР»СЏ<br />
+		Рё РІР°С€Рё РґР°РЅРЅС‹Рµ Р±СѓРґСѓС‚ РѕС‚РїСЂР°РІР»РµРЅС‹ РІР°Рј РЅР° РїРѕС‡С‚Сѓ.<br />
 		<br />
-		Вы долны будете подтвердить запрос.</td>
+		Р’С‹ РґРѕР»РЅС‹ Р±СѓРґРµС‚Рµ РїРѕРґС‚РІРµСЂРґРёС‚СЊ Р·Р°РїСЂРѕСЃ.</td>
 	</tr>
 	<tr>
-		<td class="rowhead">Зарегистрированый email</td>
+		<td class="rowhead">Р—Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅС‹Р№ email</td>
 		<td><input type="text" size="40" name="email"></td>
 	</tr>
 	<?php
@@ -146,7 +146,7 @@ else
 	?>
 	<tr>
 		<td colspan="2" align="center"><input type="submit"
-			value="Восстановить"></td>
+			value="Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ"></td>
 	</tr>
 </table>
 	<?

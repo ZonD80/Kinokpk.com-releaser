@@ -39,23 +39,23 @@ if ($REL_CONFIG['use_captcha']){
 	$_POST["recaptcha_response_field"]);
 
 	if (!$resp->is_valid) {
-		stderr($REL_LANG->say_by_key('error'), "Введенный код подтверждения неверный. <a href=\"javascript:history.go(-1);\">Попробуйте еще раз</a>");
+		stderr($REL_LANG->say_by_key('error'), "Р’РІРµРґРµРЅРЅС‹Р№ РєРѕРґ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ РЅРµРІРµСЂРЅС‹Р№. <a href=\"javascript:history.go(-1);\">РџРѕРїСЂРѕР±СѓР№С‚Рµ РµС‰Рµ СЂР°Р·</a>");
 	}
 
 }
 $email =  trim((string)$_POST['email']);
-if (!validemail($email)) stderr($REL_LANG->say_by_key('error'),'Email адрес введен неверно');
+if (!validemail($email)) stderr($REL_LANG->say_by_key('error'),'Email Р°РґСЂРµСЃ РІРІРµРґРµРЅ РЅРµРІРµСЂРЅРѕ');
 
 $res = sql_query("SELECT 1 FROM users WHERE email='$email'");
 $check = @mysql_result($res,0);
-if ($check) stderr($REL_LANG->say_by_key('error'),'Такой email уже зарегестрирован!');
+if ($check) stderr($REL_LANG->say_by_key('error'),'РўР°РєРѕР№ email СѓР¶Рµ Р·Р°СЂРµРіРµСЃС‚СЂРёСЂРѕРІР°РЅ!');
 
-$subject = "Приглашение на {$REL_CONFIG['sitename']}";
-$body = "Ваш друг или подруга с ником {$CURUSER['username']} пригласили вас зарегестрироваться на {$REL_CONFIG['sitename']}<br/>
-Для регистрации пройдите по этой ссылке:
+$subject = "РџСЂРёРіР»Р°С€РµРЅРёРµ РЅР° {$REL_CONFIG['sitename']}";
+$body = "Р’Р°С€ РґСЂСѓРі РёР»Рё РїРѕРґСЂСѓРіР° СЃ РЅРёРєРѕРј {$CURUSER['username']} РїСЂРёРіР»Р°СЃРёР»Рё РІР°СЃ Р·Р°СЂРµРіРµСЃС‚СЂРёСЂРѕРІР°С‚СЊСЃСЏ РЅР° {$REL_CONFIG['sitename']}<br/>
+Р”Р»СЏ СЂРµРіРёСЃС‚СЂР°С†РёРё РїСЂРѕР№РґРёС‚Рµ РїРѕ СЌС‚РѕР№ СЃСЃС‹Р»РєРµ:
 <a href=\"{$REL_SEO->make_link('signup')}\">{$REL_SEO->make_link('signup')}</a><br/>
-Используйте следующий код приглашения:<b>$hash</b><hr/>
-Спасибо за внимание, с уважением {$REL_CONFIG['sitename']}";
+РСЃРїРѕР»СЊР·СѓР№С‚Рµ СЃР»РµРґСѓСЋС‰РёР№ РєРѕРґ РїСЂРёРіР»Р°С€РµРЅРёСЏ:<b>$hash</b><hr/>
+РЎРїР°СЃРёР±Рѕ Р·Р° РІРЅРёРјР°РЅРёРµ, СЃ СѓРІР°Р¶РµРЅРёРµРј {$REL_CONFIG['sitename']}";
 
 sql_query("INSERT INTO invites (inviter, invite, time_invited) VALUES (" . implode(", ", array_map("sqlesc", array($id, $hash, time()))) . ")") or sqlerr(__FILE__,__LINE__);
 

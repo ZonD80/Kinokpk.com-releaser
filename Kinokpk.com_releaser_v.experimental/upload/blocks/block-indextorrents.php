@@ -10,7 +10,7 @@ if (!defined('BLOCK_FILE')) {
 	exit;
 }
 
-$blocktitle = "<span>Релизы</span>".(get_user_class() >= UC_USER ? "<font class=\"small\"> - [<a class=\"altlink\" href=\"".$REL_SEO->make_link('upload')."\"><b>Залить</b></a>]  </font>" : "<font class=\"small\"> - (новые поступления)</font>");
+$blocktitle = "<span>Р РµР»РёР·С‹</span>".(get_user_class() >= UC_USER ? "<font class=\"small\"> - [<a class=\"altlink\" href=\"".$REL_SEO->make_link('upload')."\"><b>Р—Р°Р»РёС‚СЊ</b></a>]  </font>" : "<font class=\"small\"> - (РЅРѕРІС‹Рµ РїРѕСЃС‚СѓРїР»РµРЅРёСЏ)</font>");
 
 $page = (int) $_GET['page'];
 
@@ -21,7 +21,7 @@ if ($count===false) {
 	$REL_CACHE->set('block-indextorrents','count',$count);
 }
 
-if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; } else {
+if (!$count) { $content = "<div align=\"center\">РќРµС‚ СЂРµР»РёР·РѕРІ</div>"; } else {
 
 	$content = '<div id="releases-table">';
 
@@ -56,7 +56,7 @@ if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; } else {
 		if ($pron) { $image = 'pic/nopron.gif';  $row['name'] = $REL_LANG->say_by_key('xxx_release'); } else
 		if ($row['images']) $image = array_shift(explode(",",$row['images'])); else $image='pic/noimage.gif';
 		$content .= "<div align=\"center\"><a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\"><img border=\"0\" src=\"$image\" width=\"170\" height=\"200\" title=\"{$row['name']}\" alt=\"{$row['name']}\"/></a>";
-		$content .= "<br/><br/>".(($row['free'])?'<img border="0" src="pic/freedownload.gif" alt="Золотой торрент"/>&nbsp;':'')."<a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\">{$row['name']}</a></div>";
+		$content .= "<br/><br/>".(($row['free'])?'<img border="0" src="pic/freedownload.gif" alt="Р—РѕР»РѕС‚РѕР№ С‚РѕСЂСЂРµРЅС‚"/>&nbsp;':'')."<a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\">{$row['name']}</a></div>";
 
 		$content .= "</td>";
 		++$nc;

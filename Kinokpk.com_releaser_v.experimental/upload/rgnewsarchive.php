@@ -44,14 +44,14 @@ if ($relgroup['private']) {
 }
 
 $count = get_row_count("rgnews"," WHERE relgroup=$rgid");
-$perpage = 20; //Сколько новостей на страницу
+$perpage = 20; //РЎРєРѕР»СЊРєРѕ РЅРѕРІРѕСЃС‚РµР№ РЅР° СЃС‚СЂР°РЅРёС†Сѓ
 
 list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('rgnewsarchive'));
 $resource = sql_query("SELECT rgnews.* , SUM(1) FROM rgnews LEFT JOIN comments ON comments.toid = rgnews.id WHERE comments.type='rgnews' GROUP BY rgnews.id ORDER BY rgnews.added DESC $limit");
 
 print("<div id='rgnews-table'>");
 print ("<table border='0' cellspacing='0' width='100%' cellpadding='5'>
-        <tr><td class='colhead' align='center'><b>Архив новостей &quot;".$relgroup['name']."&quot;</b></td></tr>");
+        <tr><td class='colhead' align='center'><b>РђСЂС…РёРІ РЅРѕРІРѕСЃС‚РµР№ &quot;".$relgroup['name']."&quot;</b></td></tr>");
 
 if ($count)
 {
@@ -67,14 +67,14 @@ if ($count)
 		print("</td></tr>");
 		print("<tr><td style='background-color: #F9F9F9'>
 
-            <div style='float:left;'><b>Размещено</b>: ".mkprettytime($added)." <b>Комментариев:</b> ".$comments." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$id)."#comments\">Комментировать</a>]</div>");
+            <div style='float:left;'><b>Р Р°Р·РјРµС‰РµРЅРѕ</b>: ".mkprettytime($added)." <b>РљРѕРјРјРµРЅС‚Р°СЂРёРµРІ:</b> ".$comments." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$id)."#comments\">РљРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ</a>]</div>");
 
 		if ((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER)
 		{
 			print("<div style='float:right;'>
             <font class=\"small\">
-            [<a class='altlink' href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$rgid,'newsid',$id,'returnto',urlencode($_SERVER['PHP_SELF']))."\">Редактировать</a>]
-            [<a class='altlink' onClick=\"return confirm('Удалить эту новость?')\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$rgid,'newsid',$id,'returnto',urlencode($_SERVER['PHP_SELF']))."\">Удалить</a>]
+            [<a class='altlink' href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$rgid,'newsid',$id,'returnto',urlencode($_SERVER['PHP_SELF']))."\">Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ</a>]
+            [<a class='altlink' onClick=\"return confirm('РЈРґР°Р»РёС‚СЊ СЌС‚Сѓ РЅРѕРІРѕСЃС‚СЊ?')\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$rgid,'newsid',$id,'returnto',urlencode($_SERVER['PHP_SELF']))."\">РЈРґР°Р»РёС‚СЊ</a>]
             </font></div>");
 		}
 		print("</td></tr></table>");
@@ -84,7 +84,7 @@ if ($count)
 }
 else
 {
-	print("<tr><td><center><h3>Извините, но новостей нет...</h3></center></td></tr>");
+	print("<tr><td><center><h3>РР·РІРёРЅРёС‚Рµ, РЅРѕ РЅРѕРІРѕСЃС‚РµР№ РЅРµС‚...</h3></center></td></tr>");
 }
 
 print("</table>");

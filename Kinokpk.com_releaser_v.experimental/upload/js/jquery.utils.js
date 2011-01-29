@@ -1,5 +1,5 @@
 $.extend({
-	// cookieExpireTime в часах
+	// cookieExpireTime РІ С‡Р°СЃР°С…
 	setCookie: function(cookieName,cookieContent,cookieExpireTime){
 		if(cookieExpireTime>0){
 			var expDate=new Date();
@@ -67,13 +67,13 @@ $.extend({
 		var $body=$('body');
 		return Math.max($body[0].scrollHeight,$body.parent()[0].scrollHeight);
 	},
-	// расположен ли элемент в видимой части экрана
+	// СЂР°СЃРїРѕР»РѕР¶РµРЅ Р»Рё СЌР»РµРјРµРЅС‚ РІ РІРёРґРёРјРѕР№ С‡Р°СЃС‚Рё СЌРєСЂР°РЅР°
 	evElementInScreen: function(html_elem){
-		//определяем координаты элемента на странице
+		//РѕРїСЂРµРґРµР»СЏРµРј РєРѕРѕСЂРґРёРЅР°С‚С‹ СЌР»РµРјРµРЅС‚Р° РЅР° СЃС‚СЂР°РЅРёС†Рµ
 		var elem_coords=$.evElementCoords(html_elem);
-		//определяем координаты видимой области экрана
+		//РѕРїСЂРµРґРµР»СЏРµРј РєРѕРѕСЂРґРёРЅР°С‚С‹ РІРёРґРёРјРѕР№ РѕР±Р»Р°СЃС‚Рё СЌРєСЂР°РЅР°
 		var screen_coords=$.evScreenCoords(html_elem);
-		//определяем находится ли элемент в видимой области
+		//РѕРїСЂРµРґРµР»СЏРµРј РЅР°С…РѕРґРёС‚СЃСЏ Р»Рё СЌР»РµРјРµРЅС‚ РІ РІРёРґРёРјРѕР№ РѕР±Р»Р°СЃС‚Рё
 		var bool=false;
 		var getCross=function(x11,w1,x21,w2){
 			var min=Math.min(x11,x21);
@@ -129,15 +129,15 @@ $.extend({
 		}
 	},
 	evValidateEmail: function(input_or_string){
-		//проверяем передана ли строка
+		//РїСЂРѕРІРµСЂСЏРµРј РїРµСЂРµРґР°РЅР° Р»Рё СЃС‚СЂРѕРєР°
 		if(typeof input_or_string=='string'){
 			var email=input_or_string;
 		}else{
-			//проверяем передан ли тег
+			//РїСЂРѕРІРµСЂСЏРµРј РїРµСЂРµРґР°РЅ Р»Рё С‚РµРі
 			if(typeof input_or_string.value=='string'){
 				var email=input_or_string.value;
 			}else{
-				//проверяем передан ли объект jQuery
+				//РїСЂРѕРІРµСЂСЏРµРј РїРµСЂРµРґР°РЅ Р»Рё РѕР±СЉРµРєС‚ jQuery
 				if(typeof input_or_string[0].value=='string'){
 					var email=input_or_string[0].value;
 				}else{
@@ -198,14 +198,14 @@ $.extend({
 		if(eval(testCondition)){
 			try{
 				eval(function2run);
-			}catch(e){/*поскольку событие было отложено, возможно что к моменту реализации функция уже перестанет существовать*/}
+			}catch(e){/*РїРѕСЃРєРѕР»СЊРєСѓ СЃРѕР±С‹С‚РёРµ Р±С‹Р»Рѕ РѕС‚Р»РѕР¶РµРЅРѕ, РІРѕР·РјРѕР¶РЅРѕ С‡С‚Рѕ Рє РјРѕРјРµРЅС‚Сѓ СЂРµР°Р»РёР·Р°С†РёРё С„СѓРЅРєС†РёСЏ СѓР¶Рµ РїРµСЂРµСЃС‚Р°РЅРµС‚ СЃСѓС‰РµСЃС‚РІРѕРІР°С‚СЊ*/}
 		}else{
 			var date=new Date();
 			var mls=parseInt(arguments[2] || 100);
 			setTimeout('$.evTry("'+ escape(function2run)+ '","'+ escape(testCondition)+ '",'+ mls+ ')',mls);
 		}
 	},
-	// нажатие ctrl Enter
+	// РЅР°Р¶Р°С‚РёРµ ctrl Enter
 	evCtrlEnter: function(event){
 		if(event.keyCode==13 && event.ctrlKey){
 			return true;
@@ -267,12 +267,12 @@ $.extend({
 $.fn.extend({
 	evDragDrop: function(hash){
 		this.each(function(){
-			//придумываем идентификатор объекту, чтобы отличать его от других
+			//РїСЂРёРґСѓРјС‹РІР°РµРј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕР±СЉРµРєС‚Сѓ, С‡С‚РѕР±С‹ РѕС‚Р»РёС‡Р°С‚СЊ РµРіРѕ РѕС‚ РґСЂСѓРіРёС…
 			var $target=$(this);
 			var random_id='random_id_'+Math.random().toString().substr(2);
 			if(!C.__evDragDrop__)C.__evDragDrop__=[];
 			C.__evDragDrop__[random_id]={};
-			// определяем функцию для вызоыва hash.callback
+			// РѕРїСЂРµРґРµР»СЏРµРј С„СѓРЅРєС†РёСЋ РґР»СЏ РІС‹Р·РѕС‹РІР° hash.callback
 			var callback_trigger_function=function(hash,evt,evt_name,lt){
 				if(hash.callback){
 					hash.callback({
@@ -284,7 +284,7 @@ $.fn.extend({
 					})
 				}
 			}
-			//реагируем на нажатие
+			//СЂРµР°РіРёСЂСѓРµРј РЅР° РЅР°Р¶Р°С‚РёРµ
 			$target.mousedown(function(evt){
 				evt.preventDefault();
 				C.__evDragDrop__[random_id].is_drag=true;
@@ -292,10 +292,10 @@ $.fn.extend({
 					evt.clientX - $target[0].offsetLeft,
 					evt.clientY - $target[0].offsetTop
 				];
-				// дергаем hash.callback
+				// РґРµСЂРіР°РµРј hash.callback
 				callback_trigger_function(hash,evt,'start',[$target[0].offsetLeft,$target[0].offsetTop]);
 			});
-			//реагируем на drag
+			//СЂРµР°РіРёСЂСѓРµРј РЅР° drag
 			$('body').mousemove(function(evt){
 				evt.preventDefault();
 				if(C.__evDragDrop__[random_id].is_drag){
@@ -303,7 +303,7 @@ $.fn.extend({
 						evt.clientX - C.__evDragDrop__[random_id].delta_xy[0],
 						evt.clientY - C.__evDragDrop__[random_id].delta_xy[1],
 					];
-					//преобразуем новые координаты так, чтобы объект не вылезал за рамки
+					//РїСЂРµРѕР±СЂР°Р·СѓРµРј РЅРѕРІС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ С‚Р°Рє, С‡С‚РѕР±С‹ РѕР±СЉРµРєС‚ РЅРµ РІС‹Р»РµР·Р°Р» Р·Р° СЂР°РјРєРё
 					if(hash.left){
 						if(lt[0]<hash.left[0])lt[0]=hash.left[0];
 						if(lt[0]>hash.left[1])lt[0]=hash.left[1];
@@ -312,17 +312,17 @@ $.fn.extend({
 						if(lt[1]<hash.top[0])lt[1]=hash.top[0];
 						if(lt[1]>hash.top[1])lt[1]=hash.top[1];
 					}
-					//позициорируем
+					//РїРѕР·РёС†РёРѕСЂРёСЂСѓРµРј
 					$target.css({'left':lt[0],'top':lt[1]});
-					// дергаем hash.callback
+					// РґРµСЂРіР°РµРј hash.callback
 					callback_trigger_function(hash,evt,'drag',lt);
 				}
 			});
-			//реагируем на drop
-			$('body').mouseup(function(evt){//привязываем событие к document, потому что нам не важны координаты
+			//СЂРµР°РіРёСЂСѓРµРј РЅР° drop
+			$('body').mouseup(function(evt){//РїСЂРёРІСЏР·С‹РІР°РµРј СЃРѕР±С‹С‚РёРµ Рє document, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РЅР°Рј РЅРµ РІР°Р¶РЅС‹ РєРѕРѕСЂРґРёРЅР°С‚С‹
 				evt.preventDefault();
 				if(C.__evDragDrop__[random_id].is_drag){
-					//если происходит перетаскивание, то заканчиваем его
+					//РµСЃР»Рё РїСЂРѕРёСЃС…РѕРґРёС‚ РїРµСЂРµС‚Р°СЃРєРёРІР°РЅРёРµ, С‚Рѕ Р·Р°РєР°РЅС‡РёРІР°РµРј РµРіРѕ
 					C.__evDragDrop__[random_id].is_drag=false;
 					C.__evDragDrop__[random_id].delta_xy=null;
 					callback_trigger_function(hash,evt,'drop',[$target[0].offsetLeft,$target[0].offsetTop]);
@@ -338,7 +338,7 @@ $.fn.extend({
 		})
 		return this;
 	},
-	// в зависимости от фокуса показывает или скрывает текст value
+	// РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С„РѕРєСѓСЃР° РїРѕРєР°Р·С‹РІР°РµС‚ РёР»Рё СЃРєСЂС‹РІР°РµС‚ С‚РµРєСЃС‚ value
 	evSwitchField: function(value){
 		this.each(function(){
 			var $field=$(this);
@@ -346,7 +346,7 @@ $.fn.extend({
 				value=(value || $field.attr('value'));
 				$field.evSwitchInputField(value);
 			}else{
-				value=(value || 'Пароль');
+				value=(value || 'РџР°СЂРѕР»СЊ');
 				$field.evSwitchPasswordField(value);
 			}
 		})
@@ -366,8 +366,8 @@ $.fn.extend({
 		})
 		return this;
 	},
-	// в зависимости от фокуса переключает поле типа password в тип text 
-	// и показывает в нем текст (value) 
+	// РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С„РѕРєСѓСЃР° РїРµСЂРµРєР»СЋС‡Р°РµС‚ РїРѕР»Рµ С‚РёРїР° password РІ С‚РёРї text 
+	// Рё РїРѕРєР°Р·С‹РІР°РµС‚ РІ РЅРµРј С‚РµРєСЃС‚ (value) 
 	evSwitchPasswordField: function(value){
 		this.each(function(){
 			var $field=$(this);
@@ -399,37 +399,37 @@ $.fn.extend({
 		})
 		return this;
 	},
-	// функция вешается на blur, добавляет "http://" и убирает конечный слэш
+	// С„СѓРЅРєС†РёСЏ РІРµС€Р°РµС‚СЃСЏ РЅР° blur, РґРѕР±Р°РІР»СЏРµС‚ "http://" Рё СѓР±РёСЂР°РµС‚ РєРѕРЅРµС‡РЅС‹Р№ СЃР»СЌС€
 	evCorrectURL: function(){
 		this.each(function(){
 			var url=$.trim($(this).attr('value'));
-			//с адресом все ОК если:
+			//СЃ Р°РґСЂРµСЃРѕРј РІСЃРµ РћРљ РµСЃР»Рё:
 			if(false 
-				|| !url //или еще ничего не набрали
-				|| url.search(/:\/\//)>0 //или http:// уже набрали
-				|| url.search(/\./)==-1 //или пока не набрали ни одной точки
-				|| url.search(/mailto:/)>=0 //или это mailto
+				|| !url //РёР»Рё РµС‰Рµ РЅРёС‡РµРіРѕ РЅРµ РЅР°Р±СЂР°Р»Рё
+				|| url.search(/:\/\//)>0 //РёР»Рё http:// СѓР¶Рµ РЅР°Р±СЂР°Р»Рё
+				|| url.search(/\./)==-1 //РёР»Рё РїРѕРєР° РЅРµ РЅР°Р±СЂР°Р»Рё РЅРё РѕРґРЅРѕР№ С‚РѕС‡РєРё
+				|| url.search(/mailto:/)>=0 //РёР»Рё СЌС‚Рѕ mailto
 			){
-				//ничего не делаем
+				//РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј
 			}else{
-				// добавляем mailto: если набрали валидный e-mail
+				// РґРѕР±Р°РІР»СЏРµРј mailto: РµСЃР»Рё РЅР°Р±СЂР°Р»Рё РІР°Р»РёРґРЅС‹Р№ e-mail
 				if($.evValidateEmail(url)){
 					url='mailto:'+ url;
 				}else{
-					//добавляем "http://" если:
+					//РґРѕР±Р°РІР»СЏРµРј "http://" РµСЃР»Рё:
 					if(true
-						&& url.search(/:\/\//)==-1 // "http://" еще не набрали
-						&& url.search(/\.(ru|su|net|com|org|biz|info|tv)/)>0 //в адресе присутствует какой-то из основных доменов 1 уровня
+						&& url.search(/:\/\//)==-1 // "http://" РµС‰Рµ РЅРµ РЅР°Р±СЂР°Р»Рё
+						&& url.search(/\.(ru|su|net|com|org|biz|info|tv)/)>0 //РІ Р°РґСЂРµСЃРµ РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚ РєР°РєРѕР№-С‚Рѕ РёР· РѕСЃРЅРѕРІРЅС‹С… РґРѕРјРµРЅРѕРІ 1 СѓСЂРѕРІРЅСЏ
 					){
 						url='http://'+ url;
 					}
 				}
 			}
-			//убираем конечный слэш, если:
+			//СѓР±РёСЂР°РµРј РєРѕРЅРµС‡РЅС‹Р№ СЃР»СЌС€, РµСЃР»Рё:
 			if(true
-				&& url.search(/\/$/)>0 //конечный слэш имеется
-				&& url.search(/:\/\//)>0 //в адресе имеется http://
-				&& url.match(/\//g).length==3 //нет других слэшей кроме последнего и двух рядом в http://
+				&& url.search(/\/$/)>0 //РєРѕРЅРµС‡РЅС‹Р№ СЃР»СЌС€ РёРјРµРµС‚СЃСЏ
+				&& url.search(/:\/\//)>0 //РІ Р°РґСЂРµСЃРµ РёРјРµРµС‚СЃСЏ http://
+				&& url.match(/\//g).length==3 //РЅРµС‚ РґСЂСѓРіРёС… СЃР»СЌС€РµР№ РєСЂРѕРјРµ РїРѕСЃР»РµРґРЅРµРіРѕ Рё РґРІСѓС… СЂСЏРґРѕРј РІ http://
 			){
 				url=url.substr(0,url.length-1);
 			}
@@ -508,8 +508,8 @@ $.fn.extend({
 				var sbox_name=($select.attr('name') || '');
 				if($select.parent().is('span.sboxDecorated')){
 					var $wrap=$select.parent();
-					// если происходит повторное декорирование 
-					// пытаемся удалить b.first, a.darr, span.options
+					// РµСЃР»Рё РїСЂРѕРёСЃС…РѕРґРёС‚ РїРѕРІС‚РѕСЂРЅРѕРµ РґРµРєРѕСЂРёСЂРѕРІР°РЅРёРµ 
+					// РїС‹С‚Р°РµРјСЃСЏ СѓРґР°Р»РёС‚СЊ b.first, a.darr, span.options
 					$wrap.children('b.first, a.darr, span.options').remove();
 				}else{
 					var $wrap=$select.wrap($(document.createElement('span')).addClass('sboxDecorated')).parent();
@@ -563,41 +563,41 @@ $.fn.extend({
 				window['evSboxDecorate_delay_function'+j]=function(){
 					var wrap_wh=[$wrap[0].offsetWidth,$wrap[0].offsetHeight];
 					var $darr=$(document.createElement('a')).attr({href:'#'}).addClass('darr').appendTo($wrap);
-					// добавляем $opts_scroll в последнюю очередь, ведь если это сделать раньше, то размеры wrap_wh определятся неверно
+					// РґРѕР±Р°РІР»СЏРµРј $opts_scroll РІ РїРѕСЃР»РµРґРЅСЋСЋ РѕС‡РµСЂРµРґСЊ, РІРµРґСЊ РµСЃР»Рё СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ СЂР°РЅСЊС€Рµ, С‚Рѕ СЂР°Р·РјРµСЂС‹ wrap_wh РѕРїСЂРµРґРµР»СЏС‚СЃСЏ РЅРµРІРµСЂРЅРѕ
 					$opts_scroll.appendTo($(document.createElement('span')).addClass('ofh').appendTo($(document.createElement('span')).addClass('options').appendTo($wrap)));
 					if(hash.style){
 						$.evCSSrule('span.sboxDecorated a.darr','height: '+wrap_wh[1]+'px;width: '+wrap_wh[0]+'px;');
 						$.evCSSrule('span.sboxDecorated span.options','top: '+wrap_wh[1]+'px;');
 					}
-					// устанавливаем обработчик, который разворачивает опции
+					// СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РѕР±СЂР°Р±РѕС‚С‡РёРє, РєРѕС‚РѕСЂС‹Р№ СЂР°Р·РІРѕСЂР°С‡РёРІР°РµС‚ РѕРїС†РёРё
 					$darr.bind('click',function(evt){
 						evt.preventDefault();
 						evt.stopPropagation();
 						$(this).blur();
 						var $current_sbox=$(this).parent();
 						var $current_opts=$current_sbox.children('span.options');
-						// определяем, нужно свернуть или развернуть сбокс
+						// РѕРїСЂРµРґРµР»СЏРµРј, РЅСѓР¶РЅРѕ СЃРІРµСЂРЅСѓС‚СЊ РёР»Рё СЂР°Р·РІРµСЂРЅСѓС‚СЊ СЃР±РѕРєСЃ
 						if($current_sbox.children('span.options')[0].offsetHeight>0){
-							// нужно свернуть и сбросить высоту у ofh
+							// РЅСѓР¶РЅРѕ СЃРІРµСЂРЅСѓС‚СЊ Рё СЃР±СЂРѕСЃРёС‚СЊ РІС‹СЃРѕС‚Сѓ Сѓ ofh
 							window.evSboxDecorate_hide_function($current_sbox);
 						}else{
-							// нужно развернуть
-							// если есть другие развернутые селектбоксы — сворачиваем их
+							// РЅСѓР¶РЅРѕ СЂР°Р·РІРµСЂРЅСѓС‚СЊ
+							// РµСЃР»Рё РµСЃС‚СЊ РґСЂСѓРіРёРµ СЂР°Р·РІРµСЂРЅСѓС‚С‹Рµ СЃРµР»РµРєС‚Р±РѕРєСЃС‹ вЂ” СЃРІРѕСЂР°С‡РёРІР°РµРј РёС…
 							if($('span.sboxDecoratedActive').length){
 								window.evSboxDecorate_hide_function($('span.sboxDecoratedActive'));
 							}
-							// определяем, сколько места осталось на сайте, чтобы развернуть наши опции
+							// РѕРїСЂРµРґРµР»СЏРµРј, СЃРєРѕР»СЊРєРѕ РјРµСЃС‚Р° РѕСЃС‚Р°Р»РѕСЃСЊ РЅР° СЃР°Р№С‚Рµ, С‡С‚РѕР±С‹ СЂР°Р·РІРµСЂРЅСѓС‚СЊ РЅР°С€Рё РѕРїС†РёРё
 							var darr_coords=$.evElementCoords(this);
 							if(hash.scroll){
 								var space_height=$.evScreenHeight()+$.evScrollTop() - (darr_coords.top+darr_coords.height);
-								// назначаем минимальную высоту — 5 высот darr
+								// РЅР°Р·РЅР°С‡Р°РµРј РјРёРЅРёРјР°Р»СЊРЅСѓСЋ РІС‹СЃРѕС‚Сѓ вЂ” 5 РІС‹СЃРѕС‚ darr
 								space_height=Math.max(space_height, 5*darr_coords.height);
-								// разворачиваем или сворачиваем текущий селектбокс, определяем его настоящую высоту
+								// СЂР°Р·РІРѕСЂР°С‡РёРІР°РµРј РёР»Рё СЃРІРѕСЂР°С‡РёРІР°РµРј С‚РµРєСѓС‰РёР№ СЃРµР»РµРєС‚Р±РѕРєСЃ, РѕРїСЂРµРґРµР»СЏРµРј РµРіРѕ РЅР°СЃС‚РѕСЏС‰СѓСЋ РІС‹СЃРѕС‚Сѓ
 								$current_sbox.addClass('sboxDecoratedActive');
 								var original_height=$current_opts.css({visibility:'hidden'}).children()[0].offsetHeight;
 								var height=Math.min(space_height, original_height);
 								$current_opts.css({visibility:'visible'}).children('span.ofh').css({height:height});
-								// при необходимости добавляем обработчик mousemove для реализации прокрутки
+								// РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РґРѕР±Р°РІР»СЏРµРј РѕР±СЂР°Р±РѕС‚С‡РёРє mousemove РґР»СЏ СЂРµР°Р»РёР·Р°С†РёРё РїСЂРѕРєСЂСѓС‚РєРё
 								if(height<original_height){
 									window['evSboxDecorate_scroll_listener']=function(evt){
 										var opts_coords=$.evElementCoords(this);
@@ -614,14 +614,14 @@ $.fn.extend({
 									};
 									window['evSboxDecorate_scroll_function']=function(){
 										if(window.evSboxDecorate_scroll_k<=0){
-											// пытаемся прокрутить вниз
+											// РїС‹С‚Р°РµРјСЃСЏ РїСЂРѕРєСЂСѓС‚РёС‚СЊ РІРЅРёР·
 											window.evSboxDecorate_scroll_info.t -= 10 * Math.pow(window.evSboxDecorate_scroll_k,3);
 											if(window.evSboxDecorate_scroll_info.t > 0){
 												window.evSboxDecorate_scroll_info.t=0
 											}
 											window.evSboxDecorate_scroll_info.e.style.top=window.evSboxDecorate_scroll_info.t+'px';
 										}else if(window.evSboxDecorate_scroll_k>0){
-											// пытаемся прокрутить вверх
+											// РїС‹С‚Р°РµРјСЃСЏ РїСЂРѕРєСЂСѓС‚РёС‚СЊ РІРІРµСЂС…
 											window.evSboxDecorate_scroll_info.t -= 10 * Math.pow(window.evSboxDecorate_scroll_k,3);
 											if(window.evSboxDecorate_scroll_info.t < window.evSboxDecorate_scroll_info.h-window.evSboxDecorate_scroll_info.oh ){
 												window.evSboxDecorate_scroll_info.t=window.evSboxDecorate_scroll_info.h-window.evSboxDecorate_scroll_info.oh;
@@ -636,11 +636,11 @@ $.fn.extend({
 							}
 						}
 					})
-					// устанавливаем обработчик клика по телу страницы, который скроет развернутый sbox
+					// СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РѕР±СЂР°Р±РѕС‚С‡РёРє РєР»РёРєР° РїРѕ С‚РµР»Сѓ СЃС‚СЂР°РЅРёС†С‹, РєРѕС‚РѕСЂС‹Р№ СЃРєСЂРѕРµС‚ СЂР°Р·РІРµСЂРЅСѓС‚С‹Р№ sbox
 					if(typeof window['evSboxDecorate_document_click_listener']=='undefined'){
 						window['evSboxDecorate_document_click_listener']=true;
 						$(document).click(function(evt){
-							//определяем, имеется ли видимый sbox
+							//РѕРїСЂРµРґРµР»СЏРµРј, РёРјРµРµС‚СЃСЏ Р»Рё РІРёРґРёРјС‹Р№ sbox
 							var $active_sbox=$('span.sboxDecoratedActive');
 							if($active_sbox.length){
 								var hide, cancel;
@@ -658,11 +658,11 @@ $.fn.extend({
 									cancel=true;
 								}
 								if(cancel){
-									// запрещаем действие по-умолчанию
+									// Р·Р°РїСЂРµС‰Р°РµРј РґРµР№СЃС‚РІРёРµ РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ
 									evt.preventDefault();
 								}
 								if(hide){
-									// скрываем sbox
+									// СЃРєСЂС‹РІР°РµРј sbox
 									window.evSboxDecorate_hide_function($active_sbox);
 								}
 							}
@@ -713,35 +713,35 @@ $.fn.extend({
 			var $table=$(this);
 			if($table.is('table')){
 				// 1. 
-				// исследуем таблицу $table, определяем ее ширину и высоту,
-				// а также создаем матрицу таблицы — одномерный массив, 
-				// каждый элемент которого есть число ячеек в СТОЛБЦЕ
-				var matrix=[];//матрица ячеек
-				var line=1;//текущая строка
+				// РёСЃСЃР»РµРґСѓРµРј С‚Р°Р±Р»РёС†Сѓ $table, РѕРїСЂРµРґРµР»СЏРµРј РµРµ С€РёСЂРёРЅСѓ Рё РІС‹СЃРѕС‚Сѓ,
+				// Р° С‚Р°РєР¶Рµ СЃРѕР·РґР°РµРј РјР°С‚СЂРёС†Сѓ С‚Р°Р±Р»РёС†С‹ вЂ” РѕРґРЅРѕРјРµСЂРЅС‹Р№ РјР°СЃСЃРёРІ, 
+				// РєР°Р¶РґС‹Р№ СЌР»РµРјРµРЅС‚ РєРѕС‚РѕСЂРѕРіРѕ РµСЃС‚СЊ С‡РёСЃР»Рѕ СЏС‡РµРµРє РІ РЎРўРћР›Р‘Р¦Р•
+				var matrix=[];//РјР°С‚СЂРёС†Р° СЏС‡РµРµРє
+				var line=1;//С‚РµРєСѓС‰Р°СЏ СЃС‚СЂРѕРєР°
 				var mxc=1;//max colspan
 				var mxr=1;//max rowspan
-				$('tr',$table).each(function(){//перебираем строки
-					var cells=$('th,td',this).get();//получаем массив ячеек строки
-					var index=0;//текущий столбец
-					for(var i=0;i<cells.length;i++){//перебираем ячейки
-						if(line==1)mxr=(mxr<rowspan)?rowspan:mxr;//отыскиваем максимальный rowspan в первой строке, чтобы знать высоту заголовка страницы
-						var rowspan=( parseInt($(cells[i]).attr('rowspan')) || 1 );//устанавливаем rowspan ячейки или 1
-						var colspan=( parseInt($(cells[i]).attr('colspan')) || 1 );//устанавливаем colspan ячейки или 1
-						for(var j=0;j<colspan;j++){//перебираем colspan
-							while((matrix[index] || 0)>=line)index++;//двигаемся по матрице вправо пока не найдем незанятую ячейку
-							if(index==0)mxc=(mxc<colspan)?colspan:mxc;//отыскиваем максимальный colspan в первой колонке, чтобы знать ширину заголовка таблицы
-							matrix[index]=(matrix[index] || 0) + rowspan;//заполняем матрицу ячейками
+				$('tr',$table).each(function(){//РїРµСЂРµР±РёСЂР°РµРј СЃС‚СЂРѕРєРё
+					var cells=$('th,td',this).get();//РїРѕР»СѓС‡Р°РµРј РјР°СЃСЃРёРІ СЏС‡РµРµРє СЃС‚СЂРѕРєРё
+					var index=0;//С‚РµРєСѓС‰РёР№ СЃС‚РѕР»Р±РµС†
+					for(var i=0;i<cells.length;i++){//РїРµСЂРµР±РёСЂР°РµРј СЏС‡РµР№РєРё
+						if(line==1)mxr=(mxr<rowspan)?rowspan:mxr;//РѕС‚С‹СЃРєРёРІР°РµРј РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ rowspan РІ РїРµСЂРІРѕР№ СЃС‚СЂРѕРєРµ, С‡С‚РѕР±С‹ Р·РЅР°С‚СЊ РІС‹СЃРѕС‚Сѓ Р·Р°РіРѕР»РѕРІРєР° СЃС‚СЂР°РЅРёС†С‹
+						var rowspan=( parseInt($(cells[i]).attr('rowspan')) || 1 );//СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј rowspan СЏС‡РµР№РєРё РёР»Рё 1
+						var colspan=( parseInt($(cells[i]).attr('colspan')) || 1 );//СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј colspan СЏС‡РµР№РєРё РёР»Рё 1
+						for(var j=0;j<colspan;j++){//РїРµСЂРµР±РёСЂР°РµРј colspan
+							while((matrix[index] || 0)>=line)index++;//РґРІРёРіР°РµРјСЃСЏ РїРѕ РјР°С‚СЂРёС†Рµ РІРїСЂР°РІРѕ РїРѕРєР° РЅРµ РЅР°Р№РґРµРј РЅРµР·Р°РЅСЏС‚СѓСЋ СЏС‡РµР№РєСѓ
+							if(index==0)mxc=(mxc<colspan)?colspan:mxc;//РѕС‚С‹СЃРєРёРІР°РµРј РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ colspan РІ РїРµСЂРІРѕР№ РєРѕР»РѕРЅРєРµ, С‡С‚РѕР±С‹ Р·РЅР°С‚СЊ С€РёСЂРёРЅСѓ Р·Р°РіРѕР»РѕРІРєР° С‚Р°Р±Р»РёС†С‹
+							matrix[index]=(matrix[index] || 0) + rowspan;//Р·Р°РїРѕР»РЅСЏРµРј РјР°С‚СЂРёС†Сѓ СЏС‡РµР№РєР°РјРё
 							index++;
 						}
 					}
 					line++;
 				})
-				var matrix_height=0;//определяем высоту таблицы
+				var matrix_height=0;//РѕРїСЂРµРґРµР»СЏРµРј РІС‹СЃРѕС‚Сѓ С‚Р°Р±Р»РёС†С‹
 				for(var i=0;i<matrix.length;i++)matrix_height=(matrix[i]>matrix_height)?matrix[i]:matrix_height;
-				var matrix_width=matrix.length;//определяем ширину таблицы
+				var matrix_width=matrix.length;//РѕРїСЂРµРґРµР»СЏРµРј С€РёСЂРёРЅСѓ С‚Р°Р±Р»РёС†С‹
 				// 2.
-				// устанавливаем ячейкам необходимые атрибуты на основе полученных о таблице сведений
-				// механизмом перебора строк и ячеек аналогичен 1, поэтому часть комментариев опущена
+				// СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЏС‡РµР№РєР°Рј РЅРµРѕР±С…РѕРґРёРјС‹Рµ Р°С‚СЂРёР±СѓС‚С‹ РЅР° РѕСЃРЅРѕРІРµ РїРѕР»СѓС‡РµРЅРЅС‹С… Рѕ С‚Р°Р±Р»РёС†Рµ СЃРІРµРґРµРЅРёР№
+				// РјРµС…Р°РЅРёР·РјРѕРј РїРµСЂРµР±РѕСЂР° СЃС‚СЂРѕРє Рё СЏС‡РµРµРє Р°РЅР°Р»РѕРіРёС‡РµРЅ 1, РїРѕСЌС‚РѕРјСѓ С‡Р°СЃС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ РѕРїСѓС‰РµРЅР°
 				var matrix=[];
 				var line=1;
 				$('tr',$table).each(function(){
@@ -756,14 +756,14 @@ $.fn.extend({
 						for(var j=0;j<colspan;j++){
 							while((matrix[index] || 0)>=line)index++;
 							matrix[index]=(matrix[index] || 0) + rowspan;
-							if(line==1)$(cells[i]).addClass('top');//всем верхним ячейкам добавляем класс "top"
-							if((index+1)==matrix_width)$(cells[i]).addClass('allright');//всем правым "right"
-							if(matrix[index]==matrix_height)$(cells[i]).addClass('bottom');//всем нижним "bottom"
-							if(index==0)$(cells[i]).addClass('allleft');//всем левым ячейкам добавляем класс "left"
-							if(matrix[index]<=mxr)$(cells[i]).addClass('headrow');//всем ячейкам в составе горизонтального (или верхнего) заголовка таблицы добавляем класс "headrow"
-							if((index+colspan)<=mxc)$(cells[i]).addClass('headcol');//всем ячейкам в составе вертикального (или левого) заголовка таблицы - класс "headrow"
-							if(colspan>1)$(cells[i]).addClass('wide wide'+colspan);// всем ячейкам с атрибутом colspan добавляем классы wide и wideN
-							if(rowspan>1)$(cells[i]).addClass('high high'+rowspan);// всем ячейкам с атрибутом rowspan добавляем классы high и highN
+							if(line==1)$(cells[i]).addClass('top');//РІСЃРµРј РІРµСЂС…РЅРёРј СЏС‡РµР№РєР°Рј РґРѕР±Р°РІР»СЏРµРј РєР»Р°СЃСЃ "top"
+							if((index+1)==matrix_width)$(cells[i]).addClass('allright');//РІСЃРµРј РїСЂР°РІС‹Рј "right"
+							if(matrix[index]==matrix_height)$(cells[i]).addClass('bottom');//РІСЃРµРј РЅРёР¶РЅРёРј "bottom"
+							if(index==0)$(cells[i]).addClass('allleft');//РІСЃРµРј Р»РµРІС‹Рј СЏС‡РµР№РєР°Рј РґРѕР±Р°РІР»СЏРµРј РєР»Р°СЃСЃ "left"
+							if(matrix[index]<=mxr)$(cells[i]).addClass('headrow');//РІСЃРµРј СЏС‡РµР№РєР°Рј РІ СЃРѕСЃС‚Р°РІРµ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕРіРѕ (РёР»Рё РІРµСЂС…РЅРµРіРѕ) Р·Р°РіРѕР»РѕРІРєР° С‚Р°Р±Р»РёС†С‹ РґРѕР±Р°РІР»СЏРµРј РєР»Р°СЃСЃ "headrow"
+							if((index+colspan)<=mxc)$(cells[i]).addClass('headcol');//РІСЃРµРј СЏС‡РµР№РєР°Рј РІ СЃРѕСЃС‚Р°РІРµ РІРµСЂС‚РёРєР°Р»СЊРЅРѕРіРѕ (РёР»Рё Р»РµРІРѕРіРѕ) Р·Р°РіРѕР»РѕРІРєР° С‚Р°Р±Р»РёС†С‹ - РєР»Р°СЃСЃ "headrow"
+							if(colspan>1)$(cells[i]).addClass('wide wide'+colspan);// РІСЃРµРј СЏС‡РµР№РєР°Рј СЃ Р°С‚СЂРёР±СѓС‚РѕРј colspan РґРѕР±Р°РІР»СЏРµРј РєР»Р°СЃСЃС‹ wide Рё wideN
+							if(rowspan>1)$(cells[i]).addClass('high high'+rowspan);// РІСЃРµРј СЏС‡РµР№РєР°Рј СЃ Р°С‚СЂРёР±СѓС‚РѕРј rowspan РґРѕР±Р°РІР»СЏРµРј РєР»Р°СЃСЃС‹ high Рё highN
 							index++;
 						}
 					}
@@ -849,11 +849,11 @@ $.fn.extend({
 	evGMapping: function(){
 		this.each(function(i){
 			var $element=$(this);
-			// создаем массив window.evGMapping_GMap2 со ссылками на карты
+			// СЃРѕР·РґР°РµРј РјР°СЃСЃРёРІ window.evGMapping_GMap2 СЃРѕ СЃСЃС‹Р»РєР°РјРё РЅР° РєР°СЂС‚С‹
 			if(i==0 && typeof window['evGMapping_GMap2']=='undefined'){
 				window['evGMapping_GMap2']=[];
 			}
-			// параметры карты по атрибутам элемента
+			// РїР°СЂР°РјРµС‚СЂС‹ РєР°СЂС‚С‹ РїРѕ Р°С‚СЂРёР±СѓС‚Р°Рј СЌР»РµРјРµРЅС‚Р°
 			var gmap2_index=window.evGMapping_GMap2.length;
 			var lat__lng=($element.attr('data-coords') || '55.72711, 42.099609');
 			var lat=parseFloat(lat__lng.split(',')[0]);
@@ -863,26 +863,26 @@ $.fn.extend({
 			if(parseInt(width) == width) width+='px';
 			var height=($element.attr('data-height') || 600);
 			if(parseInt(height) == height) height+='px';
-			// скрываем детей, создаем бокс для карты
+			// СЃРєСЂС‹РІР°РµРј РґРµС‚РµР№, СЃРѕР·РґР°РµРј Р±РѕРєСЃ РґР»СЏ РєР°СЂС‚С‹
 			$element.children().hide();
 			var $gmap_box = $(document.createElement('div')).addClass('GMapBox').attr({'data-gmap2index':gmap2_index}).width(width).height(height).prependTo($element);
-			// создаем карту
+			// СЃРѕР·РґР°РµРј РєР°СЂС‚Сѓ
 			window.evGMapping_GMap2[gmap2_index] = new GMap2($gmap_box[0]);
 			window.evGMapping_GMap2[gmap2_index].setCenter(new GLatLng(lat, lng), zoom);
-			// управление картой
+			// СѓРїСЂР°РІР»РµРЅРёРµ РєР°СЂС‚РѕР№
 			window.evGMapping_GMap2[gmap2_index].addControl(new GMapTypeControl());
 			window.evGMapping_GMap2[gmap2_index].enableScrollWheelZoom();
 			// window.evGMapping_GMap2[gmap2_index].addMapType(G_PHYSICAL_MAP);
 			// window.evGMapping_GMap2[gmap2_index].removeMapType(G_HYBRID_MAP);
 			window.evGMapping_GMap2[gmap2_index].addControl(new GLargeMapControl3D());
-			// нестандартная кнопка со слоем
+			// РЅРµСЃС‚Р°РЅРґР°СЂС‚РЅР°СЏ РєРЅРѕРїРєР° СЃРѕ СЃР»РѕРµРј
 			$element.children('div.GMcontrol').each(function(){
 				var $control_element=$(this);
-				// параметры
+				// РїР°СЂР°РјРµС‚СЂС‹
 				var group_title=$control_element.attr('data-title');
-				// чтобы создать подкласс элемента GControl, 
-				// задаем GControl в качестве объекта-прототипа
-				// и реализуем два его метода: initialize и getDefaultPosition
+				// С‡С‚РѕР±С‹ СЃРѕР·РґР°С‚СЊ РїРѕРґРєР»Р°СЃСЃ СЌР»РµРјРµРЅС‚Р° GControl, 
+				// Р·Р°РґР°РµРј GControl РІ РєР°С‡РµСЃС‚РІРµ РѕР±СЉРµРєС‚Р°-РїСЂРѕС‚РѕС‚РёРїР°
+				// Рё СЂРµР°Р»РёР·СѓРµРј РґРІР° РµРіРѕ РјРµС‚РѕРґР°: initialize Рё getDefaultPosition
 				var GroupControl=function(){}
 				GroupControl.prototype = new GControl();
 				GroupControl.prototype.initialize = function(map) {
@@ -900,7 +900,7 @@ $.fn.extend({
 							var title=$group.attr('data-title');
 							var $a=$(document.createElement('a')).attr({href:'#'}).text(title).
 								appendTo($(document.createElement('li')).appendTo($ul));
-							// обработчик клика по ссылке
+							// РѕР±СЂР°Р±РѕС‚С‡РёРє РєР»РёРєР° РїРѕ СЃСЃС‹Р»РєРµ
 							$a.bind('click',function(evt){
 								evt.preventDefault();
 								var lat__lng=$group.attr('data-coords');
@@ -910,7 +910,7 @@ $.fn.extend({
 								map.setCenter(new GLatLng(lat, lng), zoom);
 							})
 						})
-						// обработчик mouseover mouseout на кнопке группы
+						// РѕР±СЂР°Р±РѕС‚С‡РёРє mouseover mouseout РЅР° РєРЅРѕРїРєРµ РіСЂСѓРїРїС‹
 						window['evGMapping_hidegroup_function'+i]=function(){$container.removeClass('GMgroupControlActive');}
 						$container.bind('mouseover mouseout', function(evt){
 							if(evt.type=='mouseover'){
@@ -949,7 +949,7 @@ $.fn.extend({
 					var y=parseInt(x__y.split(',')[1]);
 					return new GControlPosition(corner, new GSize(x, y));
 				}
-				// задаем первичные стили
+				// Р·Р°РґР°РµРј РїРµСЂРІРёС‡РЅС‹Рµ СЃС‚РёР»Рё
 				if(i==0 && typeof window['evGMapping_css_control_done']=='undefined'){
 					window['evGMapping_css_control_done']=true;
 					$.evCSSrule('div.GMapBox div.GMgroupControl', 'background: white;border: 1px solid black;')
@@ -960,12 +960,12 @@ $.fn.extend({
 					$.evCSSrule('div.GMapBox div.GMgroupControl div.brd div.ul ul', 'margin: 0 4px 0 8px;padding: 0;list-style-type: disc;font-size: 11px;line-height: 1em;')
 					$.evCSSrule('div.GMapBox div.GMgroupControl div.brd div.ul ul', 'overflow: auto;')
 					$.evCSSrule('div.GMapBox div.GMgroupControl div.brd div.ul ul li', 'margin: 4px 0;')
-					$.evCSSrule('div.GMapBox div.GMgroupControl div.brd div.ul ul li:before', 'content: "●";font-size: 9px;padding-right: 6px;')
+					$.evCSSrule('div.GMapBox div.GMgroupControl div.brd div.ul ul li:before', 'content: "в—Џ";font-size: 9px;padding-right: 6px;')
 					$.evCSSrule('div.GMapBox div.GMgroupControl div.brd div.ul ul li a', 'color: red;')
 				}
 				window.evGMapping_GMap2[gmap2_index].addControl(new GroupControl());
 			})
-			// создаем метод для создания иконок
+			// СЃРѕР·РґР°РµРј РјРµС‚РѕРґ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ РёРєРѕРЅРѕРє
 			var get_icon_function=function($e, base_icon){
 				var icon=new GIcon(base_icon || G_DEFAULT_ICON);
 				if($e.attr('data-icon-png'))
@@ -990,9 +990,9 @@ $.fn.extend({
 					icon.shadowSize=new GSize(parseInt($e.attr('data-shadow-size').split(',')[0]), parseInt($e.attr('data-shadow-size').split(',')[1]));
 				return icon;
 			}
-			// создаем общую иконку для карты в целом
+			// СЃРѕР·РґР°РµРј РѕР±С‰СѓСЋ РёРєРѕРЅРєСѓ РґР»СЏ РєР°СЂС‚С‹ РІ С†РµР»РѕРј
 			var base_icon=get_icon_function($element);
-			// кластерер и маркеры
+			// РєР»Р°СЃС‚РµСЂРµСЂ Рё РјР°СЂРєРµСЂС‹
 			$element.find('div.GMgroup').each(function(){
 				var $group_element=$(this);
 				var max_visible_markers = parseInt($group_element.attr('data-max-visible-markers'));

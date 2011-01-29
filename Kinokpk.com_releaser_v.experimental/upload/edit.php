@@ -28,14 +28,14 @@ stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 $res = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
 while (list($tracker) = mysql_fetch_array($res)) $trackers[] = $tracker;
 if ($trackers) $trackers = implode("\n",$trackers);
-$REL_TPL->stdhead("Редактирование Релиза \"" . makesafe($row["name"]) . "\"");
+$REL_TPL->stdhead("Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ Р РµР»РёР·Р° \"" . makesafe($row["name"]) . "\"");
 
 ?>
 <script type="text/javascript" language="javascript">
 
-function openwindow(location)
+function openwindow()
 {
- window.open("<?=$REL_CONFIG['defaultbaseurl']?>/<?=$REL_SEO->make_link('"+location+"','id',$id)?>","mywindow","width=250,height=250");
+ window.open("<?php print $REL_SEO->make_link('takean','id',$id); ?>","mywindow","width=250,height=250");
 }
 </script>
 <?php
@@ -43,14 +43,14 @@ function openwindow(location)
 if (($row["filename"] == 'nofile') || (get_user_class() == UC_UPLOADER)) $tedit = 1; else $tedit = 0;
 
 if (($CURUSER["id"] != $row["owner"]) && (get_user_class() < UC_MODERATOR) && !$tedit) {
-	stdmsg($REL_LANG->say_by_key('error'),"Вы не можете редактировать этот торрент.");
+	stdmsg($REL_LANG->say_by_key('error'),"Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ СЌС‚РѕС‚ С‚РѕСЂСЂРµРЅС‚.");
 } else {
 	print("<form name=\"edit\" method=post action=\"".$REL_SEO->make_link('takeedit')."\" enctype=multipart/form-data>\n");
 	print("<input type=\"hidden\" name=\"id\" value=\"$id\">\n");
 	if (isset($_GET["returnto"]))
 	print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_GET["returnto"]) . "\" />\n");
 	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-	print("<tr><td class=\"colhead\" colspan=\"2\">Редактировать торрент</td></tr>");
+	print("<tr><td class=\"colhead\" colspan=\"2\">Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ С‚РѕСЂСЂРµРЅС‚</td></tr>");
 	if ((get_user_class() >= UC_MODERATOR) || $tedit) tr($REL_LANG->say_by_key('check'),"<input type=\"checkbox\" name=\"approve\" value=\"1\"".($row['moderatedby']?' checked':'')."> {$REL_LANG->say_by_key('approve')}",1);
 	tr($REL_LANG->say_by_key('torrent_file'), "<input type=file name=tfile size=80><br /><input type=\"checkbox\" name=\"multi\" value=\"1\">&nbsp;{$REL_LANG->say_by_key('multitracker_torrent')}<br /><small>{$REL_LANG->say_by_key('multitracker_torrent_notice')}</small>\n", 1);
 	if (get_user_class()>=UC_UPLOADER && $REL_CONFIG['use_dc'])
@@ -65,7 +65,7 @@ if (($CURUSER["id"] != $row["owner"]) && (get_user_class() < UC_MODERATOR) && !$
 	// die(var_dump($images));
 
 	for ($i = 0; $i < $REL_CONFIG['max_images']; $i++) {
-		$imgcontent .= "<b>Картинка №".($i+1).":&nbsp&nbsp<input type=\"text\" size=\"61\" name=\"img$i\" value=\"{$row['images'][$i]}\"><hr />";
+		$imgcontent .= "<b>РљР°СЂС‚РёРЅРєР° в„–".($i+1).":&nbsp&nbsp<input type=\"text\" size=\"61\" name=\"img$i\" value=\"{$row['images'][$i]}\"><hr />";
 	}
 	tr($REL_LANG->say_by_key('images'), $REL_LANG->say_by_key('max_file_size').": 500kb<br />".$REL_LANG->say_by_key('avialable_formats').": .jpg .png .gif<br />$imgcontent", 1);
 
@@ -100,43 +100,43 @@ if (($CURUSER["id"] != $row["owner"]) && (get_user_class() < UC_MODERATOR) && !$
 	if ($chsel)
 	tr ($REL_LANG->say_by_key('subcats'),$chsel,1);
 
-	tr($REL_LANG->_("Viewing"), "<input type=\"checkbox\" name=\"visible\"" . (($row["visible"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Видимый на главной<br /><table border=0 cellspacing=0 cellpadding=0 width=420><tr><td class=embedded>Обратите внимание, что торрент автоматически станет видмым когда появиться раздающий и автоматически перестанет быть видимым (станет мертвяком) когда не будет раздающего некоторое время. Используйте этот переключатель для ускорения процеса. Также учтите что невидимые торренты (мертвяки) все-равно могут быть просмотрены и найдены, это просто не по-умолчанию.</td></tr></table>", 1);
+	tr($REL_LANG->_("Viewing"), "<input type=\"checkbox\" name=\"visible\"" . (($row["visible"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Р’РёРґРёРјС‹Р№ РЅР° РіР»Р°РІРЅРѕР№<br /><table border=0 cellspacing=0 cellpadding=0 width=420><tr><td class=embedded>РћР±СЂР°С‚РёС‚Рµ РІРЅРёРјР°РЅРёРµ, С‡С‚Рѕ С‚РѕСЂСЂРµРЅС‚ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё СЃС‚Р°РЅРµС‚ РІРёРґРјС‹Рј РєРѕРіРґР° РїРѕСЏРІРёС‚СЊСЃСЏ СЂР°Р·РґР°СЋС‰РёР№ Рё Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїРµСЂРµСЃС‚Р°РЅРµС‚ Р±С‹С‚СЊ РІРёРґРёРјС‹Рј (СЃС‚Р°РЅРµС‚ РјРµСЂС‚РІСЏРєРѕРј) РєРѕРіРґР° РЅРµ Р±СѓРґРµС‚ СЂР°Р·РґР°СЋС‰РµРіРѕ РЅРµРєРѕС‚РѕСЂРѕРµ РІСЂРµРјСЏ. РСЃРїРѕР»СЊР·СѓР№С‚Рµ СЌС‚РѕС‚ РїРµСЂРµРєР»СЋС‡Р°С‚РµР»СЊ РґР»СЏ СѓСЃРєРѕСЂРµРЅРёСЏ РїСЂРѕС†РµСЃР°. РўР°РєР¶Рµ СѓС‡С‚РёС‚Рµ С‡С‚Рѕ РЅРµРІРёРґРёРјС‹Рµ С‚РѕСЂСЂРµРЅС‚С‹ (РјРµСЂС‚РІСЏРєРё) РІСЃРµ-СЂР°РІРЅРѕ РјРѕРіСѓС‚ Р±С‹С‚СЊ РїСЂРѕСЃРјРѕС‚СЂРµРЅС‹ Рё РЅР°Р№РґРµРЅС‹, СЌС‚Рѕ РїСЂРѕСЃС‚Рѕ РЅРµ РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ.</td></tr></table>", 1);
 	if((get_user_class() >= UC_MODERATOR) || $tedit)
-	tr($REL_LANG->_("Updated"), "<input type=\"checkbox\" name=\"upd\" value=\"1\" />Сделать первым на главной", 1);
+	tr($REL_LANG->_("Updated"), "<input type=\"checkbox\" name=\"upd\" value=\"1\" />РЎРґРµР»Р°С‚СЊ РїРµСЂРІС‹Рј РЅР° РіР»Р°РІРЅРѕР№", 1);
 	if(get_user_class() >= UC_MODERATOR)
 	tr($REL_LANG->_("Banned"), "<input type=\"checkbox\" name=\"banned\"" . (($row["banned"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" />", 1);
 
 	if((get_user_class() >= UC_MODERATOR) || $tedit)
-	tr("Золотая раздача", "<input type=\"checkbox\" name=\"free\"" . (($row["free"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Золотая раздача (считается только раздача, скачка не учитывается)", 1);
+	tr("Р—РѕР»РѕС‚Р°СЏ СЂР°Р·РґР°С‡Р°", "<input type=\"checkbox\" name=\"free\"" . (($row["free"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Р—РѕР»РѕС‚Р°СЏ СЂР°Р·РґР°С‡Р° (СЃС‡РёС‚Р°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ СЂР°Р·РґР°С‡Р°, СЃРєР°С‡РєР° РЅРµ СѓС‡РёС‚С‹РІР°РµС‚СЃСЏ)", 1);
 	if(get_user_class() >= UC_MODERATOR)   {
-		tr("Важный", "<input type=\"checkbox\" name=\"sticky\"" . (($row["sticky"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Прикрепить этот торрент (всегда наверху)", 1);
-		tr("Комментарии модераторов<br /><small>Подписываться не надо</small></td>","<textarea cols=60 rows=6 name=modcomm" . ">".htmlspecialchars($row['modcomm'])."</textarea>\n",1);
+		tr("Р’Р°Р¶РЅС‹Р№", "<input type=\"checkbox\" name=\"sticky\"" . (($row["sticky"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> РџСЂРёРєСЂРµРїРёС‚СЊ СЌС‚РѕС‚ С‚РѕСЂСЂРµРЅС‚ (РІСЃРµРіРґР° РЅР°РІРµСЂС…Сѓ)", 1);
+		tr("РљРѕРјРјРµРЅС‚Р°СЂРёРё РјРѕРґРµСЂР°С‚РѕСЂРѕРІ<br /><small>РџРѕРґРїРёСЃС‹РІР°С‚СЊСЃСЏ РЅРµ РЅР°РґРѕ</small></td>","<textarea cols=60 rows=6 name=modcomm" . ">".htmlspecialchars($row['modcomm'])."</textarea>\n",1);
 
 	}
 	if ($row['filename'] != 'nofile') $word = ''; else $word = 'checked=\"checked\"';
 	$nofsize = $row['size'] / 1024 / 1024;
-	tr("Релиз без торрента", "<input type=\"checkbox\" name=\"nofile\" ".$word." value=\"1\">Релиз без торрента ; Размер (МБ) <input type=\"text\" name=\"nofilesize\" value=\"" . $nofsize . "\" size=\"20\" />", 1);
+	tr("Р РµР»РёР· Р±РµР· С‚РѕСЂСЂРµРЅС‚Р°", "<input type=\"checkbox\" name=\"nofile\" ".$word." value=\"1\">Р РµР»РёР· Р±РµР· С‚РѕСЂСЂРµРЅС‚Р° ; Р Р°Р·РјРµСЂ (РњР‘) <input type=\"text\" name=\"nofilesize\" value=\"" . $nofsize . "\" size=\"20\" />", 1);
 
 	if (get_user_class() >= UC_UPLOADER)
-	tr("Защита от правообладателей","<a href=\"javascript:openwindow('takean')\">Анонимизировать / восстановить обладателя релиза</a> (откроется новое окошко)",1,1);
+	tr("Р—Р°С‰РёС‚Р° РѕС‚ РїСЂР°РІРѕРѕР±Р»Р°РґР°С‚РµР»РµР№","<a href=\"javascript:openwindow()\">РђРЅРѕРЅРёРјРёР·РёСЂРѕРІР°С‚СЊ / РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РѕР±Р»Р°РґР°С‚РµР»СЏ СЂРµР»РёР·Р°</a> (РѕС‚РєСЂРѕРµС‚СЃСЏ РЅРѕРІРѕРµ РѕРєРѕС€РєРѕ)",1,1);
 
-	print("<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"{$REL_LANG->say_by_key('edit')}\" style=\"height: 25px; width: 100px\"> <input type=reset value=\"Обратить изменения\" style=\"height: 25px; width: 100px\"></td></tr>\n");
+	print("<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"{$REL_LANG->say_by_key('edit')}\" style=\"height: 25px; width: 100px\"> <input type=reset value=\"РћР±СЂР°С‚РёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ\" style=\"height: 25px; width: 100px\"></td></tr>\n");
 	print("</table>\n");
 	print("</form>\n");
 	if(get_user_class() >= UC_MODERATOR) {
 		print("<p>\n");
 		print("<form method=\"post\" action=\"".$REL_SEO->make_link('delete')."\">\n");
 		print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-		print("<tr><td class=embedded style='background-color: #F5F4EA;padding-bottom: 5px' colspan=\"2\"><b>Удалить торрент</b> Причина:</td></tr>");
-		print("<td><input name=\"reasontype\" type=\"radio\" value=\"1\">&nbsp;Мертвяк </td><td> 0 раздающих, 0 качающих = 0 соединений</td></tr>\n");
-		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"2\">&nbsp;Дупликат</td><td><input type=\"text\" size=\"40\" name=\"reason[]\"></td></tr>\n");
+		print("<tr><td class=embedded style='background-color: #F5F4EA;padding-bottom: 5px' colspan=\"2\"><b>РЈРґР°Р»РёС‚СЊ С‚РѕСЂСЂРµРЅС‚</b> РџСЂРёС‡РёРЅР°:</td></tr>");
+		print("<td><input name=\"reasontype\" type=\"radio\" value=\"1\">&nbsp;РњРµСЂС‚РІСЏРє </td><td> 0 СЂР°Р·РґР°СЋС‰РёС…, 0 РєР°С‡Р°СЋС‰РёС… = 0 СЃРѕРµРґРёРЅРµРЅРёР№</td></tr>\n");
+		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"2\">&nbsp;Р”СѓРїР»РёРєР°С‚</td><td><input type=\"text\" size=\"40\" name=\"reason[]\"></td></tr>\n");
 		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"3\">&nbsp;Nuked</td><td><input type=\"text\" size=\"40\" name=\"reason[]\"></td></tr>\n");
-		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"4\">&nbsp;Правила</td><td><input type=\"text\" size=\"40\" name=\"reason[]\">(Обязательно)</td></tr>");
-		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"5\" checked>&nbsp;Другое:</td><td><input type=\"text\" size=\"40\" name=\"reason[]\">(Обязательно)</td></tr>\n");
+		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"4\">&nbsp;РџСЂР°РІРёР»Р°</td><td><input type=\"text\" size=\"40\" name=\"reason[]\">(РћР±СЏР·Р°С‚РµР»СЊРЅРѕ)</td></tr>");
+		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"5\" checked>&nbsp;Р”СЂСѓРіРѕРµ:</td><td><input type=\"text\" size=\"40\" name=\"reason[]\">(РћР±СЏР·Р°С‚РµР»СЊРЅРѕ)</td></tr>\n");
 		print("<input type=\"hidden\" name=\"id\" value=\"$id\">\n");
 		if (isset($_GET["returnto"]))
 		print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_GET["returnto"]) . "\" />\n");
-		print("<td colspan=\"2\" align=\"center\"><input type=submit value='Удалить' style='height: 25px'></td></tr>\n");
+		print("<td colspan=\"2\" align=\"center\"><input type=submit value='РЈРґР°Р»РёС‚СЊ' style='height: 25px'></td></tr>\n");
 		print("</table>");
 		print("</form>\n");
 		print("</p>\n");

@@ -113,7 +113,7 @@ return $t;
 
 function hl_attrval($t, $p){
 // check attr val against $S
-$o = 1; $l = strlen($t);
+$o = 1; $l = mb_strlen($t);
 foreach($p as $k=>$v){
  switch($k){
   case 'maxlen':if($l > $v){$o = 0;}
@@ -215,7 +215,7 @@ for($i=-1, $ci=count($t); ++$i<$ci;){
  }
  // open tag
  // $cB ele needs $eB ele as child
- if(isset($cB[$e]) && strlen(trim($x))){
+ if(isset($cB[$e]) && mb_strlen(trim($x))){
   $t[$i] = "{$e}{$a}>";
   array_splice($t, $i+1, 0, 'div>'. $x); unset($e, $x); ++$ci; --$i; continue;
  }
@@ -274,7 +274,7 @@ if(isset($e) && ($do == 1 or (isset($ok['#pcdata']) && ($do == 3 or $do == 5))))
  echo '&lt;', $s, $e, $a, '&gt;';
 }
 if(isset($x[0])){
- if(strlen(trim($x)) && (($ql && isset($cB[$p])) or (isset($cB[$in]) && !$ql))){
+ if(mb_strlen(trim($x)) && (($ql && isset($cB[$p])) or (isset($cB[$in]) && !$ql))){
   echo '<div>', $x, '</div>';
  }
  elseif($do < 3 or isset($ok['#pcdata'])){echo $x;}
@@ -336,7 +336,7 @@ if(preg_match('`^([a-z\d\-+.&#; ]+?)(:|&#(58|x3a);|%3a|\\\\0{0,4}3a).`i', $p, $m
 }
 if($C['abs_url']){
  if($C['abs_url'] == -1 && strpos($p, $C['base_url']) === 0){ // Make url rel
-  $p = substr($p, strlen($C['base_url']));
+  $p = substr($p, mb_strlen($C['base_url']));
  }elseif(empty($m[1])){ // Make URL abs
   if(substr($p, 0, 2) == '//'){$p = substr($C['base_url'], 0, strpos($C['base_url'], ':')+1). $p;}
   elseif($p[0] == '/'){$p = preg_replace('`(^.+?://[^/]+)(.*)`', '$1', $C['base_url']). $p;}
@@ -377,7 +377,7 @@ $s = array();
 $t = str_replace(array("\t", "\r", "\n", ' '), '', preg_replace('/"(?>(`.|[^"])*)"/sme', 'substr(str_replace(array(";", "|", "~", " ", ",", "/", "(", ")", \'`"\'), array("\x01", "\x02", "\x03", "\x04", "\x05", "\x06", "\x07", "\x08", "\""), "$0"), 1, -1)', trim($t))); 
 for($i = count(($t = explode(';', $t))); --$i>=0;){
  $w = $t[$i];
- if(empty($w) or ($e = strpos($w, '=')) === false or !strlen(($a =  substr($w, $e+1)))){continue;}
+ if(empty($w) or ($e = strpos($w, '=')) === false or !mb_strlen(($a =  substr($w, $e+1)))){continue;}
  $y = $n = array();
  foreach(explode(',', $a) as $v){
   if(!preg_match('`^([a-z:\-\*]+)(?:\((.*?)\))?`i', $v, $m)){continue;}
@@ -393,7 +393,7 @@ for($i = count(($t = explode(';', $t))); --$i>=0;){
  }
  if(!count($y) && !count($n)){continue;}
  foreach(explode(',', substr($w, 0, $e)) as $v){
-  if(!strlen(($v = strtolower($v)))){continue;}
+  if(!mb_strlen(($v = strtolower($v)))){continue;}
   if(count($y)){$s[$v] = $y;}
   if(count($n)){$s[$v]['n'] = $n;}
  }
@@ -452,13 +452,13 @@ if($C['no_deprecated_attr']){
 // attr name-vals
 if(strpos($a, "\x01") !== false){$a = preg_replace('`\x01[^\x01]*\x01`', '', $a);} // No comment/CDATA sec
 $mode = 0; $a = trim($a, ' /'); $aA = array();
-while(strlen($a)){
+while(mb_strlen($a)){
  $w = 0;
  switch($mode){
   case 0: // Name
    if(preg_match('`^[a-zA-Z][\-a-zA-Z:]+`', $a, $m)){
     $nm = strtolower($m[0]);
-    $w = $mode = 1; $a = ltrim(substr_replace($a, '', 0, strlen($m[0])));
+    $w = $mode = 1; $a = ltrim(substr_replace($a, '', 0, mb_strlen($m[0])));
    }
   break; case 1:
    if($a[0] == '='){ // =
@@ -469,7 +469,7 @@ while(strlen($a)){
    }
   break; case 2: // Val
    if(preg_match('`^"[^"]*"`', $a, $m) or preg_match("`^'[^']*'`", $a, $m) or preg_match("`^\s*[^\s\"']+`", $a, $m)){
-    $m = $m[0]; $w = 1; $mode = 0; $a = ltrim(substr_replace($a, '', 0, strlen($m)));
+    $m = $m[0]; $w = 1; $mode = 0; $a = ltrim(substr_replace($a, '', 0, mb_strlen($m)));
     $aA[$nm] = trim(($m[0] == '"' or $m[0] == '\'') ? substr($m, 1, -1) : $m);
    }
   break;

@@ -16,7 +16,7 @@ if (get_user_class () < UC_MODERATOR) {
 	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied') );
 }
 
-//Удалить все жалобы
+//РЈРґР°Р»РёС‚СЊ РІСЃРµ Р¶Р°Р»РѕР±С‹
 if ($_POST ['deleteall']) {
 
 	sql_query ( "TRUNCATE TABLE reports" ) or sqlerr ( __FILE__, __LINE__ );
@@ -24,7 +24,7 @@ if ($_POST ['deleteall']) {
 //
 
 
-//Удалить выбранные жалобы
+//РЈРґР°Р»РёС‚СЊ РІС‹Р±СЂР°РЅРЅС‹Рµ Р¶Р°Р»РѕР±С‹
 if ($_POST ['delete'] && $_POST ['reports']) {
 	$reports = $_POST ['reports'];
 
@@ -35,7 +35,7 @@ if ($_POST ['delete'] && $_POST ['reports']) {
 //
 
 
-$REL_TPL->stdhead ( "Просмотр жалоб" );
+$REL_TPL->stdhead ( "РџСЂРѕСЃРјРѕС‚СЂ Р¶Р°Р»РѕР±" );
 
 $count = get_row_count ( "reports" );
 if (! $count) {
@@ -46,13 +46,13 @@ if (! $count) {
 
 ?>
 <center>
-<h1>Поступившие жалобы</h1>
+<h1>РџРѕСЃС‚СѓРїРёРІС€РёРµ Р¶Р°Р»РѕР±С‹</h1>
 </center>
 <div align=center>
 <form id="message" action="<?=$REL_SEO->make_link('reports');?>"
 	method="post"><input type="hidden" name="deleteall" value="deleteall">
-<input type="submit" value="Удалить все жалобы"
-	onClick="return confirm('Вы уверены?')"></form>
+<input type="submit" value="РЈРґР°Р»РёС‚СЊ РІСЃРµ Р¶Р°Р»РѕР±С‹"
+	onClick="return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?')"></form>
 </div>
 <br />
 
@@ -62,20 +62,20 @@ if (! $count) {
 <table border="0" cellspacing="0" width="100%" cellpadding="3">
 	<tr>
 		<td class=colhead>
-		<center>Дата&nbsp;поступления</center>
+		<center>Р”Р°С‚Р°&nbsp;РїРѕСЃС‚СѓРїР»РµРЅРёСЏ</center>
 		</td>
 		<td class=colhead>
-		<center>Жалоба&nbsp;от</center>
+		<center>Р–Р°Р»РѕР±Р°&nbsp;РѕС‚</center>
 		</td>
 		<td class=colhead>
-		<center>Жалоба&nbsp;на</center>
+		<center>Р–Р°Р»РѕР±Р°&nbsp;РЅР°</center>
 		</td>
 		<td class=colhead>
-		<center>Причина&nbsp;жалобы</center>
+		<center>РџСЂРёС‡РёРЅР°&nbsp;Р¶Р°Р»РѕР±С‹</center>
 		</td>
 		<td class=colhead>
-		<center><INPUT id="toggle-all" type="checkbox" title="Выбрать все"
-			value="Выбрать все" /></center>
+		<center><INPUT id="toggle-all" type="checkbox" title="Р’С‹Р±СЂР°С‚СЊ РІСЃРµ"
+			value="Р’С‹Р±СЂР°С‚СЊ РІСЃРµ" /></center>
 		</td>
 	</tr>
 
@@ -110,12 +110,12 @@ if (! $count) {
         <td><a href=\"{$allowed_types[$row ['type']]}$toid\">$type [$toid]</a></td>
         <td>$motive</td>
         <td align='center'>
-        <INPUT type=\"checkbox\" name=\"reports[]\" title=\"Выбрать\" value=\"" . $reportid . "\"></td></tr>" );
+        <INPUT type=\"checkbox\" name=\"reports[]\" title=\"Р’С‹Р±СЂР°С‚СЊ\" value=\"" . $reportid . "\"></td></tr>" );
 
 		}
 
 	} else {
-		print ( "<tr><td align='center' colspan='5'>Нет ни одной жалобы...</td></tr>" );
+		print ( "<tr><td align='center' colspan='5'>РќРµС‚ РЅРё РѕРґРЅРѕР№ Р¶Р°Р»РѕР±С‹...</td></tr>" );
 	}
 
 	?>
@@ -123,7 +123,7 @@ if (! $count) {
 	<tr>
 		<td class=colhead colspan="5">
 		<div align=right><input type="submit" name="delete"
-			value="Удалить выбранное" onClick="return confirm('Вы уверены?')" /></div>
+			value="РЈРґР°Р»РёС‚СЊ РІС‹Р±СЂР°РЅРЅРѕРµ" onClick="return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?')" /></div>
 		</td>
 	</tr>
 </table>

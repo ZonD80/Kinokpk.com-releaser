@@ -21,8 +21,8 @@
 	Como utilizar CALLBACK():
 		->send($startInPart, $callBack)
 		Callback($part=LoopStart|LoopEnd, $loopPart, $totalLoops)
-			Retornos possÌveis:
-				"STOP" (ForÁa a parada imediata da execuÁ„o)
+			Retornos poss–Ωveis:
+				"STOP" (For–∑a a parada imediata da execu–∑–≥o)
 				
 	Bloqueio de e-mails duplicados:
 		->allowDupe()
@@ -232,7 +232,7 @@ class dSendMail2 extends htmlMimeMail{
 		$this->headers['From'] = $this->_normalizeEmail($this->headers['From']);
 		$this->to              = $this->_normalizeEmail($this->to);
 		
-		/** Define vari·veis importantes para a elaboraÁ„o dos v·rios laÁos **/
+		/** Define vari–±veis importantes para a elabora–∑–≥o dos v–±rios la–∑os **/
 		$hasCc  = !empty($this->headers['Cc']);
 		$hasBcc = !empty($this->headers['Bcc']);
 		
@@ -245,12 +245,12 @@ class dSendMail2 extends htmlMimeMail{
 		$sizeBcc= $hasBcc?count($parts_bcc):0;
 		
 		$loopSize  = $this->groupAmnt;
-		$loopSize -= ($sizeTo+$sizeCc); // Considera os 'destinos' fixos, que s„o enviados em todos os laÁos.
+		$loopSize -= ($sizeTo+$sizeCc); // Considera os 'destinos' fixos, que s–≥o enviados em todos os la–∑os.
 		
 		$loopPart   = $startInPart?$startInPart:1;
 		$totalLoops = ceil($sizeBcc/$loopSize);
 		
-		// Prepara vari·veis para o padr„o
+		// Prepara vari–±veis para o padr–≥o
 		$subject = $this->headers['Subject'];
 		unset($this->headers['Subject']);
 		
@@ -275,9 +275,9 @@ class dSendMail2 extends htmlMimeMail{
 		$this->_log("sizeCc:    {$sizeCc}");
 		$this->_log("sizeBcc:   {$sizeBcc}");
 		$this->_log("groupAmnt: {$this->groupAmnt}");
-		$this->_log("Tamanho do laÁo: {$loopSize}");
+		$this->_log("Tamanho do la–∑o: {$loopSize}");
 		$this->_log("Loop inicial:    {$startInPart}");
-		$this->_log("Loop m·ximo:     {$totalLoops}");
+		$this->_log("Loop m–±ximo:     {$totalLoops}");
 		$this->_log("--------------------------");
 		
 		$orHeaders = $headers;
@@ -307,8 +307,8 @@ class dSendMail2 extends htmlMimeMail{
 			
 			$this->_log("+ Resultado do envio: ".(($result===true)?"Sucesso!":"Falha no envio."));
 			if(!$result){
-				$this->_log("FALHA CRÕTICA: O loop #{$loopPart} (total de {$totalLoops}) na„o foi entregue com sucesso.");
-				$this->_log("FALHA CRÕTICA: Loop interrompido.");
+				$this->_log("FALHA CR–ùTICA: O loop #{$loopPart} (total de {$totalLoops}) na–≥o foi entregue com sucesso.");
+				$this->_log("FALHA CR–ùTICA: Loop interrompido.");
 				$this->error = "Falha no envio do laco $loopPart de $totalLoops. {$this->error}\n";
 				break;
 			}
@@ -322,7 +322,7 @@ class dSendMail2 extends htmlMimeMail{
 			}
 		} while($loopPart++ < $totalLoops);
 		$this->_log("--------------------------");
-		$this->_log(". . . ConcluÌdo!");
+		$this->_log(". . . Conclu–Ωdo!");
 		
 		// Reset the subject in case mail is resent
 		if ($subject !== ''){
@@ -336,12 +336,12 @@ class dSendMail2 extends htmlMimeMail{
 		// $filename = basename($filename);
 		if($this->html && preg_match('/(?:"|\')'.preg_quote($filename, '/').'(?:"|\')/Ui', $this->html)){
 			$this->embedFile($filename, $filedata);
-			$this->_log("Adicionando HTMLImage: $filename (".strlen($filedata)." bytes)");
+			$this->_log("Adicionando HTMLImage: $filename (".mb_strlen($filedata)." bytes)");
 			return 1;
 		}
 		else{
 			$this->attachFile(basename($filename), $filedata);
-			$this->_log("Adicionando Attachment: $filename (".strlen($filedata)." bytes)");
+			$this->_log("Adicionando Attachment: $filename (".mb_strlen($filedata)." bytes)");
 			return 2;
 		}
 	}
@@ -370,7 +370,7 @@ class dSendMail2 extends htmlMimeMail{
 		$this->setMessage($body, true, false); // body, html, force_nl2br
 		if($importImages){
 			if($importImages && strpos($baseDir, '/') === null)
-				die("dSendMail2 - importHTML() - Par‚metro '\$baseDir' deve ter um caminho absoluto, n„o relativo. Atualmente, '{$baseDir}'.");
+				die("dSendMail2 - importHTML() - Par–≤metro '\$baseDir' deve ter um caminho absoluto, n–≥o relativo. Atualmente, '{$baseDir}'.");
 			
 			$tags    = preg_match_all("/<.+?(src|background)=[\"']?(.+?)[\"' ].*?>/is", $body, $out);
 			if($tags) foreach($out[2] as $addFile){
@@ -382,11 +382,11 @@ class dSendMail2 extends htmlMimeMail{
 					$this->autoAttachFile($addFile, file_get_contents("$baseDir/$addFile"));
 				}
 				else{
-					echo "HTML Pediu o arquivo: '{$addFile}', mas este n„o existe em '{$baseDir}/{$addFile}'<br />\r\n";
+					echo "HTML Pediu o arquivo: '{$addFile}', mas este n–≥o existe em '{$baseDir}/{$addFile}'<br />\r\n";
 					$dieCritical = true;
 				}
 				if($dieCritical)
-					die("Arquivos encontrados no HTML mas n„o foram encontrados na pasta. Cancelando envio.\r\n");
+					die("Arquivos encontrados no HTML mas n–≥o foram encontrados na pasta. Cancelando envio.\r\n");
 			}
 		}
 		return true;
@@ -395,8 +395,8 @@ class dSendMail2 extends htmlMimeMail{
 		/** Primeiro passo: Separar header/body e importar o header**/
 		preg_match("/^(.+?)\r?\n\r?\n(.+)$/s", $fileBody, $emlContentsParts);
 		
-		/** Segundo passo: Definir construÁ„o da mensagem **/
-		$this->setMessage("Esta mensagem foi enviada diretamente em formato EML.\nPara ver seu conte˙do, ser· necess·rio fazer o download.");
+		/** Segundo passo: Definir constru–∑–≥o da mensagem **/
+		$this->setMessage("Esta mensagem foi enviada diretamente em formato EML.\nPara ver seu conte—ädo, ser–± necess–±rio fazer o download.");
 		$this->headers  = $this->_convertStrHeaderToArray($emlContentsParts[1]);
 		$this->output   = isset($emlContentsParts[2])?$emlContentsParts[2]:'';
 		$this->is_built = true;
@@ -465,12 +465,12 @@ class dSendMail2 extends htmlMimeMail{
 	/** Private **/
 	Function callMail($subject, $headersJoined){
 		if(!$this->sendThrough){
-			$this->_log("Enviando atravÈs da funÁ„o MAIL()");
+			$this->_log("Enviando atrav–πs da fun–∑–≥o MAIL()");
 			return mail($this->to, $subject, $this->output, $headersJoined);
 		}
 		elseif($this->sendThrough[0] == 'NULL'){
 			$errProb = $this->sendThrough[1];
-			$this->_log("Modo de testes, n„o enviando para ninguÈm. Possibilidade de erro: {$errProb}.");
+			$this->_log("Modo de testes, n–≥o enviando para ningu–πm. Possibilidade de erro: {$errProb}.");
 			if($errProb && rand(0, 100) < (($errProb>1)?$errProb:$errProb*100)){
 				$this->error = "Simulando erro de testes.";
 				return false;
@@ -478,7 +478,7 @@ class dSendMail2 extends htmlMimeMail{
 			return true;
 		}
 		else{
-			$this->_log("Enviando atravÈs de SMTP");
+			$this->_log("Enviando atrav–πs de SMTP");
 			
 			$user = $this->sendThrough[2];
 			$pass = $this->sendThrough[3];
@@ -532,7 +532,7 @@ class dSendMail2 extends htmlMimeMail{
 	Function _log($event){
 		if($this->logFolder){
 			if(!is_writable($this->logFolder))
-				die("ImpossÌvel enviar e-mails - Pasta de log sem permissıes. ($this->logFolder)");
+				die("Imposs–Ωvel enviar e-mails - Pasta de log sem permiss—Öes. ($this->logFolder)");
 			
 			if(!$this->logFile)
 				$this->logFile = fopen("{$this->logFolder}/log-".date('d.m.Y-H.i.s').'-'.substr(uniqid(), -4).".txt", "a+");
@@ -706,11 +706,11 @@ class dSendMail2 extends htmlMimeMail{
 	}
 	Function _normalizeEmail($email, $only_address=false){
 		if(!strpos($email, "<")){
-			// Padr„o: a@b.c
+			// Padr–≥o: a@b.c
 			return trim(str_replace(Array(" ", "<", ">"), "", strtolower($email)));
 		}
 		
-		// Padr„o: "Nome" <a@b.c>
+		// Padr–≥o: "Nome" <a@b.c>
 		$nome  = trim(str_replace("\"", "", substr($email, 0, strpos($email, "<"))));
 		$email = substr($email, strpos($email, "<"));
 		$email = trim(str_replace(Array(" ", "<", ">"), "", $email));
@@ -1329,7 +1329,7 @@ class htmlMimeMail  {
                 break;
 
             case 'smtp':
-				die("Classe SMTP n„o est· implementada.");
+				die("Classe SMTP n–≥o est–± implementada.");
                 break;
         }
     }
@@ -1568,7 +1568,7 @@ class Mail_mimePart {
 
         while(list(, $line) = each($lines)){
 
-            $linlen     = strlen($line);
+            $linlen     = mb_strlen($line);
             $newline = '';
 
             for ($i = 0; $i < $linlen; $i++) {
@@ -1584,7 +1584,7 @@ class Mail_mimePart {
                     $char = $escape . strtoupper(sprintf('%02s', dechex($dec)));
                 }
 
-                if ((strlen($newline) + strlen($char)) >= $line_max) {        // MAIL_MIMEPART_CRLF is not counted
+                if ((mb_strlen($newline) + mb_strlen($char)) >= $line_max) {        // MAIL_MIMEPART_CRLF is not counted
                     $output  .= $newline . $escape . $eol;                    // soft line break; " =\r\n" is okay
                     $newline  = '';
                 }
@@ -1592,7 +1592,7 @@ class Mail_mimePart {
             } // end of for
             $output .= $newline . $eol;
         }
-        $output = substr($output, 0, -1 * strlen($eol)); // Don't want last crlf
+        $output = substr($output, 0, -1 * mb_strlen($eol)); // Don't want last crlf
         return $output;
     }
 } // End of class
@@ -1600,7 +1600,7 @@ class smtp_class{
 // SMTP Support
 /*
 	<version>@(#) $Id: smtp.php,v 1.41 2009/04/12 06:15:06 mlemos Exp $</version>
-	<copyright>Copyright © (C) Manuel Lemos 1999-2009</copyright>
+	<copyright>Copyright ¬© (C) Manuel Lemos 1999-2009</copyright>
 	<title>Sending e-mail messages via SMTP protocol</title>
 	<author>Manuel Lemos</author>
 	<authoraddress>mlemos-at-acm.org</authoraddress>
@@ -1650,7 +1650,7 @@ class smtp_class{
 			$separator=$string;
 			$string=$this->next_token;
 		}
-		for($character=0;$character<strlen($separator);$character++)
+		for($character=0;$character<mb_strlen($separator);$character++)
 		{
 			if(GetType($position=strpos($string,$separator[$character]))=="integer")
 				$found=(IsSet($found) ? min($found,$position) : $position);
@@ -1706,12 +1706,12 @@ class smtp_class{
 				$this->setError("reached the end of data while reading from the SMTP server conection");
 				return("");
 			}
-			if(GetType($data=@fgets($this->connection,100))!="string" || strlen($data)==0){
+			if(GetType($data=@fgets($this->connection,100))!="string" || mb_strlen($data)==0){
 				$this->SetDataAccessError("it was not possible to read line from the SMTP server");
 				return("");
 			}
 			$line  .= $data;
-			$length = strlen($line);
+			$length = mb_strlen($line);
 			if($length>=1 && substr($line,-1)=="\n"){
 				$this->OutputDebug("S ".str_replace(Array("\r\n", "\r", "\n"), Array("<CRNL>", "<CR>", "<NL>"), $line));
 				$line = rtrim($line, "\r\n");
@@ -1733,7 +1733,7 @@ class smtp_class{
 
 	Function PutData(&$data)
 	{
-		if(strlen($data))
+		if(mb_strlen($data))
 		{
 			$this->OutputDebug("C $data");
 			if(!@fputs($this->connection,$data))
@@ -1749,7 +1749,7 @@ class smtp_class{
 	{
 		$responses=array();
 		Unset($this->result_code);
-		while(strlen($line=$this->GetLine($this->connection))){
+		while(mb_strlen($line=$this->GetLine($this->connection))){
 			if(IsSet($this->result_code)){
 				if(strcmp($this->Tokenize($line," -"),$this->result_code)){
 					$this->setError($line);
@@ -1815,7 +1815,7 @@ class smtp_class{
 			if(!strcmp($ip=@gethostbyname($domain),$domain))
 				return("could not resolve host \"".$domain."\"");
 		}
-		if(strlen($this->exclude_address)
+		if(mb_strlen($this->exclude_address)
 		&& !strcmp(@gethostbyname($this->exclude_address),$ip))
 			return("domain \"".$domain."\" resolved to an address excluded to be valid");
 		$this->OutputDebug("Connecting to host address \"".$ip."\" port ".$port."...");
@@ -1866,7 +1866,7 @@ class smtp_class{
 			case SASL_CONTINUE:
 				break;
 			case SASL_NOMECH:
-				if(strlen($this->authentication_mechanism)){
+				if(mb_strlen($this->authentication_mechanism)){
 					$this->setError("authenticated mechanism ".$this->authentication_mechanism." may not be used: ".$sasl->error);
 					return(0);
 				}
@@ -1875,7 +1875,7 @@ class smtp_class{
 				$this->setError("Could not start the SASL authentication client: ".$sasl->error);
 				return(0);
 		}
-		if(strlen($mechanism=$sasl->mechanism)){
+		if(mb_strlen($mechanism=$sasl->mechanism)){
 			if($this->PutLine("AUTH ".$sasl->mechanism.(IsSet($message) ? " ".base64_encode($message) : ""))==0){
 				$this->setError("Could not send the AUTH command");
 				return(0);
@@ -1941,7 +1941,7 @@ class smtp_class{
 		$this->esmtp_extensions = array();
 		$fallback=1;
 		if($this->esmtp
-		|| strlen($this->user))
+		|| mb_strlen($this->user))
 		{
 			if($this->PutLine('EHLO '.$localhost))
 			{
@@ -1997,7 +1997,7 @@ class smtp_class{
 		$hosts=array();
 		if($this->direct_delivery)
 		{
-			if(strlen($domain)==0)
+			if(mb_strlen($domain)==0)
 				return(1);
 			$hosts=$weights=$mxhosts=array();
 			$getmxrr=$this->getmxrr;
@@ -2018,25 +2018,25 @@ class smtp_class{
 		}
 		else
 		{
-			if(strlen($this->host_name))
+			if(mb_strlen($this->host_name))
 				$hosts[]=$this->host_name;
-			if(strlen($this->pop3_auth_host))
+			if(mb_strlen($this->pop3_auth_host))
 			{
 				$user=$this->user;
-				if(strlen($user)==0){
+				if(mb_strlen($user)==0){
 					$this->setError("it was not specified the POP3 authentication user");
 					return(0);
 				}
 				$password=$this->password;
-				if(strlen($password)==0){
+				if(mb_strlen($password)==0){
 					$this->setError("it was not specified the POP3 authentication password");
 					return(0);
 				}
 				$domain=$this->pop3_auth_host;
 				$this->setError($this->ConnectToHost($domain, $this->pop3_auth_port, "Resolving POP3 authentication host \"".$domain."\"..."));
-				if(strlen($this->error))
+				if(mb_strlen($this->error))
 					return(0);
-				if(strlen($response=$this->GetLine())==0)
+				if(mb_strlen($response=$this->GetLine())==0)
 					return(0);
 				if(strcmp($this->Tokenize($response," "),"+OK"))
 				{
@@ -2044,7 +2044,7 @@ class smtp_class{
 					return(0);
 				}
 				if(!$this->PutLine("USER ".$this->user)
-				|| strlen($response=$this->GetLine())==0)
+				|| mb_strlen($response=$this->GetLine())==0)
 					return(0);
 				if(strcmp($this->Tokenize($response," "),"+OK"))
 				{
@@ -2052,7 +2052,7 @@ class smtp_class{
 					return(0);
 				}
 				if(!$this->PutLine("PASS ".$password)
-				|| strlen($response=$this->GetLine())==0)
+				|| mb_strlen($response=$this->GetLine())==0)
 					return(0);
 				if(strcmp($this->Tokenize($response," "),"+OK"))
 				{
@@ -2068,12 +2068,12 @@ class smtp_class{
 			$this->setError("could not determine the SMTP to connect");
 			return(0);
 		}
-		for($host=0, $error="not connected";strlen($error) && $host<count($hosts);$host++)
+		for($host=0, $error="not connected";mb_strlen($error) && $host<count($hosts);$host++)
 		{
 			$domain=$hosts[$host];
 			$error=$this->ConnectToHost($domain, $this->host_port, "Resolving SMTP server domain \"$domain\"...");
 		}
-		if(strlen($error))
+		if(mb_strlen($error))
 		{
 			$this->setError($error);
 			return(0);
@@ -2108,8 +2108,8 @@ class smtp_class{
 				}
 			}
 			if($success
-			&& strlen($this->user)
-			&& strlen($this->pop3_auth_host)==0)
+			&& mb_strlen($this->user)
+			&& mb_strlen($this->pop3_auth_host)==0)
 			{
 				if(!IsSet($this->esmtp_extensions["AUTH"]))
 				{
@@ -2120,21 +2120,21 @@ class smtp_class{
 				}
 				else
 				{
-					if(strlen($this->authentication_mechanism))
+					if(mb_strlen($this->authentication_mechanism))
 						$mechanisms=array($this->authentication_mechanism);
 					else
 					{
 						$mechanisms=array();
-						for($authentication=$this->Tokenize($this->esmtp_extensions["AUTH"]," ");strlen($authentication);$authentication=$this->Tokenize(" "))
+						for($authentication=$this->Tokenize($this->esmtp_extensions["AUTH"]," ");mb_strlen($authentication);$authentication=$this->Tokenize(" "))
 							$mechanisms[]=$authentication;
 					}
 					$credentials=array(
 						"user"=>$this->user,
 						"password"=>$this->password
 					);
-					if(strlen($this->realm))
+					if(mb_strlen($this->realm))
 						$credentials["realm"]=$this->realm;
-					if(strlen($this->workstation))
+					if(mb_strlen($this->workstation))
 						$credentials["workstation"]=$this->workstation;
 					$success=$this->SASLAuthenticate($mechanisms,$credentials,$authenticated,$mechanism);
 					if(!$success
@@ -2149,7 +2149,7 @@ class smtp_class{
 							"user"=>$this->user,
 							"password"=>$this->password
 						);
-						if(strlen($this->realm))
+						if(mb_strlen($this->realm))
 						{
 							/*
 							 * According to: http://www.sendmail.org/~ca/email/authrealms.html#authpwcheck_method
@@ -2177,7 +2177,7 @@ class smtp_class{
 						}
 					}
 					if($success
-					&& strlen($mechanism)==0)
+					&& mb_strlen($mechanism)==0)
 					{
 						$this->setError("it is not supported any of the authentication mechanisms required by the server");
 						$success=0;
@@ -2471,7 +2471,7 @@ class sasl_client_class{
 		return(SASL_CONTINUE);
 	}
 	Function Start($mechanisms, &$message, &$interactions){
-		if(strlen($this->error))
+		if(mb_strlen($this->error))
 			return(SASL_FAIL);
 		if(IsSet($this->driver))
 			return($this->driver->Start($this,$message,$interactions));
@@ -2492,7 +2492,7 @@ class sasl_client_class{
 					{
 						case SASL_NOMECH:
 							Unset($this->driver);
-							if(strlen($no_mechanism_error)==0)
+							if(mb_strlen($no_mechanism_error)==0)
 								$no_mechanism_error=$this->error;
 							$this->error="";
 							break;
@@ -2508,17 +2508,17 @@ class sasl_client_class{
 				else
 				{
 					Unset($this->driver);
-					if(strlen($no_mechanism_error)==0)
+					if(mb_strlen($no_mechanism_error)==0)
 						$no_mechanism_error=$this->error;
 					$this->error="";
 				}
 			}
 		}
-		$this->error=(strlen($no_mechanism_error) ? $no_mechanism_error : "it was not requested any of the authentication mechanisms that are supported");
+		$this->error=(mb_strlen($no_mechanism_error) ? $no_mechanism_error : "it was not requested any of the authentication mechanisms that are supported");
 		return(SASL_NOMECH);
 	}
 	Function Step($response, &$message, &$interactions){
-		if(strlen($this->error))
+		if(mb_strlen($this->error))
 			return(SASL_FAIL);
 		return($this->driver->Step($this,$response,$message,$interactions));
 	}
@@ -2565,7 +2565,7 @@ class login_sasl_client_class{
 		switch($this->state)
 		{
 			case SASL_LOGIN_STATE_IDENTIFY_USER:
-				$message=$this->credentials["user"].(strlen($this->credentials["realm"]) ? "@".$this->credentials["realm"] : "");
+				$message=$this->credentials["user"].(mb_strlen($this->credentials["realm"]) ? "@".$this->credentials["realm"] : "");
 				$this->state=SASL_LOGIN_STATE_IDENTIFY_PASSWORD;
 				break;
 			case SASL_LOGIN_STATE_IDENTIFY_PASSWORD:
@@ -2628,7 +2628,7 @@ class plain_sasl_client_class{
 					$message="\0".$this->credentials["user"]."\0".$this->credentials["password"];
 					break;
 				default:
-					$message=$this->credentials["user"]."\0".$this->credentials["user"].(strlen($this->credentials["realm"]) ? "@".$this->credentials["realm"] : "")."\0".$this->credentials["password"];
+					$message=$this->credentials["user"]."\0".$this->credentials["user"].(mb_strlen($this->credentials["realm"]) ? "@".$this->credentials["realm"] : "")."\0".$this->credentials["password"];
 					break;
 			}
 			$this->state=SASL_PLAIN_STATE_DONE;
@@ -2653,7 +2653,7 @@ class plain_sasl_client_class{
 						$message="\0".$this->credentials["user"]."\0".$this->credentials["password"];
 						break;
 					default:
-						$message=$this->credentials["user"]."\0".$this->credentials["user"].(strlen($this->credentials["realm"]) ? "@".$this->credentials["realm"] : "")."\0".$this->credentials["password"];
+						$message=$this->credentials["user"]."\0".$this->credentials["user"].(mb_strlen($this->credentials["realm"]) ? "@".$this->credentials["realm"] : "")."\0".$this->credentials["password"];
 						break;
 				}
 				var_dump($message);

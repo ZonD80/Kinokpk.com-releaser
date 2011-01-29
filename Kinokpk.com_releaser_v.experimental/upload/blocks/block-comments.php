@@ -1,6 +1,6 @@
 <?php
 
-//Блок "Последние комментарии к торрентам"
+//Р‘Р»РѕРє "РџРѕСЃР»РµРґРЅРёРµ РєРѕРјРјРµРЅС‚Р°СЂРёРё Рє С‚РѕСЂСЂРµРЅС‚Р°Рј"
 
 global $REL_LANG, $REL_CACHE, $REL_SEO;
 if (!defined('BLOCK_FILE')) {
@@ -9,7 +9,7 @@ if (!defined('BLOCK_FILE')) {
 }
 
 $content .= "<small><table cellpadding=\"2\" cellspacing=\"0\"><tr>";
-$content .= "<td align=\"center\" class=\"colhead\">Название</td><td align=\"center\" class=\"colhead\">Сообщил(а)</td></tr>";
+$content .= "<td align=\"center\" class=\"colhead\">РќР°Р·РІР°РЅРёРµ</td><td align=\"center\" class=\"colhead\">РЎРѕРѕР±С‰РёР»(Р°)</td></tr>";
 
 $comarray = $REL_CACHE->get('block-comments','query');
 if ($comarray===false) {

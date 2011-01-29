@@ -4,7 +4,7 @@
  *
  * Generator strategy, which creates XML for Atom
  *
- * @author	Mateusz 'MatheW' Wójcik
+ * @author	Mateusz 'MatheW' WГіjcik
  * @package FeedGenerator
  *
  */
@@ -43,7 +43,7 @@ class AtomGenerator implements generator {
  	 * @return string
  	 */
  	public function generatorName() {
- 		return 'Atom FeedGenerator 1.1 by Mateusz \'MatheW\' Wójcik';
+ 		return 'Atom FeedGenerator 1.1 by Mateusz \'MatheW\' WГіjcik';
  	}
 
  	/**

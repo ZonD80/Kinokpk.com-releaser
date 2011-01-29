@@ -25,7 +25,7 @@ if (!is_valid_id($id)) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_k
 $relgroup = sql_query("SELECT name,owners FROM relgroups WHERE id=$id") or sqlerr(__FILE__,__LINE__);
 list($rgname,$owners) = mysql_fetch_array($relgroup);
 
-$to_group = " <a href=\"".$REL_SEO->make_link('relgroups','id',$id,'name',translit($rgname))."\">К релиз группе</a>";
+$to_group = " <a href=\"".$REL_SEO->make_link('relgroups','id',$id,'name',translit($rgname))."\">Рљ СЂРµР»РёР· РіСЂСѓРїРїРµ</a>";
 //if (!$owners && get_user_class()<UC_ADMINISTRATOR) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('error_no_onwers'));
 
 if ($owners) {
@@ -51,7 +51,7 @@ if ($action == 'delete')
 	if ($returnto != "")
 	safe_redirect(" $returnto");
 	else
-	$warning = "Новость <b>успешно</b> удалена$to_group";
+	$warning = "РќРѕРІРѕСЃС‚СЊ <b>СѓСЃРїРµС€РЅРѕ</b> СѓРґР°Р»РµРЅР°$to_group";
 }
 
 elseif ($action == 'add')
@@ -59,11 +59,11 @@ elseif ($action == 'add')
 
 	$subject = htmlspecialchars($_POST["subject"]);
 	if (!$subject)
-	stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
+	stderr($REL_LANG->say_by_key('error'),"РўРµРјР° РЅРѕРІРѕСЃС‚Рё РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚РѕР№!");
 
 	$body = ((string)$_POST["body"]);
 	if (!$body)
-	stderr($REL_LANG->say_by_key('error'),"Тело новости не может быть пустым!");
+	stderr($REL_LANG->say_by_key('error'),"РўРµР»Рѕ РЅРѕРІРѕСЃС‚Рё РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј!");
 
 	$added = $_POST["added"];
 	if (!$added)
@@ -73,7 +73,7 @@ elseif ($action == 'add')
 	$id . ", $added, " . sqlesc($body) . ", " . sqlesc($subject) . ")") or sqlerr(__FILE__, __LINE__);
 
 	$REL_CACHE->clearCache('relgroups-'.$id, 'newsquery');
-	$warning = "Новость <b>успешно добавлена</b>$to_group";
+	$warning = "РќРѕРІРѕСЃС‚СЊ <b>СѓСЃРїРµС€РЅРѕ РґРѕР±Р°РІР»РµРЅР°</b>$to_group";
 
 }
 
@@ -97,10 +97,10 @@ elseif ($action == 'edit')
 		$subject = htmlspecialchars($_POST['subject']);
 
 		if ($subject == "")
-		stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
+		stderr($REL_LANG->say_by_key('error'),"РўРµРјР° РЅРѕРІРѕСЃС‚Рё РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚РѕР№!");
 
 		if ($body == "")
-		stderr($REL_LANG->say_by_key('error'), "Тело новости не может быть пустым!");
+		stderr($REL_LANG->say_by_key('error'), "РўРµР»Рѕ РЅРѕРІРѕСЃС‚Рё РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј!");
 
 		$body = sqlesc(($body));
 
@@ -117,21 +117,21 @@ elseif ($action == 'edit')
 		if ($returnto != "")
 		safe_redirect(" $returnto");
 		else
-		$warning = "Новость <b>успешно</b> отредактирована$to_group";
+		$warning = "РќРѕРІРѕСЃС‚СЊ <b>СѓСЃРїРµС€РЅРѕ</b> РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°РЅР°$to_group";
 	}
 	else
 	{
 		$returnto = strip_tags($_SERVER['HTTP_REFERER']);
-		$REL_TPL->stdhead("Редактирование новости $rgname");
+		$REL_TPL->stdhead("Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РЅРѕРІРѕСЃС‚Рё $rgname");
 		print("<form method=post name=rgnews action=\"".$REL_SEO->make_link('rgnews','action','edit','newsid',$rgnewsid,'id',$id)."\">\n");
 		print("<table border=1 cellspacing=0 cellpadding=5>\n");
-		print("<tr><td class=colhead>Редактирование новости $rgname</td></tr>\n");
-		print("<tr><td>Тема: <input type=text name=subject maxlength=70 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
+		print("<tr><td class=colhead>Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РЅРѕРІРѕСЃС‚Рё $rgname</td></tr>\n");
+		print("<tr><td>РўРµРјР°: <input type=text name=subject maxlength=70 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
 		print("<tr><td style='padding: 0px'>");
 		print textbbcode("body",$arr["body"]);
 		//<textarea name=body cols=145 rows=5 style='border: 0px'>" . htmlspecialchars($arr["body"]) .
 		print("</textarea></td></tr>\n");
-		print("<tr><td align=center><input type=submit value='Отредактировать'></td></tr>\n");
+		print("<tr><td align=center><input type=submit value='РћС‚СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ'></td></tr>\n");
 		print("</table>\n");
 		print("<input type=\"hidden\" name=\"returnto\" value=\"returnto\"/></form>\n");
 		$REL_TPL->stdfoot();
@@ -141,13 +141,13 @@ elseif ($action == 'edit')
 
 //   Other Actions and followup    ////////////////////////////////////////////
 
-$REL_TPL->stdhead("Новости $rgname");
+$REL_TPL->stdhead("РќРѕРІРѕСЃС‚Рё $rgname");
 if ($warning)
 print("<p>($warning)</p>");
 print("<form method=post name=rgnews action=\"".$REL_SEO->make_link('rgnews','action','add','id',$id)."\">\n");
 print("<table border=1 cellspacing=0 cellpadding=5>\n");
-print("<tr><td class=colhead>Добавить новость $rgname</td></tr>\n");
-print("<tr><td>Тема: <input type=text name=subject maxlength=40 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
+print("<tr><td class=colhead>Р”РѕР±Р°РІРёС‚СЊ РЅРѕРІРѕСЃС‚СЊ $rgname</td></tr>\n");
+print("<tr><td>РўРµРјР°: <input type=text name=subject maxlength=40 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
 print("<tr><td style='padding: 0px'>");
 print textbbcode("body",$arr["body"]);
 //<textarea name=body cols=145 rows=5 style='border: 0px'>

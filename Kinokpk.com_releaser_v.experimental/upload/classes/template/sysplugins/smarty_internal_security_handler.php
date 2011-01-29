@@ -93,8 +93,8 @@ class Smarty_Internal_Security_Handler {
         if (isset($this->smarty->template_dir)) {
             foreach ((array)$this->smarty->template_dir as $curr_dir) {
                 if (($_cd = realpath($curr_dir)) !== false &&
-                        strncmp($_rp, $_cd, strlen($_cd)) == 0 &&
-                        (strlen($_rp) == strlen($_cd) || substr($_rp, strlen($_cd), 1) == DS)) {
+                        strncmp($_rp, $_cd, mb_strlen($_cd)) == 0 &&
+                        (mb_strlen($_rp) == mb_strlen($_cd) || substr($_rp, mb_strlen($_cd), 1) == DS)) {
                     return true;
                 } 
             } 
@@ -104,8 +104,8 @@ class Smarty_Internal_Security_Handler {
                 if (($_cd = realpath($curr_dir)) !== false) {
                     if ($_cd == $_rp) {
                         return true;
-                    } elseif (strncmp($_rp, $_cd, strlen($_cd)) == 0 &&
-                            (strlen($_rp) == strlen($_cd) || substr($_rp, strlen($_cd), 1) == DS)) {
+                    } elseif (strncmp($_rp, $_cd, mb_strlen($_cd)) == 0 &&
+                            (mb_strlen($_rp) == mb_strlen($_cd) || substr($_rp, mb_strlen($_cd), 1) == DS)) {
                         return true;
                     } 
                 } 
@@ -130,8 +130,8 @@ class Smarty_Internal_Security_Handler {
                 if (($_cd = realpath($curr_dir)) !== false) {
                     if ($_cd == $_rp) {
                         return true;
-                    } elseif (strncmp($_rp, $_cd, strlen($_cd)) == 0 &&
-                            substr($_rp, strlen($_cd), 1) == DS) {
+                    } elseif (strncmp($_rp, $_cd, mb_strlen($_cd)) == 0 &&
+                            substr($_rp, mb_strlen($_cd), 1) == DS) {
                         return true;
                     } 
                 } 

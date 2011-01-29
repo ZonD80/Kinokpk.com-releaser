@@ -26,7 +26,7 @@ var C_search={
 		C_search.$form=$(document.createElement('form')).attr({action:'search.php', method:'get', id:'searchForm'}).
 			append($(document.createElement('p')).
 				append($(document.createElement('input')).attr({className:'txt', name:'q'})).
-				append($(document.createElement('input')).attr({className:'sbmt', type:'submit', value:'Найти'}))).
+				append($(document.createElement('input')).attr({className:'sbmt', type:'submit', value:'РќР°Р№С‚Рё'}))).
 			appendTo(C_search.$search_box);
 		
 		if(C_search.initial_query){
@@ -62,7 +62,7 @@ var C_search={
 					}
 				}
 				if(C_search.google_web_search.cursor.pages && C_search.google_web_search.cursor.pages.length > 1){
-					$pages.text('Страницы:');
+					$pages.text('РЎС‚СЂР°РЅРёС†С‹:');
 					
 					for(var i=0; i<C_search.google_web_search.cursor.pages.length; i++){
 						var page=C_search.google_web_search.cursor.pages[i];
@@ -84,7 +84,7 @@ var C_search={
 					location.replace(url);
 				}
 			}
-			// показываем лого google
+			// РїРѕРєР°Р·С‹РІР°РµРј Р»РѕРіРѕ google
 			if($branding.children().length==0){
 				google.search.Search.getBranding($branding[0]);
 			}
@@ -92,12 +92,12 @@ var C_search={
 				$branding.show();
 			}
 		}else{
-			// ничего не найдено
+			// РЅРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ
 			if(C_search.initial_page==1){
-				$results.append($(document.createElement('p')).html('По запросу «<b>'+ C_search.initial_query+ '</b>» ничего не найдено'))
+				$results.append($(document.createElement('p')).html('РџРѕ Р·Р°РїСЂРѕСЃСѓ В«<b>'+ C_search.initial_query+ '</b>В» РЅРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ'))
 				$branding.hide();
 			}else{
-				// если искали не на первой странице, попытаемся найти на первой
+				// РµСЃР»Рё РёСЃРєР°Р»Рё РЅРµ РЅР° РїРµСЂРІРѕР№ СЃС‚СЂР°РЅРёС†Рµ, РїРѕРїС‹С‚Р°РµРјСЃСЏ РЅР°Р№С‚Рё РЅР° РїРµСЂРІРѕР№
 				var url = 'search.php?q='+ C_search.initial_query+ '&p=1';
 				location.replace(url);
 			}

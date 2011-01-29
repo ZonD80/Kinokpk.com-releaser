@@ -46,7 +46,7 @@ if ($REL_CONFIG['deny_signup'] && $REL_CONFIG['allow_invite_signup']) {
 }
 
 if (!empty($_POST['invite'])) {
-	if (strlen($_POST["invite"]) != 32)
+	if (mb_strlen($_POST["invite"]) != 32)
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Sorry, but you entered invalid invite code. Please <a href="javascript:history.go(-1);">try again</a>.'));
 	$invitecheck = sql_query("SELECT invites.inviter, invites.id, users.username, users.class FROM invites LEFT JOIN users ON inviter=users.id WHERE invite = ".sqlesc($_POST["invite"])) or sqlerr(__FILE__,__LINE__);
 	list($inviter, $invid, $invname,$invclass) = @mysql_fetch_array($invitecheck);
@@ -67,16 +67,16 @@ $email = unesc($_POST["email"]);
 if (empty($wantusername) || empty($_POST['wantpassword']) || empty($email))
 bark($REL_LANG->_('Sorry, you missed some fields. Please <a href="javascript:history.go(-1);">try again</a>.'));
 
-if (strlen($wantusername) > 12)
+if (mb_strlen($wantusername) > 12)
 bark($REL_LANG->_('Sorry, but your username is too big. It must be < 12 symbols. Please <a href="javascript:history.go(-1);">try again</a>.'));
 
 if ($_POST['wantpassword'] != $_POST['passagain'])
 bark($REL_LANG->_('Sorry, but your passwords are not the same. Please <a href="javascript:history.go(-1);">try again</a>.'));
 
-if (strlen($_POST['wantpassword']) < 6)
+if (mb_strlen($_POST['wantpassword']) < 6)
 bark($REL_LANG->_('Sorry, but your password is too short. It must be > 6 symbols. Please <a href="javascript:history.go(-1);">try again</a>.'));
 
-if (strlen($_POST['wantpassword']) > 40)
+if (mb_strlen($_POST['wantpassword']) > 40)
 bark($REL_LANG->_('Sorry, but your password is too big. It must be < 40 symbols. Please <a href="javascript:history.go(-1);">try again</a>.'));
 
 if ($_POST['wantpassword'] == $wantusername)
@@ -153,17 +153,17 @@ write_log($REL_LANG->_("New user registered (%s)",$wantusername),"tracker");
 $psecret = md5($editsecret);
 
 $body = <<<EOD
-Вы зарегистрировались на {$REL_CONFIG['sitename']} и указали этот адрес как обратный ($email).
+Р’С‹ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°Р»РёСЃСЊ РЅР° {$REL_CONFIG['sitename']} Рё СѓРєР°Р·Р°Р»Рё СЌС‚РѕС‚ Р°РґСЂРµСЃ РєР°Рє РѕР±СЂР°С‚РЅС‹Р№ ($email).
 
-Если это были не вы, пожалуста проигнорируйте это письмо. Персона которая ввела ваш E-Mail адресс имеет IP адрес {$_SERVER["REMOTE_ADDR"]}. Пожалуста, не отвечайте.
+Р•СЃР»Рё СЌС‚Рѕ Р±С‹Р»Рё РЅРµ РІС‹, РїРѕР¶Р°Р»СѓСЃС‚Р° РїСЂРѕРёРіРЅРѕСЂРёСЂСѓР№С‚Рµ СЌС‚Рѕ РїРёСЃСЊРјРѕ. РџРµСЂСЃРѕРЅР° РєРѕС‚РѕСЂР°СЏ РІРІРµР»Р° РІР°С€ E-Mail Р°РґСЂРµСЃСЃ РёРјРµРµС‚ IP Р°РґСЂРµСЃ {$_SERVER["REMOTE_ADDR"]}. РџРѕР¶Р°Р»СѓСЃС‚Р°, РЅРµ РѕС‚РІРµС‡Р°Р№С‚Рµ.
 
-Для подтверждения вашей регистрации, вам нужно пройти по следующей ссылке:
+Р”Р»СЏ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ РІР°С€РµР№ СЂРµРіРёСЃС‚СЂР°С†РёРё, РІР°Рј РЅСѓР¶РЅРѕ РїСЂРѕР№С‚Рё РїРѕ СЃР»РµРґСѓСЋС‰РµР№ СЃСЃС‹Р»РєРµ:
 
 {$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('confirm','id',$id,'secret',$psecret)}
 
-После того как вы это сделаете, вы сможете использовать ваш аккаунт. Если вы этого не сделаете,
- ваш новый аккаунт будет удален через пару дней. Мы рекомендуем вам прочитать правила
-и ЧаВо прежде чем вы начнете использовать {$REL_CONFIG['sitename']}.
+РџРѕСЃР»Рµ С‚РѕРіРѕ РєР°Рє РІС‹ СЌС‚Рѕ СЃРґРµР»Р°РµС‚Рµ, РІС‹ СЃРјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РІР°С€ Р°РєРєР°СѓРЅС‚. Р•СЃР»Рё РІС‹ СЌС‚РѕРіРѕ РЅРµ СЃРґРµР»Р°РµС‚Рµ,
+ РІР°С€ РЅРѕРІС‹Р№ Р°РєРєР°СѓРЅС‚ Р±СѓРґРµС‚ СѓРґР°Р»РµРЅ С‡РµСЂРµР· РїР°СЂСѓ РґРЅРµР№. РњС‹ СЂРµРєРѕРјРµРЅРґСѓРµРј РІР°Рј РїСЂРѕС‡РёС‚Р°С‚СЊ РїСЂР°РІРёР»Р°
+Рё Р§Р°Р’Рѕ РїСЂРµР¶РґРµ С‡РµРј РІС‹ РЅР°С‡РЅРµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ {$REL_CONFIG['sitename']}.
 EOD;
 
 if($REL_CONFIG['use_email_act'] && $users) {

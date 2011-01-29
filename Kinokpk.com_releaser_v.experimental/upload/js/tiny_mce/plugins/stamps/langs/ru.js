@@ -1,3 +1,3 @@
 tinyMCE.addI18n('ru.stamps',{
-stamps_desc: "Печати и штампы"
+stamps_desc: "РџРµС‡Р°С‚Рё Рё С€С‚Р°РјРїС‹"
 });

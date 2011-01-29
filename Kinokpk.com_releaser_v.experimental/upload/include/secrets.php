@@ -16,7 +16,7 @@ $mysql_host = 'localhost';
 $mysql_user = '';
 $mysql_pass = '';
 $mysql_db = '';
-$mysql_charset = 'CP1251';
+$mysql_charset = 'utf8';
 
 define("COOKIE_SECRET",'');
 

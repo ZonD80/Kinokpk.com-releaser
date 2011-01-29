@@ -144,7 +144,7 @@ class REL_LANG {
 			$cut = strpos($string,'=');
 			if (!$cut) continue;
 			$key = substr($string,0,$cut);
-			$value = substr($string,$cut+1,strlen($string));
+			$value = substr($string,$cut+1,mb_strlen($string));
 			if ($this->lang[$language][$key]) $value = "*REDECLARATED_KEY:$key* $value";
 			$this->lang[$language][$key] = $value;
 		}
@@ -163,7 +163,7 @@ class REL_LANG {
 			$cut = strpos($string,'=');
 			if (!$cut) continue;
 			$key = strtolower(trim(substr($string,0,$cut)));
-			$value = trim(substr($string,$cut+1,strlen($string)));
+			$value = trim(substr($string,$cut+1,mb_strlen($string)));
 			if ($to_database[$key]||$check[$key]) { $return['errors'][] = 'REDECLARATED KEY:"'.$key.'"';}
 			$to_database[$key] = $value;
 		}

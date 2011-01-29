@@ -64,7 +64,7 @@ if (!$id)
 stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 list($name,$nofr) = @mysql_fetch_array(sql_query("SELECT name,filename FROM torrents WHERE id=$id"));
-if ($nofr == 'nofile') die ("Блядь ну хули смотреть? Это не торрент релиз! Данных о торренте нет! <a href='".$REL_SEO->make_link('details','id',$id,'name',translit($name))."'>К описанию релиза</a>");
+if ($nofr == 'nofile') die ("Р‘Р»СЏРґСЊ РЅСѓ С…СѓР»Рё СЃРјРѕС‚СЂРµС‚СЊ? Р­С‚Рѕ РЅРµ С‚РѕСЂСЂРµРЅС‚ СЂРµР»РёР·! Р”Р°РЅРЅС‹С… Рѕ С‚РѕСЂСЂРµРЅС‚Рµ РЅРµС‚! <a href='".$REL_SEO->make_link('details','id',$id,'name',translit($name))."'>Рљ РѕРїРёСЃР°РЅРёСЋ СЂРµР»РёР·Р°</a>");
 elseif (!$nofr) 	stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 $nof = sql_query("SELECT tracker,lastchecked,state,method,remote_method,seeders,leechers,num_failed FROM trackers WHERE torrent = $id ORDER by lastchecked DESC");
@@ -93,11 +93,11 @@ while (list($tracker,$lastchecked,$state,$method,$remote_method,$seeders,$leeche
 $REL_TPL->stdhead($REL_LANG->_("Information about torrent"));
 $REL_TPL->begin_frame($REL_LANG->_("Information about torrent"));
 print("<div id=\"tabs\"><ul>
-	<li class=\"tab2\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($name))."\"><span>Описание</span></a></li>
+	<li class=\"tab2\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($name))."\"><span>РћРїРёСЃР°РЅРёРµ</span></a></li>
 	<li nowrap=\"\" class=\"tab1\"><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name))."\"><span>{$REL_LANG->say_by_key('torrent_info')}</span></a></li>
 	<li nowrap=\"\" class=\"tab2\"><a href=\"".$REL_SEO->make_link('exportrelease','id',$id,'name',translit($name))."\"><span>{$REL_LANG->say_by_key('exportrelease_mname')}</span></a></li>
 	</ul></div>\n <br />");
-print('<table width="100%" style="float:left"><tr><td class="colhead">'.$REL_LANG->say_by_key('tracker').'</td><td class="colhead">Сидов</td><td class="colhead">Личей</td><td class="colhead">Всего</td><td class="colhead">Время проверки</td><td class="colhead">'.$REL_LANG->say_by_key('status').'</td><td class="colhead">'.$REL_LANG->_('Method of check').'</td>'.((get_user_class()>=UC_ADMINISTRATOR)?'<td class="colhead">'.$REL_LANG->_('Method of request').'</td><td class="colhead">'.$REL_LANG->_('Amount of fails').'</td>':'').'</tr>');
+print('<table width="100%" style="float:left"><tr><td class="colhead">'.$REL_LANG->say_by_key('tracker').'</td><td class="colhead">РЎРёРґРѕРІ</td><td class="colhead">Р›РёС‡РµР№</td><td class="colhead">Р’СЃРµРіРѕ</td><td class="colhead">Р’СЂРµРјСЏ РїСЂРѕРІРµСЂРєРё</td><td class="colhead">'.$REL_LANG->say_by_key('status').'</td><td class="colhead">'.$REL_LANG->_('Method of check').'</td>'.((get_user_class()>=UC_ADMINISTRATOR)?'<td class="colhead">'.$REL_LANG->_('Method of request').'</td><td class="colhead">'.$REL_LANG->_('Amount of fails').'</td>':'').'</tr>');
 if ($data)
 foreach ($data as $tracker)
 print ("<tr><td>".$tracker['tracker']."</td><td>{$tracker['seeders']}</td><td>{$tracker['leechers']}</td><td>".($tracker['seeders']+$tracker['leechers'])."</td><td>{$tracker['lastchecked']}</td><td>".cleanhtml($tracker['state'])."</td><td>{$tracker['method']}</td>".((get_user_class()>=UC_ADMINISTRATOR)?"<td>{$tracker['remote_method']}</td><td>{$tracker['num_failed']}</td>":'')."</tr>");
@@ -107,7 +107,7 @@ print('</table>');
 $REL_TPL->end_frame();
 
 
-print('<h3><a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'info','').'">Посмотреть структуру торрент-файла</a> или <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'dllist','').'">Посмотреть списки пиров на сайте</a></h3>');
+print('<h3><a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'info','').'">РџРѕСЃРјРѕС‚СЂРµС‚СЊ СЃС‚СЂСѓРєС‚СѓСЂСѓ С‚РѕСЂСЂРµРЅС‚-С„Р°Р№Р»Р°</a> РёР»Рё <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'dllist','').'">РџРѕСЃРјРѕС‚СЂРµС‚СЊ СЃРїРёСЃРєРё РїРёСЂРѕРІ РЅР° СЃР°Р№С‚Рµ</a></h3>');
 if (isset($_GET['info'])) {
 	/**
 	 * Prints Nice array
@@ -130,19 +130,19 @@ if (isset($_GET['info'])) {
 		switch($array['type'])
 		{
 			case "string":
-				printf("<li><div class=string> - <span class=icon>[STRING]</span> <span class=title>[%s]</span> <span class=length>(%d)</span>: <span class=value>%s</span></div></li>",$parent,$array['strlen'],$array['value']);
+				printf("<li><div class=string> - <span class=icon>[STRING]</span> <span class=title>[%s]</span> <span class=length>(%d)</span>: <span class=value>%s</span></div></li>",$parent,$array['mb_strlen'],$array['value']);
 				break;
 			case "integer":
-				printf("<li><div class=integer> - <span class=icon>[INT]</span> <span class=title>[%s]</span> <span class=length>(%d)</span>: <span class=value>%s</span></div></li>",$parent,$array['strlen'],$array['value']);
+				printf("<li><div class=integer> - <span class=icon>[INT]</span> <span class=title>[%s]</span> <span class=length>(%d)</span>: <span class=value>%s</span></div></li>",$parent,$array['mb_strlen'],$array['value']);
 				break;
 			case "list":
-				printf("<li><div class=list> + <span class=icon>[LIST]</span> <span class=title>[%s]</span> <span class=length>(%d)</span></div>",$parent,$array['strlen']);
+				printf("<li><div class=list> + <span class=icon>[LIST]</span> <span class=title>[%s]</span> <span class=length>(%d)</span></div>",$parent,$array['mb_strlen']);
 				echo "<ul>";
 				print_array($array['value'], $offset_symbol, $offset.$offset_symbol);
 				echo "</ul></li>";
 				break;
 			case "dictionary":
-				printf("<li><div class=dictionary> + <span class=icon>[DICT]</span> <span class=title>[%s]</span> <span class=length>(%d)</span></div>",$parent,$array['strlen']);
+				printf("<li><div class=dictionary> + <span class=icon>[DICT]</span> <span class=title>[%s]</span> <span class=length>(%d)</span></div>",$parent,$array['mb_strlen']);
 				while (list($key, $val) = each($array))
 				{
 					if (is_array($val))
@@ -173,7 +173,7 @@ if (isset($_GET['info'])) {
 	$fn = "torrents/$id.torrent";
 
 	if (!is_readable($fn)) {
-		stdmsg($REL_LANG->say_by_key('error'),'Невозможно прочитать torrent-файл','error');   $REL_TPL->stdfoot(); die(); }
+		stdmsg($REL_LANG->say_by_key('error'),'РќРµРІРѕР·РјРѕР¶РЅРѕ РїСЂРѕС‡РёС‚Р°С‚СЊ torrent-С„Р°Р№Р»','error');   $REL_TPL->stdfoot(); die(); }
 		?>
 
 <style type="text/css">
@@ -251,8 +251,8 @@ li span.title {
 
 		// Start table
 		/*print("<table cellspacing=\"0\" cellpadding=\"0\" class=\"tabs\"><tbody><tr>
-		 <td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"details.php?id=$id\">Описание</a></td>
-		 <td class=\"tab\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"torrent_info.php?id=$id\">Данные о торренте</a></td>
+		 <td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"details.php?id=$id\">РћРїРёСЃР°РЅРёРµ</a></td>
+		 <td class=\"tab\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"torrent_info.php?id=$id\">Р”Р°РЅРЅС‹Рµ Рѕ С‚РѕСЂСЂРµРЅС‚Рµ</a></td>
 		 <td class=\"tab3\"> </td></tr></tbody></table>\n");*/
 		print("<table width=100% border=1 cellspacing=0 cellpadding=5>");
 

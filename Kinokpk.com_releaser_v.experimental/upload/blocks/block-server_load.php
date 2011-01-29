@@ -1,12 +1,12 @@
 <?php
-global $REL_LANG, $REL_SEO;
+global $REL_LANG, $REL_SEO, $REL_DB;
 if (!defined('BLOCK_FILE')) {
 	safe_redirect(" ../".$REL_SEO->make_lank('index'));
 	exit;
 }
 
-$con = sql_query("SELECT userid FROM peers GROUP by userid");
-$connected = mysql_num_rows($con);
+$connected = (int)mysql_num_rows($REL_DB->query("SELECT uid FROM xbt_files_users GROUP BY uid"));
+
 $blocktitle = $REL_LANG->say_by_key('server_load');
 $avgload = get_server_load();
 if (strtolower(substr(PHP_OS, 0, 3)) != 'win')

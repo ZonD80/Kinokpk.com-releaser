@@ -717,13 +717,13 @@ class Snoopy
 		chr(176),
 		chr(39),
 		chr(128),
-							"�",
-							"�",
-							"�",
-							"�",
-							"�",
-							"�",
-							"�",
+							"пїЅ",
+							"пїЅ",
+							"пїЅ",
+							"пїЅ",
+							"пїЅ",
+							"пїЅ",
+							"пїЅ",
 		);
 			
 		$text = preg_replace($search,$replace,$document);
@@ -842,7 +842,7 @@ class Snoopy
 			$headers .= "\r\n";
 		}
 		if(!empty($body))
-		$headers .= "Content-length: ".strlen($body)."\r\n";
+		$headers .= "Content-length: ".mb_strlen($body)."\r\n";
 		if(!empty($this->user) || !empty($this->pass))
 		$headers .= "Authorization: Basic ".base64_encode($this->user.":".$this->pass)."\r\n";
 
@@ -858,7 +858,7 @@ class Snoopy
 		socket_set_timeout($fp, $this->read_timeout);
 		$this->timed_out = false;
 
-		fwrite($fp,$headers.$body,strlen($headers.$body));
+		fwrite($fp,$headers.$body,mb_strlen($headers.$body));
 
 		$this->_redirectaddr = false;
 		unset($this->headers);
@@ -914,7 +914,7 @@ class Snoopy
 		$results = '';
 		do {
 			$_data = fread($fp, $this->maxlength);
-			if (strlen($_data) == 0) {
+			if (mb_strlen($_data) == 0) {
 				break;
 			}
 			$results .= $_data;
@@ -1018,7 +1018,7 @@ class Snoopy
 			$headers[] = "Content-type: $content_type";
 		}
 		if(!empty($body))
-		$headers[] = "Content-length: ".strlen($body);
+		$headers[] = "Content-length: ".mb_strlen($body);
 		if(!empty($this->user) || !empty($this->pass))
 		$headers[] = "Authorization: BASIC ".base64_encode($this->user.":".$this->pass);
 			

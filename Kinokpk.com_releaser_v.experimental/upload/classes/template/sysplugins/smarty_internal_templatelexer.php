@@ -88,7 +88,7 @@ class Smarty_Internal_Templatelexer
         $this->smarty = $compiler->smarty;
         $this->compiler = $compiler;
         $this->ldel = preg_quote($this->smarty->left_delimiter,'/'); 
-        $this->ldel_length = strlen($this->smarty->left_delimiter); 
+        $this->ldel_length = mb_strlen($this->smarty->left_delimiter); 
         $this->rdel = preg_quote($this->smarty->right_delimiter,'/');
         $this->smarty_token_names['LDEL'] =	$this->smarty->left_delimiter;
         $this->smarty_token_names['RDEL'] =	$this->smarty->right_delimiter;
@@ -152,7 +152,7 @@ class Smarty_Internal_Templatelexer
               20 => 2,
               23 => 0,
             );
-        if ($this->counter >= strlen($this->data)) {
+        if ($this->counter >= mb_strlen($this->data)) {
             return false; // end of input
         }
         $yy_global_pattern = "/^(\\{\\})|^(".$this->ldel."\\*([\S\s]*?)\\*".$this->rdel."\r?\n?)|^(<\\?(?:php\\w+|=|[a-zA-Z]+)?)|^(\\?>)|^(<%)|^(%>)|^([\t ]*[\r\n]+[\t ]*)|^(".$this->ldel."strip".$this->rdel.")|^(".$this->ldel."\/strip".$this->rdel.")|^(".$this->ldel."literal".$this->rdel.")|^(".$this->ldel."\\s{1,}\/)|^(".$this->ldel."\\s*(if|elseif|else if|while)(?![^\s]))|^(".$this->ldel."\\s*for(?![^\s]))|^(".$this->ldel."\\s*foreach(?![^\s]))|^(".$this->ldel."\\s{1,})|^(".$this->ldel."\/)|^(".$this->ldel.")|^(([\S\s]*?)(?=([\t ]*[\r\n]+[\t ]*|".$this->ldel."|<\\?|\\?>|<%|%>)))|^([\S\s]+)/";
@@ -160,7 +160,7 @@ class Smarty_Internal_Templatelexer
         do {
             if (preg_match($yy_global_pattern, substr($this->data, $this->counter), $yymatches)) {
                 $yysubmatches = $yymatches;
-                $yymatches = array_filter($yymatches, 'strlen'); // remove empty sub-patterns
+                $yymatches = array_filter($yymatches, 'mb_strlen'); // remove empty sub-patterns
                 if (!count($yymatches)) {
                     throw new Exception('Error: lexing failed because a rule matched' .
                         'an empty string.  Input "' . substr($this->data,
@@ -178,7 +178,7 @@ class Smarty_Internal_Templatelexer
                 $this->value = current($yymatches); // token value
                 $r = $this->{'yy_r1_' . $this->token}($yysubmatches);
                 if ($r === null) {
-                    $this->counter += strlen($this->value);
+                    $this->counter += mb_strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
                     // accept this token
                     return true;
@@ -187,9 +187,9 @@ class Smarty_Internal_Templatelexer
                     // process this token in the new state
                     return $this->yylex();
                 } elseif ($r === false) {
-                    $this->counter += strlen($this->value);
+                    $this->counter += mb_strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >= strlen($this->data)) {
+                    if ($this->counter >= mb_strlen($this->data)) {
                         return false; // end of input
                     }
                     // skip this token
@@ -421,7 +421,7 @@ class Smarty_Internal_Templatelexer
               87 => 0,
               88 => 0,
             );
-        if ($this->counter >= strlen($this->data)) {
+        if ($this->counter >= mb_strlen($this->data)) {
             return false; // end of input
         }
         $yy_global_pattern = "/^('[^'\\\\]*(?:\\\\.[^'\\\\]*)*')|^(".$this->ldel."\\s{1,}\/)|^(".$this->ldel."\\s*(if|elseif|else if|while)(?![^\s]))|^(".$this->ldel."\\s*for(?![^\s]))|^(".$this->ldel."\\s*foreach(?![^\s]))|^(".$this->ldel."\\s{1,})|^(\\s{1,}".$this->rdel.")|^(".$this->ldel."\/)|^(".$this->ldel.")|^(".$this->rdel.")|^(\\s+is\\s+in\\s+)|^(\\s+(AS|as)\\s+)|^(\\s+(to)\\s+)|^(\\s+(step)\\s+)|^(\\s+instanceof\\s+)|^(\\s*===\\s*)|^(\\s*!==\\s*)|^(\\s*==\\s*|\\s+(EQ|eq)\\s+)|^(\\s*!=\\s*|\\s*<>\\s*|\\s+(NE|NEQ|ne|neq)\\s+)|^(\\s*>=\\s*|\\s+(GE|GTE|ge|gte)\\s+)|^(\\s*<=\\s*|\\s+(LE|LTE|le|lte)\\s+)|^(\\s*>\\s*|\\s+(GT|gt)\\s+)|^(\\s*<\\s*|\\s+(LT|lt)\\s+)|^(\\s+(MOD|mod)\\s+)|^(!\\s*|(NOT|not)\\s+)|^(\\s*&&\\s*|\\s*(AND|and)\\s+)|^(\\s*\\|\\|\\s*|\\s*(OR|or)\\s+)|^(\\s*(XOR|xor)\\s+)|^(\\s+is\\s+odd\\s+by\\s+)|^(\\s+is\\s+not\\s+odd\\s+by\\s+)|^(\\s+is\\s+odd)|^(\\s+is\\s+not\\s+odd)|^(\\s+is\\s+even\\s+by\\s+)|^(\\s+is\\s+not\\s+even\\s+by\\s+)|^(\\s+is\\s+even)|^(\\s+is\\s+not\\s+even)|^(\\s+is\\s+div\\s+by\\s+)|^(\\s+is\\s+not\\s+div\\s+by\\s+)|^(\\((int(eger)?|bool(ean)?|float|double|real|string|binary|array|object)\\)\\s*)|^(\\(\\s*)|^(\\s*\\))|^(\\[\\s*)|^(\\s*\\])|^(\\s*->\\s*)|^(\\s*=>\\s*)|^(\\s*=\\s*)|^((\\+\\+|--)\\s*)|^(\\s*(\\+|-)\\s*)|^(\\s*(\\*|\/|%)\\s*)|^(\\$)|^(\\s*;)|^(::)|^(\\s*:\\s*)|^(@)|^(#)|^(\")|^(`)|^(\\|)|^(\\.)|^(\\s*,\\s*)|^(\\s*&\\s*)|^(\\s*\\?\\s*)|^(0[xX][0-9a-fA-F]+)|^([0-9]*[a-zA-Z_]\\w*)|^(\\d+)|^(\\s+)|^(.)/";
@@ -429,7 +429,7 @@ class Smarty_Internal_Templatelexer
         do {
             if (preg_match($yy_global_pattern, substr($this->data, $this->counter), $yymatches)) {
                 $yysubmatches = $yymatches;
-                $yymatches = array_filter($yymatches, 'strlen'); // remove empty sub-patterns
+                $yymatches = array_filter($yymatches, 'mb_strlen'); // remove empty sub-patterns
                 if (!count($yymatches)) {
                     throw new Exception('Error: lexing failed because a rule matched' .
                         'an empty string.  Input "' . substr($this->data,
@@ -447,7 +447,7 @@ class Smarty_Internal_Templatelexer
                 $this->value = current($yymatches); // token value
                 $r = $this->{'yy_r2_' . $this->token}($yysubmatches);
                 if ($r === null) {
-                    $this->counter += strlen($this->value);
+                    $this->counter += mb_strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
                     // accept this token
                     return true;
@@ -456,9 +456,9 @@ class Smarty_Internal_Templatelexer
                     // process this token in the new state
                     return $this->yylex();
                 } elseif ($r === false) {
-                    $this->counter += strlen($this->value);
+                    $this->counter += mb_strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >= strlen($this->data)) {
+                    if ($this->counter >= mb_strlen($this->data)) {
                         return false; // end of input
                     }
                     // skip this token
@@ -867,7 +867,7 @@ class Smarty_Internal_Templatelexer
               8 => 2,
               11 => 0,
             );
-        if ($this->counter >= strlen($this->data)) {
+        if ($this->counter >= mb_strlen($this->data)) {
             return false; // end of input
         }
         $yy_global_pattern = "/^(".$this->ldel."literal".$this->rdel.")|^(".$this->ldel."\/literal".$this->rdel.")|^([\t ]*[\r\n]+[\t ]*)|^(<\\?(?:php\\w+|=|[a-zA-Z]+)?)|^(\\?>)|^(<%)|^(%>)|^(([\S\s]*?)(?=([\t ]*[\r\n]+[\t ]*|".$this->ldel."\/?literal".$this->rdel."|<\\?|<%)))|^([\S\s]+)/";
@@ -875,7 +875,7 @@ class Smarty_Internal_Templatelexer
         do {
             if (preg_match($yy_global_pattern, substr($this->data, $this->counter), $yymatches)) {
                 $yysubmatches = $yymatches;
-                $yymatches = array_filter($yymatches, 'strlen'); // remove empty sub-patterns
+                $yymatches = array_filter($yymatches, 'mb_strlen'); // remove empty sub-patterns
                 if (!count($yymatches)) {
                     throw new Exception('Error: lexing failed because a rule matched' .
                         'an empty string.  Input "' . substr($this->data,
@@ -893,7 +893,7 @@ class Smarty_Internal_Templatelexer
                 $this->value = current($yymatches); // token value
                 $r = $this->{'yy_r3_' . $this->token}($yysubmatches);
                 if ($r === null) {
-                    $this->counter += strlen($this->value);
+                    $this->counter += mb_strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
                     // accept this token
                     return true;
@@ -902,9 +902,9 @@ class Smarty_Internal_Templatelexer
                     // process this token in the new state
                     return $this->yylex();
                 } elseif ($r === false) {
-                    $this->counter += strlen($this->value);
+                    $this->counter += mb_strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >= strlen($this->data)) {
+                    if ($this->counter >= mb_strlen($this->data)) {
                         return false; // end of input
                     }
                     // skip this token
@@ -991,7 +991,7 @@ class Smarty_Internal_Templatelexer
               13 => 3,
               17 => 0,
             );
-        if ($this->counter >= strlen($this->data)) {
+        if ($this->counter >= mb_strlen($this->data)) {
             return false; // end of input
         }
         $yy_global_pattern = "/^(".$this->ldel."\\s{1,}\/)|^(".$this->ldel."\\s*(if|elseif|else if|while)(?![^\s]))|^(".$this->ldel."\\s*for(?![^\s]))|^(".$this->ldel."\\s*foreach(?![^\s]))|^(".$this->ldel."\\s{1,})|^(".$this->ldel."\/)|^(".$this->ldel.")|^(\")|^(`\\$)|^(\\$[0-9]*[a-zA-Z_]\\w*)|^(\\$)|^(([^\"\\\\]*?)((?:\\\\.[^\"\\\\]*?)*?)(?=(".$this->ldel."|\\$|`\\$|\")))|^([\S\s]+)/";
@@ -999,7 +999,7 @@ class Smarty_Internal_Templatelexer
         do {
             if (preg_match($yy_global_pattern, substr($this->data, $this->counter), $yymatches)) {
                 $yysubmatches = $yymatches;
-                $yymatches = array_filter($yymatches, 'strlen'); // remove empty sub-patterns
+                $yymatches = array_filter($yymatches, 'mb_strlen'); // remove empty sub-patterns
                 if (!count($yymatches)) {
                     throw new Exception('Error: lexing failed because a rule matched' .
                         'an empty string.  Input "' . substr($this->data,
@@ -1017,7 +1017,7 @@ class Smarty_Internal_Templatelexer
                 $this->value = current($yymatches); // token value
                 $r = $this->{'yy_r4_' . $this->token}($yysubmatches);
                 if ($r === null) {
-                    $this->counter += strlen($this->value);
+                    $this->counter += mb_strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
                     // accept this token
                     return true;
@@ -1026,9 +1026,9 @@ class Smarty_Internal_Templatelexer
                     // process this token in the new state
                     return $this->yylex();
                 } elseif ($r === false) {
-                    $this->counter += strlen($this->value);
+                    $this->counter += mb_strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
-                    if ($this->counter >= strlen($this->data)) {
+                    if ($this->counter >= mb_strlen($this->data)) {
                         return false; // end of input
                     }
                     // skip this token

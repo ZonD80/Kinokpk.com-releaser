@@ -303,7 +303,7 @@ downloading_torrent=Downloading a torrent
 download_notice=Downloading this release you rating will decrease by %s , and will become %s. Remember, that with %s rating you can\'t
 download_torrent=Download torrent!
 download_zip_again=You can download all previous releases in one ZIP-archive without rating decrease<br/><a href="%s">View downloaded releases</a> or <a href="%s">Download ZIP-archive with torrents</a>
-down_formula=Вы раздаете %s релизов, с учетом скидки в %s релизов, что в сумме меньше, чем скачали (%s скачанных релизов), поэтому Ваш рейтинг изменяется на
+down_formula=Р’С‹ СЂР°Р·РґР°РµС‚Рµ %s СЂРµР»РёР·РѕРІ, СЃ СѓС‡РµС‚РѕРј СЃРєРёРґРєРё РІ %s СЂРµР»РёР·РѕРІ, С‡С‚Рѕ РІ СЃСѓРјРјРµ РјРµРЅСЊС€Рµ, С‡РµРј СЃРєР°С‡Р°Р»Рё (%s СЃРєР°С‡Р°РЅРЅС‹С… СЂРµР»РёР·РѕРІ), РїРѕСЌС‚РѕРјСѓ Р’Р°С€ СЂРµР№С‚РёРЅРі РёР·РјРµРЅСЏРµС‚СЃСЏ РЅР°
 down_levels=The lower level of restriction
 down_notice=In rating a %s , you can not download releases, and at %s Your account will be disabled
 down_size=Down size
@@ -382,7 +382,7 @@ friendship_cancelled=The friendship is over
 friends_list=List of friends
 friend_confirmed=Now you are confirmed that %s is your friend, thank you
 friend_deleted=The user has been removed from your friends
-friend_deny=The user миша has refused to you friendship
+friend_deny=The user РјРёС€Р° has refused to you friendship
 friend_notice=User %s asks you for friendship, if he is your friend, you can [<a href="friends.php?action=confirm&amp;id=%s">Confirm</a>] or [<a href="friends.php?action=deny&amp;id=%s">Deny</a>] friendship
 friend_notice_subject=Lets be friends?
 friend_pending=Expects confirmation
@@ -499,7 +499,7 @@ invite_notice=Welcome! We wish you happy to spend time on our site. <br /> Atten
 invite_notice_fr=Divide the pleasure of using our tracker with your friends
 invite_notice_get=Get the opportunity to invite someone <a href="myrating.php">exchange your bonus</a>
 invite_notice_reg=At your invitation just registered user %s, confirm your invitation in <a href="invite.php">The system of invitations</a>
-invite_notice_rg=You are going to create an invitation for the release of the band "%s". Invitations for release groups do not require confirmation and act as much, and subscribe to release a group of (%s). For the creation of an invitation you will be taken away %s <a href="myrating.php?discount">farmed</a> (сейчас у вас %s). If you want to join this group, click "Continue
+invite_notice_rg=You are going to create an invitation for the release of the band "%s". Invitations for release groups do not require confirmation and act as much, and subscribe to release a group of (%s). For the creation of an invitation you will be taken away %s <a href="myrating.php?discount">farmed</a> (СЃРµР№С‡Р°СЃ Сѓ РІР°СЃ %s). If you want to join this group, click "Continue
 invite_per=Valid until
 invite_system=The system of invitations
 in_debug=Warning Enable debugging. Only the owner can see this message, and requests above.
@@ -753,7 +753,7 @@ not_chosen_message=You have not chosen to delete the message!
 not_confirmed=Not confirmed
 not_confirmed_users=Not confirmed users
 not_email=You did not enter Email sender!
-not_enough_votes=Not yet (Has to be at least %d голосов. Already:
+not_enough_votes=Not yet (Has to be at least %d РіРѕР»РѕСЃРѕРІ. Already:
 not_entered_number=You have entered no number in the box below:
 not_filled_fields=You have not filled in all fields!
 not_found_neighbot=Network Neighborhood not found.
@@ -1003,7 +1003,7 @@ rt_state_1=<span style="color: red;">Request filed to stop, but the script still
 rt_state_2=<span style="color: green;">Stopping</span>
 rt_state_3=<span style="color: green;">Function works</span>
 rt_state_4=<span style="color: red;">Start request was send, script is starting now</span>
-ru=Русский (RU)
+ru=Р СѓСЃСЃРєРёР№ (RU)
 rules=Rules
 said_thanks=Said&nbsp;thanks
 Save changes=Save changes
@@ -1217,7 +1217,7 @@ trailer=trailer
 ttl=TTL
 tv=Favorite TV shows:
 type=Type
-ua=Українська (UA)
+ua=РЈРєСЂР°С—РЅСЃСЊРєР° (UA)
 ul_speed=Upload speed
 unable_peers=Unable to obtain data on the peers from remote tracker
 unable_to_create_account=Unable to create an account. Possibly, the name you have chosen is already taken.

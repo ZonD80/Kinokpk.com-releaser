@@ -23,7 +23,7 @@ if (isset($_GET['remove']) && is_valid_id($_GET['remove']))
 	$remove = (int) $_GET['remove'];
 
 	sql_query("DELETE FROM bannedemails WHERE id = '$remove'") or sqlerr(__FILE__, __LINE__);
-	write_log("Бан $remove был снят пользавателям $CURUSER[username]",'emailbans');
+	write_log("Р‘Р°РЅ $remove Р±С‹Р» СЃРЅСЏС‚ РїРѕР»СЊР·Р°РІР°С‚РµР»СЏРј $CURUSER[username]",'emailbans');
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST")
@@ -32,42 +32,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$comment = trim($_POST["comment"]);
 	if (!$email || !$comment)
 	stderr("Error", "Missing form data.");
-	sql_query("INSERT INTO bannedemails (added, addedby, comment, email) VALUES(".sqlesc(time()).", $CURUSER[id], ".sqlesc($comment).", ".sqlesc($email).")") or (mysql_errno() == 1062 ? stderr($REL_LANG->say_by_key('error'), "Этот e-mail уже забанен") : sqlerr(__FILE__, __LINE__));
+	sql_query("INSERT INTO bannedemails (added, addedby, comment, email) VALUES(".sqlesc(time()).", $CURUSER[id], ".sqlesc($comment).", ".sqlesc($email).")") or (mysql_errno() == 1062 ? stderr($REL_LANG->say_by_key('error'), "Р­С‚РѕС‚ e-mail СѓР¶Рµ Р·Р°Р±Р°РЅРµРЅ") : sqlerr(__FILE__, __LINE__));
 	safe_redirect(" $_SERVER[REQUEST_URI]");
 	die;
 }
 
 $res = sql_query("SELECT * FROM bannedemails ORDER BY added DESC") or sqlerr(__FILE__, __LINE__);
 
-$REL_TPL->stdhead("Бан Емайлов");
+$REL_TPL->stdhead("Р‘Р°РЅ Р•РјР°Р№Р»РѕРІ");
 
-print("<h1>Список банов</h1>\n");
+print("<h1>РЎРїРёСЃРѕРє Р±Р°РЅРѕРІ</h1>\n");
 
 if (mysql_num_rows($res) == 0)
-print("<p align=center><b>Пусто</b></p>\n");
+print("<p align=center><b>РџСѓСЃС‚Рѕ</b></p>\n");
 else
 {
 	print("<table border=1 cellspacing=0 cellpadding=5>\n");
-	print("<tr><td class=colhead>Поставлен</td><td class=colhead align=left>Email</td>".
-        "<td class=colhead align=left>Кем</td><td class=colhead align=left>Коментарий</td><td class=colhead>Снять</td></tr>\n");
+	print("<tr><td class=colhead>РџРѕСЃС‚Р°РІР»РµРЅ</td><td class=colhead align=left>Email</td>".
+        "<td class=colhead align=left>РљРµРј</td><td class=colhead align=left>РљРѕРјРµРЅС‚Р°СЂРёР№</td><td class=colhead>РЎРЅСЏС‚СЊ</td></tr>\n");
 
 	while ($arr = mysql_fetch_assoc($res))
 	{
 		$r2 = sql_query("SELECT username FROM users WHERE id = $arr[addedby]") or sqlerr(__FILE__, __LINE__);
 		$a2 = mysql_fetch_assoc($r2);
 		print("<tr><td>".mkprettytime($arr[added])."</td><td align=left>$arr[email]</td><td align=left><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['addedby'],'username',$a2['username'])."\">$a2[username]".
-                "</a></td><td align=left>$arr[comment]</td><td><a href=\"".$REL_SEO->make_link('banemailadmin','remove',$arr['id'])."\">Снять бан</a></td></tr>\n");
+                "</a></td><td align=left>$arr[comment]</td><td><a href=\"".$REL_SEO->make_link('banemailadmin','remove',$arr['id'])."\">РЎРЅСЏС‚СЊ Р±Р°РЅ</a></td></tr>\n");
 	}
 	print("</table>\n");
 }
 
-print("<h2>Забанить</h2>\n");
+print("<h2>Р—Р°Р±Р°РЅРёС‚СЊ</h2>\n");
 print("<table border=1 cellspacing=0 cellpadding=5>\n");
 print("<form method=\"post\" action=\"".$REL_SEO->make_link('banemailadmin')."\">\n");
 print("<tr><td class=rowhead>Email</td><td><input type=\"text\" name=\"email\" size=\"40\"></td>\n");
-print("<tr><td class=rowhead>Коментарий</td><td><input type=\"text\" name=\"comment\" size=\"40\"></td>\n");
-print("<tr><td colspan=2>Изпользуйте *@email.com чтобы забанить весь домейн</td></tr>\n");
-print("<tr><td colspan=2><input type=\"submit\" value=\"Забанить\" class=\"btn\"></td></tr>\n");
+print("<tr><td class=rowhead>РљРѕРјРµРЅС‚Р°СЂРёР№</td><td><input type=\"text\" name=\"comment\" size=\"40\"></td>\n");
+print("<tr><td colspan=2>РР·РїРѕР»СЊР·СѓР№С‚Рµ *@email.com С‡С‚РѕР±С‹ Р·Р°Р±Р°РЅРёС‚СЊ РІРµСЃСЊ РґРѕРјРµР№РЅ</td></tr>\n");
+print("<tr><td colspan=2><input type=\"submit\" value=\"Р—Р°Р±Р°РЅРёС‚СЊ\" class=\"btn\"></td></tr>\n");
 print("</form>\n</table>\n");
 
 $REL_TPL->stdfoot();

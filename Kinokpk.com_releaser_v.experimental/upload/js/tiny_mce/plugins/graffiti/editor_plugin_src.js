@@ -1,7 +1,7 @@
 /**
  *
  * @author ZonD80
- * @copyright Copyright © 2009, ZonD80, Kinokpk.com releaser, All rights reserved.
+ * @copyright Copyright Â© 2009, ZonD80, Kinokpk.com releaser, All rights reserved.
  */
 
 (function() {

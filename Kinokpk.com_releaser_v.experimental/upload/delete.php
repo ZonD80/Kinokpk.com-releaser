@@ -43,34 +43,34 @@ loggedinorreturn();
 $res = sql_query("SELECT name,owner,images FROM torrents WHERE id = $id");
 $row = mysql_fetch_array($res);
 if (!$row)
-stderr($REL_LANG->say_by_key('error'),"Такого торрента не существует.");
+stderr($REL_LANG->say_by_key('error'),"РўР°РєРѕРіРѕ С‚РѕСЂСЂРµРЅС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚.");
 
 if (get_user_class() < UC_MODERATOR)
-bark("Вы не модератор! Как такое могло произойти?\n");
+bark("Р’С‹ РЅРµ РјРѕРґРµСЂР°С‚РѕСЂ! РљР°Рє С‚Р°РєРѕРµ РјРѕРіР»Рѕ РїСЂРѕРёР·РѕР№С‚Рё?\n");
 
 $rt = (int) $_POST["reasontype"];
 
 if ( $rt < 1 || $rt > 5)
-bark("Неверная причина $rt.");
+bark("РќРµРІРµСЂРЅР°СЏ РїСЂРёС‡РёРЅР° $rt.");
 
 $reason = $_POST["reason"];
 
 if ($rt == 1)
-$reasonstr = "Мертвый: 0 раздающих, 0 качающих = 0 пиров";
+$reasonstr = "РњРµСЂС‚РІС‹Р№: 0 СЂР°Р·РґР°СЋС‰РёС…, 0 РєР°С‡Р°СЋС‰РёС… = 0 РїРёСЂРѕРІ";
 elseif ($rt == 2)
-$reasonstr = "Двойник" . ($reason[0] ? (": " . trim($reason[0])) : "!");
+$reasonstr = "Р”РІРѕР№РЅРёРє" . ($reason[0] ? (": " . trim($reason[0])) : "!");
 elseif ($rt == 3)
 $reasonstr = "Nuked" . ($reason[1] ? (": " . trim($reason[1])) : "!");
 elseif ($rt == 4)
 {
 	if (!$reason[2])
-	bark("Вы не написали пукт правил, которые этот торрент нарушил.");
-	$reasonstr = "Нарушение правил: " . trim($reason[2]);
+	bark("Р’С‹ РЅРµ РЅР°РїРёСЃР°Р»Рё РїСѓРєС‚ РїСЂР°РІРёР», РєРѕС‚РѕСЂС‹Рµ СЌС‚РѕС‚ С‚РѕСЂСЂРµРЅС‚ РЅР°СЂСѓС€РёР».");
+	$reasonstr = "РќР°СЂСѓС€РµРЅРёРµ РїСЂР°РІРёР»: " . trim($reason[2]);
 }
 else
 {
 	if (!$reason[3])
-	bark("Вы не написали причину, почему удаляете торрент.");
+	bark("Р’С‹ РЅРµ РЅР°РїРёСЃР°Р»Рё РїСЂРёС‡РёРЅСѓ, РїРѕС‡РµРјСѓ СѓРґР°Р»СЏРµС‚Рµ С‚РѕСЂСЂРµРЅС‚.");
 	$reasonstr = trim($reason[3]);
 }
 
@@ -79,17 +79,17 @@ deletetorrent($id);
 $REL_CACHE->clearGroupCache('block-indextorrents');
 
 $reasonstr = htmlspecialchars($reasonstr);
-write_log("Торрент $id ($row[name]) был удален пользователем $CURUSER[username] ($reasonstr)\n","torrent");
+write_log("РўРѕСЂСЂРµРЅС‚ $id ($row[name]) Р±С‹Р» СѓРґР°Р»РµРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј $CURUSER[username] ($reasonstr)\n","torrent");
 
-$REL_TPL->stdhead("Торрент удален!");
+$REL_TPL->stdhead("РўРѕСЂСЂРµРЅС‚ СѓРґР°Р»РµРЅ!");
 
 if (isset($_POST["returnto"]))
-$ret = "<a href=\"" . htmlspecialchars($_POST["returnto"]) . "\">Назад</a>";
+$ret = "<a href=\"" . htmlspecialchars($_POST["returnto"]) . "\">РќР°Р·Р°Рґ</a>";
 else
-$ret = "<a href=\"{$REL_CONFIG['defaultbaseurl']}/\">На главную</a>";
+$ret = "<a href=\"{$REL_CONFIG['defaultbaseurl']}/\">РќР° РіР»Р°РІРЅСѓСЋ</a>";
 
 ?>
-<h2>Торрент удален!</h2>
+<h2>РўРѕСЂСЂРµРЅС‚ СѓРґР°Р»РµРЅ!</h2>
 <p><?= $ret ?></p>
 <?
 

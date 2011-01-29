@@ -28,7 +28,7 @@ $owned = 1;
 if (! $row || ($row ["banned"] && ! $moderator))
 stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_torrent_with_such_id') );
 else {
-	if ($row['rgid']) $rgcontent = "<a href=\"".$REL_SEO->make_link('relgroups','id',$row['rgid'],'name',translit($row['rgname']))."\">".($row['rgimage']?"<img style=\"border:none;\" title=\"Релиз группы {$row['rgname']}\" src=\"{$row['rgimage']}\"/>":'Релиз группы '.$row['rgname'])."</a>&nbsp;";
+	if ($row['rgid']) $rgcontent = "<a href=\"".$REL_SEO->make_link('relgroups','id',$row['rgid'],'name',translit($row['rgname']))."\">".($row['rgimage']?"<img style=\"border:none;\" title=\"Р РµР»РёР· РіСЂСѓРїРїС‹ {$row['rgname']}\" src=\"{$row['rgimage']}\"/>":'Р РµР»РёР· РіСЂСѓРїРїС‹ '.$row['rgname'])."</a>&nbsp;";
 
 	if ((get_user_class()<UC_MODERATOR) && !$row['relgroup_allowed'] && $row['rgid']) stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('private_release_access_denied'),$rgcontent));
 
@@ -41,16 +41,16 @@ else {
 
 	$spacer = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	/*	  print("<table cellspacing=\"0\" cellpadding=\"0\" class=\"tabs\"><tbody><tr>
-	 <td class=\"tab0\"> </td><td nowrap=\"nowrap\" class=\"tab1\"><a href=\"details.php?id=$id\">Описание</a></td>
+	 <td class=\"tab0\"> </td><td nowrap=\"nowrap\" class=\"tab1\"><a href=\"details.php?id=$id\">РћРїРёСЃР°РЅРёРµ</a></td>
 	 <td class=\"tab\"> </td><td nowrap=\"nowrap\" class=\"tab2\"><a href=\"torrent_info.php?id=$id\">{$REL_LANG->say_by_key('torrent_info')}</a></td>
 	 <td class=\"tab3\"> </td></tr></tbody></table>\n");*/
 	print("<div id=\"tabs\"><ul>
-	<li class=\"tab1\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\"><span>Описание</span></a></li>
+	<li class=\"tab1\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\"><span>РћРїРёСЃР°РЅРёРµ</span></a></li>
 	<li nowrap=\"\" class=\"tab2\"><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($row['name']))."\"><span>{$REL_LANG->say_by_key('torrent_info')}</span></a></li>
 	<li nowrap=\"\" class=\"tab2\"><a href=\"".$REL_SEO->make_link('exportrelease','id',$id,'name',translit($row['name']))."\"><span>{$REL_LANG->say_by_key('exportrelease_mname')}</span></a></li>
 	</ul></div>\n");
 	print ( "<table style=\"width:100%; border:1px; float:left;\" cellspacing=\"0\" cellpadding=\"5\">\n" );
-	/*		print ( "<tr><td class=\"collhead\" colspan=\"2\"><div style=\"float: left; width: auto;\">&nbsp;" . $REL_LANG->say_by_key('torrent_details') . "</div><div align=\"right\"><a href=\"details.php?id=$id#comments\"><b>{$REL_LANG->say_by_key('add_comment')}</b></a> | <a href=\"bookmark.php?torrent=$row[id]\"><b>Добавить в избранное</b></a> | <a href=\"exportrelease.php?id=$id\"><small>Экспортировать на сайт</small></a></div></td></tr>" );*/
+	/*		print ( "<tr><td class=\"collhead\" colspan=\"2\"><div style=\"float: left; width: auto;\">&nbsp;" . $REL_LANG->say_by_key('torrent_details') . "</div><div align=\"right\"><a href=\"details.php?id=$id#comments\"><b>{$REL_LANG->say_by_key('add_comment')}</b></a> | <a href=\"bookmark.php?torrent=$row[id]\"><b>Р”РѕР±Р°РІРёС‚СЊ РІ РёР·Р±СЂР°РЅРЅРѕРµ</b></a> | <a href=\"exportrelease.php?id=$id\"><small>Р­РєСЃРїРѕСЂС‚РёСЂРѕРІР°С‚СЊ РЅР° СЃР°Р№С‚</small></a></div></td></tr>" );*/
 	$url = $REL_SEO->make_link('edit','id',$row ["id"],'name',translit($row['name']));
 	if (isset ( $_GET ["returnto"] )) {
 		$addthis = "&amp;returnto=" . urlencode ( $_GET ["returnto"] );
@@ -68,7 +68,7 @@ else {
 	if ($owned) {
 		$s = "<br />";
 		if ($row ["filename"] == "nofile" && (get_user_class () == UC_UPLOADER)) {
-			$s .= "<$editlink>[Редактрировать для добавления торрента]</a>";
+			$s .= "<$editlink>[Р РµРґР°РєС‚СЂРёСЂРѕРІР°С‚СЊ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ С‚РѕСЂСЂРµРЅС‚Р°]</a>";
 		} else {
 			$s .= "<$editlink>[" . $REL_LANG->say_by_key('edit') . "]</a>";
 		}
@@ -116,7 +116,7 @@ else {
 			$OUT .= "<strong>{$REL_LANG->say_by_key('snatched')}:</strong> {$row ["hits"]} " . $REL_LANG->say_by_key('times')."<br/>";
 		}
 		$keepget = "";
-		$uprow = (isset ( $row ["username"] ) ? ("<a href='{$REL_SEO->make_link('userdetails','id',$row ["owner"],'name',$row['username'])}'>" . get_user_class_color ( $row ['class'], $row ["username"] ) . "</a>") : "<i>Аноним</i>");
+		$uprow = (isset ( $row ["username"] ) ? ("<a href='{$REL_SEO->make_link('userdetails','id',$row ["owner"],'name',$row['username'])}'>" . get_user_class_color ( $row ['class'], $row ["username"] ) . "</a>") : "<i>РђРЅРѕРЅРёРј</i>");
 
 
 		$OUT .= "<strong>{$REL_LANG->_('Uploader')}:</strong>  $uprow $spacer ". ratearea ( $row ['userrating'], $row ['owner'], 'users' ,$CURUSER['id'])."<br/>";
@@ -130,7 +130,7 @@ else {
 		foreach ( $images as $img ) {
 			$k ++;
 
-			$img = "<a href=\"$img\" onclick=\"javascript: $.facebox({image:'$img'}); return false;\"><img style=\"border: 2px dashed #c1d0d8;\" alt='Изображение для " . $row ["name"] . " (кликните для просмотра полного изображения)' width=\"240\" src=\"$img\" /></a><br />";
+			$img = "<a href=\"$img\" onclick=\"javascript: $.facebox({image:'$img'}); return false;\"><img style=\"border: 2px dashed #c1d0d8;\" alt='РР·РѕР±СЂР°Р¶РµРЅРёРµ РґР»СЏ " . $row ["name"] . " (РєР»РёРєРЅРёС‚Рµ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° РїРѕР»РЅРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ)' width=\"240\" src=\"$img\" /></a><br />";
 			//$img.="<a href='pic/loading.gif' rel='facebox'><img src='pic/loading.gif'/></a>";
 			if ($k <= 1)
 			$imgcontent .= $img;
@@ -161,7 +161,7 @@ else {
 			$subres = sql_query("SELECT * FROM files WHERE torrent = $id ORDER BY id");
 			$s.="<tr><td class=colhead>".$REL_LANG->say_by_key('path')."</td><td class=colhead align=right>".$REL_LANG->say_by_key('size')."</td></tr>\n";
 			while ($subrow = mysql_fetch_array($subres)) {
-				$s .= "<tr><td>" . iconv('utf8','windows-1251',$subrow["filename"]) .
+				$s .= "<tr><td>" .$subrow["filename"] .
                             			"</td><td align=\"right\">" . mksize($subrow["size"]) . "</td></tr>\n";
 			}
 
@@ -170,7 +170,7 @@ else {
 		}
 	}
 	if ($row ['filename'] != 'nofile')
-	tr ( $REL_LANG->say_by_key('downloading') . "<br /><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($row['name']),'dllist',1)."$keepget#seeders\" class=\"sublink\">[" . $REL_LANG->say_by_key('open_list') . "]</a>", $row ["seeders"] . " " . $REL_LANG->say_by_key('seeders_l') . ", " . $row ["leechers"] . " " . $REL_LANG->say_by_key('leechers_l') . " = " . ($row ["seeders"] + $row ["leechers"]) . " " . $REL_LANG->say_by_key('peers_l').'<br/><small>Если торрент мультитрекерный, то возможно мы не успели получить данные о количестве пиров. <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($row['name'])).'">Посмотреть данные о торренте</a></small>', 1 );
+	tr ( $REL_LANG->say_by_key('downloading') . "<br /><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($row['name']),'dllist',1)."$keepget#seeders\" class=\"sublink\">[" . $REL_LANG->say_by_key('open_list') . "]</a>", $row ["seeders"] . " " . $REL_LANG->say_by_key('seeders_l') . ", " . $row ["leechers"] . " " . $REL_LANG->say_by_key('leechers_l') . " = " . ($row ["seeders"] + $row ["leechers"]) . " " . $REL_LANG->say_by_key('peers_l').'<br/><small>Р•СЃР»Рё С‚РѕСЂСЂРµРЅС‚ РјСѓР»СЊС‚РёС‚СЂРµРєРµСЂРЅС‹Р№, С‚Рѕ РІРѕР·РјРѕР¶РЅРѕ РјС‹ РЅРµ СѓСЃРїРµР»Рё РїРѕР»СѓС‡РёС‚СЊ РґР°РЅРЅС‹Рµ Рѕ РєРѕР»РёС‡РµСЃС‚РІРµ РїРёСЂРѕРІ. <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($row['name'])).'">РџРѕСЃРјРѕС‚СЂРµС‚СЊ РґР°РЅРЅС‹Рµ Рѕ С‚РѕСЂСЂРµРЅС‚Рµ</a></small>', 1 );
 
 	print ( '<tr><td colspan="2" align="center"><a href="'.$REL_SEO->make_link('present','type','torrent','to',$id).'">' . $REL_LANG->say_by_key('present_to_friend') . '</a></td></tr>' );
 
@@ -204,15 +204,15 @@ return no_ajax;
 	print ( "</table>\n" );
 
 	print ( "<div align=\"center\"><a href=\"#\" onclick=\"location.href='".$REL_SEO->make_link('pass_on','to','pre','from',$id)."'; return false;\">
-<< Предыдущий релиз</a>&nbsp;
-<a href=\"#\" onclick=\"location.href='".$REL_SEO->make_link('pass_on','to','pre','from',$id,'cat',$row ['category'])."'; return false;\">[из этой категории]</a>
+<< РџСЂРµРґС‹РґСѓС‰РёР№ СЂРµР»РёР·</a>&nbsp;
+<a href=\"#\" onclick=\"location.href='".$REL_SEO->make_link('pass_on','to','pre','from',$id,'cat',$row ['category'])."'; return false;\">[РёР· СЌС‚РѕР№ РєР°С‚РµРіРѕСЂРёРё]</a>
 &nbsp; | &nbsp;
-<a href=\"#\" onclick=\"location.href='".$REL_SEO->make_link('pass_on','to','next','from',$id,'cat',$row ['category'])."'; return false;\">[из этой категории]</a>&nbsp;
+<a href=\"#\" onclick=\"location.href='".$REL_SEO->make_link('pass_on','to','next','from',$id,'cat',$row ['category'])."'; return false;\">[РёР· СЌС‚РѕР№ РєР°С‚РµРіРѕСЂРёРё]</a>&nbsp;
 <a href=\"#\" onclick=\"location.href='".$REL_SEO->make_link('pass_on','to','next','from',$id)."'; return false;\">
-Следующий релиз >></a><br />
-<a href=\"".$REL_SEO->make_link('browse')."\">Все релизы</a>
+РЎР»РµРґСѓСЋС‰РёР№ СЂРµР»РёР· >></a><br />
+<a href=\"".$REL_SEO->make_link('browse')."\">Р’СЃРµ СЂРµР»РёР·С‹</a>
 &nbsp; | &nbsp;
-<a href=\"".$REL_SEO->make_link('browse','cat',$row['category'])."\">Все релизы этой категории</a></div>" );
+<a href=\"".$REL_SEO->make_link('browse','cat',$row['category'])."\">Р’СЃРµ СЂРµР»РёР·С‹ СЌС‚РѕР№ РєР°С‚РµРіРѕСЂРёРё</a></div>" );
 
 }
 $subres = sql_query ( "SELECT SUM(1) FROM comments WHERE toid = $id AND type='rel'" );
@@ -225,10 +225,10 @@ if (! $count) {
 
 	print ('<div id="newcomment_placeholder">'. "<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">" );
 	print ( "<tr><td class=\"colhead\" align=\"left\" colspan=\"2\">" );
-	print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев {$REL_CONFIG['defaultbaseurl']}</div>" );
-	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\" class=\"altlink_white\">Добавить комментарий</a></div>" );
+	print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: РЎРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ {$REL_CONFIG['defaultbaseurl']}</div>" );
+	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\" class=\"altlink_white\">Р”РѕР±Р°РІРёС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёР№</a></div>" );
 	print ( "</td></tr><tr><td align=\"center\">" );
-	print ( "Комментариев нет. <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\">Желаете добавить?</a>" );
+	print ( "РљРѕРјРјРµРЅС‚Р°СЂРёРµРІ РЅРµС‚. <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\">Р–РµР»Р°РµС‚Рµ РґРѕР±Р°РІРёС‚СЊ?</a>" );
 	print ( "</td></tr></table><br /></div>");
 
 } else {
@@ -240,8 +240,8 @@ if (! $count) {
 
 	print ( "<table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
 	print ( "<tr><td class=\"colhead\" align=\"center\" >" );
-	print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>" );
-	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\" class=\"altlink_white\">{$REL_LANG->_('Add comment to %s','релизу')}</a></div>" );
+	print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: РЎРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ</div>" );
+	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\" class=\"altlink_white\">{$REL_LANG->_('Add comment to %s','СЂРµР»РёР·Сѓ')}</a></div>" );
 	print ( "</td></tr>" );
 
 	print ( "<tr><td>" );

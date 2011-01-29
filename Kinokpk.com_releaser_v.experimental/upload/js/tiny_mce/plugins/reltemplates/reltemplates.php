@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type"
-	content="text/html; charset=windows-1251" />
+	content="text/html; charset=utf-8" />
 <title>{#reltemplates_dlg.title}</title>
 <script type="text/javascript" src="../../tiny_mce_popup.js"></script>
 <script type="text/javascript" src="js/reltemplates.js"></script>
@@ -23,7 +23,7 @@ $reltemplatearray = sql_query("SELECT id,name,content FROM reltemplates");
 while ($reltemplate = mysql_fetch_assoc($reltemplatearray)) {
 	$reltemplates[]=$reltemplate;
 }
-if (!$reltemplates) die('<tr><td>Шаблонов в данный момент нет</td></tr></table></div></body></html>');
+if (!$reltemplates) die('<tr><td>РЁР°Р±Р»РѕРЅРѕРІ РІ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РЅРµС‚</td></tr></table></div></body></html>');
 
 print('<script language="javascript" type="text/javascript">
 //<![CDATA[

@@ -28,7 +28,7 @@ if ($resource) {
 			$content .="<hr/><div align=\"right\">";
 			if (get_user_class() >= UC_ADMINISTRATOR) {
 				$content .= "[<a href=\"".$REL_SEO->make_link('news','action','edit','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>E</b></a>]";
-				$content .= "[<a onclick=\"return confirm('Βϋ σβεπενϋ?');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
+				$content .= "[<a onclick=\"return confirm('Π’Ρ‹ ΡƒΠ²ΠµΡ€ΠµΠ½Ρ‹?');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
 			}
 			$content .= "".$REL_LANG->say_by_key('comms_2')."".$array['comments']." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$array['id'])."#comments\">".$REL_LANG->say_by_key('to_comment')."</a>]</div>";
 			$content .= "</div></div>";
@@ -39,7 +39,7 @@ if ($resource) {
 			$content .="<hr/><div align=\"right\">";
 			if (get_user_class() >= UC_ADMINISTRATOR) {
 				$content .= "[<a href=\"".$REL_SEO->make_link('news','action','edit','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>E</b></a>]";
-				$content .= "[<a onclick=\"return confirm('Βϋ σβεπενϋ?');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
+				$content .= "[<a onclick=\"return confirm('Π’Ρ‹ ΡƒΠ²ΠµΡ€ΠµΠ½Ρ‹?');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
 			}
 			$content .= "".$REL_LANG->say_by_key('comms_2')."".$array['comments']." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$array['id'])."\">".$REL_LANG->say_by_key('to_comment')."</a>]</div>";
 			$content .= "</div></div>";

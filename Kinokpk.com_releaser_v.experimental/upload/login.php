@@ -14,17 +14,17 @@ dbconn();
 
 
 if ($CURUSER)
-stderr($REL_LANG->say_by_key('error'), "Вы уже вошли на {$REL_CONFIG['sitename']}!");
+stderr($REL_LANG->say_by_key('error'), "Р’С‹ СѓР¶Рµ РІРѕС€Р»Рё РЅР° {$REL_CONFIG['sitename']}!");
 
-$REL_TPL->stdhead("Вход");
+$REL_TPL->stdhead("Р’С…РѕРґ");
 
 $returnto = strip_tags(trim((string)$_GET['returnto']));
 
 if ($returnto)
 if (!$_GET["nowarn"]) {
 	$error = "<table style=\"margin: 0 auto\"><tr class=\"error_login\"><td colspan=\"2\" style=\"border:none\"><img src=\"pic/attention_login.gif\" alt=\"attention\"/></td><td colspan=\"2\" style=\"border:none; vertical-align: middle;\">{$REL_LANG->_("Sorry, but the page you required can only be accessed by <b>logged in users</b>.<br />Please log in to the system, and we will reditect you to this page after this.")}</td></tr></table>";
-	//print("<h1>Не авторизированы!</h1>\n");
-	//print("<p><b>Ошибка:</b> Страница, которую вы пытаетесь посмотреть, доступна только зарегистрированым.</p>\n");
+	//print("<h1>РќРµ Р°РІС‚РѕСЂРёР·РёСЂРѕРІР°РЅС‹!</h1>\n");
+	//print("<p><b>РћС€РёР±РєР°:</b> РЎС‚СЂР°РЅРёС†Р°, РєРѕС‚РѕСЂСѓСЋ РІС‹ РїС‹С‚Р°РµС‚РµСЃСЊ РїРѕСЃРјРѕС‚СЂРµС‚СЊ, РґРѕСЃС‚СѓРїРЅР° С‚РѕР»СЊРєРѕ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅС‹Рј.</p>\n");
 }
 
 if (isset($error)) {

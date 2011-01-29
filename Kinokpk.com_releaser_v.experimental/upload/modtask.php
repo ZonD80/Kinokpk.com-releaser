@@ -19,7 +19,7 @@ function puke($text = "You have forgotten here someting?") {
 	stderr($REL_LANG->say_by_key('error'), $text);
 }
 
-function barf($text = "Пользователь удален") {
+function barf($text = "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓРґР°Р»РµРЅ") {
 	global $REL_LANG;
 	stderr($REL_LANG->say_by_key('success'), $text);
 }
@@ -34,7 +34,7 @@ if (($action == 'ownsupport') && (get_user_class()>=UC_ADMINISTRATOR)) {
 	$updateset[] = "supportfor = " . sqlesc($supportfor);
 	sql_query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__, __LINE__);
 	safe_redirect($REL_SEO->make_link('my'),0);
-	stderr($REL_LANG->say_by_key('success'),'Вы успешно сменили себе статус поддержки','success');
+	stderr($REL_LANG->say_by_key('success'),'Р’С‹ СѓСЃРїРµС€РЅРѕ СЃРјРµРЅРёР»Рё СЃРµР±Рµ СЃС‚Р°С‚СѓСЃ РїРѕРґРґРµСЂР¶РєРё','success');
 
 }
 elseif (($action == 'delnick') && (get_user_class()>=UC_ADMINISTRATOR)) {
@@ -75,10 +75,10 @@ elseif ($action == "edituser") {
 
 	$class = (int) $_POST["class"];
 	if (!is_valid_id($userid) || !is_valid_user_class($class))
-	stderr($REL_LANG->say_by_key('error'), "Неверный идентификатор пользователя или класса.");
+	stderr($REL_LANG->say_by_key('error'), "РќРµРІРµСЂРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР»Рё РєР»Р°СЃСЃР°.");
 	// check target user class
 	$res = sql_query("SELECT warned, enabled, username, class, modcomment, num_warned, avatar FROM users WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
-	$arr = mysql_fetch_assoc($res) or puke("Ошибка MySQL: " . mysql_error());
+	$arr = mysql_fetch_assoc($res) or puke("РћС€РёР±РєР° MySQL: " . mysql_error());
 	if ($avatar)
 	{
 		@unlink (ROOT_PATH."avatars/".$arr['avatar']);
@@ -94,52 +94,52 @@ elseif ($action == "edituser") {
 	$modcomment = $arr["modcomment"];
 	// User may not edit someone with same or higher class than himself!
 	if ($curclass >= get_user_class() || $class >= get_user_class())
-	puke("Так нельзя делать!");
+	puke("РўР°Рє РЅРµР»СЊР·СЏ РґРµР»Р°С‚СЊ!");
 
 	if ($curclass != $class) {
 		// Notify user
-		$what = ($class > $curclass ? "повышены" : "понижены");
-		$msg = sqlesc("Вы были $what до класса \"" . get_user_class_name($class) . "\" пользователем $CURUSER[username].");
+		$what = ($class > $curclass ? "РїРѕРІС‹С€РµРЅС‹" : "РїРѕРЅРёР¶РµРЅС‹");
+		$msg = sqlesc("Р’С‹ Р±С‹Р»Рё $what РґРѕ РєР»Р°СЃСЃР° \"" . get_user_class_name($class) . "\" РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј $CURUSER[username].");
 		$added = sqlesc(time());
-		$subject = sqlesc("Вы были $what");
+		$subject = sqlesc("Р’С‹ Р±С‹Р»Рё $what");
 		sql_query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES(0, $userid, $msg, $added, $subject)") or sqlerr(__FILE__, __LINE__);
 		$updateset[] = "class = $class";
-		$what = ($class > $curclass ? "Повышен" : "Пониженен");
-		$modcomment = date("Y-m-d") . " - $what до класса \"" . get_user_class_name($class) . "\" пользователем $CURUSER[username].\n". $modcomment;
+		$what = ($class > $curclass ? "РџРѕРІС‹С€РµРЅ" : "РџРѕРЅРёР¶РµРЅРµРЅ");
+		$modcomment = date("Y-m-d") . " - $what РґРѕ РєР»Р°СЃСЃР° \"" . get_user_class_name($class) . "\" РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј $CURUSER[username].\n". $modcomment;
 	}
 
 	// some Helshad fun
 	// $fun = ($CURUSER['id'] == 277) ? " Tremble in fear, mortal." : "";
-	$num_warned = 1 + $arr["num_warned"]; //мод кол-ва предупреждений
+	$num_warned = 1 + $arr["num_warned"]; //РјРѕРґ РєРѕР»-РІР° РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёР№
 	if ($curwarned != $warned) {
 		$updateset[] = "warned = 0";
 		$updateset[] = "warneduntil = 0";
-		$subject = sqlesc("Ваше предупреждение снято");
+		$subject = sqlesc("Р’Р°С€Рµ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ СЃРЅСЏС‚Рѕ");
 		if (!$warned)
 		{
-			$modcomment = date("Y-m-d") . " - Предупреждение снял пользователь " . $CURUSER['username'] . ".\n". $modcomment;
-			$msg = sqlesc("Ваше предупреждение снял пользователь " . $CURUSER['username'] . ".");
+			$modcomment = date("Y-m-d") . " - РџСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ СЃРЅСЏР» РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ " . $CURUSER['username'] . ".\n". $modcomment;
+			$msg = sqlesc("Р’Р°С€Рµ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ СЃРЅСЏР» РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ " . $CURUSER['username'] . ".");
 		}
 		$added = sqlesc(time());
 		sql_query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES (0, $userid, $msg, $added, $subject)") or sqlerr(__FILE__, __LINE__);
 	} elseif ($warnlength) {
-		if (strlen($warnpm) == 0)
-		stderr($REL_LANG->say_by_key('error'), "Вы должны указать причину по которой ставите предупреждение!");
+		if (mb_strlen($warnpm) == 0)
+		stderr($REL_LANG->say_by_key('error'), "Р’С‹ РґРѕР»Р¶РЅС‹ СѓРєР°Р·Р°С‚СЊ РїСЂРёС‡РёРЅСѓ РїРѕ РєРѕС‚РѕСЂРѕР№ СЃС‚Р°РІРёС‚Рµ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ!");
 		if ($warnlength == 255) {
-			$modcomment = date("Y-m-d") . " - Предупрежден пользователем " . $CURUSER['username'] . ".\nПричина: $warnpm\n" . $modcomment;
-			$msg = sqlesc("Вы получили <a href=\"".$REL_SEO->make_link('rules')."#warning\">предупреждение</a> на неограниченый срок от $CURUSER[username]" . ($warnpm ? "\n\nПричина: $warnpm" : ""));
+			$modcomment = date("Y-m-d") . " - РџСЂРµРґСѓРїСЂРµР¶РґРµРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј " . $CURUSER['username'] . ".\nРџСЂРёС‡РёРЅР°: $warnpm\n" . $modcomment;
+			$msg = sqlesc("Р’С‹ РїРѕР»СѓС‡РёР»Рё <a href=\"".$REL_SEO->make_link('rules')."#warning\">РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ</a> РЅР° РЅРµРѕРіСЂР°РЅРёС‡РµРЅС‹Р№ СЃСЂРѕРє РѕС‚ $CURUSER[username]" . ($warnpm ? "\n\nРџСЂРёС‡РёРЅР°: $warnpm" : ""));
 			$updateset[] = "warneduntil = 0";
 			$updateset[] = "num_warned = $num_warned";
 		} else {
 			$warneduntil = (time() + $warnlength * 604800);
-			$dur = $warnlength . " недел" . ($warnlength > 1 ? "и" : "ю");
-			$msg = sqlesc("Вы получили <a href=\"".$REL_SEO->make_link('rules')."#warning\">предупреждение</a> на $dur от пользователя " . $CURUSER['username'] . ($warnpm ? "\n\nПричина: $warnpm" : ""));
-			$modcomment = date("Y-m-d") . " - Предупрежден на $dur пользователем " . $CURUSER['username'] .	".\nПричина: $warnpm\n" . $modcomment;
+			$dur = $warnlength . " РЅРµРґРµР»" . ($warnlength > 1 ? "Рё" : "СЋ");
+			$msg = sqlesc("Р’С‹ РїРѕР»СѓС‡РёР»Рё <a href=\"".$REL_SEO->make_link('rules')."#warning\">РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ</a> РЅР° $dur РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ " . $CURUSER['username'] . ($warnpm ? "\n\nРџСЂРёС‡РёРЅР°: $warnpm" : ""));
+			$modcomment = date("Y-m-d") . " - РџСЂРµРґСѓРїСЂРµР¶РґРµРЅ РЅР° $dur РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј " . $CURUSER['username'] .	".\nРџСЂРёС‡РёРЅР°: $warnpm\n" . $modcomment;
 			$updateset[] = "warneduntil = $warneduntil";
 			$updateset[] = "num_warned = $num_warned";
 		}
 		$added = sqlesc(time());
-		$subject = sqlesc("Вы получили предупреждение");
+		$subject = sqlesc("Р’С‹ РїРѕР»СѓС‡РёР»Рё РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ");
 		sql_query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES (0, $userid, $msg, $added, $subject)") or sqlerr(__FILE__, __LINE__);
 		$updateset[] = "warned = 1";
 	}
@@ -148,14 +148,14 @@ elseif ($action == "edituser") {
 		$modifier = (int) $CURUSER['id'];
 		if ($enabled) {
 			if (!isset($_POST["enareason"]) || empty($_POST["enareason"]))
-			puke("Введите причину почему вы включаете пользователя!");
+			puke("Р’РІРµРґРёС‚Рµ РїСЂРёС‡РёРЅСѓ РїРѕС‡РµРјСѓ РІС‹ РІРєР»СЋС‡Р°РµС‚Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ!");
 			$enareason = htmlspecialchars($_POST["enareason"]);
-			$modcomment = date("Y-m-d") . " - Включен пользователем " . $CURUSER['username'] . ".\nПричина: $enareason\n" . $modcomment;
+			$modcomment = date("Y-m-d") . " - Р’РєР»СЋС‡РµРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј " . $CURUSER['username'] . ".\nРџСЂРёС‡РёРЅР°: $enareason\n" . $modcomment;
 
 		} else   {
 			if (empty($dis_reason))
-			puke("Введите причину почему вы отключаете пользователя!");
-			$modcomment = date("Y-m-d") . " - Выключен пользователем " . $CURUSER['username'] . ".\nПричина: $dis_reason\n" . $modcomment;
+			puke("Р’РІРµРґРёС‚Рµ РїСЂРёС‡РёРЅСѓ РїРѕС‡РµРјСѓ РІС‹ РѕС‚РєР»СЋС‡Р°РµС‚Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ!");
+			$modcomment = date("Y-m-d") . " - Р’С‹РєР»СЋС‡РµРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј " . $CURUSER['username'] . ".\nРџСЂРёС‡РёРЅР°: $dis_reason\n" . $modcomment;
 
 		}
 	}
@@ -171,7 +171,7 @@ elseif ($action == "edituser") {
 		$passkey = md5($CURUSER['username'].time().$CURUSER['passhash']);
 		$REL_DB->query("UPDATE xbt_users SET torrent_pass='' WHERE uid=".sqlesc($CURUSER[id]));
 	}
-	write_log("Пользователь {$CURUSER['username']} произвел действия над пользователем с ID <a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',translit($arr['username']))."\">$userid</a>, параметры:<br/> <pre>".var_export($updateset,true)."</pre>",'modtask');
+	write_log("РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ {$CURUSER['username']} РїСЂРѕРёР·РІРµР» РґРµР№СЃС‚РІРёСЏ РЅР°Рґ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј СЃ ID <a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',translit($arr['username']))."\">$userid</a>, РїР°СЂР°РјРµС‚СЂС‹:<br/> <pre>".var_export($updateset,true)."</pre>",'modtask');
 	sql_query("UPDATE users SET	" . implode(", ", $updateset) . " $birthday WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
 
 	if (!empty($_POST["deluser"])) {
@@ -183,7 +183,7 @@ elseif ($action == "edituser") {
 		delete_user($userid);
 		@unlink(ROOT_PATH.$avatar);
 		$deluserid=$CURUSER["username"];
-		write_log("Пользователь $username был удален пользователем $deluserid",'modtask');
+		write_log("РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ $username Р±С‹Р» СѓРґР°Р»РµРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј $deluserid",'modtask');
 		barf();
 	} else {
 		$returnto = makesafe($_POST["returnto"]);
@@ -196,7 +196,7 @@ elseif ($action == "edituser") {
 	if (!is_valid_id($userid))
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	$updateset[] = "confirmed = " . $confirm;
-	write_log("Пользователь {$CURUSER['username']} произвел действия над пользователем c ID $userid, параметры:<br/> <pre>".var_export($updateset,true)."</pre>",'modtask');
+	write_log("РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ {$CURUSER['username']} РїСЂРѕРёР·РІРµР» РґРµР№СЃС‚РІРёСЏ РЅР°Рґ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј c ID $userid, РїР°СЂР°РјРµС‚СЂС‹:<br/> <pre>".var_export($updateset,true)."</pre>",'modtask');
 	sql_query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
 	$returnto = makesafe($_POST["returnto"]);
 

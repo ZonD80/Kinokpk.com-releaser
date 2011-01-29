@@ -24,21 +24,21 @@ if ($_GET[requestid])
 	$perpage = 50;
 	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('votesview') );
 	$res = sql_query("SELECT users.id as userid,users.username, users.ratingsum, users.class, requests.id as requestid, requests.request FROM addedrequests INNER JOIN users ON addedrequests.userid = users.id INNER JOIN requests ON addedrequests.requestid = requests.id WHERE addedrequests.requestid =$requestid $limit") or sqlerr(__FILE__, __LINE__);
-	$REL_TPL->stdhead("Голосовавшие");
+	$REL_TPL->stdhead("Р“РѕР»РѕСЃРѕРІР°РІС€РёРµ");
 	$res2 = sql_query("SELECT request FROM requests WHERE id=$requestid");
 	$arr2 = mysql_fetch_assoc($res2);
 
-	print("<h1>Голосовавшие для <a href=\"".$REL_SEO->make_link('requests','id',$requestid)."\"><b>$arr2[request]</b></a></h1>");
-	print("<p>Голосовать за этот <a href=\"".$REL_SEO->make_link('requests','action','vote','voteid',$requestid)."\"><b>запрос</b></a></p>");
+	print("<h1>Р“РѕР»РѕСЃРѕРІР°РІС€РёРµ РґР»СЏ <a href=\"".$REL_SEO->make_link('requests','id',$requestid)."\"><b>$arr2[request]</b></a></h1>");
+	print("<p>Р“РѕР»РѕСЃРѕРІР°С‚СЊ Р·Р° СЌС‚РѕС‚ <a href=\"".$REL_SEO->make_link('requests','action','vote','voteid',$requestid)."\"><b>Р·Р°РїСЂРѕСЃ</b></a></p>");
 
 	echo $pagertop;
 
 	if (mysql_num_rows($res) == 0)
-	print("<p align=center><b>Ничего не найдено</b></p>\n");
+	print("<p align=center><b>РќРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ</b></p>\n");
 	else
 	{
 		print("<table border=1 cellspacing=0 cellpadding=5>\n");
-		print("<tr><td class=colhead>Имя</td><td class=colhead>Рейтинг</td></tr>\n");
+		print("<tr><td class=colhead>РРјСЏ</td><td class=colhead>Р РµР№С‚РёРЅРі</td></tr>\n");
 		while ($arr = mysql_fetch_assoc($res))
 		{
 			$ratio = ratearea($arr['ratingsum'],$arr['userid'],'users',$CURUSER['id']);

@@ -18,31 +18,31 @@ if (!$mode) $mode = trim((string)$_POST['mode']);
 if ($mode=='wm') {
 	if (isset($_GET['okay'])) {
 		safe_redirect($REL_SEO->make_link('myrating'),1);
-		stderr($REL_LANG->say_by_key('success'),"Платеж успешно завершен",'success');
+		stderr($REL_LANG->say_by_key('success'),"РџР»Р°С‚РµР¶ СѓСЃРїРµС€РЅРѕ Р·Р°РІРµСЂС€РµРЅ",'success');
 	}
 	if (isset($_GET['failed'])) {
 		safe_redirect($REL_SEO->make_link('donate'),3);
-		stderr($REL_LANG->say_by_key('failed'),'При проведении платежа возникли ошибки. <a href="'.$REL_SEO->make_link('donate').'">Попробуйте еще раз</a>.');
+		stderr($REL_LANG->say_by_key('failed'),'РџСЂРё РїСЂРѕРІРµРґРµРЅРёРё РїР»Р°С‚РµР¶Р° РІРѕР·РЅРёРєР»Рё РѕС€РёР±РєРё. <a href="'.$REL_SEO->make_link('donate').'">РџРѕРїСЂРѕР±СѓР№С‚Рµ РµС‰Рµ СЂР°Р·</a>.');
 	}
 
 	if (isset($_GET['process']))
 	IF($_POST['LMI_PREREQUEST']==1) {
-		if (($amount<>1) && ($amount<>3) && ($amount<>10)) die('Ошибка: Неверная сумма перевода');
+		if (($amount<>1) && ($amount<>3) && ($amount<>10)) die('РћС€РёР±РєР°: РќРµРІРµСЂРЅР°СЏ СЃСѓРјРјР° РїРµСЂРµРІРѕРґР°');
 
-		// 3) Проверяем, не произошла ли подмена кошелька.
-		// Cравниваем наш настоящий кошелек с тем кошельком, который передан нам Мерчантом.
-		// Если кошельки не совпадают, то выводим ошибку и прерываем работу скрипта.
+		// 3) РџСЂРѕРІРµСЂСЏРµРј, РЅРµ РїСЂРѕРёР·РѕС€Р»Р° Р»Рё РїРѕРґРјРµРЅР° РєРѕС€РµР»СЊРєР°.
+		// CСЂР°РІРЅРёРІР°РµРј РЅР°С€ РЅР°СЃС‚РѕСЏС‰РёР№ РєРѕС€РµР»РµРє СЃ С‚РµРј РєРѕС€РµР»СЊРєРѕРј, РєРѕС‚РѕСЂС‹Р№ РїРµСЂРµРґР°РЅ РЅР°Рј РњРµСЂС‡Р°РЅС‚РѕРј.
+		// Р•СЃР»Рё РєРѕС€РµР»СЊРєРё РЅРµ СЃРѕРІРїР°РґР°СЋС‚, С‚Рѕ РІС‹РІРѕРґРёРј РѕС€РёР±РєСѓ Рё РїСЂРµСЂС‹РІР°РµРј СЂР°Р±РѕС‚Сѓ СЃРєСЂРёРїС‚Р°.
 		if(trim($_POST['LMI_PAYEE_PURSE'])!="Z113282224168") {
-			die('Ошибка: Неверный кошелек получателя');
+			die('РћС€РёР±РєР°: РќРµРІРµСЂРЅС‹Р№ РєРѕС€РµР»РµРє РїРѕР»СѓС‡Р°С‚РµР»СЏ');
 		}
 		die('YES');
 	}
 	else {
 		if ($discount) {
-			sql_query("UPDATE users SET discount=discount+$discount, modcomment=CONCAT(".sqlesc(date("Y-m-d") . "Купил $discount откупа\n").",modcomment) WHERE id=".(int)$_POST['id']);
+			sql_query("UPDATE users SET discount=discount+$discount, modcomment=CONCAT(".sqlesc(date("Y-m-d") . "РљСѓРїРёР» $discount РѕС‚РєСѓРїР°\n").",modcomment) WHERE id=".(int)$_POST['id']);
 
 		} else {
-			sql_query("UPDATE users SET class=".UC_VIP.", modcomment=CONCAT(".sqlesc(date("Y-m-d") . "Купил VIP\n").",modcomment) WHERE class<".UC_VIP." AND id=".(int)$_POST['id']);
+			sql_query("UPDATE users SET class=".UC_VIP.", modcomment=CONCAT(".sqlesc(date("Y-m-d") . "РљСѓРїРёР» VIP\n").",modcomment) WHERE class<".UC_VIP." AND id=".(int)$_POST['id']);
 			sql_query("UPDATE users SET dis_reason='', enabled=1 WHERE id = ".(int)$_POST['id']);
 
 		}
@@ -50,22 +50,22 @@ if ($mode=='wm') {
 	}
 	loggedinorreturn();
 
-	$REL_TPL->stdhead('Пожертвование через Webmoney merchant');
-	$REL_TPL->begin_frame('Пожертвование через WebMoney')
+	$REL_TPL->stdhead('РџРѕР¶РµСЂС‚РІРѕРІР°РЅРёРµ С‡РµСЂРµР· Webmoney merchant');
+	$REL_TPL->begin_frame('РџРѕР¶РµСЂС‚РІРѕРІР°РЅРёРµ С‡РµСЂРµР· WebMoney')
 	?>
 <form id="pay" name="pay" method="POST"
 	action="https://merchant.webmoney.ru/lmi/payment.asp">
-<p>Получение привелегий на TorrentsBook.com</p>
-<p>Вам необходимо заплатить <?=$amount;?> WMZ...</p>
+<p>РџРѕР»СѓС‡РµРЅРёРµ РїСЂРёРІРµР»РµРіРёР№ РЅР° TorrentsBook.com</p>
+<p>Р’Р°Рј РЅРµРѕР±С…РѕРґРёРјРѕ Р·Р°РїР»Р°С‚РёС‚СЊ <?=$amount;?> WMZ...</p>
 <p><input type="hidden" name="LMI_PAYMENT_AMOUNT" value="<?=$amount;?>">
 <input type="hidden" name="LMI_PAYMENT_DESC"
-	value="Привелегия на TorrentsBook.com"> <input type="hidden"
+	value="РџСЂРёРІРµР»РµРіРёСЏ РЅР° TorrentsBook.com"> <input type="hidden"
 	name="amount" value="<?=$amount;?>"> <input type="hidden" name="mode"
 	value="wm"> <input type="hidden" name="id" value="<?=$CURUSER['id']?>">
 <input type="hidden" name="result" value=""> <input type="hidden"
 	name="LMI_PAYEE_PURSE" value="Z113282224168"> <input type="hidden"
 	name="LMI_SIM_MODE" value="0"></p>
-<p><input type="submit" value="Продолжить оплату"></p>
+<p><input type="submit" value="РџСЂРѕРґРѕР»Р¶РёС‚СЊ РѕРїР»Р°С‚Сѓ"></p>
 </form>
 
 	<?php
@@ -75,7 +75,7 @@ if ($mode=='wm') {
 }
 
 if (!$amount) {
-	$REL_TPL->stdhead('Платные услуги TorrentsBook.com');
+	$REL_TPL->stdhead('РџР»Р°С‚РЅС‹Рµ СѓСЃР»СѓРіРё TorrentsBook.com');
 	?>
 <style type="text/css">
 	#donate{width: 903px; margin: 0pt auto;}
@@ -97,7 +97,7 @@ if (!$amount) {
 	print('
 	<div id="donate">
 		<div class="donate_header">
-			<h3>Спасибо за желание помочь развитию ресурса, так же с оплатой вы поднимаеете себе рейтинг или переходите в Статус VIP</h3>
+			<h3>РЎРїР°СЃРёР±Рѕ Р·Р° Р¶РµР»Р°РЅРёРµ РїРѕРјРѕС‡СЊ СЂР°Р·РІРёС‚РёСЋ СЂРµСЃСѓСЂСЃР°, С‚Р°Рє Р¶Рµ СЃ РѕРїР»Р°С‚РѕР№ РІС‹ РїРѕРґРЅРёРјР°РµРµС‚Рµ СЃРµР±Рµ СЂРµР№С‚РёРЅРі РёР»Рё РїРµСЂРµС…РѕРґРёС‚Рµ РІ РЎС‚Р°С‚СѓСЃ VIP</h3>
 		</div>
 		<div id="donate_sms">
 			<div class="donate_left_name">
@@ -204,7 +204,7 @@ if (!$amount) {
 
 
 	<?php print ('
-  <div class="info">* Внимание: Цены указаны для <img src="pic/flag/russia.gif" width="15" height="10" border="0" alt="Российская Федерация"> Российской Федерации. Если Вы находитесь вне пределов РФ, то услуга в Вашей стране может быть недоступна, либо конечная цена SMS сообщения будет зависеть от налоговой ставки в Вашей стране.</div>
+  <div class="info">* Р’РЅРёРјР°РЅРёРµ: Р¦РµРЅС‹ СѓРєР°Р·Р°РЅС‹ РґР»СЏ <img src="pic/flag/russia.gif" width="15" height="10" border="0" alt="Р РѕСЃСЃРёР№СЃРєР°СЏ Р¤РµРґРµСЂР°С†РёСЏ"> Р РѕСЃСЃРёР№СЃРєРѕР№ Р¤РµРґРµСЂР°С†РёРё. Р•СЃР»Рё Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІРЅРµ РїСЂРµРґРµР»РѕРІ Р Р¤, С‚Рѕ СѓСЃР»СѓРіР° РІ Р’Р°С€РµР№ СЃС‚СЂР°РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РЅРµРґРѕСЃС‚СѓРїРЅР°, Р»РёР±Рѕ РєРѕРЅРµС‡РЅР°СЏ С†РµРЅР° SMS СЃРѕРѕР±С‰РµРЅРёСЏ Р±СѓРґРµС‚ Р·Р°РІРёСЃРµС‚СЊ РѕС‚ РЅР°Р»РѕРіРѕРІРѕР№ СЃС‚Р°РІРєРё РІ Р’Р°С€РµР№ СЃС‚СЂР°РЅРµ.</div>
   <div class="info">* Attention: Prices for PayPal are a little bigger than another due high tax rates. Also, we are checking paypal payments manually, so you will receive your privelege in ONE day.</div>
 ');
 	?>
@@ -217,37 +217,37 @@ if (!$amount) {
 	</div>
 <div class="clear"></div>
 <div class="sp-wrap">
-<div class="sp-head folded clickable"><font color="red">Подробнее о
-процессе оплаты через систему Webmoney Transfer</font></div>
-<div class="sp-body">1. Платеж проводится через систему WebMoney
-Merchant в автоматическом режиме<br />
-2. После завершения платежа вы сразу же получаете услугу, за которую
-платите<br />
-3. В случае возникновения различных проблем обращайтесь к <a	href="<?=$REL_SEO->make_link('staff')?>">администрации сайта</a> или по
-контактам, указанным выше<br />
-4. В случае, если по каким либо причинам вы изменяете свое решение или
-желаете получить другую услугу (вместо откупа - статус или наоборот), то
-необходимо связаться с нами по указанным выше реквизитам в течении не
-позднее 3-х часов после совершения платежа, и деньги будут возвращены в
-полном размере за вычетом 5%. Или активирована выбранная Вами другая
-услуга (по вашему желанию).</div>
+<div class="sp-head folded clickable"><font color="red">РџРѕРґСЂРѕР±РЅРµРµ Рѕ
+РїСЂРѕС†РµСЃСЃРµ РѕРїР»Р°С‚С‹ С‡РµСЂРµР· СЃРёСЃС‚РµРјСѓ Webmoney Transfer</font></div>
+<div class="sp-body">1. РџР»Р°С‚РµР¶ РїСЂРѕРІРѕРґРёС‚СЃСЏ С‡РµСЂРµР· СЃРёСЃС‚РµРјСѓ WebMoney
+Merchant РІ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРј СЂРµР¶РёРјРµ<br />
+2. РџРѕСЃР»Рµ Р·Р°РІРµСЂС€РµРЅРёСЏ РїР»Р°С‚РµР¶Р° РІС‹ СЃСЂР°Р·Сѓ Р¶Рµ РїРѕР»СѓС‡Р°РµС‚Рµ СѓСЃР»СѓРіСѓ, Р·Р° РєРѕС‚РѕСЂСѓСЋ
+РїР»Р°С‚РёС‚Рµ<br />
+3. Р’ СЃР»СѓС‡Р°Рµ РІРѕР·РЅРёРєРЅРѕРІРµРЅРёСЏ СЂР°Р·Р»РёС‡РЅС‹С… РїСЂРѕР±Р»РµРј РѕР±СЂР°С‰Р°Р№С‚РµСЃСЊ Рє <a	href="<?=$REL_SEO->make_link('staff')?>">Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё СЃР°Р№С‚Р°</a> РёР»Рё РїРѕ
+РєРѕРЅС‚Р°РєС‚Р°Рј, СѓРєР°Р·Р°РЅРЅС‹Рј РІС‹С€Рµ<br />
+4. Р’ СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РїРѕ РєР°РєРёРј Р»РёР±Рѕ РїСЂРёС‡РёРЅР°Рј РІС‹ РёР·РјРµРЅСЏРµС‚Рµ СЃРІРѕРµ СЂРµС€РµРЅРёРµ РёР»Рё
+Р¶РµР»Р°РµС‚Рµ РїРѕР»СѓС‡РёС‚СЊ РґСЂСѓРіСѓСЋ СѓСЃР»СѓРіСѓ (РІРјРµСЃС‚Рѕ РѕС‚РєСѓРїР° - СЃС‚Р°С‚СѓСЃ РёР»Рё РЅР°РѕР±РѕСЂРѕС‚), С‚Рѕ
+РЅРµРѕР±С…РѕРґРёРјРѕ СЃРІСЏР·Р°С‚СЊСЃСЏ СЃ РЅР°РјРё РїРѕ СѓРєР°Р·Р°РЅРЅС‹Рј РІС‹С€Рµ СЂРµРєРІРёР·РёС‚Р°Рј РІ С‚РµС‡РµРЅРёРё РЅРµ
+РїРѕР·РґРЅРµРµ 3-С… С‡Р°СЃРѕРІ РїРѕСЃР»Рµ СЃРѕРІРµСЂС€РµРЅРёСЏ РїР»Р°С‚РµР¶Р°, Рё РґРµРЅСЊРіРё Р±СѓРґСѓС‚ РІРѕР·РІСЂР°С‰РµРЅС‹ РІ
+РїРѕР»РЅРѕРј СЂР°Р·РјРµСЂРµ Р·Р° РІС‹С‡РµС‚РѕРј 5%. РР»Рё Р°РєС‚РёРІРёСЂРѕРІР°РЅР° РІС‹Р±СЂР°РЅРЅР°СЏ Р’Р°РјРё РґСЂСѓРіР°СЏ
+СѓСЃР»СѓРіР° (РїРѕ РІР°С€РµРјСѓ Р¶РµР»Р°РЅРёСЋ).</div>
 </div>
 	<?php
 	$REL_TPL->stdfoot();
 	die();
 }
-elseif (($amount<>1) && ($amount<>3) && ($amount<>10)) stderr($REL_LANG->say_by_key('error'),'Неверная сумма пожертвования');
-// поддерживаются: cp1251, koi, utf8
+elseif (($amount<>1) && ($amount<>3) && ($amount<>10)) stderr($REL_LANG->say_by_key('error'),'РќРµРІРµСЂРЅР°СЏ СЃСѓРјРјР° РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёСЏ');
+// РїРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ: cp1251, koi, utf8
 $encoding = 'cp1251';
-// привязать sms ключ к URL
+// РїСЂРёРІСЏР·Р°С‚СЊ sms РєР»СЋС‡ Рє URL
 $url_restrict = false;
-// ресурс активаций для ключа
+// СЂРµСЃСѓСЂСЃ Р°РєС‚РёРІР°С†РёР№ РґР»СЏ РєР»СЋС‡Р°
 $limit = 1;
-// отображать панель смены языков
+// РѕС‚РѕР±СЂР°Р¶Р°С‚СЊ РїР°РЅРµР»СЊ СЃРјРµРЅС‹ СЏР·С‹РєРѕРІ
 $lang_switcher = true;
-// язык по умолчанию
+// СЏР·С‹Рє РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 $default_lang = 'ru';
-// номер проекта
+// РЅРѕРјРµСЂ РїСЂРѕРµРєС‚Р°
 // see up
 //var_dump($project_id);
 //var_dump($amount);
@@ -280,21 +280,21 @@ if (!$result_code) {
 	readfile(($result_message == "server_busy") ?
 	'http://iface.smszamok.ru/client/sorry.php?lng='.$language.'&enc='.$encoding :
 	'http://iface.smszamok.ru/client/'.$language.'.iface.'.$encoding.'.php?pid='.$project_id.'&message='.$result_message.'&ls='.($lang_switcher?'1':'0'));
-	// халявы нема
+	// С…Р°Р»СЏРІС‹ РЅРµРјР°
 	die();
 }
 
 
 if ($discount) {
-	sql_query("UPDATE users SET discount=discount+$discount, modcomment=".sqlesc(date("Y-m-d") . "Купил $discount откупа\n").$CURUSER['modcomment']." WHERE id={$CURUSER['id']}");
+	sql_query("UPDATE users SET discount=discount+$discount, modcomment=".sqlesc(date("Y-m-d") . "РљСѓРїРёР» $discount РѕС‚РєСѓРїР°\n").$CURUSER['modcomment']." WHERE id={$CURUSER['id']}");
 
 	safe_redirect($REL_SEO->make_link('myrating'),1);
-	stderr($REL_LANG->say_by_key('success'),'Спасибо, вам успешно прибавлено '.$discount.' единиц откупа, сейчас вы перейдете к странице "Мой рейтинг"','success');
+	stderr($REL_LANG->say_by_key('success'),'РЎРїР°СЃРёР±Рѕ, РІР°Рј СѓСЃРїРµС€РЅРѕ РїСЂРёР±Р°РІР»РµРЅРѕ '.$discount.' РµРґРёРЅРёС† РѕС‚РєСѓРїР°, СЃРµР№С‡Р°СЃ РІС‹ РїРµСЂРµР№РґРµС‚Рµ Рє СЃС‚СЂР°РЅРёС†Рµ "РњРѕР№ СЂРµР№С‚РёРЅРі"','success');
 } else {
-	sql_query("UPDATE users SET class=".UC_VIP.", modcomment=".sqlesc(date("Y-m-d") . "Купил VIP\n").$CURUSER['modcomment']." WHERE class<".UC_VIP." AND id={$CURUSER['id']}");
+	sql_query("UPDATE users SET class=".UC_VIP.", modcomment=".sqlesc(date("Y-m-d") . "РљСѓРїРёР» VIP\n").$CURUSER['modcomment']." WHERE class<".UC_VIP." AND id={$CURUSER['id']}");
 	if ($CURUSER['dis_reason'] == 'Your rating was too low.') sql_query("UPDATE users SET dis_reason='', enabled=1 WHERE id = {$CURUSER['id']}");
 
 	safe_redirect($REL_SEO->make_link('myrating'),1);
-	stderr($REL_LANG->say_by_key('success'),'Спасибо, вам успешно установен VIP статус, сейчас вы перейдете к странице "Мой рейтинг"','success');
+	stderr($REL_LANG->say_by_key('success'),'РЎРїР°СЃРёР±Рѕ, РІР°Рј СѓСЃРїРµС€РЅРѕ СѓСЃС‚Р°РЅРѕРІРµРЅ VIP СЃС‚Р°С‚СѓСЃ, СЃРµР№С‡Р°СЃ РІС‹ РїРµСЂРµР№РґРµС‚Рµ Рє СЃС‚СЂР°РЅРёС†Рµ "РњРѕР№ СЂРµР№С‚РёРЅРі"','success');
 }
 ?>

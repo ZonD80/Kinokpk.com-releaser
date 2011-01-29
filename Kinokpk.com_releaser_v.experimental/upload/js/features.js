@@ -2,7 +2,14 @@ $(document).ready(
 function(){
 	initSpoilers();
 	init_js();
+
+	$("#trailer_body a.close").bind('click',function(e){
+		e.preventDefault();
+		$("div#trailer_body").hide();
+		
+		});
 });
+
 
 function initSpoilers(context) {
 	var context = context || 'body';
@@ -139,5 +146,5 @@ function send_comment(type,to_id) {
 	$("#submit_button").removeAttr('disabled');
 	return false;
 }
-var REL_LANG_NO_TEXT_SELECTED = 'Не выбран текст!';
-var REL_LANG_ARE_YOU_SURE = 'Вы верены?';
+var REL_LANG_NO_TEXT_SELECTED = 'РќРµ РІС‹Р±СЂР°РЅ С‚РµРєСЃС‚!';
+var REL_LANG_ARE_YOU_SURE = 'Р’С‹ РІРµСЂРµРЅС‹?';

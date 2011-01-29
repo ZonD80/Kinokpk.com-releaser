@@ -16,44 +16,44 @@ loggedinorreturn();
 if (get_user_class() < UC_MODERATOR)
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
-$REL_TPL->stdhead("Административный поиск");
-print "<h1>Административный поиск</h1>\n";
+$REL_TPL->stdhead("РђРґРјРёРЅРёСЃС‚СЂР°С‚РёРІРЅС‹Р№ РїРѕРёСЃРє");
+print "<h1>РђРґРјРёРЅРёСЃС‚СЂР°С‚РёРІРЅС‹Р№ РїРѕРёСЃРє</h1>\n";
 
 $q[] = 'usersearch';
 if ($_GET['h'])
 {
-	$REL_TPL->begin_frame("Инструкция<font color=#009900> - Читать обязательно</font>");
+	$REL_TPL->begin_frame("РРЅСЃС‚СЂСѓРєС†РёСЏ<font color=#009900> - Р§РёС‚Р°С‚СЊ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ</font>");
 	?>
 <ul>
-	<li>Пустые поля будут проигнорированы</li>
-	<li>Шаблоны * и ? могут быть использованы в Имени, Email и
-	Комментариях, так-же и в нескольких значениях разделенными пробелами
-	(т.е. 'wyz Max*' в Имени выведет обоих пользователей 'wyz' и тех у
-	которых имена начинаються на 'Max'. Похожим образом может быть
-	использована '~' для отрицания, т.е. '~alfiest' в комментариях
-	ограничит поиск пользователей к тем у которых нету выражения 'alfiest'
-	в ихних комментариях).</li>
-	<li>Поле Рейтинг принимает 'Inf' и '---' наравне с числовыми
-	значениями.</li>
-	<li>Маска подсети может быть введена или в десятично точечной или CIDR
-	записи (т.е. 255.255.255.0 то-же самое что и /24).</li>
-	<li>Раздал и Скачал вводиться в GB.</li>
+	<li>РџСѓСЃС‚С‹Рµ РїРѕР»СЏ Р±СѓРґСѓС‚ РїСЂРѕРёРіРЅРѕСЂРёСЂРѕРІР°РЅС‹</li>
+	<li>РЁР°Р±Р»РѕРЅС‹ * Рё ? РјРѕРіСѓС‚ Р±С‹С‚СЊ РёСЃРїРѕР»СЊР·РѕРІР°РЅС‹ РІ РРјРµРЅРё, Email Рё
+	РљРѕРјРјРµРЅС‚Р°СЂРёСЏС…, С‚Р°Рє-Р¶Рµ Рё РІ РЅРµСЃРєРѕР»СЊРєРёС… Р·РЅР°С‡РµРЅРёСЏС… СЂР°Р·РґРµР»РµРЅРЅС‹РјРё РїСЂРѕР±РµР»Р°РјРё
+	(С‚.Рµ. 'wyz Max*' РІ РРјРµРЅРё РІС‹РІРµРґРµС‚ РѕР±РѕРёС… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ 'wyz' Рё С‚РµС… Сѓ
+	РєРѕС‚РѕСЂС‹С… РёРјРµРЅР° РЅР°С‡РёРЅР°СЋС‚СЊСЃСЏ РЅР° 'Max'. РџРѕС…РѕР¶РёРј РѕР±СЂР°Р·РѕРј РјРѕР¶РµС‚ Р±С‹С‚СЊ
+	РёСЃРїРѕР»СЊР·РѕРІР°РЅР° '~' РґР»СЏ РѕС‚СЂРёС†Р°РЅРёСЏ, С‚.Рµ. '~alfiest' РІ РєРѕРјРјРµРЅС‚Р°СЂРёСЏС…
+	РѕРіСЂР°РЅРёС‡РёС‚ РїРѕРёСЃРє РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ Рє С‚РµРј Сѓ РєРѕС‚РѕСЂС‹С… РЅРµС‚Сѓ РІС‹СЂР°Р¶РµРЅРёСЏ 'alfiest'
+	РІ РёС…РЅРёС… РєРѕРјРјРµРЅС‚Р°СЂРёСЏС…).</li>
+	<li>РџРѕР»Рµ Р РµР№С‚РёРЅРі РїСЂРёРЅРёРјР°РµС‚ 'Inf' Рё '---' РЅР°СЂР°РІРЅРµ СЃ С‡РёСЃР»РѕРІС‹РјРё
+	Р·РЅР°С‡РµРЅРёСЏРјРё.</li>
+	<li>РњР°СЃРєР° РїРѕРґСЃРµС‚Рё РјРѕР¶РµС‚ Р±С‹С‚СЊ РІРІРµРґРµРЅР° РёР»Рё РІ РґРµСЃСЏС‚РёС‡РЅРѕ С‚РѕС‡РµС‡РЅРѕР№ РёР»Рё CIDR
+	Р·Р°РїРёСЃРё (С‚.Рµ. 255.255.255.0 С‚Рѕ-Р¶Рµ СЃР°РјРѕРµ С‡С‚Рѕ Рё /24).</li>
+	<li>Р Р°Р·РґР°Р» Рё РЎРєР°С‡Р°Р» РІРІРѕРґРёС‚СЊСЃСЏ РІ GB.</li>
 	<li>For search parameters with multiple text fields the second will be
 	ignored unless relevant for the type of search chosen.</li>
-	<li>'Только активных' ограничивает поиск к тем пользователям которые
-	сейчас что-то качают или раздают, 'Отключенные IP' к тем чьи IP
-	отключены.</li>
+	<li>'РўРѕР»СЊРєРѕ Р°РєС‚РёРІРЅС‹С…' РѕРіСЂР°РЅРёС‡РёРІР°РµС‚ РїРѕРёСЃРє Рє С‚РµРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЏРј РєРѕС‚РѕСЂС‹Рµ
+	СЃРµР№С‡Р°СЃ С‡С‚Рѕ-С‚Рѕ РєР°С‡Р°СЋС‚ РёР»Рё СЂР°Р·РґР°СЋС‚, 'РћС‚РєР»СЋС‡РµРЅРЅС‹Рµ IP' Рє С‚РµРј С‡СЊРё IP
+	РѕС‚РєР»СЋС‡РµРЅС‹.</li>
 	<li>The 'p' columns in the results show partial stats, that is, those
 	of the torrents in progress.</li>
-	<li>Колонка история отображает количество постов в форуме и
-	комментариев к торрентам, соотвественно, как и ведет на страницу
-	истории. <?
+	<li>РљРѕР»РѕРЅРєР° РёСЃС‚РѕСЂРёСЏ РѕС‚РѕР±СЂР°Р¶Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕСЃС‚РѕРІ РІ С„РѕСЂСѓРјРµ Рё
+	РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ Рє С‚РѕСЂСЂРµРЅС‚Р°Рј, СЃРѕРѕС‚РІРµСЃС‚РІРµРЅРЅРѕ, РєР°Рє Рё РІРµРґРµС‚ РЅР° СЃС‚СЂР°РЅРёС†Сѓ
+	РёСЃС‚РѕСЂРёРё. <?
 	$REL_TPL->end_frame();
 }
 else
 {
-	print "<p align=center>(<a href='".$REL_SEO->make_link('usersearch','h',1)."'>Инструкиця</a>)";
-	print "&nbsp;-&nbsp;(<a href='".$REL_SEO->make_link('usersearch')."'>Сброс</a>)</p>\n";
+	print "<p align=center>(<a href='".$REL_SEO->make_link('usersearch','h',1)."'>РРЅСЃС‚СЂСѓРєРёС†СЏ</a>)";
+	print "&nbsp;-&nbsp;(<a href='".$REL_SEO->make_link('usersearch')."'>РЎР±СЂРѕСЃ</a>)</p>\n";
 }
 
 $highlight = " bgcolor=#BBAF9B";
@@ -64,14 +64,14 @@ $highlight = " bgcolor=#BBAF9B";
 	<table border="1" cellspacing="0" cellpadding="5">
 		<tr>
 
-			<td valign="middle" class=rowhead>Имя:</td>
+			<td valign="middle" class=rowhead>РРјСЏ:</td>
 			<td <?=$_GET['n']?$highlight:""?>><input name="n" type="text"
 				value="<?=htmlspecialchars($_GET['n'])?>" size=35></td>
 
-			<td valign="middle" class=rowhead>Рейтинг:</td>
+			<td valign="middle" class=rowhead>Р РµР№С‚РёРЅРі:</td>
 			<td <?=$_GET['r']?$highlight:""?>><select name="rt">
 			<?
-			$options = array("равен","выше","ниже","между");
+			$options = array("СЂР°РІРµРЅ","РІС‹С€Рµ","РЅРёР¶Рµ","РјРµР¶РґСѓ");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['rt']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -81,10 +81,10 @@ $highlight = " bgcolor=#BBAF9B";
 				name="r2" type="text" value="<?=htmlspecialchars($_GET['r2'])?>"
 				size="5" maxlength="4"></td>
 
-			<td valign="middle" class=rowhead>Статус:</td>
+			<td valign="middle" class=rowhead>РЎС‚Р°С‚СѓСЃ:</td>
 			<td <?=$_GET['st']?$highlight:""?>><select name="st">
 			<?
-			$options = array("(Любой)","Подтвержден","Не подтвержден");
+			$options = array("(Р›СЋР±РѕР№)","РџРѕРґС‚РІРµСЂР¶РґРµРЅ","РќРµ РїРѕРґС‚РІРµСЂР¶РґРµРЅ");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['st']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -99,10 +99,10 @@ $highlight = " bgcolor=#BBAF9B";
 			<td <?=$_GET['ip']?$highlight:""?>><input name="ip" type="text"
 				value="<?=htmlspecialchars($_GET['ip'])?>" maxlength="17"></td>
 
-			<td valign="middle" class=rowhead>Отключен:</td>
+			<td valign="middle" class=rowhead>РћС‚РєР»СЋС‡РµРЅ:</td>
 			<td <?=$_GET['as']?$highlight:""?>><select name="as">
 			<?
-			$options = array("(Любой)","Нет","Да");
+			$options = array("(Р›СЋР±РѕР№)","РќРµС‚","Р”Р°");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['as']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -110,16 +110,16 @@ $highlight = " bgcolor=#BBAF9B";
 			</select></td>
 		</tr>
 		<tr>
-			<td valign="middle" class=rowhead>Комментарий:</td>
+			<td valign="middle" class=rowhead>РљРѕРјРјРµРЅС‚Р°СЂРёР№:</td>
 			<td <?=$_GET['co']?$highlight:""?>><input name="co" type="text"
 				value="<?=htmlspecialchars($_GET['co'])?>" size="35"></td>
-			<td valign="middle" class=rowhead>Маска:</td>
+			<td valign="middle" class=rowhead>РњР°СЃРєР°:</td>
 			<td <?=$_GET['ma']?$highlight:""?>><input name="ma" type="text"
 				value="<?=htmlspecialchars($_GET['ma'])?>" maxlength="17"></td>
-			<td valign="middle" class=rowhead>Класс:</td>
+			<td valign="middle" class=rowhead>РљР»Р°СЃСЃ:</td>
 			<td <?=((int)$_GET['c'] && (int)$_GET['c'] != 1)?$highlight:""?>><select
 				name="c">
-				<option value='1'>(Любой)</option>
+				<option value='1'>(Р›СЋР±РѕР№)</option>
 				<?
 
 				if (!is_valid_id($_GET['c']))
@@ -136,11 +136,11 @@ $highlight = " bgcolor=#BBAF9B";
 		</tr>
 		<tr>
 
-			<td valign="middle" class=rowhead>Регистрация:</td>
+			<td valign="middle" class=rowhead>Р РµРіРёСЃС‚СЂР°С†РёСЏ:</td>
 
 			<td <?=$_GET['d']?$highlight:""?>><select name="dt">
 			<?
-			$options = array("в","раньше","после","между");
+			$options = array("РІ","СЂР°РЅСЊС€Рµ","РїРѕСЃР»Рµ","РјРµР¶РґСѓ");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['dt']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -151,11 +151,11 @@ $highlight = " bgcolor=#BBAF9B";
 			<input name="d2" type="text"
 				value="<?=htmlspecialchars($_GET['d2'])?>" size="12" maxlength="10"></td>
 
-			<td valign="middle" class="rowhead" colspan="3">Донор:</td>
+			<td valign="middle" class="rowhead" colspan="3">Р”РѕРЅРѕСЂ:</td>
 
 			<td <?=$_GET['do']?$highlight:""?>><select name="do">
 			<?
-			$options = array("(Любой)","Да","Нет");
+			$options = array("(Р›СЋР±РѕР№)","Р”Р°","РќРµС‚");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['do']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -164,11 +164,11 @@ $highlight = " bgcolor=#BBAF9B";
 		</tr>
 		<tr>
 
-			<td valign="middle" class=rowhead>Последняя активность:</td>
+			<td valign="middle" class=rowhead>РџРѕСЃР»РµРґРЅСЏСЏ Р°РєС‚РёРІРЅРѕСЃС‚СЊ:</td>
 
 			<td <?=$_GET['ls']?$highlight:""?>><select name="lst">
 			<?
-			$options = array("в","раньше","после","между");
+			$options = array("РІ","СЂР°РЅСЊС€Рµ","РїРѕСЃР»Рµ","РјРµР¶РґСѓ");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['lst']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -179,11 +179,11 @@ $highlight = " bgcolor=#BBAF9B";
 			<input name="ls2" type="text"
 				value="<?=htmlspecialchars($_GET['ls2'])?>" size="12" maxlength="10"></td>
 
-			<td valign="middle" class=rowhead colspan="3">Предупрежден:</td>
+			<td valign="middle" class=rowhead colspan="3">РџСЂРµРґСѓРїСЂРµР¶РґРµРЅ:</td>
 
 			<td <?=$_GET['w']?$highlight:""?>><select name="w">
 			<?
-			$options = array("(Любой)","Да","Нет");
+			$options = array("(Р›СЋР±РѕР№)","Р”Р°","РќРµС‚");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['w']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -194,16 +194,16 @@ $highlight = " bgcolor=#BBAF9B";
 		<tr>
 			<td class="rowhead"></td>
 			<td></td>
-			<td valign="middle" class=rowhead>Только&nbsp;активные:</td>
+			<td valign="middle" class=rowhead>РўРѕР»СЊРєРѕ&nbsp;Р°РєС‚РёРІРЅС‹Рµ:</td>
 			<td <?=$_GET['ac']?$highlight:""?>><input name="ac" type="checkbox"
 				value="1" <?=($_GET['ac'])?"checked":"" ?>></td>
-			<td valign="middle" class=rowhead>Забаненые&nbsp;IP:</td>
+			<td valign="middle" class=rowhead>Р—Р°Р±Р°РЅРµРЅС‹Рµ&nbsp;IP:</td>
 			<td <?=$_GET['dip']?$highlight:""?>><input name="dip" type="checkbox"
 				value="1" <?=($_GET['dip'])?"checked":"" ?>></td>
 		</tr>
 		<tr>
 			<td colspan="6" align=center><input name="submit" type=submit
-				class=btn value=Искать></td>
+				class=btn value=РСЃРєР°С‚СЊ></td>
 		</tr>
 	</table>
 	<br />
@@ -337,7 +337,7 @@ $highlight = " bgcolor=#BBAF9B";
 
 					{
 
-						stdmsg($REL_LANG->say_by_key('error'), "Второй рейтинг должен быть больше первого.");
+						stdmsg($REL_LANG->say_by_key('error'), "Р’С‚РѕСЂРѕР№ СЂРµР№С‚РёРЅРі РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ РїРµСЂРІРѕРіРѕ.");
 
 						$REL_TPL->stdfoot();
 
@@ -383,7 +383,7 @@ $highlight = " bgcolor=#BBAF9B";
 	  	{
 	  		if (!validemail($email))
 	  		{
-	  			stdmsg($REL_LANG->say_by_key('error'), "Неправильный E-mail.");
+	  			stdmsg($REL_LANG->say_by_key('error'), "РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ E-mail.");
 	  			$REL_TPL->stdfoot();
 	  			die();
 	  		}
@@ -417,7 +417,7 @@ $highlight = " bgcolor=#BBAF9B";
 			$regex = "/^(((1?\d{1,2})|(2[0-4]\d)|(25[0-5]))(\.\b|$)){4}$/";
 			if (!preg_match($regex, $ip))
 			{
-				stdmsg($REL_LANG->say_by_key('error'), "Неверный IP.");
+				stdmsg($REL_LANG->say_by_key('error'), "РќРµРІРµСЂРЅС‹Р№ IP.");
 				$REL_TPL->stdfoot();
 				die();
 			}
@@ -429,10 +429,10 @@ $highlight = " bgcolor=#BBAF9B";
 			{
 				if (substr($mask,0,1) == "/")
 				{
-					$n = substr($mask, 1, strlen($mask) - 1);
+					$n = substr($mask, 1, mb_strlen($mask) - 1);
 					if (!is_numeric($n) or $n < 0 or $n > 32)
 					{
-						stdmsg($REL_LANG->say_by_key('error'), "Неверная макса подсети.");
+						stdmsg($REL_LANG->say_by_key('error'), "РќРµРІРµСЂРЅР°СЏ РјР°РєСЃР° РїРѕРґСЃРµС‚Рё.");
 						$REL_TPL->stdfoot();
 						die();
 					}
@@ -441,7 +441,7 @@ $highlight = " bgcolor=#BBAF9B";
 				}
 				elseif (!preg_match($regex, $mask))
 				{
-					stdmsg($REL_LANG->say_by_key('error'), "Неверная макса подсети.");
+					stdmsg($REL_LANG->say_by_key('error'), "РќРµРІРµСЂРЅР°СЏ РјР°РєСЃР° РїРѕРґСЃРµС‚Рё.");
 					$REL_TPL->stdfoot();
 					die();
 				}
@@ -513,7 +513,7 @@ $highlight = " bgcolor=#BBAF9B";
 		{
 			if (!$date = mkdate($date))
 			{
-				stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
+				stdmsg($REL_LANG->say_by_key('error'), "РќРµРїСЂР°РІРёР»СЊРЅР°СЏ РґР°С‚Р°.");
 				$REL_TPL->stdfoot();
 				die();
 			}
@@ -537,7 +537,7 @@ $highlight = " bgcolor=#BBAF9B";
 					{
 						if (!$date = mkdate($date))
 						{
-							stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
+							stdmsg($REL_LANG->say_by_key('error'), "РќРµРїСЂР°РІРёР»СЊРЅР°СЏ РґР°С‚Р°.");
 							$REL_TPL->stdfoot();
 							die();
 						}
@@ -547,7 +547,7 @@ $highlight = " bgcolor=#BBAF9B";
 					}
 					else
 					{
-						stdmsg($REL_LANG->say_by_key('error'), "Нужны две даты для этого типа поиска.");
+						stdmsg($REL_LANG->say_by_key('error'), "РќСѓР¶РЅС‹ РґРІРµ РґР°С‚С‹ РґР»СЏ СЌС‚РѕРіРѕ С‚РёРїР° РїРѕРёСЃРєР°.");
 						$REL_TPL->stdfoot();
 						die();
 					}
@@ -565,7 +565,7 @@ $highlight = " bgcolor=#BBAF9B";
 		{
 			if (!$last = mkdate($last))
 			{
-				stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
+				stdmsg($REL_LANG->say_by_key('error'), "РќРµРїСЂР°РІРёР»СЊРЅР°СЏ РґР°С‚Р°.");
 				$REL_TPL->stdfoot();
 				die();
 			}
@@ -590,7 +590,7 @@ $highlight = " bgcolor=#BBAF9B";
 					}
 					else
 					{
-						stdmsg($REL_LANG->say_by_key('error'), "Вторая дата неверна.");
+						stdmsg($REL_LANG->say_by_key('error'), "Р’С‚РѕСЂР°СЏ РґР°С‚Р° РЅРµРІРµСЂРЅР°.");
 						$REL_TPL->stdfoot();
 						die();
 					}
@@ -686,9 +686,9 @@ $highlight = " bgcolor=#BBAF9B";
 		//    <temporary>    /////////////////////////////////////////////////////
 		if ($DEBUG_MODE > 0)
 		{
-			stdmsg("Запрос подсчета",$queryc);
+			stdmsg("Р—Р°РїСЂРѕСЃ РїРѕРґСЃС‡РµС‚Р°",$queryc);
 			print "<br /><br />";
-			stdmsg("Поисковый запрос",$query);
+			stdmsg("РџРѕРёСЃРєРѕРІС‹Р№ Р·Р°РїСЂРѕСЃ",$query);
 			print "<br /><br />";
 			stdmsg("URL ",$q);
 			if ($DEBUG_MODE == 2)
@@ -711,20 +711,20 @@ $highlight = " bgcolor=#BBAF9B";
 		$res = sql_query($query) or sqlerr(__FILE__, __LINE__);
 
 		if (mysql_num_rows($res) == 0)
-		stdmsg("Внимание","Пользователь не был найден.");
+		stdmsg("Р’РЅРёРјР°РЅРёРµ","РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅРµ Р±С‹Р» РЅР°Р№РґРµРЅ.");
 		else
 		{
 			if ($count > $perpage)
 			print $pagertop;
 			print "<table border=1 cellspacing=0 cellpadding=5>\n";
-			print "<tr><td class=colhead align=left>Пользователь</td>
-    		<td class=colhead align=left>Рейтинг</td>
+			print "<tr><td class=colhead align=left>РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ</td>
+    		<td class=colhead align=left>Р РµР№С‚РёРЅРі</td>
         <td class=colhead align=left>IP</td>
         <td class=colhead align=left>Email</td>".
-        "<td class=colhead align=left>Регистрация:</td>".
-        "<td class=colhead align=left>Последняя активность:</td>".
-        "<td class=colhead align=left>Подтвержден</td>".
-        "<td class=colhead align=left>Включен</td>";
+        "<td class=colhead align=left>Р РµРіРёСЃС‚СЂР°С†РёСЏ:</td>".
+        "<td class=colhead align=left>РџРѕСЃР»РµРґРЅСЏСЏ Р°РєС‚РёРІРЅРѕСЃС‚СЊ:</td>".
+        "<td class=colhead align=left>РџРѕРґС‚РІРµСЂР¶РґРµРЅ</td>".
+        "<td class=colhead align=left>Р’РєР»СЋС‡РµРЅ</td>";
 			while ($user = mysql_fetch_array($res))
 			{
 
@@ -748,7 +748,7 @@ $highlight = " bgcolor=#BBAF9B";
 	<table border="1" cellpadding="5" cellspacing="0">
 		<tr>
 			<td>
-			<div align="center">Рассылка сообщений найденным юзерам<br />
+			<div align="center">Р Р°СЃСЃС‹Р»РєР° СЃРѕРѕР±С‰РµРЅРёР№ РЅР°Р№РґРµРЅРЅС‹Рј СЋР·РµСЂР°Рј<br />
 			<input name="pmees" type="hidden" value="<?print $querypm?>" size=10>
 			<input name="PM" type="submit" value="PM" class=btn> <input
 				name="n_pms" type="hidden" value="<?print $count?>" size=10> <input

@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `addedrequests` (
   PRIMARY KEY (`id`),
   KEY `pollid` (`id`),
   KEY `userid` (`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `addedrequests`
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `bannedemails` (
   `email` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `bannedemails`
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `bans` (
   `user` int(10) unsigned NOT NULL DEFAULT '0',
   `added` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `bans`
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `bookmarks` (
   `userid` int(10) unsigned NOT NULL DEFAULT '0',
   `torrentid` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `bookmarks`
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `cache_stats` (
   `cache_name` varchar(255) NOT NULL,
   `cache_value` text,
   PRIMARY KEY (`cache_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
+) ENGINE=myisam DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `cache_stats`
@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `forum_id` smallint(5) NOT NULL DEFAULT '0',
   `disable_export` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `categories`
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `censoredtorrents` (
   `name` varchar(255) NOT NULL,
   `reason` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `censoredtorrents`
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
   PRIMARY KEY (`id`),
   KEY `user` (`user`),
   KEY `torrent` (`toid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `comments`
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS `countries` (
   `name` varchar(50) DEFAULT NULL,
   `flagpic` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=106 ;
+) ENGINE=myisam  DEFAULT CHARSET=utf8 AUTO_INCREMENT=106 ;
 
 --
 -- Dumping data for table `countries`
@@ -360,7 +360,7 @@ CREATE TABLE IF NOT EXISTS `cron` (
   `cron_name` varchar(255) NOT NULL,
   `cron_value` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`cron_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
+) ENGINE=myisam DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `cron`
@@ -411,7 +411,7 @@ CREATE TABLE IF NOT EXISTS `cron_emails` (
   `emails` text NOT NULL,
   `subject` varchar(255) NOT NULL,
   `body` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
+) ENGINE=myisam DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `cron_emails`
@@ -430,7 +430,7 @@ CREATE TABLE IF NOT EXISTS `dchubs` (
   `announce_url` varchar(500) NOT NULL,
   `mask` varchar(60) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `dchubs`
@@ -450,7 +450,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `size` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `torrent` (`torrent`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `files`
@@ -472,7 +472,7 @@ CREATE TABLE IF NOT EXISTS `forum_categories` (
   `parent_id` int(10) NOT NULL DEFAULT '0',
   `class` int(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=COMPACT AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `forum_categories`
@@ -496,7 +496,7 @@ CREATE TABLE IF NOT EXISTS `forum_topics` (
   `closedate` int(10) NOT NULL DEFAULT '0',
   `category` int(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `forum_topics`
@@ -517,7 +517,7 @@ CREATE TABLE IF NOT EXISTS `friends` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `userid` (`userid`,`friendid`),
   UNIQUE KEY `friendid` (`friendid`,`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `friends`
@@ -538,7 +538,7 @@ CREATE TABLE IF NOT EXISTS `invites` (
   `time_invited` int(10) NOT NULL,
   `confirmed` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `invites`
@@ -556,7 +556,7 @@ CREATE TABLE IF NOT EXISTS `languages` (
   `ltranslate` varchar(2) NOT NULL,
   `lvalue` text NOT NULL,
   UNIQUE KEY `key` (`lkey`,`ltranslate`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
+) ENGINE=myisam DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -582,7 +582,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   KEY `receiver` (`receiver`),
   KEY `sender` (`sender`),
   KEY `poster` (`poster`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `messages`
@@ -604,7 +604,7 @@ CREATE TABLE IF NOT EXISTS `news` (
   `comments` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `added` (`added`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `news`
@@ -624,7 +624,7 @@ CREATE TABLE IF NOT EXISTS `notifs` (
   `userid` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `checkid` (`checkid`,`type`,`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `orbital_blocks` (
   `bid` int(10) NOT NULL AUTO_INCREMENT,
@@ -642,7 +642,7 @@ CREATE TABLE IF NOT EXISTS `orbital_blocks` (
   KEY `title` (`title`),
   KEY `weight` (`weight`),
   KEY `active` (`active`)
-) ENGINE=InnoDB  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=18 ;
+) ENGINE=myisam  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
 
 
 INSERT INTO `orbital_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `expire`, `which`, `custom_tpl`) VALUES
@@ -683,7 +683,7 @@ CREATE TABLE IF NOT EXISTS `peers` (
   KEY `torrent_seeder` (`torrent`,`seeder`),
   KEY `last_action` (`last_action`),
   KEY `userid` (`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `peers`
@@ -704,7 +704,7 @@ CREATE TABLE IF NOT EXISTS `polls` (
   `public` tinyint(1) NOT NULL DEFAULT '0',
   `comments` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `polls`
@@ -722,7 +722,7 @@ CREATE TABLE IF NOT EXISTS `polls_structure` (
   `pollid` int(10) NOT NULL,
   `value` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `polls_structure`
@@ -742,7 +742,7 @@ CREATE TABLE IF NOT EXISTS `polls_votes` (
   `pid` int(10) NOT NULL,
   PRIMARY KEY (`vid`),
   UNIQUE KEY `sid` (`sid`,`user`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `polls_votes`
@@ -762,7 +762,7 @@ CREATE TABLE IF NOT EXISTS `presents` (
   `type` varchar(100) DEFAULT NULL,
   `msg` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `presents`
@@ -783,7 +783,7 @@ CREATE TABLE IF NOT EXISTS `ratings` (
   `added` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `rid` (`rid`,`userid`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `ratings`
@@ -814,7 +814,7 @@ CREATE TABLE IF NOT EXISTS `relgroups` (
   `comments` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `relgroups`
@@ -833,7 +833,7 @@ CREATE TABLE IF NOT EXISTS `reltemplates` (
   `content` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `reltemplates`
@@ -855,7 +855,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `added` int(10) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `reportid` (`reportid`,`userid`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `reports`
@@ -881,7 +881,7 @@ CREATE TABLE IF NOT EXISTS `requests` (
   `filledby` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `requests`
@@ -900,7 +900,7 @@ CREATE TABLE IF NOT EXISTS `retrackers` (
   `announce_url` varchar(500) NOT NULL,
   `mask` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `retrackers`
@@ -922,7 +922,7 @@ CREATE TABLE IF NOT EXISTS `rgnews` (
   `comments` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `added` (`added`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `rgnews`
@@ -942,7 +942,7 @@ CREATE TABLE IF NOT EXISTS `rg_invites` (
   `invite` varchar(32) NOT NULL,
   `time_invited` int(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `rg_invites`
@@ -962,7 +962,7 @@ CREATE TABLE IF NOT EXISTS `rg_subscribes` (
   `valid_until` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `userid` (`userid`,`rgid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `rg_subscribes`
@@ -977,15 +977,15 @@ CREATE TABLE IF NOT EXISTS `rg_subscribes` (
 
 CREATE TABLE IF NOT EXISTS `seorules` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `script` varchar(255) DEFAULT NULL,
-  `parameter` varchar(255) DEFAULT NULL,
+  `script` varchar(100) DEFAULT NULL,
+  `parameter` varchar(100) DEFAULT NULL,
   `repl` varchar(255) DEFAULT NULL,
   `unset_params` varchar(255) DEFAULT NULL,
   `sort` int(2) NOT NULL DEFAULT '0',
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `script` (`script`,`parameter`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `seorules`
@@ -1011,7 +1011,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   KEY `time` (`time`),
   KEY `uid` (`uid`),
   KEY `url` (`url`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
+) ENGINE=myisam DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `sessions`
@@ -1032,7 +1032,7 @@ CREATE TABLE IF NOT EXISTS `sitelog` (
   `type` varchar(80) NOT NULL DEFAULT 'tracker',
   PRIMARY KEY (`id`),
   KEY `added` (`added`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `sitelog`
@@ -1054,7 +1054,7 @@ CREATE TABLE IF NOT EXISTS `snatched` (
   `finished` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `snatch` (`torrent`,`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `snatched`
@@ -1073,7 +1073,7 @@ CREATE TABLE IF NOT EXISTS `stamps` (
   `class` tinyint(3) NOT NULL DEFAULT '0',
   `image` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `stamps`
@@ -1092,7 +1092,7 @@ CREATE TABLE IF NOT EXISTS `stylesheets` (
   `name` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `uri` (`uri`)
-) ENGINE=InnoDB  DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=2 ;
+) ENGINE=myisam  DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `stylesheets`
@@ -1144,7 +1144,7 @@ CREATE TABLE IF NOT EXISTS `torrents` (
   KEY `owner` (`owner`),
   KEY `visible` (`visible`),
   KEY `category_visible` (`category`,`visible`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 PACK_KEYS=0 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 PACK_KEYS=0 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `torrents`
@@ -1170,7 +1170,7 @@ CREATE TABLE IF NOT EXISTS `trackers` (
   `num_failed` int(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `torrent` (`torrent`,`tracker`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `trackers`
@@ -1253,7 +1253,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `warned` (`warned`),
   KEY `user` (`id`,`confirmed`,`enabled`),
   KEY `passkey` (`passkey`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+) ENGINE=myisam DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `users`

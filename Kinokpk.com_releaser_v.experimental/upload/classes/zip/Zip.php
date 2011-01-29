@@ -116,13 +116,13 @@ class Zip {
 
 		$gzType = "\x08\x00"; // Compression type 8 = deflate
 		$gpFlags = "\x02\x00"; // General Purpose bit flags for compression type 8 it is: 0=Normal, 1=Maximum, 2=Fast, 3=super fast compression.
-		$dataLength = strlen($data);
+		$dataLength = mb_strlen($data);
 		$fileCRC32 = pack("V", crc32($data));
 
 		$gzData = gzcompress($data);
-		$gzData = substr( substr($gzData, 0, strlen($gzData) - 4), 2); // gzcompress adds a 2 byte header and 4 byte CRC we can't use.
+		$gzData = substr( substr($gzData, 0, mb_strlen($gzData) - 4), 2); // gzcompress adds a 2 byte header and 4 byte CRC we can't use.
 		// The 2 byte header does contain useful data, though in this case the 2 parameters we'd be interrested in will always be 8 for compression type, and 2 for General purpose flag.
-		$gzLength = strlen($gzData);
+		$gzLength = mb_strlen($gzData);
 
 		if ($gzLength >= $dataLength) {
 			$gzLength = $dataLength;
@@ -187,7 +187,7 @@ class Zip {
 			$this->zipData = null;
 		}
 		
-		if (strlen($this->streamFilePath) > 0) {
+		if (mb_strlen($this->streamFilePath) > 0) {
 			closeStream();
 		}
 		$this->streamFile = tempnam(sys_get_temp_dir(), 'Zip');
@@ -199,8 +199,8 @@ class Zip {
 	}
 	
 	public function addStreamData($data) {
-		$length = gzwrite($this->streamData, $data, strlen($data));
-		if ($length != strlen($data)) {
+		$length = gzwrite($this->streamData, $data, mb_strlen($data));
+		if ($length != mb_strlen($data)) {
 			print "<p>Length mismatch</p>\n";
 		}
 		$this->streamFileLength += $length;
@@ -211,7 +211,7 @@ class Zip {
 	 * Close the current stream.
 	 */
 	public function closeStream() {
-		if ($this->isFinalized || strlen($this->streamFilePath) == 0) {
+		if ($this->isFinalized || mb_strlen($this->streamFilePath) == 0) {
 			return;
 		}
 		
@@ -254,7 +254,7 @@ class Zip {
 	 */
 	public function finalize() {
 		if(!$this->isFinalized) {
-			if (strlen($this->streamFilePath) > 0) {
+			if (mb_strlen($this->streamFilePath) > 0) {
 				$this->closeStream();
 			}
 			$cd = implode("", $this->cdRec);
@@ -262,10 +262,10 @@ class Zip {
 			$cdRec = $cd . $this->endOfCentralDirectory
 					. pack("v", sizeof($this->cdRec))
 					. pack("v", sizeof($this->cdRec))
-					. pack("V", strlen($cd))
+					. pack("V", mb_strlen($cd))
 					. pack("V", $this->offset); 
 			if (!is_null($this->zipComment)) {
-				$cdRec .= pack("v", strlen($this->zipComment)) . $this->zipComment;
+				$cdRec .= pack("v", mb_strlen($this->zipComment)) . $this->zipComment;
 			} else {
 				$cdRec .= "\x00\x00";
 			}
@@ -362,7 +362,7 @@ class Zip {
 	
 	public function getArchiveSize() {
 		if (is_null($this->zipFile)) {
-			return strlen($this->zipData);
+			return mb_strlen($this->zipData);
 		}
 		$filestat = fstat($this->zipFile);
 		return $filestat['size'];
@@ -399,14 +399,14 @@ class Zip {
 	 */
 	private function buildZipEntry($filePath, $fileComment, $gpFlags, $gzType, $timestamp, $fileCRC32, $gzLength, $dataLength, $extFileAttr) {
 		$filePath = str_replace("\\", "/", $filePath);
-		$fileCommentLength = (is_null($fileComment) ? 0 : strlen($fileComment));
+		$fileCommentLength = (is_null($fileComment) ? 0 : mb_strlen($fileComment));
 		$dosTime = $this->getDosTime($timestamp);
 		
 		$zipEntry  = $this->localFileHeader;
 		$zipEntry .= "\x14\x00"; // Version needed to extract
 		$zipEntry .= $gpFlags . $gzType . $dosTime. $fileCRC32;
 		$zipEntry .= pack("VV", $gzLength, $dataLength);
-		$zipEntry .= pack("v", strlen($filePath) ); // File name length
+		$zipEntry .= pack("v", mb_strlen($filePath) ); // File name length
 		$zipEntry .= "\x00\x00"; // Extra field length
 		$zipEntry .= $filePath; // FileName . Extra field
 
@@ -421,7 +421,7 @@ class Zip {
 		$cdEntry .= "\x14\x00"; // Version Needed to extract
 		$cdEntry .= $gpFlags . $gzType . $dosTime. $fileCRC32;
 		$cdEntry .= pack("VV", $gzLength, $dataLength);
-		$cdEntry .= pack("v", strlen($filePath)); // Filename length
+		$cdEntry .= pack("v", mb_strlen($filePath)); // Filename length
 		$cdEntry .= "\x00\x00"; // Extra field length
 		$cdEntry .= pack("v", $fileCommentLength); // File comment length
 		$cdEntry .= "\x00\x00"; // Disk number start
@@ -434,7 +434,7 @@ class Zip {
 		}
 
 		$this->cdRec[] = $cdEntry;
-		$this->offset += strlen($zipEntry) + $gzLength;
+		$this->offset += mb_strlen($zipEntry) + $gzLength;
 	}
 }
 ?>

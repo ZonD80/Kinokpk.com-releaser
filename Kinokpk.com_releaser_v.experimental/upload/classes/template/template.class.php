@@ -19,7 +19,7 @@ class REL_TPL extends Smarty {
 	 */
 	function __construct($REL_CONFIG) {
 		global $CURUSER, $REL_LANG,$REL_SEO;
-		define('SMARTY_RESOURCE_CHAR_SET','windows-1251');
+		define('SMARTY_RESOURCE_CHAR_SET','utf-8');
 		parent::__construct();
 		$this->template_dir = ROOT_PATH.'themes/'.$REL_CONFIG['ss_uri'];
 		$compile_dir = ROOT_PATH.'cache/compiled_template_'.$REL_CONFIG['ss_uri'];

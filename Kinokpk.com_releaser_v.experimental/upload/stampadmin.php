@@ -21,15 +21,15 @@ httpauth();
 
 if (get_user_class() < UC_SYSOP) bark("Access denied. You're not SYSOP.");
 if (!isset($_GET['action'])) {
-	$REL_TPL->stdhead("Админка штампов и печатей");
-	print("<div algin=\"center\"><h1>Админка штампов</h1></div>");
-	print("<table width=\"100%\" border=\"0\"><tr><td><a href=\"".$REL_SEO->make_link('stampadmin','action','add')."\">Добавить штамп</a></td></tr></table>");
+	$REL_TPL->stdhead("РђРґРјРёРЅРєР° С€С‚Р°РјРїРѕРІ Рё РїРµС‡Р°С‚РµР№");
+	print("<div algin=\"center\"><h1>РђРґРјРёРЅРєР° С€С‚Р°РјРїРѕРІ</h1></div>");
+	print("<table width=\"100%\" border=\"0\"><tr><td><a href=\"".$REL_SEO->make_link('stampadmin','action','add')."\">Р”РѕР±Р°РІРёС‚СЊ С€С‚Р°РјРї</a></td></tr></table>");
 	$stamparray = sql_query("SELECT * FROM stamps ORDER BY id ASC");
-	print("<form name=\"saveids\" action=\"".$REL_SEO->make_link('stampadmin','action','saveids')."\" method=\"post\"><table width=\"100%\" border=\"1\"><tr><td class=\"colhead\">ID</td><td class=\"colhead\">Картинка</td><td class=\"colhead\">Порядок</td><td class=\"colhead\">Класс доступа</td><td class=\"colhead\">Ред/Уд</td></tr>");
+	print("<form name=\"saveids\" action=\"".$REL_SEO->make_link('stampadmin','action','saveids')."\" method=\"post\"><table width=\"100%\" border=\"1\"><tr><td class=\"colhead\">ID</td><td class=\"colhead\">РљР°СЂС‚РёРЅРєР°</td><td class=\"colhead\">РџРѕСЂСЏРґРѕРє</td><td class=\"colhead\">РљР»Р°СЃСЃ РґРѕСЃС‚СѓРїР°</td><td class=\"colhead\">Р РµРґ/РЈРґ</td></tr>");
 	while($stamp = mysql_fetch_array($stamparray)) {
-		print("<tr><td>".$stamp['id']."</td><td><img src=\"pic/stamp/".$stamp['image']."\"></td><td><input type=\"text\" name=\"sort[".$stamp['id']."]\" size=\"4\" value=\"".$stamp['sort']."\"></td><td>".get_user_class_name($stamp['class'])."</td><td><a href=\"".$REL_SEO->make_link('stampadmin','action','edit','id',$stamp['id'])."\">E</a> | <a onClick=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('stampadmin','action','delete','id',$stamp['id'])."\">D</a></td></tr>");
+		print("<tr><td>".$stamp['id']."</td><td><img src=\"pic/stamp/".$stamp['image']."\"></td><td><input type=\"text\" name=\"sort[".$stamp['id']."]\" size=\"4\" value=\"".$stamp['sort']."\"></td><td>".get_user_class_name($stamp['class'])."</td><td><a href=\"".$REL_SEO->make_link('stampadmin','action','edit','id',$stamp['id'])."\">E</a> | <a onClick=\"return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?')\" href=\"".$REL_SEO->make_link('stampadmin','action','delete','id',$stamp['id'])."\">D</a></td></tr>");
 	}
-	print("</table><input type=\"submit\" class=\"btn\" value=\"Сохранить порядок отображения\"></form>");
+	print("</table><input type=\"submit\" class=\"btn\" value=\"РЎРѕС…СЂР°РЅРёС‚СЊ РїРѕСЂСЏРґРѕРє РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ\"></form>");
 	$REL_TPL->stdfoot();
 }
 
@@ -48,17 +48,17 @@ elseif ($_GET['action'] == 'saveids') {
 }
 
 elseif ($_GET['action'] == 'add') {
-	$REL_TPL->stdhead("Добавление штампа");
-	print("<form action=\"".$REL_SEO->make_link('stampadmin','action','saveadd')."\" name=\"savearray\" method=\"post\"><table width=\"100%\"><tr><td class=\"colhead\">Картинка (имя файла)</td></tr><tr><td><input type=\"text\" name=\"image\" size=\"80\"></td></tr><tr><td class=\"colhead\">Сортировка (порядок положения)</td></tr><tr><td><input type=\"text\" name=\"sort\" size=\"4\"></td></tr><tr><td class=\"colhead\">Класс доступа</td></tr><tr><td>
+	$REL_TPL->stdhead("Р”РѕР±Р°РІР»РµРЅРёРµ С€С‚Р°РјРїР°");
+	print("<form action=\"".$REL_SEO->make_link('stampadmin','action','saveadd')."\" name=\"savearray\" method=\"post\"><table width=\"100%\"><tr><td class=\"colhead\">РљР°СЂС‚РёРЅРєР° (РёРјСЏ С„Р°Р№Р»Р°)</td></tr><tr><td><input type=\"text\" name=\"image\" size=\"80\"></td></tr><tr><td class=\"colhead\">РЎРѕСЂС‚РёСЂРѕРІРєР° (РїРѕСЂСЏРґРѕРє РїРѕР»РѕР¶РµРЅРёСЏ)</td></tr><tr><td><input type=\"text\" name=\"sort\" size=\"4\"></td></tr><tr><td class=\"colhead\">РљР»Р°СЃСЃ РґРѕСЃС‚СѓРїР°</td></tr><tr><td>
   <select size=\"1\" name=\"class\">
-<option value=\"6\">Только Директорат</option>
-<option value=\"5\">Администраторы и выше</option>
-<option value=\"4\">Модераторы и выше</option>
-<option value=\"3\">Аплоадеры и выше</option>
-<option value=\"2\">VIP'ы и выше</option>
-<option value=\"1\">Продвинутые и выше</option>
-<option value=\"0\">Пользователи и выше</option>
-</select></td></tr><tr><td><input type=\"submit\" class=\"btn\" value=\"Добавить\"></td></tr></table></form>");
+<option value=\"6\">РўРѕР»СЊРєРѕ Р”РёСЂРµРєС‚РѕСЂР°С‚</option>
+<option value=\"5\">РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂС‹ Рё РІС‹С€Рµ</option>
+<option value=\"4\">РњРѕРґРµСЂР°С‚РѕСЂС‹ Рё РІС‹С€Рµ</option>
+<option value=\"3\">РђРїР»РѕР°РґРµСЂС‹ Рё РІС‹С€Рµ</option>
+<option value=\"2\">VIP'С‹ Рё РІС‹С€Рµ</option>
+<option value=\"1\">РџСЂРѕРґРІРёРЅСѓС‚С‹Рµ Рё РІС‹С€Рµ</option>
+<option value=\"0\">РџРѕР»СЊР·РѕРІР°С‚РµР»Рё Рё РІС‹С€Рµ</option>
+</select></td></tr><tr><td><input type=\"submit\" class=\"btn\" value=\"Р”РѕР±Р°РІРёС‚СЊ\"></td></tr></table></form>");
 	$REL_TPL->stdfoot();
 }
 
@@ -76,17 +76,17 @@ elseif ($_GET['action'] == 'edit') {
 	$stamparray = sql_query("SELECT * FROM stamps WHERE id=".$_GET['id']);
 	list($id,$sort,$class,$image) = mysql_fetch_array($stamparray);
 
-	$REL_TPL->stdhead("Редактирование штампа");
-	print("<form name=\"save\" action=\"".$REL_SEO->make_link('stampadmin','action','saveedit')."\" method=\"post\"><table width=\"100%\"><tr><td class=\"colhead\">Картинка (имя файла)</td></tr><tr><td><input type=\"hidden\" name=\"id\" value=\"".$id."\"><input type=\"text\" name=\"image\" size=\"80\" value=\"".$image."\"></td></tr><tr><td class=\"colhead\">Сортировка (порядок положения)</td></tr><tr><td><input type=\"text\" name=\"sort\" size=\"4\" value=\"".$sort."\"></td></tr><tr><td class=\"colhead\">Класс доступа</td></tr><tr><td>
+	$REL_TPL->stdhead("Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С€С‚Р°РјРїР°");
+	print("<form name=\"save\" action=\"".$REL_SEO->make_link('stampadmin','action','saveedit')."\" method=\"post\"><table width=\"100%\"><tr><td class=\"colhead\">РљР°СЂС‚РёРЅРєР° (РёРјСЏ С„Р°Р№Р»Р°)</td></tr><tr><td><input type=\"hidden\" name=\"id\" value=\"".$id."\"><input type=\"text\" name=\"image\" size=\"80\" value=\"".$image."\"></td></tr><tr><td class=\"colhead\">РЎРѕСЂС‚РёСЂРѕРІРєР° (РїРѕСЂСЏРґРѕРє РїРѕР»РѕР¶РµРЅРёСЏ)</td></tr><tr><td><input type=\"text\" name=\"sort\" size=\"4\" value=\"".$sort."\"></td></tr><tr><td class=\"colhead\">РљР»Р°СЃСЃ РґРѕСЃС‚СѓРїР°</td></tr><tr><td>
 <select size=\"1\" name=\"class\">
-<option ".($class == "6" ? "selected" : "")." value=\"6\">Только Директорат</option>
-<option ".($class == "5" ? "selected" : "")." value=\"5\">Администраторы и выше</option>
-<option ".($class == "4" ? "selected" : "")." value=\"4\">Модераторы и выше</option>
-<option ".($class == "3" ? "selected" : "")." value=\"3\">Аплоадеры и выше</option>
-<option ".($class == "2" ? "selected" : "")." value=\"2\">VIP'ы и выше</option>
-<option ".($class == "1" ? "selected" : "")." value=\"1\">Продвинутые и выше</option>
-<option ".($class == "0" ? "selected" : "")." value=\"0\">Пользователи и выше</option>
-</select></td></tr><tr><td><input type=\"submit\" class=\"btn\" value=\"Отредактировать\"></td></tr></table></form>");
+<option ".($class == "6" ? "selected" : "")." value=\"6\">РўРѕР»СЊРєРѕ Р”РёСЂРµРєС‚РѕСЂР°С‚</option>
+<option ".($class == "5" ? "selected" : "")." value=\"5\">РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂС‹ Рё РІС‹С€Рµ</option>
+<option ".($class == "4" ? "selected" : "")." value=\"4\">РњРѕРґРµСЂР°С‚РѕСЂС‹ Рё РІС‹С€Рµ</option>
+<option ".($class == "3" ? "selected" : "")." value=\"3\">РђРїР»РѕР°РґРµСЂС‹ Рё РІС‹С€Рµ</option>
+<option ".($class == "2" ? "selected" : "")." value=\"2\">VIP'С‹ Рё РІС‹С€Рµ</option>
+<option ".($class == "1" ? "selected" : "")." value=\"1\">РџСЂРѕРґРІРёРЅСѓС‚С‹Рµ Рё РІС‹С€Рµ</option>
+<option ".($class == "0" ? "selected" : "")." value=\"0\">РџРѕР»СЊР·РѕРІР°С‚РµР»Рё Рё РІС‹С€Рµ</option>
+</select></td></tr><tr><td><input type=\"submit\" class=\"btn\" value=\"РћС‚СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ\"></td></tr></table></form>");
 	$REL_TPL->stdfoot();
 }
 

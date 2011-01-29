@@ -29,7 +29,7 @@ class MemCacheDriver implements CacheDriver
 		if (isset($options['memcache']) && is_array($options['memcache']))	{
 				$this->_memcache = new Memcache;
 				foreach ($options['memcache'] as $server) {
-					if (!is_array($server) || !isset($server['host'])) {// host должен быть указан
+					if (!is_array($server) || !isset($server['host'])) {// host РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ СѓРєР°Р·Р°РЅ
 						continue;
 					}
 					$server['port'] = isset($server['port']) ? (int) $server['port'] : 11211;

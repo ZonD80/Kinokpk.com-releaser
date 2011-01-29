@@ -30,7 +30,7 @@ $num = mysql_num_rows($res);
 print ('<div id="users-table">');
 print ("<p>$pagertop</p>");
 print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td></tr>\n");
+print("<tr><td class=\"colhead\" align=\"left\">РРјСЏ</td><td class=\"colhead\">Р—Р°СЂРµРіРµСЃС‚СЂРёСЂРѕРІР°РЅ</td><td class=\"colhead\">РџРѕСЃР»РµРґРЅРёР№ РІС…РѕРґ</td><td class=\"colhead\">Р РµР№С‚РёРЅРі</td><td class=\"colhead\">РџРѕР»</td><td class=\"colhead\" align=\"left\">РЈСЂРѕРІРµРЅСЊ</td><td class=\"colhead\">РЎС‚СЂР°РЅР°</td></tr>\n");
 while ($arr = mysql_fetch_assoc($res)) {
 	if ($arr['country'] > 0) {
 		$country = "<td style=\"padding: 0px\" align=\"center\"><img src=\"pic/flag/$arr[flagpic]\" alt=\"$arr[name]\" title=\"$arr[name]\"></td>";
@@ -39,8 +39,8 @@ while ($arr = mysql_fetch_assoc($res)) {
 	$country = "<td align=\"center\">---</td>";
 	$ratio = ratearea($arr['ratingsum'],$arr['id'],'users',$CURUSER['id']);
 
-	if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" alt=\"Парень\" title=\"Парень\" style=\"margin-left: 4pt\">";
-	elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" alt=\"Девушка\" title=\"Девушка\" style=\"margin-left: 4pt\">";
+	if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" alt=\"РџР°СЂРµРЅСЊ\" title=\"РџР°СЂРµРЅСЊ\" style=\"margin-left: 4pt\">";
+	elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" alt=\"Р”РµРІСѓС€РєР°\" title=\"Р”РµРІСѓС€РєР°\" style=\"margin-left: 4pt\">";
 	else $gender = "<div align=\"center\"><b>?</b></div>";
 
 	print("<tr><td align=\"left\"><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['id'],'username',translit($arr["username"]))."\"><b>".get_user_class_color($arr["class"], $arr["username"])."</b></a>" .($arr["donated"] > 0 ? "<img src=\"pic/star.gif\" border=\"0\" alt=\"Donor\">" : "")."</td>" .

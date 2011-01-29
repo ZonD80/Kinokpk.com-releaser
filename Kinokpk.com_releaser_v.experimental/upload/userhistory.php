@@ -25,9 +25,9 @@ function maketable($res) {
 
 		$ttl = ($REL_CONFIG ['ttl_days'] * 24) - floor ( (time () - $arr ["added"]) / 3600 );
 		if ($ttl == 1)
-		$ttl .= "&nbsp;час";
+		$ttl .= "&nbsp;С‡Р°СЃ";
 		else
-		$ttl .= "&nbsp;часов";
+		$ttl .= "&nbsp;С‡Р°СЃРѕРІ";
 		$size = str_replace ( " ", "<br />", mksize ( $arr ["size"] ) );
 		$seeders = number_format ( $arr ["seeders"] );
 		$leechers = number_format ( $arr ["leechers"] );
@@ -91,9 +91,9 @@ if (in_array($type,$allowed_types))
 			while ( $a = mysql_fetch_assoc ( $r ) ) {
 				$ttl = ($REL_CONFIG ['ttl_days'] * 24) - floor ( (time () - $a ["added"]) / 3600 );
 				if ($ttl == 1)
-				$ttl .= "&nbsp;час";
+				$ttl .= "&nbsp;С‡Р°СЃ";
 				else
-				$ttl .= "&nbsp;часов";
+				$ttl .= "&nbsp;С‡Р°СЃРѕРІ";
 				$rescatids = explode ( ',', $a ['category'] );
 				foreach ( $rescatids as $rescatid )
 				$a ['cat_names'] [] = "<a href=\"".$REL_SEO->make_link('browse','cat',$rescatid,'name',translit($cats[$rescatid]))."\">" . $cats [$rescatid] . "</a>";
@@ -111,7 +111,7 @@ if (in_array($type,$allowed_types))
 		$cats = assoc_cats ();
 		$r = sql_query ( "SELECT snatched.torrent AS id, snatched.completedat, torrents.name, torrents.seeders, torrents.leechers, torrents.category FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent WHERE snatched.userid = $id AND torrents.owner<>$id GROUP BY id ORDER BY id" ) or sqlerr ( __FILE__, __LINE__ );
 		if (mysql_num_rows ( $r )) {
-			$completed = "<table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n" . "<tr><td class=\"colhead\">Тип</td><td class=\"colhead\">Название</td><td class=\"colhead\">Раздающих</td><td class=\"colhead\">Качающих</td><td class=\"colhead\">{$REL_LANG->_('Date')}</td></tr>\n";
+			$completed = "<table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n" . "<tr><td class=\"colhead\">РўРёРї</td><td class=\"colhead\">РќР°Р·РІР°РЅРёРµ</td><td class=\"colhead\">Р Р°Р·РґР°СЋС‰РёС…</td><td class=\"colhead\">РљР°С‡Р°СЋС‰РёС…</td><td class=\"colhead\">{$REL_LANG->_('Date')}</td></tr>\n";
 			if ($id==$CURUSER['id']) $completed.= ('<tr><td align="center" colspan="5">'.$REL_LANG->_('You can download all previous releases in one ZIP-archive without rating decrease<br/><a href="%s">View downloaded releases</a> or <a href="%s">Download ZIP-archive with torrents</a>',$REL_SEO->make_link('userhistory','id',$id,'type','downloaded'),$REL_SEO->make_link('download','a','my')).'</td></tr>');
 			while ( $a = mysql_fetch_array ( $r ) ) {
 				$rescatids = explode ( ',', $a ['category'] );
@@ -196,7 +196,7 @@ if (in_array($type,$allowed_types))
 		$commentsarray = prepare_for_commenttable($res);
 		print ( "<table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
 		print ( "<tr><td class=\"colhead\" align=\"center\" >" );
-		print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>" );
+		print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: РЎРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ</div>" );
 		//print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id)."#comments\" class=\"altlink_white\">{$REL_LANG->say_by_key('add_comment')}</a></div>" );
 		print ( "</td></tr>" );
 
@@ -252,7 +252,7 @@ if (in_array($type,$allowed_types))
 		print ('<div id="users-table">');
 		print ("<p>$pagertop</p>");
 		print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-		print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td><td class=\"colhead\">Добавить в друзья</td></tr>\n");
+		print("<tr><td class=\"colhead\" align=\"left\">РРјСЏ</td><td class=\"colhead\">Р—Р°СЂРµРіРµСЃС‚СЂРёСЂРѕРІР°РЅ</td><td class=\"colhead\">РџРѕСЃР»РµРґРЅРёР№ РІС…РѕРґ</td><td class=\"colhead\">Р РµР№С‚РёРЅРі</td><td class=\"colhead\">РџРѕР»</td><td class=\"colhead\" align=\"left\">РЈСЂРѕРІРµРЅСЊ</td><td class=\"colhead\">РЎС‚СЂР°РЅР°</td><td class=\"colhead\">Р”РѕР±Р°РІРёС‚СЊ РІ РґСЂСѓР·СЊСЏ</td></tr>\n");
 		while ($arr = mysql_fetch_assoc($res)) {
 			if ($arr['country'] > 0) {
 				$country = "<td style=\"padding: 0px\" align=\"center\"><img src=\"pic/flag/$arr[flagpic]\" alt=\"$arr[name]\" title=\"$arr[name]\"></td>";
@@ -262,8 +262,8 @@ if (in_array($type,$allowed_types))
 			$ratingsum = ratearea($arr['ratingsum'],$arr['friend'],'users', $CURUSER['id']);
 
 
-			if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" alt=\"Парень\" title=\"Парень\" style=\"margin-left: 4pt\">";
-			elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" alt=\"Девушка\" title=\"Девушка\" style=\"margin-left: 4pt\">";
+			if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" alt=\"РџР°СЂРµРЅСЊ\" title=\"РџР°СЂРµРЅСЊ\" style=\"margin-left: 4pt\">";
+			elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" alt=\"Р”РµРІСѓС€РєР°\" title=\"Р”РµРІСѓС€РєР°\" style=\"margin-left: 4pt\">";
 			else $gender = "<div align=\"center\"><b>?</b></div>";
 
 			print("<tr><td align=\"left\"><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',translit($arr["username"]))."\"><b>".get_user_class_color($arr["class"], $arr["username"])."</b></a>" .get_user_icons($arr).($arr['init']?$REL_LANG->say_by_key('init'):'')."</td>" .

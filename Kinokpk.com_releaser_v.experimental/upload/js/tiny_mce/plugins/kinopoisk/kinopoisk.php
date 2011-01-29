@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type"
-	content="text/html; charset=windows-1251" />
+	content="text/html; charset=utf-8" />
 <?php
 $path = str_replace("js/tiny_mce/plugins/kinopoisk",'',dirname(__FILE__));
 require_once ($path."include/bittorrent.php");
@@ -21,14 +21,14 @@ dbconn();
 </div>
 
 <?php
-//die('Парсер временно отключен');
+//die('РџР°СЂСЃРµСЂ РІСЂРµРјРµРЅРЅРѕ РѕС‚РєР»СЋС‡РµРЅ');
 function search($source,$text)
 {
 	$result = false;
 	$source = strip_tags($source,'<a>');
 	$source = str_replace("\n",'',$source);
 	//die($source);
-	//<a href="/level/1/film/507/sr/1/">Терминатор</a>, 1984     The Terminator,
+	//<a href="/level/1/film/507/sr/1/">РўРµСЂРјРёРЅР°С‚РѕСЂ</a>, 1984     The Terminator,
 	$searchfilms = "#<a href=\"\/level\/1\/film\/([0-9]+)\/sr\/1\/\">(.*?)<\/a>#si";
 
 	preg_match_all ($searchfilms, $source, $matches);
@@ -56,31 +56,31 @@ function get_content($text, $option)
 		$search = "#font-size: 13px\"\>(.*?)\</span\>#si";
 	}
 	elseif ($option == 'country') {
-		$search = "#страна</td><td class=\"\">(.*?)</td></tr>#si";
+		$search = "#СЃС‚СЂР°РЅР°</td><td class=\"\">(.*?)</td></tr>#si";
 		$parse =1;
 	}
 	elseif ($option == 'year') {
-		$search = "#год</td><td class=\"\"><a href=\"(.*?)\">(.*?)</a></td></tr>#si";
+		$search = "#РіРѕРґ</td><td class=\"\"><a href=\"(.*?)\">(.*?)</a></td></tr>#si";
 		$parse = 1;
 	}
 	elseif ($option == 'director') {
-		$search = "#режиссер</td><td>(.*?)</td></tr>#si";
+		$search = "#СЂРµР¶РёСЃСЃРµСЂ</td><td>(.*?)</td></tr>#si";
 		$parse = 1;
 	}
 	elseif ($option == 'scenario') {
-		$search = "#сценарий</td><td class=\"type\">(.*?)</td></tr>#si";
+		$search = "#СЃС†РµРЅР°СЂРёР№</td><td class=\"type\">(.*?)</td></tr>#si";
 		$parse = 1;
 	}
 	elseif ($option == 'producer') {
-		$search = "#продюсер</td><td class=\"type\">(.*?)</td></tr>#si";
+		$search = "#РїСЂРѕРґСЋСЃРµСЂ</td><td class=\"type\">(.*?)</td></tr>#si";
 		$parse = 1;
 	}
 	elseif ($option == 'operator') {
-		$search = "#оператор</td><td class=\"type\">(.*?)</td></tr>#si";
+		$search = "#РѕРїРµСЂР°С‚РѕСЂ</td><td class=\"type\">(.*?)</td></tr>#si";
 		$parse = 1;
 	}
 	elseif ($option == 'time') {
-		$search = "#время</td><td class=\"time\" id=\"runtime\">(.*?)</td></tr>#si";
+		$search = "#РІСЂРµРјСЏ</td><td class=\"time\" id=\"runtime\">(.*?)</td></tr>#si";
 		$parse = 1;
 	}
 	elseif ($option == 'mpaa') {
@@ -101,11 +101,11 @@ function get_content($text, $option)
 	}
 
 	elseif ($option == 'actors') {
-		$search = '#В главных ролях:</span>(.*?)>...</a></span>#si';
+		$search = '#Р’ РіР»Р°РІРЅС‹С… СЂРѕР»СЏС…:</span>(.*?)>...</a></span>#si';
 	}
 
 	elseif ($option == 'genre') {
-		$search = "#жанр</td><td>(.*?)</td></tr>#si";
+		$search = "#Р¶Р°РЅСЂ</td><td>(.*?)</td></tr>#si";
 		$parse = 1;
 	}
 
@@ -128,8 +128,8 @@ function get_content($text, $option)
 }
 if (!$CURUSER) die('Only users enabled');
 
-if (!isset($_GET['id']) && !isset($_GET['filmname'])) print('<table><tr><td>Введите название фильма:</td><td><form method="get"><input type="text" name="filmname">
-<input type="submit" value="Продолжить" />
+if (!isset($_GET['id']) && !isset($_GET['filmname'])) print('<table><tr><td>Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ С„РёР»СЊРјР°:</td><td><form method="get"><input type="text" name="filmname">
+<input type="submit" value="РџСЂРѕРґРѕР»Р¶РёС‚СЊ" />
 </form></td></tr></table>');
 
 require_once(ROOT_PATH."classes/parser/Snoopy.class.php");
@@ -142,7 +142,7 @@ if (isset($_GET['filmname'])) {
 	$source = $page->results;
 	if (!$source) die('Nothing found!');
 
-	print("<table><tr><td align=\"center\">Найденные по запросу \"$filmsafe\" фильмы</td></tr>");
+	print("<table><tr><td align=\"center\">РќР°Р№РґРµРЅРЅС‹Рµ РїРѕ Р·Р°РїСЂРѕСЃСѓ \"$filmsafe\" С„РёР»СЊРјС‹</td></tr>");
 
 	$searched = search($source,$film);
 	if (!$searched) die('Nothing found!');
@@ -172,7 +172,7 @@ elseif (isset($_GET['id']) && $_GET['id'] != '') {
 		$text = preg_replace("#\n#si"," ",$text);
 		$text = preg_replace("/<\/a>/",", ",$text);
 		$text = preg_replace("#\&\#133;|\&\#151;#si","",strip_tags(trim(html_entity_decode($text,ENT_QUOTES))));
-		if (strpos($text,',')<=2) $text = substr($text,20,iconv_strlen($text));
+		if (strpos($text,',')<=2) $text = substr($text,20,iconv_mb_strlen($text));
 
 		return $text;
 	}
@@ -196,40 +196,40 @@ elseif (isset($_GET['id']) && $_GET['id'] != '') {
 	$descr = clear(get_content($source, 'descr'));
 	$genre = clear(get_content($source,'genre'));
 	$actors = substr(format_actors(get_content($source, 'actors')), 0, -2);
-	$kinopoiskrating = "<a href=\"http://www.kinopoisk.ru/level/1/film/$id/\"><img style=\"border: none;\" src=\"http://www.kinopoisk.ru/rating/$id.gif\" title=\"Рейтинг кинопоиска\"/></a>";
+	$kinopoiskrating = "<a href=\"http://www.kinopoisk.ru/level/1/film/$id/\"><img style=\"border: none;\" src=\"http://www.kinopoisk.ru/rating/$id.gif\" title=\"Р РµР№С‚РёРЅРі РєРёРЅРѕРїРѕРёСЃРєР°\"/></a>";
 
 	switch ($mpaarating){
-		case "G": $mpaarating = "<img src=\"pic/mpaa/G.gif\" title=\"G - Нет возрастных ограничений\"/> G - Нет возрастных ограничений"; break;
-		case "PG": $mpaarating ="<img src=\"pic/mpaa/PG.gif\" title=\"PG - Рекомендуется присутствие родителей\"/> PG - Рекомендуется присутствие родителей"; break;
-		case "PG-13": $mpaarating = "<img src=\"pic/mpaa/PG-13.gif\" title=\"PG-13 - Детям до 13 лет просмотр не желателен\"/> PG-13 - Детям до 13 лет просмотр не желателен"; break;
-		case "R": $mpaarating = "<img src=\"pic/mpaa/R.gif\" title=\"R - Лицам до 17 лет обязательно присутствие взрослого\"/> R - Лицам до 17 лет обязательно присутствие взрослого"; break;
-		case "NC-17": $mpaarating = "<img src=\"pic/mpaa/NC-17.gif\" title=\"NC-17 - Лицам до 17 лет просмотр запрещен\"/> NC-17 - Лицам до 17 лет просмотр запрещен"; break;
+		case "G": $mpaarating = "<img src=\"pic/mpaa/G.gif\" title=\"G - РќРµС‚ РІРѕР·СЂР°СЃС‚РЅС‹С… РѕРіСЂР°РЅРёС‡РµРЅРёР№\"/> G - РќРµС‚ РІРѕР·СЂР°СЃС‚РЅС‹С… РѕРіСЂР°РЅРёС‡РµРЅРёР№"; break;
+		case "PG": $mpaarating ="<img src=\"pic/mpaa/PG.gif\" title=\"PG - Р РµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ РїСЂРёСЃСѓС‚СЃС‚РІРёРµ СЂРѕРґРёС‚РµР»РµР№\"/> PG - Р РµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ РїСЂРёСЃСѓС‚СЃС‚РІРёРµ СЂРѕРґРёС‚РµР»РµР№"; break;
+		case "PG-13": $mpaarating = "<img src=\"pic/mpaa/PG-13.gif\" title=\"PG-13 - Р”РµС‚СЏРј РґРѕ 13 Р»РµС‚ РїСЂРѕСЃРјРѕС‚СЂ РЅРµ Р¶РµР»Р°С‚РµР»РµРЅ\"/> PG-13 - Р”РµС‚СЏРј РґРѕ 13 Р»РµС‚ РїСЂРѕСЃРјРѕС‚СЂ РЅРµ Р¶РµР»Р°С‚РµР»РµРЅ"; break;
+		case "R": $mpaarating = "<img src=\"pic/mpaa/R.gif\" title=\"R - Р›РёС†Р°Рј РґРѕ 17 Р»РµС‚ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РїСЂРёСЃСѓС‚СЃС‚РІРёРµ РІР·СЂРѕСЃР»РѕРіРѕ\"/> R - Р›РёС†Р°Рј РґРѕ 17 Р»РµС‚ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РїСЂРёСЃСѓС‚СЃС‚РІРёРµ РІР·СЂРѕСЃР»РѕРіРѕ"; break;
+		case "NC-17": $mpaarating = "<img src=\"pic/mpaa/NC-17.gif\" title=\"NC-17 - Р›РёС†Р°Рј РґРѕ 17 Р»РµС‚ РїСЂРѕСЃРјРѕС‚СЂ Р·Р°РїСЂРµС‰РµРЅ\"/> NC-17 - Р›РёС†Р°Рј РґРѕ 17 Р»РµС‚ РїСЂРѕСЃРјРѕС‚СЂ Р·Р°РїСЂРµС‰РµРЅ"; break;
 	}
 
 	print ('<script type="text/javascript" language="javascript">
 function fillform(){
   //window.opener.document.forms["upload"].elements["name"].value = "'.$rusname.'/ '.$origname.'";
 
-  var content = \'<i>Информация о фильме:</i><br/><b>Жанр:</b> '.$genre.'<br/><br/><b>Оригинальное название:</b> '.$origname.'<br/><b>Год выхода:</b> '.$year.'<br/><b>Режиссер:</b> '.$director.'<br/><b>В ролях:</b> '.$actors.'<br/><b>Выпущено:</b> '.$country.'<br/><b>Продолжительность:</b> '.$time.'<br/><b>Рейтинг IMDB:</b> '.$imdbrating.'<br/><b>Рейтинг кинопоиска:</b> '.$kinopoiskrating.'<br/><b>Рейтинг MPAA:</b> '.$mpaarating.'<br/><b>О фильме:</b><br/>'.$descr.'\';
+  var content = \'<i>РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С„РёР»СЊРјРµ:</i><br/><b>Р–Р°РЅСЂ:</b> '.$genre.'<br/><br/><b>РћСЂРёРіРёРЅР°Р»СЊРЅРѕРµ РЅР°Р·РІР°РЅРёРµ:</b> '.$origname.'<br/><b>Р“РѕРґ РІС‹С…РѕРґР°:</b> '.$year.'<br/><b>Р РµР¶РёСЃСЃРµСЂ:</b> '.$director.'<br/><b>Р’ СЂРѕР»СЏС…:</b> '.$actors.'<br/><b>Р’С‹РїСѓС‰РµРЅРѕ:</b> '.$country.'<br/><b>РџСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ:</b> '.$time.'<br/><b>Р РµР№С‚РёРЅРі IMDB:</b> '.$imdbrating.'<br/><b>Р РµР№С‚РёРЅРі РєРёРЅРѕРїРѕРёСЃРєР°:</b> '.$kinopoiskrating.'<br/><b>Р РµР№С‚РёРЅРі MPAA:</b> '.$mpaarating.'<br/><b>Рћ С„РёР»СЊРјРµ:</b><br/>'.$descr.'\';
 
   KinopoiskDialog.insert(content);
   }
 </script>');
 	print ("<table width=\"100%\" border=\"1\"><tr>
-<td>Жанр:</td><td>$genre</td></tr>
-<td>Русское название:</td><td>$rusname</td></tr>
-<tr><td>Оригинальное название:</td><td>$origname</td></tr>
-<tr><td>В ролях:</td><td>$actors</td></tr>
-<tr><td>Страна производства:</td><td>$country</td></tr>
-<tr><td>Год выхода:</td><td>$year</td></tr>
-<tr><td>Режиссер:</td><td>$director</td></tr>
-<tr><td>Рейтинг MPAA:</td><td>".(($mpaapic)?"<img src=\"pic/mpaa/$mpaapic.gif\"/>":"")."</td></tr>
-<tr><td>Рейтинг IMDB:</td><td>$imdbrating</td></tr>
-<tr><td>Рейтинг Кинопоиска</td><td>$kinopoiskrating</td></tr>
-<tr><td>Продолжительность:</td><td>$time</td></tr>
-<tr><td>Описание:</td><td>$descr</td></tr>");
-	print ('<tr><td align="center">Эта информация верна?</td>
-<td align="center">[<a href="javascript:fillform();">Да, заполнить форму</a>]<br/>[<a href="js/tiny_mce/plugins/kinopoisk/kinopoisk.php">Повторить поиск</a>]<br/>[<a href="javascript:window.close()">Закрыть окно</a>]</td></tr>
+<td>Р–Р°РЅСЂ:</td><td>$genre</td></tr>
+<td>Р СѓСЃСЃРєРѕРµ РЅР°Р·РІР°РЅРёРµ:</td><td>$rusname</td></tr>
+<tr><td>РћСЂРёРіРёРЅР°Р»СЊРЅРѕРµ РЅР°Р·РІР°РЅРёРµ:</td><td>$origname</td></tr>
+<tr><td>Р’ СЂРѕР»СЏС…:</td><td>$actors</td></tr>
+<tr><td>РЎС‚СЂР°РЅР° РїСЂРѕРёР·РІРѕРґСЃС‚РІР°:</td><td>$country</td></tr>
+<tr><td>Р“РѕРґ РІС‹С…РѕРґР°:</td><td>$year</td></tr>
+<tr><td>Р РµР¶РёСЃСЃРµСЂ:</td><td>$director</td></tr>
+<tr><td>Р РµР№С‚РёРЅРі MPAA:</td><td>".(($mpaapic)?"<img src=\"pic/mpaa/$mpaapic.gif\"/>":"")."</td></tr>
+<tr><td>Р РµР№С‚РёРЅРі IMDB:</td><td>$imdbrating</td></tr>
+<tr><td>Р РµР№С‚РёРЅРі РљРёРЅРѕРїРѕРёСЃРєР°</td><td>$kinopoiskrating</td></tr>
+<tr><td>РџСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ:</td><td>$time</td></tr>
+<tr><td>РћРїРёСЃР°РЅРёРµ:</td><td>$descr</td></tr>");
+	print ('<tr><td align="center">Р­С‚Р° РёРЅС„РѕСЂРјР°С†РёСЏ РІРµСЂРЅР°?</td>
+<td align="center">[<a href="javascript:fillform();">Р”Р°, Р·Р°РїРѕР»РЅРёС‚СЊ С„РѕСЂРјСѓ</a>]<br/>[<a href="js/tiny_mce/plugins/kinopoisk/kinopoisk.php">РџРѕРІС‚РѕСЂРёС‚СЊ РїРѕРёСЃРє</a>]<br/>[<a href="javascript:window.close()">Р—Р°РєСЂС‹С‚СЊ РѕРєРЅРѕ</a>]</td></tr>
 </table>');
 }
 

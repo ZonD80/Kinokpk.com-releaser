@@ -22,24 +22,24 @@ if (!$row || $row["banned"])
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_torrent_with_such_id'));
 
 if ($row["times_completed"] == 0)
-stderr($REL_LANG->say_by_key('error'), "Извините, но этот торрент еще никем не скачан.");
+stderr($REL_LANG->say_by_key('error'), "РР·РІРёРЅРёС‚Рµ, РЅРѕ СЌС‚РѕС‚ С‚РѕСЂСЂРµРЅС‚ РµС‰Рµ РЅРёРєРµРј РЅРµ СЃРєР°С‡Р°РЅ.");
 
 if ($row["leechers"] == 0)
-stderr($REL_LANG->say_by_key('error'), "На этой раздаче не нужна помощь т.к. ее никто не качает.");
+stderr($REL_LANG->say_by_key('error'), "РќР° СЌС‚РѕР№ СЂР°Р·РґР°С‡Рµ РЅРµ РЅСѓР¶РЅР° РїРѕРјРѕС‰СЊ С‚.Рє. РµРµ РЅРёРєС‚Рѕ РЅРµ РєР°С‡Р°РµС‚.");
 
 $dt = time() - 24*3600;
 
 if ($row["lr"] > $dt && ($row["lr"]) != 0)
-stderr($REL_LANG->say_by_key('error'), "Извините, но еще не прошли сутки с прошлого запроса вернутся на раздачу.");
+stderr($REL_LANG->say_by_key('error'), "РР·РІРёРЅРёС‚Рµ, РЅРѕ РµС‰Рµ РЅРµ РїСЂРѕС€Р»Рё СЃСѓС‚РєРё СЃ РїСЂРѕС€Р»РѕРіРѕ Р·Р°РїСЂРѕСЃР° РІРµСЂРЅСѓС‚СЃСЏ РЅР° СЂР°Р·РґР°С‡Сѓ.");
 
-$subject = sqlesc("Помогите раздать {$row["name"]}");
+$subject = sqlesc("РџРѕРјРѕРіРёС‚Рµ СЂР°Р·РґР°С‚СЊ {$row["name"]}");
 
-$msg = sqlesc("Здравствуйте!
+$msg = sqlesc("Р—РґСЂР°РІСЃС‚РІСѓР№С‚Рµ!
 
-Ваша помощь необходима в раздаче <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row["name"]))."\">{$row["name"]}</a>
-Если вы решили помочь, но уже удалили торрент-файл, можете скачать его <a href=\"".$REL_SEO->make_link('download','id',$id,'name',translit($row['name']))."\">здесь</a>.
+Р’Р°С€Р° РїРѕРјРѕС‰СЊ РЅРµРѕР±С…РѕРґРёРјР° РІ СЂР°Р·РґР°С‡Рµ <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row["name"]))."\">{$row["name"]}</a>
+Р•СЃР»Рё РІС‹ СЂРµС€РёР»Рё РїРѕРјРѕС‡СЊ, РЅРѕ СѓР¶Рµ СѓРґР°Р»РёР»Рё С‚РѕСЂСЂРµРЅС‚-С„Р°Р№Р», РјРѕР¶РµС‚Рµ СЃРєР°С‡Р°С‚СЊ РµРіРѕ <a href=\"".$REL_SEO->make_link('download','id',$id,'name',translit($row['name']))."\">Р·РґРµСЃСЊ</a>.
 
-Надеюсь на вашу помощь!");
+РќР°РґРµСЋСЃСЊ РЅР° РІР°С€Сѓ РїРѕРјРѕС‰СЊ!");
 
 sql_query("INSERT INTO messages (sender, receiver, poster, added, subject, msg) SELECT $CURUSER[id], userid, 0, ".time().", $subject, $msg FROM snatched WHERE torrent = $id AND userid != $CURUSER[id]") or sqlerr(__FILE__, __LINE__);
 
@@ -47,9 +47,9 @@ sql_query("UPDATE torrents SET last_reseed = ".time()." WHERE id = $id") or sqle
 
 safe_redirect($REL_SEO->make_link('details','id',$id,'name',translit($row['name'])),2);
 
-$REL_TPL->stdhead("Позвать скачавших на торрент $row[name]");
+$REL_TPL->stdhead("РџРѕР·РІР°С‚СЊ СЃРєР°С‡Р°РІС€РёС… РЅР° С‚РѕСЂСЂРµРЅС‚ $row[name]");
 
-stdmsg("Успешно", "Ваш запрос на призыв скачавших выполнен. Ждите результатов в течение суток, иначе повторите запрос.");
+stdmsg("РЈСЃРїРµС€РЅРѕ", "Р’Р°С€ Р·Р°РїСЂРѕСЃ РЅР° РїСЂРёР·С‹РІ СЃРєР°С‡Р°РІС€РёС… РІС‹РїРѕР»РЅРµРЅ. Р–РґРёС‚Рµ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РІ С‚РµС‡РµРЅРёРµ СЃСѓС‚РѕРє, РёРЅР°С‡Рµ РїРѕРІС‚РѕСЂРёС‚Рµ Р·Р°РїСЂРѕСЃ.");
 
 $REL_TPL->stdfoot();
 

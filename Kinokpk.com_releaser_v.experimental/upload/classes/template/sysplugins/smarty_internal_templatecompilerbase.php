@@ -133,7 +133,7 @@ class Smarty_Internal_TemplateCompilerBase {
             return '';
         } else {
             // not an internal compiler tag
-            if (strlen($tag) < 6 || substr($tag, -5) != 'close') {
+            if (mb_strlen($tag) < 6 || substr($tag, -5) != 'close') {
                 // check if tag is a registered object
                 if (isset($this->smarty->registered_objects[$tag]) && isset($args['object_methode'])) {
                     $methode = $args['object_methode'];

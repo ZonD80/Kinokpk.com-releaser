@@ -12,7 +12,7 @@
 require_once "include/bittorrent.php";
 dbconn();
 
-$REL_TPL->stdhead("Аплоадеры");
+$REL_TPL->stdhead("РђРїР»РѕР°РґРµСЂС‹");
 
 loggedinorreturn();
 
@@ -23,8 +23,8 @@ if ($CURUSER['class'] >= UC_MODERATOR)
 	$query = "SELECT id, username, added, ratingsum, donor, warned, enabled, (SELECT MAX(added) FROM torrents WHERE owner=users.id) AS last_added, (SELECT SUM(1) FROM torrents WHERE owner=users.id) AS num_added FROM users WHERE class = ".UC_UPLOADER;
 	$result = sql_query($query);
 	$num = mysql_num_rows($result); // how many uploaders
-	print "<h2>Информация о аплоадерах</h2>";
-	print "<p>У нас " . $num . " аплоадер" . ($num > 1 ? "ов" : "") . "</p>";
+	print "<h2>РРЅС„РѕСЂРјР°С†РёСЏ Рѕ Р°РїР»РѕР°РґРµСЂР°С…</h2>";
+	print "<p>РЈ РЅР°СЃ " . $num . " Р°РїР»РѕР°РґРµСЂ" . ($num > 1 ? "РѕРІ" : "") . "</p>";
 
 	$zerofix = $num - 1; // remove one row because mysql starts at zero
 
@@ -32,11 +32,11 @@ if ($CURUSER['class'] >= UC_MODERATOR)
 	{
 		print "<table cellpadding=4 align=center border=1>";
 		print "<tr>";
-		print "<td class=colhead>Пользователь</td>";
-		print "<td class=colhead>Рейтинг</td>";
-		print "<td class=colhead>Залил&nbsp;торрентов</td>";
-		print "<td class=colhead>Последняя&nbsp;заливка</td>";
-		print "<td class=colhead>Отправить ЛС</td>";
+		print "<td class=colhead>РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ</td>";
+		print "<td class=colhead>Р РµР№С‚РёРЅРі</td>";
+		print "<td class=colhead>Р—Р°Р»РёР»&nbsp;С‚РѕСЂСЂРµРЅС‚РѕРІ</td>";
+		print "<td class=colhead>РџРѕСЃР»РµРґРЅСЏСЏ&nbsp;Р·Р°Р»РёРІРєР°</td>";
+		print "<td class=colhead>РћС‚РїСЂР°РІРёС‚СЊ Р›РЎ</td>";
 		print "</tr>";
 
 		while (list($id,$username,$added,$ratingsum,$donor,$warned,$enabled,$lastadded,$numtorrents) = mysql_fetch_array($result)) {
@@ -49,10 +49,10 @@ if ($CURUSER['class'] >= UC_MODERATOR)
 			print "<td><a href=\"".$REL_SEO->make_link('userdetails','id',$id,'username',translit($username))."\">$username</a> ".get_user_icons(array('donor'=>$donor,'warned'=>$warned,'enabled'=>$enabled))."</td>";
 
 			print "<td>$ratio</td>";
-			print "<td>$numtorrents торрентов</td>";
+			print "<td>$numtorrents С‚РѕСЂСЂРµРЅС‚РѕРІ</td>";
 
 			if ($lastadded)
-			print "<td>" . get_elapsed_time($lastadded) . " назад (" . mkprettytime($lastadded) . ")</td>";
+			print "<td>" . get_elapsed_time($lastadded) . " РЅР°Р·Р°Рґ (" . mkprettytime($lastadded) . ")</td>";
 			else
 			print "<td>---</td>";
 			print "<td align=center><a href=\"".$REL_SEO->make_link('message','action','sendmessage','receiver',$id)."\"><img border=0 src=pic/button_pm.gif></a></td>";

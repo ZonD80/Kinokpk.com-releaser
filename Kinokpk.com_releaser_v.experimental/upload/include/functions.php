@@ -11,18 +11,18 @@
 if(!defined("IN_TRACKER") && !defined("IN_ANNOUNCE")) die("Direct access to this page not allowed");
 
 
-$zodiac[] = array("Козерог", "capricorn.gif", "22-12");
-$zodiac[] = array("Стрелец", "sagittarius.gif", "23-11");
-$zodiac[] = array("Скорпион", "scorpio.gif", "24-10");
-$zodiac[] = array("Весы", "libra.gif", "24-09");
-$zodiac[] = array("Дева", "virgo.gif", "24-08");
-$zodiac[] = array("Лев", "leo.gif", "23-07");
-$zodiac[] = array("Рак", "cancer.gif", "22-06");
-$zodiac[] = array("Близнецы", "gemini.gif", "22-05");
-$zodiac[] = array("Телец", "taurus.gif", "21-04");
-$zodiac[] = array("Овен", "aries.gif", "22-03");
-$zodiac[] = array("Рыбы", "pisces.gif", "21-02");
-$zodiac[] = array("Водолей", "aquarius.gif", "21-01");
+$zodiac[] = array("РљРѕР·РµСЂРѕРі", "capricorn.gif", "22-12");
+$zodiac[] = array("РЎС‚СЂРµР»РµС†", "sagittarius.gif", "23-11");
+$zodiac[] = array("РЎРєРѕСЂРїРёРѕРЅ", "scorpio.gif", "24-10");
+$zodiac[] = array("Р’РµСЃС‹", "libra.gif", "24-09");
+$zodiac[] = array("Р”РµРІР°", "virgo.gif", "24-08");
+$zodiac[] = array("Р›РµРІ", "leo.gif", "23-07");
+$zodiac[] = array("Р Р°Рє", "cancer.gif", "22-06");
+$zodiac[] = array("Р‘Р»РёР·РЅРµС†С‹", "gemini.gif", "22-05");
+$zodiac[] = array("РўРµР»РµС†", "taurus.gif", "21-04");
+$zodiac[] = array("РћРІРµРЅ", "aries.gif", "22-03");
+$zodiac[] = array("Р С‹Р±С‹", "pisces.gif", "21-02");
+$zodiac[] = array("Р’РѕРґРѕР»РµР№", "aquarius.gif", "21-01");
 
 /**
  * Checks username
@@ -37,7 +37,7 @@ function validusername($username)
 	// The following characters are allowed in user names
 	$allowedchars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.";
 
-	for ($i = 0; $i < strlen($username); ++$i)
+	for ($i = 0; $i < mb_strlen($username); ++$i)
 	if (strpos($allowedchars, $username[$i]) === false)
 	return false;
 
@@ -402,8 +402,8 @@ function sqlerr($file = '', $line = '') {
 	$res = sql_query("SELECT id FROM users WHERE class=".UC_SYSOP);
 	while (list($id) = mysql_fetch_array($res)) write_sys_msg($id,'MySQL got error: '.$err.'<br />File: '.$file.'<br />Line: '.$line.'<br />URI: '.$_SERVER['REQUEST_URI'].'<br />User: <a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username'])).'">'.get_user_class_color($CURUSER['class'],$CURUSER['username'].'</a>'),'MySQL error detected!');
 	$text = ("<table border=\"0\" bgcolor=\"blue\" align=\"left\" cellspacing=\"0\" cellpadding=\"10\" style=\"background: blue\">" .
-	"<tr><td class=\"embedded\"><font color=\"white\"><h1>Ошибка в SQL</h1>\n" .
-	"<b>Ответ от сервера MySQL: " . $err . ($file != '' && $line != '' ? "<p>в $file, линия $line</p>" : "") . "<p>Запрос номер $queries.</p></b></font></td></tr></table>");
+	"<tr><td class=\"embedded\"><font color=\"white\"><h1>РћС€РёР±РєР° РІ SQL</h1>\n" .
+	"<b>РћС‚РІРµС‚ РѕС‚ СЃРµСЂРІРµСЂР° MySQL: " . $err . ($file != '' && $line != '' ? "<p>РІ $file, Р»РёРЅРёСЏ $line</p>" : "") . "<p>Р—Р°РїСЂРѕСЃ РЅРѕРјРµСЂ $queries.</p></b></font></td></tr></table>");
 	write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".get_user_class_color($CURUSER['class'],$CURUSER['username'])."</a> SQL ERROR: $text</font>",'sql_errors');
 	print $text;
 	return;
@@ -416,14 +416,14 @@ function sqlerr($file = '', $line = '') {
  */
 function AgeToStr($age)
 {
-	if(($age>=5) && ($age<=14)) $str = "лет";
+	if(($age>=5) && ($age<=14)) $str = "Р»РµС‚";
 	else {
 		$num = $age - (floor($age/10)*10);
 
-		if($num == 1) { $str = "год"; }
-		elseif($num == 0) { $str = "лет"; }
-		elseif(($num>=2) && ($num<=4)) { $str = "года"; }
-		elseif(($num>=5) && ($num<=9)) { $str = "лет"; }
+		if($num == 1) { $str = "РіРѕРґ"; }
+		elseif($num == 0) { $str = "Р»РµС‚"; }
+		elseif(($num>=2) && ($num<=4)) { $str = "РіРѕРґР°"; }
+		elseif(($num>=5) && ($num<=9)) { $str = "Р»РµС‚"; }
 	}
 	return $age . " " . $str ;
 }
@@ -617,7 +617,7 @@ function check_banned_emails ($email) {
 	$wildemail = "*@".$expl[1];
 	$res = sql_query("SELECT id, comment FROM bannedemails WHERE email = ".sqlesc($email)." OR email = ".sqlesc($wildemail)."") or sqlerr(__FILE__, __LINE__);
 	if ($arr = mysql_fetch_assoc($res))
-	stderr("Ошибка!","Этот емайл адресс забанен!<br /><br /><strong>Причина</strong>: $arr[comment]", false);
+	stderr("РћС€РёР±РєР°!","Р­С‚РѕС‚ РµРјР°Р№Р» Р°РґСЂРµСЃСЃ Р·Р°Р±Р°РЅРµРЅ!<br /><br /><strong>РџСЂРёС‡РёРЅР°</strong>: $arr[comment]", false);
 	return;
 }
 
@@ -696,13 +696,13 @@ function get_elapsed_time($U,$showseconds=true){
  */
 function rusdate($num,$type){
 	$rus = array (
-        "year"    => array( "лет", "год", "года", "года", "года", "лет", "лет", "лет", "лет", "лет"),
-        "month"  => array( "месяцев", "месяц", "месяца", "месяца", "месяца", "месяцев", "месяцев", "месяцев", "месяцев", "месяцев"),
-        "week"  => array( "недель", "неделю", "недели", "недели", "недели", "недель", "недель", "недель", "недель", "недель"),
-        "day"   => array( "дней", "день", "дня", "дня", "дня", "дней", "дней", "дней", "дней", "дней"),
-        "hour"    => array( "часов", "час", "часа", "часа", "часа", "часов", "часов", "часов", "часов", "часов"),
-        "minute" => array( "минут", "минуту", "минуты", "минуты", "минуты", "минут", "минут", "минут", "минут", "минут"),
-        "second" => array( "секунд", "секунду", "секунды", "секунды", "секунды", "секунд", "секунд", "секунд", "секунд", "секунд"),
+        "year"    => array( "Р»РµС‚", "РіРѕРґ", "РіРѕРґР°", "РіРѕРґР°", "РіРѕРґР°", "Р»РµС‚", "Р»РµС‚", "Р»РµС‚", "Р»РµС‚", "Р»РµС‚"),
+        "month"  => array( "РјРµСЃСЏС†РµРІ", "РјРµСЃСЏС†", "РјРµСЃСЏС†Р°", "РјРµСЃСЏС†Р°", "РјРµСЃСЏС†Р°", "РјРµСЃСЏС†РµРІ", "РјРµСЃСЏС†РµРІ", "РјРµСЃСЏС†РµРІ", "РјРµСЃСЏС†РµРІ", "РјРµСЃСЏС†РµРІ"),
+        "week"  => array( "РЅРµРґРµР»СЊ", "РЅРµРґРµР»СЋ", "РЅРµРґРµР»Рё", "РЅРµРґРµР»Рё", "РЅРµРґРµР»Рё", "РЅРµРґРµР»СЊ", "РЅРµРґРµР»СЊ", "РЅРµРґРµР»СЊ", "РЅРµРґРµР»СЊ", "РЅРµРґРµР»СЊ"),
+        "day"   => array( "РґРЅРµР№", "РґРµРЅСЊ", "РґРЅСЏ", "РґРЅСЏ", "РґРЅСЏ", "РґРЅРµР№", "РґРЅРµР№", "РґРЅРµР№", "РґРЅРµР№", "РґРЅРµР№"),
+        "hour"    => array( "С‡Р°СЃРѕРІ", "С‡Р°СЃ", "С‡Р°СЃР°", "С‡Р°СЃР°", "С‡Р°СЃР°", "С‡Р°СЃРѕРІ", "С‡Р°СЃРѕРІ", "С‡Р°СЃРѕРІ", "С‡Р°СЃРѕРІ", "С‡Р°СЃРѕРІ"),
+        "minute" => array( "РјРёРЅСѓС‚", "РјРёРЅСѓС‚Сѓ", "РјРёРЅСѓС‚С‹", "РјРёРЅСѓС‚С‹", "РјРёРЅСѓС‚С‹", "РјРёРЅСѓС‚", "РјРёРЅСѓС‚", "РјРёРЅСѓС‚", "РјРёРЅСѓС‚", "РјРёРЅСѓС‚"),
+        "second" => array( "СЃРµРєСѓРЅРґ", "СЃРµРєСѓРЅРґСѓ", "СЃРµРєСѓРЅРґС‹", "СЃРµРєСѓРЅРґС‹", "СЃРµРєСѓРЅРґС‹", "СЃРµРєСѓРЅРґ", "СЃРµРєСѓРЅРґ", "СЃРµРєСѓРЅРґ", "СЃРµРєСѓРЅРґ", "СЃРµРєСѓРЅРґ"),
 	);
 
 	$num = intval($num);
@@ -820,7 +820,7 @@ function userlogin() {
 		return;
 	}
 
-	if (!is_valid_id($_COOKIE["uid"]) || strlen($_COOKIE["pass"]) != 32) {
+	if (!is_valid_id($_COOKIE["uid"]) || mb_strlen($_COOKIE["pass"]) != 32) {
 		die("FATAL ERROR: Cokie ID invalid or cookie pass hash problem.");
 
 	}
@@ -975,10 +975,10 @@ function user_session() {
 		}
 		$allowed_types=array_merge(array('unread', 'inbox', 'outbox'),array_intersect($allowed_types,explode(',',$CURUSER['notifs'])));
 
-		$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
-		$dt_system = time() - $secs_system; // Сегодня минус количество дней
-		$secs_all = $REL_CRON['pm_delete_user_days']*86400; // Количество дней
-		$dt_all = time() - $secs_all; // Сегодня минус количество дней
+		$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // РљРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№
+		$dt_system = time() - $secs_system; // РЎРµРіРѕРґРЅСЏ РјРёРЅСѓСЃ РєРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№
+		$secs_all = $REL_CRON['pm_delete_user_days']*86400; // РљРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№
+		$dt_all = time() - $secs_all; // РЎРµРіРѕРґРЅСЏ РјРёРЅСѓСЃ РєРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№
 
 		foreach ($allowed_types as $type) {
 			if ($type=='torrents') {
@@ -1181,9 +1181,9 @@ function mkprettytime($seconds, $time = true) {
 	$seconds = $seconds+$REL_CONFIG['site_timezone']*3600;
 	$seconds = $seconds-date("Z")+$CURUSER['timezone']*3600;
 	$search = array('January','February','March','April','May','June','July','August','September','October','November','December');
-	$replace = array('января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря');
+	$replace = array('СЏРЅРІР°СЂСЏ','С„РµРІСЂР°Р»СЏ','РјР°СЂС‚Р°','Р°РїСЂРµР»СЏ','РјР°СЏ','РёСЋРЅСЏ','РёСЋР»СЏ','Р°РІРіСѓСЃС‚Р°','СЃРµРЅС‚СЏР±СЂСЏ','РѕРєС‚СЏР±СЂСЏ','РЅРѕСЏР±СЂСЏ','РґРµРєР°Р±СЂСЏ');
 	if ($time == true)
-	$data = @date("j F Y в H:i:s", $seconds);
+	$data = @date("j F Y РІ H:i:s", $seconds);
 	else
 	$data = @date("j F Y", $seconds);
 	if (!$data) $data = 'N/A'; else
@@ -1301,11 +1301,12 @@ function sent_mail($to,$fromname,$fromemail,$subject,$body,$multiplemail='') {
 	global $REL_CONFIG;
 	require_once ROOT_PATH."classes/mail/dSendMail2.inc.php";
 	$m = new dSendMail2;
-	$m->setCharset('windows-1251');
+	$m->setCharset('utf-8');
 	$m->setSubject($subject);
 	$m->setFrom($fromemail,$REL_CONFIG['sitename']);
 	$m->setMessage($body);
 	if ($multiplemail) {
+		return true;
 		$m->setTo($REL_CONFIG['siteemail']);
 		$m->setBcc($multiplemail);
 		$m->groupAmnt = 10;
@@ -1702,7 +1703,7 @@ function prepare_for_commenttable($subres,$subject='',$link='') {
 	while ( $row = mysql_fetch_array ( $subres ) ) {
 		$visited_type = $row['type'].'comments';
 		if ($row['last_access']>(time()-300)) $row['userstate'] = 'online'; else $row['userstate'] = 'offline';
-		if (strlen($row['subject'])>70) $row['subject'] = substr($row['subject'],0,67).'...';
+		if (mb_strlen($row['subject'])>70) $row['subject'] = substr($row['subject'],0,67).'...';
 		if ($row['user']) {
 			$row['ratearea']['comment'] = ratearea($row['ratingsum'],$row['id'],$row['type'],(($CURUSER['id']==$row['user'])?$row['id']:0));
 			$row['ratearea']['user'] = ratearea($row['urating'],$row['user'],'users',$CURUSER['id']);
@@ -1795,7 +1796,7 @@ function cloud3d() {
 		$cloud_links[] = "<br /><a href=\"".$REL_SEO->make_link('browse','cat',$taginfo['id'])."\" style='font-size:". floor($size) . "px;'>$tag</a><br />";
 		$i++;
 	}
-	$cloud_links[$i-1].="Ваш браузер не поддерживает flash!";
+	$cloud_links[$i-1].="Р’Р°С€ Р±СЂР°СѓР·РµСЂ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ flash!";
 	$cloud_html[0] = join("", $cloud_tags);
 	$cloud_html[1] = join("", $cloud_links);
 
@@ -1990,7 +1991,7 @@ function torrenttable_browse($res, $variant = "index") {
  */
 function mkprettymonth($seconds) {
 	$search = array('January','February','March','April','May','June','July','August','September','October','November','December');
-	$replace = array('янв','фев','марта','апреля','мая','июня','июля','авг','сент','окт','ноя','дек');
+	$replace = array('СЏРЅРІ','С„РµРІ','РјР°СЂС‚Р°','Р°РїСЂРµР»СЏ','РјР°СЏ','РёСЋРЅСЏ','РёСЋР»СЏ','Р°РІРі','СЃРµРЅС‚','РѕРєС‚','РЅРѕСЏ','РґРµРє');
 	$data = @date("d F ", $seconds);
 
 	if (!$data) $data = 'N/A'; else
@@ -2159,10 +2160,10 @@ function &make_tree($table='categories',$condition='')
 		$keys = array();
 		while (($node = mysql_fetch_assoc($query)))
 		{
-			//if ($node['childs'] === '1') //если есть поле определяющее наличие дочерних веток
-			//    $node['nodes'] = array();  //то добавляем к записи узел (массив дочерних веток) на данном этапе
-			$nodes[$node['id']] =& $node; //заполняем список веток записями из БД
-			$keys[] = $node['id']; //заполняем список ключей(ID)
+			//if ($node['childs'] === '1') //РµСЃР»Рё РµСЃС‚СЊ РїРѕР»Рµ РѕРїСЂРµРґРµР»СЏСЋС‰РµРµ РЅР°Р»РёС‡РёРµ РґРѕС‡РµСЂРЅРёС… РІРµС‚РѕРє
+			//    $node['nodes'] = array();  //С‚Рѕ РґРѕР±Р°РІР»СЏРµРј Рє Р·Р°РїРёСЃРё СѓР·РµР» (РјР°СЃСЃРёРІ РґРѕС‡РµСЂРЅРёС… РІРµС‚РѕРє) РЅР° РґР°РЅРЅРѕРј СЌС‚Р°РїРµ
+			$nodes[$node['id']] =& $node; //Р·Р°РїРѕР»РЅСЏРµРј СЃРїРёСЃРѕРє РІРµС‚РѕРє Р·Р°РїРёСЃСЏРјРё РёР· Р‘Р”
+			$keys[] = $node['id']; //Р·Р°РїРѕР»РЅСЏРµРј СЃРїРёСЃРѕРє РєР»СЋС‡РµР№(ID)
 			unset($node);
 		}
 		mysql_free_result($query);
@@ -2170,22 +2171,22 @@ function &make_tree($table='categories',$condition='')
 		foreach ($keys as $key)
 		{
 			/**
-			 * если нашли главную ветку(или одну из главных), то добавляем
-			 * её в дерево
+			 * РµСЃР»Рё РЅР°С€Р»Рё РіР»Р°РІРЅСѓСЋ РІРµС‚РєСѓ(РёР»Рё РѕРґРЅСѓ РёР· РіР»Р°РІРЅС‹С…), С‚Рѕ РґРѕР±Р°РІР»СЏРµРј
+			 * РµС‘ РІ РґРµСЂРµРІРѕ
 			 */
 			if ($nodes[$key]['parent_id'] === '0')
 			$tree[] =& $nodes[$key];
 
 			/**
-			 * else находим родительскую ветку и добавляем текущую
-			 * ветку к дочерним элементам родит.ветки.
+			 * else РЅР°С…РѕРґРёРј СЂРѕРґРёС‚РµР»СЊСЃРєСѓСЋ РІРµС‚РєСѓ Рё РґРѕР±Р°РІР»СЏРµРј С‚РµРєСѓС‰СѓСЋ
+			 * РІРµС‚РєСѓ Рє РґРѕС‡РµСЂРЅРёРј СЌР»РµРјРµРЅС‚Р°Рј СЂРѕРґРёС‚.РІРµС‚РєРё.
 			 */
 			else
 			{
-				if (isset($nodes[ $nodes[$key]['parent_id'] ])) //на всякий случай, вдруг в базе есть потерянные ветки
+				if (isset($nodes[ $nodes[$key]['parent_id'] ])) //РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№, РІРґСЂСѓРі РІ Р±Р°Р·Рµ РµСЃС‚СЊ РїРѕС‚РµСЂСЏРЅРЅС‹Рµ РІРµС‚РєРё
 				{
-					if (! isset($nodes[ $nodes[$key]['parent_id'] ]['nodes'])) //если нет поля определяющего наличие дочерних веток
-					$nodes[ $nodes[$key]['parent_id'] ]['nodes'] = array(); //то добавляем к записи узел (массив дочерних веток) на данном этапе
+					if (! isset($nodes[ $nodes[$key]['parent_id'] ]['nodes'])) //РµСЃР»Рё РЅРµС‚ РїРѕР»СЏ РѕРїСЂРµРґРµР»СЏСЋС‰РµРіРѕ РЅР°Р»РёС‡РёРµ РґРѕС‡РµСЂРЅРёС… РІРµС‚РѕРє
+					$nodes[ $nodes[$key]['parent_id'] ]['nodes'] = array(); //С‚Рѕ РґРѕР±Р°РІР»СЏРµРј Рє Р·Р°РїРёСЃРё СѓР·РµР» (РјР°СЃСЃРёРІ РґРѕС‡РµСЂРЅРёС… РІРµС‚РѕРє) РЅР° РґР°РЅРЅРѕРј СЌС‚Р°РїРµ
 
 					$nodes[ $nodes[$key]['parent_id'] ]['nodes'][] =& $nodes[$key];
 				}
@@ -2422,63 +2423,16 @@ function get_trailer($descr) {
  * @return string Transliterated String
  */
 function translit($st,$replace_spaces = true) {
-	$ar = array("а"=>"a","б"=>"b","в"=>"v","г"=>"g","д"=>"d","е"=>"e","ё" =>"yo","ж"=>"j","з"=>"z","и"=>"i","й"=>"i","к"=>"k","л"=>"l","м"=>"m","н"=>"n","о"=>"o","п"=>"p","р"=>"r","с"=>"s","т"=>"t","у"=>"y","ф"=>"f","х"=>"h","ц"=>"c","ч"=>"ch", "ш"=>"sh","щ"=>"sh","ы"=>"i","э"=>"e","ю"=>"u","я"=>"ya",
-"ь"=>"","ъ"=>"",'%'=>'');
-	$alfavitlover = array('ё','й','ц','у','к','е','н','г', 'ш','щ','з','х','ъ','ф','ы','в', 'а','п','р','о','л','д','ж','э', 'я','ч','с','м','и','т','ь','б','ю');
-	$alfavitupper = array('Ё','Й','Ц','У','К','Е','Н','Г', 'Ш','Щ','З','Х','Ъ','Ф','Ы','В', 'А','П','Р','О','Л','Д','Ж','Э', 'Я','Ч','С','М','И','Т','Ь','Б','Ю');
+	$ar = array("Р°"=>"a","Р±"=>"b","РІ"=>"v","Рі"=>"g","Рґ"=>"d","Рµ"=>"e","С‘" =>"yo","Р¶"=>"j","Р·"=>"z","Рё"=>"i","Р№"=>"i","Рє"=>"k","Р»"=>"l","Рј"=>"m","РЅ"=>"n","Рѕ"=>"o","Рї"=>"p","СЂ"=>"r","СЃ"=>"s","С‚"=>"t","Сѓ"=>"y","С„"=>"f","С…"=>"h","С†"=>"c","С‡"=>"ch", "С€"=>"sh","С‰"=>"sh","С‹"=>"i","СЌ"=>"e","СЋ"=>"u","СЏ"=>"ya",
+"СЊ"=>"","СЉ"=>"",'%'=>'');
+	$alfavitlover = array('С‘','Р№','С†','Сѓ','Рє','Рµ','РЅ','Рі', 'С€','С‰','Р·','С…','СЉ','С„','С‹','РІ', 'Р°','Рї','СЂ','Рѕ','Р»','Рґ','Р¶','СЌ', 'СЏ','С‡','СЃ','Рј','Рё','С‚','СЊ','Р±','СЋ');
+	$alfavitupper = array('РЃ','Р™','Р¦','РЈ','Рљ','Р•','Рќ','Р“', 'РЁ','Р©','Р—','РҐ','РЄ','Р¤','Р«','Р’', 'Рђ','Рџ','Р ','Рћ','Р›','Р”','Р–','Р­', 'РЇ','Р§','РЎ','Рњ','Р','Рў','Р¬','Р‘','Р®');
 
 	$st = str_replace($alfavitupper,$alfavitlover,strtolower($st));
 	$st = strtr($st,$ar);
 
 	if ($replace_spaces) $st = str_replace(" ","_",$st);
 	return $st;
-}
-
-/**
- * Encodes data in json (useful for windows-1251 codepage)
- * @param mixed $var Data to encode
- * @return array JSON encoded data
- */
-
-function json_safe_encode($var)
-{
-	return json_encode(json_fix_cyr($var));
-}
-
-function _unescape($str){//функция делает декодирование данных, которые были закодированы js-функцией escape
-	$escape_chars = "0410 0430 0411 0431 0412 0432 0413 0433 0490 0491 0414 0434 0415 0435 0401 0451 0404 0454 0416 0436 0417 0437 0418 0438 0406 0456 0419 0439 041A 043A 041B 043B 041C 043C 041D 043D 041E 043E 041F 043F 0420 0440 0421 0441 0422 0442 0423 0443 0424 0444 0425 0445 0426 0446 0427 0447 0428 0448 0429 0449 042A 044A 042B 044B 042C 044C 042D 044D 042E 044E 042F 044F";
-	$russian_chars = "А а Б б В в Г г Ґ ґ Д д Е е Ё ё Є є Ж ж З з И и І і Й й К к Л л М м Н н О о П п Р р С с Т т У у Ф ф Х х Ц ц Ч ч Ш ш Щ щ Ъ ъ Ы ы Ь ь Э э Ю ю Я я";
-	$e = explode(" ",$escape_chars);
-	$r = explode(" ",$russian_chars);
-	$rus_array = explode("%u",$str);
-	$new_word = str_replace($e,$r,$rus_array);
-	$new_word = str_replace("%20"," ",$new_word);
-	$result=implode("",$new_word);
-
-	return $result;
-}
-/**
- * Fixes json windows-1251 encode
- * @param mixed $var Data to encode
- * @return array JSON encoded data
- */
-function json_fix_cyr($var)
-{
-	if (is_array($var)) {
-		$new = array();
-		foreach ($var as $k => $v) {
-			$new[json_fix_cyr($k)] = json_fix_cyr($v);
-		}
-		$var = $new;
-	} elseif (is_object($var)) {
-		$vars = get_object_vars($var);
-		foreach ($vars as $m => $v) {
-			$var->$m = json_fix_cyr($v);
-		}
-	} elseif (is_string($var)) {
-		$var = iconv('cp1251', 'utf-8', $var);
-	}
-	return $var;
 }
 
 /**
@@ -2495,5 +2449,5 @@ define ("BETA_NOTICE", "\n<br />This isn't complete release of source!");
  * Kinokpk.com releaser's version
  * @var string
  */
-define("RELVERSION","3.30/XBTT alpha");
+define("RELVERSION","3.30/XBTT");
 ?>

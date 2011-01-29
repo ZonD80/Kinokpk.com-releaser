@@ -24,7 +24,7 @@ if ($action=='my') {
 	$fileDir = './';
 
 	require_once(ROOT_PATH."classes/zip/Zip.php");
-	if (strlen($CURUSER['passkey']) != 32) {
+	if (mb_strlen($CURUSER['passkey']) != 32) {
 		$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
 		$REL_DB->query("UPDATE xbt_users SET torrent_pass=".sqlesc($CURUSER[passkey])." WHERE uid=".sqlesc($CURUSER[id]));
 	}
@@ -88,13 +88,13 @@ $row = mysql_fetch_array($res);
 if (!$row)
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
-if ($row['rgid']) $rgcontent = "<a href=\"relgroups.php?id={$row['rgid']}\">".($row['rgimage']?"<img style=\"border:none;\" title=\"Релиз группы {$row['rgname']}\" src=\"{$row['rgimage']}\"/>":'Релиз группы '.$row['rgname'])."</a>&nbsp;";
+if ($row['rgid']) $rgcontent = "<a href=\"relgroups.php?id={$row['rgid']}\">".($row['rgimage']?"<img style=\"border:none;\" title=\"Р РµР»РёР· РіСЂСѓРїРїС‹ {$row['rgname']}\" src=\"{$row['rgimage']}\"/>":'Р РµР»РёР· РіСЂСѓРїРїС‹ '.$row['rgname'])."</a>&nbsp;";
 
 if ((get_user_class()<UC_MODERATOR) && !$row['relgroup_allowed'] && $row['rgid']) stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('private_release_access_denied'),$rgcontent));
 
 
 
-if ($row["filename"] == 'nofile') stderr ("Сообщение","Это релиз без TORRENT файла! Скачать его с нашего сервера невозможно, посмотрите ссылки в описаниии релиза <a href='details.php?id=".$id."'>К описанию релиза</a>");
+if ($row["filename"] == 'nofile') stderr ("РЎРѕРѕР±С‰РµРЅРёРµ","Р­С‚Рѕ СЂРµР»РёР· Р±РµР· TORRENT С„Р°Р№Р»Р°! РЎРєР°С‡Р°С‚СЊ РµРіРѕ СЃ РЅР°С€РµРіРѕ СЃРµСЂРІРµСЂР° РЅРµРІРѕР·РјРѕР¶РЅРѕ, РїРѕСЃРјРѕС‚СЂРёС‚Рµ СЃСЃС‹Р»РєРё РІ РѕРїРёСЃР°РЅРёРёРё СЂРµР»РёР·Р° <a href='details.php?id=".$id."'>Рљ РѕРїРёСЃР°РЅРёСЋ СЂРµР»РёР·Р°</a>");
 
 if ($row['freefor']) {
 	$row['freefor']=explode(',',$row['freefor']);
@@ -146,7 +146,7 @@ if ($dc_magnet) {
 	stderr($REL_LANG->say_by_key('this_is_magnet_title'),$message,'success');
 }
 
-if (strlen($CURUSER['passkey']) != 32) {
+if (mb_strlen($CURUSER['passkey']) != 32) {
 	$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
 	$REL_DB->query("UPDATE xbt_users SET torrent_pass=".sqlesc($CURUSER[passkey])." WHERE uid=".sqlesc($CURUSER[id]));
 }

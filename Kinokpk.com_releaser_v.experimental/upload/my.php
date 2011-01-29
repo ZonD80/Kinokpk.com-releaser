@@ -20,7 +20,7 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('my_my'));
 if ($_GET["emailch"])
 print("<h1>".$REL_LANG->say_by_key('my_mail_updated')."</h1>\n");
 /*else
- print("<h1>Добро пожаловать, <a href=userdetails.php?id=$CURUSER[id]>$CURUSER[username]</a>!</h1>\n");*/
+ print("<h1>Р”РѕР±СЂРѕ РїРѕР¶Р°Р»РѕРІР°С‚СЊ, <a href=userdetails.php?id=$CURUSER[id]>$CURUSER[username]</a>!</h1>\n");*/
 /*
  $country = $_POST["country"];
  print($country.'a1');
@@ -80,7 +80,7 @@ $ct_r = sql_query("SELECT id,name FROM countries ORDER BY name") or die;
 while ($ct_a = mysql_fetch_array($ct_r))
 $countries .= "<option value=$ct_a[id]" . ($CURUSER["country"] == $ct_a['id'] ? " selected" : "") . ">$ct_a[name]</option>\n";
 
-$lang = array('ru'=>'Русский (RU)','en'=>'English (EN-US)','ua'=>'Українська (UA)');
+$lang = array('ru'=>'Р СѓСЃСЃРєРёР№ (RU)','en'=>'English (EN-US)','ua'=>'РЈРєСЂР°С—РЅСЃСЊРєР° (UA)');
 
 $lang_select = '<select class="linkselect" id="language" name="language">';
 foreach ( $lang as $l=>$ldesc ) {
@@ -88,11 +88,11 @@ foreach ( $lang as $l=>$ldesc ) {
 	$lang_select .= '<option value="' . $l . '"' . $selected . '>' . $ldesc . '</option>';
 }
 $lang_select .= '</select>';
-/*основное*/
+/*РѕСЃРЅРѕРІРЅРѕРµ*/
 if (get_user_class() >= UC_ADMINISTRATOR) {
 	print('<div class="sp-wrap"><div class="sp-head folded clickable">');
-	print('<div class="clickable">Добавить себя в поддержку (для администраторов и выше)</div></div><div class="sp-body" style="background: none;">');
-	//print('<div class="clickable">Добавить себя в поддержку (для администраторов и выше)</div>');
+	print('<div class="clickable">Р”РѕР±Р°РІРёС‚СЊ СЃРµР±СЏ РІ РїРѕРґРґРµСЂР¶РєСѓ (РґР»СЏ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂРѕРІ Рё РІС‹С€Рµ)</div></div><div class="sp-body" style="background: none;">');
+	//print('<div class="clickable">Р”РѕР±Р°РІРёС‚СЊ СЃРµР±СЏ РІ РїРѕРґРґРµСЂР¶РєСѓ (РґР»СЏ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂРѕРІ Рё РІС‹С€Рµ)</div>');
 	print('<div width="100%" id="category" style="margin:10px 0px;">');
 
 
@@ -100,16 +100,16 @@ if (get_user_class() >= UC_ADMINISTRATOR) {
 
 	print ('<div style="padding: 5px;">
 				<form action="'.$REL_SEO->make_link('modtask').'" method="POST">');
-	print ( "<div id='my_title'>Поддержка</div>
+	print ( "<div id='my_title'>РџРѕРґРґРµСЂР¶РєР°</div>
 						<div colspan=2 class='up_avatar' style='margin-bottom: 15px;'>
 							<input type=radio name=support value=\"1\"" . ($CURUSER ["supportfor"] ? " checked" : "") . ">{$REL_LANG->say_by_key('yes')}
 							<input type=radio name=support value=\"0\"" . (!$CURUSER["supportfor"] ? " checked" : "") . ">{$REL_LANG->say_by_key('no')}
 						</div>
 			\n" );
 	print ( "
-				<div id='my_title'>Поддержка для:</div>
+				<div id='my_title'>РџРѕРґРґРµСЂР¶РєР° РґР»СЏ:</div>
 				<div colspan=2 class='up_avatar' style='margin-bottom: 15px;'><input type=text size=50 name=supportfor value=\"$supportfor\"></div>
-				<div colspan=\"2\" align=\"right\"><input type=\"hidden\" name=\"action\" value=\"ownsupport\"><input type=\"submit\" value=\"Добавить себя в поддержку (удалить)\"></div>
+				<div colspan=\"2\" align=\"right\"><input type=\"hidden\" name=\"action\" value=\"ownsupport\"><input type=\"submit\" value=\"Р”РѕР±Р°РІРёС‚СЊ СЃРµР±СЏ РІ РїРѕРґРґРµСЂР¶РєСѓ (СѓРґР°Р»РёС‚СЊ)\"></div>
 			
 		</div>
 			</form>
@@ -119,8 +119,8 @@ if (get_user_class() >= UC_ADMINISTRATOR) {
 }
 print ('<form id="myform" method="post" action="'.$REL_SEO->make_link('takeprofedit').'">');
 div($REL_LANG->_('Nickname'),"<input type=\"text\"  name=\"username\" size=\"40\" maxlength=\"40\" value=\"" . htmlspecialchars($CURUSER["username"]) . "\" /> ", 1,'my_title','my_web');
-div($REL_LANG->say_by_key('my_avatar_url'),$CURUSER['avatar']?"<img src=\"".$CURUSER['avatar']."\">":"Нет аватара",1,'my_title','my_avatar');
-div(!$CURUSER['avatar'] ? $REL_LANG->_('Upload avatar') : $REL_LANG->_('Change avatar'), "<a class=\"index\" href=\"".$REL_SEO->make_link('avatarup')."\" onclick=\"javascript:$.facebox({ajax:'".$REL_SEO->make_link('avatarup')."'}); return false;\">Кликните сюда для загрузки</a><br />\n".sprintf($REL_LANG->say_by_key('max_avatar_size'), $REL_CONFIG['avatar_max_width'], $REL_CONFIG['avatar_max_height']), 1,'my_title','up_avatar');
+div($REL_LANG->say_by_key('my_avatar_url'),$CURUSER['avatar']?"<img src=\"".$CURUSER['avatar']."\">":"РќРµС‚ Р°РІР°С‚Р°СЂР°",1,'my_title','my_avatar');
+div(!$CURUSER['avatar'] ? $REL_LANG->_('Upload avatar') : $REL_LANG->_('Change avatar'), "<a class=\"index\" href=\"".$REL_SEO->make_link('avatarup')."\" onclick=\"javascript:$.facebox({ajax:'".$REL_SEO->make_link('avatarup')."'}); return false;\">РљР»РёРєРЅРёС‚Рµ СЃСЋРґР° РґР»СЏ Р·Р°РіСЂСѓР·РєРё</a><br />\n".sprintf($REL_LANG->say_by_key('max_avatar_size'), $REL_CONFIG['avatar_max_width'], $REL_CONFIG['avatar_max_height']), 1,'my_title','up_avatar');
 div($REL_LANG->say_by_key('my_gender'),
 "<p><input type=radio class=\"styled\"  name=gender" . ($CURUSER["gender"] == "1" ? " checked" : "") . " value=1><span>".$REL_LANG->say_by_key('my_gender_male')."</span></p><p>
 <input type=radio class=\"styled\"  name=gender" . ($CURUSER["gender"] == "2" ? " checked" : "") . " value=2><span>".$REL_LANG->say_by_key('my_gender_female')."</span></p><p>
@@ -129,9 +129,9 @@ div($REL_LANG->say_by_key('my_gender'),
 print('<div class="clear"></div>');
 
 div($REL_LANG->say_by_key('my_allow_pm_from'),
-"<p><input type=radio class=\"styled\"  name=acceptpms" . ($CURUSER["acceptpms"] == "yes" ? " checked" : "") . " value=\"yes\"><span>Все (исключая блокированных)</span></p><p>
-<input type=radio class=\"styled\" name=acceptpms" .  ($CURUSER["acceptpms"] == "friends" ? " checked" : "") . " value=\"friends\"><span>Только друзей</span></p><p>
-<input type=radio class=\"styled\" name=acceptpms" .  ($CURUSER["acceptpms"] == "no" ? " checked" : "") . " value=\"no\"><span>Только администрации</span></p>"
+"<p><input type=radio class=\"styled\"  name=acceptpms" . ($CURUSER["acceptpms"] == "yes" ? " checked" : "") . " value=\"yes\"><span>Р’СЃРµ (РёСЃРєР»СЋС‡Р°СЏ Р±Р»РѕРєРёСЂРѕРІР°РЅРЅС‹С…)</span></p><p>
+<input type=radio class=\"styled\" name=acceptpms" .  ($CURUSER["acceptpms"] == "friends" ? " checked" : "") . " value=\"friends\"><span>РўРѕР»СЊРєРѕ РґСЂСѓР·РµР№</span></p><p>
+<input type=radio class=\"styled\" name=acceptpms" .  ($CURUSER["acceptpms"] == "no" ? " checked" : "") . " value=\"no\"><span>РўРѕР»СЊРєРѕ Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё</span></p>"
 ,1 ,'my_title', 'pm_from');
 div($REL_LANG->_("My privacy level"),
 "<p><input type=radio class=\"styled\"  name=privacy" . ($CURUSER["privacy"] == "normal" ? " checked" : "") . " value=\"normal\"><span class=\"small\">{$REL_LANG->_("Normal. Your profile and stats can be viewed by any registered member")}</span></p><p>
@@ -152,7 +152,7 @@ div($REL_LANG->say_by_key('my_delete_after_reply'), "<input type=checkbox class=
 print('<div class="clear"></div>');
 div($REL_LANG->say_by_key('my_sentbox'), "<input type=checkbox class=\"styled\" name=savepms" . ($CURUSER["savepms"] ? " checked" : "") . ">",1,'my_title','my_sentbox');
 print('<div class="clear"></div>');
-//                   $spbegin = "<div style=\"position: static;\" class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"bottom\" width=\"50%\"><i>Открыть список</i></td></tr></table></div><div class=\"sp-body\">";
+//                   $spbegin = "<div style=\"position: static;\" class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"bottom\" width=\"50%\"><i>РћС‚РєСЂС‹С‚СЊ СЃРїРёСЃРѕРє</i></td></tr></table></div><div class=\"sp-body\">";
 //              $spend = "</div></div>";
 div($REL_LANG->_("My notifications"),'<a href="'.$REL_SEO->make_link('mynotifs','settings','').'">'.$REL_LANG->_("Go to configuration page of my notifications").'</a>',1,'my_title','my_sent');
 div($REL_LANG->say_by_key('my_style'), "<select class=\"linkselect\" id=\"stylesheet\" name=stylesheet>\n$stylesheets\n</select>",1,'my_title','my_style');
@@ -162,14 +162,14 @@ print('<div class="clear"></div>');
 
 div($REL_LANG->say_by_key('my_comments'),is_i_notified($CURUSER['id'],'usercomments'),1,'my_title','my_comment');
 
-//мод предупреждений
-print("<div id=\"nam_warner\"><div id=\"my_title\">Уровень предупреждений</div><div align=\"left\" style=\"padding-top: 22px;\">");
+//РјРѕРґ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёР№
+print("<div id=\"nam_warner\"><div id=\"my_title\">РЈСЂРѕРІРµРЅСЊ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёР№</div><div align=\"left\" style=\"padding-top: 22px;\">");
 for($i = 0; $i < $CURUSER["num_warned"]; $i++)
 {
-	$img .= "<a href=\"".$REL_SEO->make_link('mywarned')."\"  target=\"_blank\"><img src=\"pic/star_warned.gif\" alt=\"Уровень предупреждений\" title=\"Уровень предупреждений\"></a>";
+	$img .= "<a href=\"".$REL_SEO->make_link('mywarned')."\"  target=\"_blank\"><img src=\"pic/star_warned.gif\" alt=\"РЈСЂРѕРІРµРЅСЊ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёР№\" title=\"РЈСЂРѕРІРµРЅСЊ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёР№\"></a>";
 }
 if (!$img)
-$img = "Нет предупреждений!&nbsp;";
+$img = "РќРµС‚ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёР№!&nbsp;";
 
 
 
@@ -268,34 +268,34 @@ div($REL_LANG->say_by_key('my_contact'),"
 print('<div class="clear"></div>');
 
 
-div($REL_LANG->say_by_key('my_show_avatars'), "<input type=checkbox class=\"styled\" name=avatars" . ($CURUSER["avatars"] ? " checked" : "") . "> (Пользователи с маленькими каналами могут отключить эту опцию)",1,'my_title','my_show_ava');
-div("Отображать экстра-эффекты<br />Например, снег", "<input type=checkbox class=\"styled\" name=extra_ef" . ($CURUSER["extra_ef"] ? " checked" : "") . "> (Пользователи со слабыми процессорами или видеокартами могут отключить эту опцию)",1,'my_title','my_check');
+div($REL_LANG->say_by_key('my_show_avatars'), "<input type=checkbox class=\"styled\" name=avatars" . ($CURUSER["avatars"] ? " checked" : "") . "> (РџРѕР»СЊР·РѕРІР°С‚РµР»Рё СЃ РјР°Р»РµРЅСЊРєРёРјРё РєР°РЅР°Р»Р°РјРё РјРѕРіСѓС‚ РѕС‚РєР»СЋС‡РёС‚СЊ СЌС‚Сѓ РѕРїС†РёСЋ)",1,'my_title','my_show_ava');
+div("РћС‚РѕР±СЂР°Р¶Р°С‚СЊ СЌРєСЃС‚СЂР°-СЌС„С„РµРєС‚С‹<br />РќР°РїСЂРёРјРµСЂ, СЃРЅРµРі", "<input type=checkbox class=\"styled\" name=extra_ef" . ($CURUSER["extra_ef"] ? " checked" : "") . "> (РџРѕР»СЊР·РѕРІР°С‚РµР»Рё СЃРѕ СЃР»Р°Р±С‹РјРё РїСЂРѕС†РµСЃСЃРѕСЂР°РјРё РёР»Рё РІРёРґРµРѕРєР°СЂС‚Р°РјРё РјРѕРіСѓС‚ РѕС‚РєР»СЋС‡РёС‚СЊ СЌС‚Сѓ РѕРїС†РёСЋ)",1,'my_title','my_check');
 
 div($REL_LANG->say_by_key('my_mail'), "<input type=\"text\" name=\"email\" size=50 value=\"" . htmlspecialchars($CURUSER["email"]) . "\" />", 1,'my_title','my_name');
-print("<div><div align=\"left\" colspan=\"2\" style=\"padding-left: 250px;\"><b>Примечание:</b> Если вы смените ваш Email адрес, то вам придет запрос о подтверждении на ваш новый Email-адрес. Если вы не подтвердите письмо, то Email адрес не будет изменен.</div></div>\n");
-div("Сменить пасскей","<input type=checkbox class=\"styled\" name=resetpasskey value=1 /> (Вы должны перекачать все активные торренты после смены пасскея)", 1,'my_title','my_name');
+print("<div><div align=\"left\" colspan=\"2\" style=\"padding-left: 250px;\"><b>РџСЂРёРјРµС‡Р°РЅРёРµ:</b> Р•СЃР»Рё РІС‹ СЃРјРµРЅРёС‚Рµ РІР°С€ Email Р°РґСЂРµСЃ, С‚Рѕ РІР°Рј РїСЂРёРґРµС‚ Р·Р°РїСЂРѕСЃ Рѕ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРё РЅР° РІР°С€ РЅРѕРІС‹Р№ Email-Р°РґСЂРµСЃ. Р•СЃР»Рё РІС‹ РЅРµ РїРѕРґС‚РІРµСЂРґРёС‚Рµ РїРёСЃСЊРјРѕ, С‚Рѕ Email Р°РґСЂРµСЃ РЅРµ Р±СѓРґРµС‚ РёР·РјРµРЅРµРЅ.</div></div>\n");
+div("РЎРјРµРЅРёС‚СЊ РїР°СЃСЃРєРµР№","<input type=checkbox class=\"styled\" name=resetpasskey value=1 /> (Р’С‹ РґРѕР»Р¶РЅС‹ РїРµСЂРµРєР°С‡Р°С‚СЊ РІСЃРµ Р°РєС‚РёРІРЅС‹Рµ С‚РѕСЂСЂРµРЅС‚С‹ РїРѕСЃР»Рµ СЃРјРµРЅС‹ РїР°СЃСЃРєРµСЏ)", 1,'my_title','my_name');
 
-if (strlen($CURUSER['passkey']) != 32) {
+if (mb_strlen($CURUSER['passkey']) != 32) {
 	$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
 	$REL_DB->query("UPDATE xbt_users SET torrent_pass=".sqlesc($CURUSER[passkey])." WHERE uid=".sqlesc($CURUSER[id]));
 }
-div("Мой пасскей","<b>$CURUSER[passkey]</b>", 1,'my_title','my_name');
-div("Старый пароль", "<input type=\"password\" name=\"oldpassword\" size=\"50\" />", 1,'my_title','my_name');
-div("Сменить пароль", "<input type=\"password\" name=\"chpassword\" size=\"50\" />", 1,'my_title','my_name');
-div("Пароль еще раз", "<input type=\"password\" name=\"passagain\" size=\"50\" />", 1,'my_title','my_name');
+div("РњРѕР№ РїР°СЃСЃРєРµР№","<b>$CURUSER[passkey]</b>", 1,'my_title','my_name');
+div("РЎС‚Р°СЂС‹Р№ РїР°СЂРѕР»СЊ", "<input type=\"password\" name=\"oldpassword\" size=\"50\" />", 1,'my_title','my_name');
+div("РЎРјРµРЅРёС‚СЊ РїР°СЂРѕР»СЊ", "<input type=\"password\" name=\"chpassword\" size=\"50\" />", 1,'my_title','my_name');
+div("РџР°СЂРѕР»СЊ РµС‰Рµ СЂР°Р·", "<input type=\"password\" name=\"passagain\" size=\"50\" />", 1,'my_title','my_name');
 
 ?>
 
 <div class="my_name" style="padding-bottom: 15px;"><input type="submit"
-	value="Обновить профиль" style='height: 25px'> <input type="reset"
-	value="Сбросить изменения" style='height: 25px'></div>
+	value="РћР±РЅРѕРІРёС‚СЊ РїСЂРѕС„РёР»СЊ" style='height: 25px'> <input type="reset"
+	value="РЎР±СЂРѕСЃРёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ" style='height: 25px'></div>
 </div>
 </form>
 </div>
 </div>
 </div>
 <?
-//print("<p><a href=users.php><b>Найти пользователя/Список пользователей</b></a></p>");
+//print("<p><a href=users.php><b>РќР°Р№С‚Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ/РЎРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№</b></a></p>");
 $REL_TPL->stdfoot();
 
 ?>

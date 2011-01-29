@@ -17,7 +17,7 @@ if ($CURUSER) {
 
 	}
 
-	if (!$id) {$content .="<h1>Нет опросов!</h1>".((get_user_class() >= UC_ADMINISTARTOR)?"[<a href=\"".$REL_SEO->make_link('pollsadmin','action','add')."\">Создать новый</a>]":""); } else {
+	if (!$id) {$content .="<h1>РќРµС‚ РѕРїСЂРѕСЃРѕРІ!</h1>".((get_user_class() >= UC_ADMINISTARTOR)?"[<a href=\"".$REL_SEO->make_link('pollsadmin','action','add')."\">РЎРѕР·РґР°С‚СЊ РЅРѕРІС‹Р№</a>]":""); } else {
 
 		$pquestion = array();
 		$pstart = array();
@@ -73,10 +73,10 @@ if ($CURUSER) {
 
 		$content .= '<div id="polls" style="width: 100% ; border:1;">
 		<ul class="polls_title">
-			<li style="margin:0px;"><h4 style="margin:0px; text-align: center;">Опрос № '.$id.'	</h4>&nbsp;&nbsp;&nbsp;&nbsp;Открыт: '.mkprettytime($pstart).(!is_null($pexp)?(($pexp > time())?", заканчивается: ".mkprettytime($pexp):", <font color=\"red\">закончен</font>: ".mkprettytime($pexp)):'').'</li>
+			<li style="margin:0px;"><h4 style="margin:0px; text-align: center;">РћРїСЂРѕСЃ в„– '.$id.'	</h4>&nbsp;&nbsp;&nbsp;&nbsp;РћС‚РєСЂС‹С‚: '.mkprettytime($pstart).(!is_null($pexp)?(($pexp > time())?", Р·Р°РєР°РЅС‡РёРІР°РµС‚СЃСЏ: ".mkprettytime($pexp):", <font color=\"red\">Р·Р°РєРѕРЅС‡РµРЅ</font>: ".mkprettytime($pexp)):'').'</li>
 		</ul>
 		<ul class="polls_title_q">
-			<li class="colheadli"><h3 style="margin-top: 7px;margin-bottom:0;">'.$pquestion.'</h3>'.((get_user_class() >= UC_ADMINISTRATOR)?" <span style=\"margin-left: 335px;\">[<a href=\"".$REL_SEO->make_link('pollsadmin','action','add')."\">Создать новый</a>] [<a href=\"".$REL_SEO->make_link('pollsadmin','action','edit','id',$id)."\">Редактировать</a>] [<a href=\"".$REL_SEO->make_link('pollsadmin','action','delete','id',$id)."\" onClick=\"return confirm('Вы уверены?');\">Удалить</a>]":"").'</span></li>
+			<li class="colheadli"><h3 style="margin-top: 7px;margin-bottom:0;">'.$pquestion.'</h3>'.((get_user_class() >= UC_ADMINISTRATOR)?" <span style=\"margin-left: 335px;\">[<a href=\"".$REL_SEO->make_link('pollsadmin','action','add')."\">РЎРѕР·РґР°С‚СЊ РЅРѕРІС‹Р№</a>] [<a href=\"".$REL_SEO->make_link('pollsadmin','action','edit','id',$id)."\">Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ</a>] [<a href=\"".$REL_SEO->make_link('pollsadmin','action','delete','id',$id)."\" onClick=\"return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?');\">РЈРґР°Р»РёС‚СЊ</a>]":"").'</span></li>
 		</ul>';
 
 		foreach ($sids as $sid)
@@ -111,7 +111,7 @@ if ($CURUSER) {
 				if (!is_null($vid)) $votecount[$votedrow]++;
 
 				if ((($public) || (get_user_class() >= UC_MODERATOR)) && !is_null($vid))
-				$usercode[$votedrow] .= "<a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',$user['username'])."\">".get_user_class_color($user['class'],$user['username'])."</a>".((get_user_class() >= UC_MODERATOR)?" [<a onClick=\"return confirm('Удалить этот голос?')\" href=\"".$REL_SEO->make_link('polloverview','deletevote','','vid',$vid)."\">D</a>] ":" ");
+				$usercode[$votedrow] .= "<a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',$user['username'])."\">".get_user_class_color($user['class'],$user['username'])."</a>".((get_user_class() >= UC_MODERATOR)?" [<a onClick=\"return confirm('РЈРґР°Р»РёС‚СЊ СЌС‚РѕС‚ РіРѕР»РѕСЃ?')\" href=\"".$REL_SEO->make_link('polloverview','deletevote','','vid',$vid)."\">D</a>] ":" ");
 
 				if (($votecount[$votedrow]) >= $maxvotes) $maxvotes = $votecount[$votedrow];
 
@@ -126,23 +126,23 @@ if ($CURUSER) {
 			if (!$percent) $percent = 0;
 			//$content .="<ul><dt class=\"polls_r\">";
 			if ($vsid == $voted)
-			$content .="<ul><li class=\"polls_r\"><b>".$sidvals[$sidkey]." - ваш голос</b>";
+			$content .="<ul><li class=\"polls_r\"><b>".$sidvals[$sidkey]." - РІР°С€ РіРѕР»РѕСЃ</b>";
 			elseif (((!is_null($pexp) && ($pexp > time())) || is_null($pexp)) && !$voted) $content .="<form name=\"voteform\" method=\"post\" action=\"".$REL_SEO->make_link('polloverview','vote','','id',$id)."\"><ul><li class=\"polls_r\">
   <input type=\"radio\" name=\"vote\" value=\"$vsid\" />
   <input type=\"hidden\" name=\"type\" value=\"$ptype\" />".$sidvals[$sidkey];
 			else $content .= "<ul><li class=\"polls_r\">".$sidvals[$sidkey];
-			$content .="</li><li class=\"polls_l\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_left.gif\" alt=\"left\" /><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar.gif\" alt=\"center\" height=\"12\" width=\"".round($percentpervote*$votecount[$vsid])."%\" /><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_right.gif\" alt=\"right\" />&nbsp;&nbsp;$percent%, голосов: ".$votecount[$vsid]."</li></ul>";
+			$content .="</li><li class=\"polls_l\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_left.gif\" alt=\"left\" /><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar.gif\" alt=\"center\" height=\"12\" width=\"".round($percentpervote*$votecount[$vsid])."%\" /><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_right.gif\" alt=\"right\" />&nbsp;&nbsp;$percent%, РіРѕР»РѕСЃРѕРІ: ".$votecount[$vsid]."</li></ul>";
 		}
 		if (((!is_null($pexp) && ($pexp > time())) || is_null($pexp)) && !$voted) $novote=true;
-		if ($novote) $content .="<ul class=\"polls_f\"><li><input type=\"submit\" class=\"button\" value=\"Голосовать за этот вариант!\" style=\"margin-top: 2px;\"/></li>";
-		elseif (!is_null($pexp) && ($pexp < time())) $content .='<ul><li>Опрос закрыт</li>';
-		elseif ($voted) $content .='<ul><li class="pollsend">Вы уже голосовали в этом опросе</li>';
-		$content .='<li style="text-align:center; float:left;">Всего голосов: '.$tvotes.', Комментариев: '.$comments.' [<a href="'.$REL_SEO->make_link('polloverview','id',$id).'"><b>Подробнее</b></a>] [<a href="'.$REL_SEO->make_link('polloverview','id',$id).'#comments"><b>Комментировать</b></a>] [<a href="'.$REL_SEO->make_link('pollsarchive').'"><b>Архив опросов</b></a>]</li></ul>'.($novote?'</form>':'');
+		if ($novote) $content .="<ul class=\"polls_f\"><li><input type=\"submit\" class=\"button\" value=\"Р“РѕР»РѕСЃРѕРІР°С‚СЊ Р·Р° СЌС‚РѕС‚ РІР°СЂРёР°РЅС‚!\" style=\"margin-top: 2px;\"/></li>";
+		elseif (!is_null($pexp) && ($pexp < time())) $content .='<ul><li>РћРїСЂРѕСЃ Р·Р°РєСЂС‹С‚</li>';
+		elseif ($voted) $content .='<ul><li class="pollsend">Р’С‹ СѓР¶Рµ РіРѕР»РѕСЃРѕРІР°Р»Рё РІ СЌС‚РѕРј РѕРїСЂРѕСЃРµ</li>';
+		$content .='<li style="text-align:center; float:left;">Р’СЃРµРіРѕ РіРѕР»РѕСЃРѕРІ: '.$tvotes.', РљРѕРјРјРµРЅС‚Р°СЂРёРµРІ: '.$comments.' [<a href="'.$REL_SEO->make_link('polloverview','id',$id).'"><b>РџРѕРґСЂРѕР±РЅРµРµ</b></a>] [<a href="'.$REL_SEO->make_link('polloverview','id',$id).'#comments"><b>РљРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ</b></a>] [<a href="'.$REL_SEO->make_link('pollsarchive').'"><b>РђСЂС…РёРІ РѕРїСЂРѕСЃРѕРІ</b></a>]</li></ul>'.($novote?'</form>':'');
 
 		$content .= "</div>";
 	}
 
 
-} else $content = "<div align=\"center\"><h1>Войдите, чтобы учавствовать в опросе</h1></div>";
+} else $content = "<div align=\"center\"><h1>Р’РѕР№РґРёС‚Рµ, С‡С‚РѕР±С‹ СѓС‡Р°РІСЃС‚РІРѕРІР°С‚СЊ РІ РѕРїСЂРѕСЃРµ</h1></div>";
 
 ?>

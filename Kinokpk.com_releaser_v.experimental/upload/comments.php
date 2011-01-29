@@ -50,13 +50,13 @@ if ($action == "add")
 		if ($last_pmrow[0]){
 			if (($REL_CONFIG['as_timeout'] > round($last_pmrow[0]['seconds'])) && $REL_CONFIG['as_timeout']) {
 				$seconds =  $REL_CONFIG['as_timeout'] - round($last_pmrow[0]['seconds']);
-				stderr($REL_LANG->say_by_key('error'),"На нашем сайте стоит защита от флуда, пожалуйста, повторите попытку через $seconds секунд. <a href=\"javascript: history.go(-1)\">Назад</a>");
+				stderr($REL_LANG->say_by_key('error'),"РќР° РЅР°С€РµРј СЃР°Р№С‚Рµ СЃС‚РѕРёС‚ Р·Р°С‰РёС‚Р° РѕС‚ С„Р»СѓРґР°, РїРѕР¶Р°Р»СѓР№СЃС‚Р°, РїРѕРІС‚РѕСЂРёС‚Рµ РїРѕРїС‹С‚РєСѓ С‡РµСЂРµР· $seconds СЃРµРєСѓРЅРґ. <a href=\"javascript: history.go(-1)\">РќР°Р·Р°Рґ</a>");
 			}
 
 			if ($REL_CONFIG['as_check_messages'] && ($last_pmrow[0]['msg'] == $text) && ($last_pmrow[1]['msg'] == $text) && ($last_pmrow[2]['msg'] == $text) && ($last_pmrow[3]['msg'] == $text)) {
 				$msgview='';
 				foreach ($msgids as $key => $msgid){
-					$msgview.= "\n<a href=\"".$REL_SEO->make_link('details','id',$torids[$key])."#comm$msgid\">Комментарий ID={$msgid}</a> от пользователя ".$CURUSER['username'];
+					$msgview.= "\n<a href=\"".$REL_SEO->make_link('details','id',$torids[$key])."#comm$msgid\">РљРѕРјРјРµРЅС‚Р°СЂРёР№ ID={$msgid}</a> РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ ".$CURUSER['username'];
 				}
 				$modcomment = sql_query("SELECT modcomment FROM users WHERE id=".$CURUSER['id']);
 				$modcomment = mysql_result($modcomment,0);
@@ -65,7 +65,7 @@ if ($action == "add")
 
 					while (list($admin) = mysql_fetch_array($arow)) {
 						sql_query("INSERT INTO messages (poster, sender, receiver, added, msg, subject, location) VALUES(0, 0,
-						$admin, '" . time() . "', 'Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".$CURUSER['username']."</a> может быть спамером, т.к. его 5 последних посланных комментариев полностью совпадают.$msgview', 'Сообщение о спаме!', 1)") or sqlerr(__FILE__, __LINE__);
+						$admin, '" . time() . "', 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".$CURUSER['username']."</a> РјРѕР¶РµС‚ Р±С‹С‚СЊ СЃРїР°РјРµСЂРѕРј, С‚.Рє. РµРіРѕ 5 РїРѕСЃР»РµРґРЅРёС… РїРѕСЃР»Р°РЅРЅС‹С… РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ РїРѕР»РЅРѕСЃС‚СЊСЋ СЃРѕРІРїР°РґР°СЋС‚.$msgview', 'РЎРѕРѕР±С‰РµРЅРёРµ Рѕ СЃРїР°РјРµ!', 1)") or sqlerr(__FILE__, __LINE__);
 					}
 					$modcomment .= "\n".time()." - Maybe spammer in comments";
 					sql_query("UPDATE users SET modcomment = ".sqlesc($modcomment)." WHERE id =".$CURUSER['id']);
@@ -77,17 +77,15 @@ if ($action == "add")
 
 					while (list($admin) = mysql_fetch_array($arow)) {
 						sql_query("INSERT INTO messages (poster, sender, receiver, added, msg, subject, location) VALUES(0, 0,
-						$admin, '" . time() . "', 'Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".$CURUSER['username']."</a> забанен системой за спам, его IP адрес (".$CURUSER['ip'].")', 'Сообщение о спаме [бан]!', 1)") or sqlerr(__FILE__, __LINE__);
-						stderr("Поздравляем!","Вы успешно забанены системой за спам в комментариях! Если вы не согласны с решением системы, <a href=\"".$REL_SEO->make_link('contact')."\">подайте жалобу админам</a>.");
+						$admin, '" . time() . "', 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".$CURUSER['username']."</a> Р·Р°Р±Р°РЅРµРЅ СЃРёСЃС‚РµРјРѕР№ Р·Р° СЃРїР°Рј, РµРіРѕ IP Р°РґСЂРµСЃ (".$CURUSER['ip'].")', 'РЎРѕРѕР±С‰РµРЅРёРµ Рѕ СЃРїР°РјРµ [Р±Р°РЅ]!', 1)") or sqlerr(__FILE__, __LINE__);
+						stderr("РџРѕР·РґСЂР°РІР»СЏРµРј!","Р’С‹ СѓСЃРїРµС€РЅРѕ Р·Р°Р±Р°РЅРµРЅС‹ СЃРёСЃС‚РµРјРѕР№ Р·Р° СЃРїР°Рј РІ РєРѕРјРјРµРЅС‚Р°СЂРёСЏС…! Р•СЃР»Рё РІС‹ РЅРµ СЃРѕРіР»Р°СЃРЅС‹ СЃ СЂРµС€РµРЅРёРµРј СЃРёСЃС‚РµРјС‹, <a href=\"".$REL_SEO->make_link('contact')."\">РїРѕРґР°Р№С‚Рµ Р¶Р°Р»РѕР±Сѓ Р°РґРјРёРЅР°Рј</a>.");
 					}
 				}
-				stderr($REL_LANG->say_by_key('error'),"На нашем сайте стоит защита от спама, ваши 5 последних комментариев совпадают. В отсылке комментария отказано. <b><u>ВНИМАНИЕ! ЕСЛИ ВЫ ЕЩЕ РАЗ ПОПЫТАЕТЕСЬ ОТПРАВИТЬ ИДЕНТИЧНОЕ СООБЩЕНИЕ, ВЫ БУДЕТЕ АВТОМАТИЧЕСКИ ЗАБЛОКИРОВАНЫ СИСТЕМОЙ!!!</u></b> <a href=\"javascript: history.go(-1)\">Назад</a>");
+				stderr($REL_LANG->say_by_key('error'),"РќР° РЅР°С€РµРј СЃР°Р№С‚Рµ СЃС‚РѕРёС‚ Р·Р°С‰РёС‚Р° РѕС‚ СЃРїР°РјР°, РІР°С€Рё 5 РїРѕСЃР»РµРґРЅРёС… РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ СЃРѕРІРїР°РґР°СЋС‚. Р’ РѕС‚СЃС‹Р»РєРµ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ РѕС‚РєР°Р·Р°РЅРѕ. <b><u>Р’РќРРњРђРќРР•! Р•РЎР›Р Р’Р« Р•Р©Р• Р РђР— РџРћРџР«РўРђР•РўР•РЎР¬ РћРўРџР РђР’РРўР¬ РР”Р•РќРўРР§РќРћР• РЎРћРћР‘Р©Р•РќРР•, Р’Р« Р‘РЈР”Р•РўР• РђР’РўРћРњРђРўРР§Р•РЎРљР Р—РђР‘Р›РћРљРР РћР’РђРќР« РЎРРЎРўР•РњРћР™!!!</u></b> <a href=\"javascript: history.go(-1)\">РќР°Р·Р°Рґ</a>");
 
 			}
 		}
-	
-		if (REL_AJAX)
-		$text = iconv('utf-8','windows-1251',$text);
+
 		// ANITSPAM SYSTEM END
 		sql_query("INSERT INTO comments (user, toid, added, text, ip, type) VALUES (" .
 		$CURUSER["id"] . ",$to_id, '" . time() . "', " . sqlesc($text) .
@@ -100,11 +98,11 @@ if ($action == "add")
 
 		sql_query("UPDATE {$allowed_types[$type]} SET comments = comments + 1".($type=='forum'?", lastposted_id=$newid":'')." WHERE id = $to_id") or sqlerr(__FILE__,__LINE__);
 		clear_comment_caches($type);
-		/////////////////СЛЕЖЕНИЕ ЗА КОММЕНТАМИ/////////////////
+		/////////////////РЎР›Р•Р–Р•РќРР• Р—Рђ РљРћРњРњР•РќРўРђРњР/////////////////
 		
 		send_comment_notifs($to_id,"<a href=\"$returnto\">$name</a>","{$type}comments");
 
-		/////////////////СЛЕЖЕНИЕ ЗА КОММЕНТАМИ/////////////////
+		/////////////////РЎР›Р•Р–Р•РќРР• Р—Рђ РљРћРњРњР•РќРўРђРњР/////////////////
 		if (!REL_AJAX) {
 			safe_redirect($returnto);
 			stderr($REL_LANG->_('Successfull'),$REL_LANG->_('Comment added'),'success'); }

@@ -1,26 +1,26 @@
-#facebox .b {
+#facebox_trailer .b,#facebox .b {
 	background: url(../pic/facebox/b.png);
 }
 
-#facebox .tl {
+#facebox .tl,#facebox_trailer .tl {
 	background: url(../pic/facebox/fbx-border-sprite.png) 0 0;
 	width: 10px;
 	height: 10px;
 }
 
-#facebox .tr {
+#facebox .tr,#facebox_trailer .tr {
 	background: url(../pic/facebox/fbx-border-sprite.png) -10px 0;
 	width: 10px;
 	height: 10px;
 }
 
-#facebox .bl {
+#facebox .bl,#facebox_trailer .bl {
 	background: url(../pic/facebox/fbx-border-sprite.png) -20px 0;
 	width: 10px;
 	height: 10px;
 }
 
-#facebox .br {
+#facebox .br,#facebox_trailer .br {
 	background: url(../pic/facebox/fbx-border-sprite.png) -30px 0;
 	width: 10px;
 	height: 10px;
@@ -32,52 +32,55 @@
 	left: 0;
 	z-index: 100;
 	text-align: left;
+	
 }
 
-#facebox .popup {
+#facebox .popup,#facebox_trailer .popup {
 	position: relative;
 }
 
-#facebox table {
+#facebox table,#facebox_trailer table {
 	border-collapse: collapse;
+	background-color:none;
 }
 
-#facebox td {
+#facebox td,#facebox_trailer td {
 	border: 0;
 	padding: 0;
 }
 
-#facebox .body {
+#facebox .body,#facebox_trailer .body {
 	padding: 10px;
 	background: #fff;
 	width: 370px;
 }
 
-#facebox .loading {
+#facebox .loading,#facebox_trailer .loading {
 	text-align: center;
 }
 
-#facebox .image {
+#facebox .image,#facebox_trailer .image {
 	text-align: center;
 }
 
-#facebox img {
+#facebox img,#facebox_trailer img {
 	border: 0;
 	margin: 0;
 	max-height: 500px;
 }
 
-#facebox .footer {
+#facebox .footer,#facebox_trailer .footer {
 	border-top: 1px solid #DDDDDD;
 	padding-top: 5px;
 	margin-top: 10px;
 	text-align: right;
 }
 
-#facebox .footer img {
+#facebox .footer img,#facebox_trailer .footer img {
 	vertical-align: middle;
 }
 
+#facebox_trailer .tl,#facebox_trailer .tr,#facebox_trailer .bl,#facebox_trailer .br,
 #facebox .tl,#facebox .tr,#facebox .bl,#facebox .br {
 	height: 10px;
 	width: 10px;

@@ -16,7 +16,7 @@ if (!is_valid_id($newsid)) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->
 //$action = $_GET["action"];
 //$returnto = $_GET["returnto"];
 
-$REL_TPL->stdhead("Комментирование новости");
+$REL_TPL->stdhead("РљРѕРјРјРµРЅС‚РёСЂРѕРІР°РЅРёРµ РЅРѕРІРѕСЃС‚Рё");
 
 
 if (isset($_GET['id'])) {
@@ -28,9 +28,9 @@ if (isset($_GET['id'])) {
 	$added = mkprettytime($news['added']) . " (" . (get_elapsed_time($news["added"],false)) . " {$REL_LANG->say_by_key('ago')})";
 	print("<h1>{$news['subject']}</h1>\n");
 	print("<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n" .
- "<tr><td class=\"colhead\">Содержание&nbsp;<a href=\"".$REL_SEO->make_link('newsoverview','id',$newsid)."#comments\">Комментировать</a></td></tr>\n");
+ "<tr><td class=\"colhead\">РЎРѕРґРµСЂР¶Р°РЅРёРµ&nbsp;<a href=\"".$REL_SEO->make_link('newsoverview','id',$newsid)."#comments\">РљРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ</a></td></tr>\n");
 	print("<tr><td style=\"vertical-align: top; text-align: left;\">".format_comment($news['body'])."</td></tr>\n");
-	print("<tr align=\"right\"><td class=\"colhead\">Добавлена:&nbsp;{$added}</td></tr>\n");
+	print("<tr align=\"right\"><td class=\"colhead\">Р”РѕР±Р°РІР»РµРЅР°:&nbsp;{$added}</td></tr>\n");
 
 	print("</table><br />\n");
 
@@ -44,10 +44,10 @@ if (isset($_GET['id'])) {
 
 		print('<div id="newcomment_placeholder">'."<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">");
 		print("<tr><td class=colhead align=\"left\" colspan=\"2\">");
-		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев к новости</div>");
-		print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('newsoverview','id',$newsid)."#comments\" class=altlink_white>Добавить комментарий</a></div>");
+		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: РЎРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ Рє РЅРѕРІРѕСЃС‚Рё</div>");
+		print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('newsoverview','id',$newsid)."#comments\" class=altlink_white>Р”РѕР±Р°РІРёС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёР№</a></div>");
 		print("</td></tr><tr><td align=\"center\">");
-		print("Комментариев нет. <a href=\"".$REL_SEO->make_link('newsoverview','id',$newsid)."#comments\">Желаете добавить?</a>");
+		print("РљРѕРјРјРµРЅС‚Р°СЂРёРµРІ РЅРµС‚. <a href=\"".$REL_SEO->make_link('newsoverview','id',$newsid)."#comments\">Р–РµР»Р°РµС‚Рµ РґРѕР±Р°РІРёС‚СЊ?</a>");
 		print("</td></tr></table><br /></div>");
 
 	}
@@ -64,8 +64,8 @@ if (isset($_GET['id'])) {
 
 		print("<table class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >");
 		print("<tr><td class=\"colhead\" align=\"center\" >");
-		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>");
-		print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('newsoverview','id',$newsid)."#comments\" class=altlink_white>Добавить комментарий</a></div>");
+		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: РЎРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ</div>");
+		print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('newsoverview','id',$newsid)."#comments\" class=altlink_white>Р”РѕР±Р°РІРёС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёР№</a></div>");
 		print("</td></tr>");
 
 		print("<tr><td>");

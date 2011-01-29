@@ -22,14 +22,14 @@ $row = mysql_fetch_array($res2);
 $count = $row[0];
 
 if (!$count){
-	stderr("Извините, но сообщения не найдены.");
+	stderr("РР·РІРёРЅРёС‚Рµ, РЅРѕ СЃРѕРѕР±С‰РµРЅРёСЏ РЅРµ РЅР°Р№РґРµРЅС‹.");
 }
 
 $perpage = 50;
 
 list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('spam'));
 
-$REL_TPL->stdhead("ЛС пользователей");
+$REL_TPL->stdhead("Р›РЎ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№");
 
 ?>
 
@@ -38,23 +38,23 @@ $REL_TPL->stdhead("ЛС пользователей");
 
 <table border="1" cellspacing="1" cellpadding="1" width="100%">
 	<tr>
-		<td colspan="5" class=colhead align=center>Просмотр сообщений (всего <font
+		<td colspan="5" class=colhead align=center>РџСЂРѕСЃРјРѕС‚СЂ СЃРѕРѕР±С‰РµРЅРёР№ (РІСЃРµРіРѕ <font
 			color="red"><?=$count?></font>)</td>
 	</tr>
 	<tr>
 		<td colspan="5">
 		<div><?=$pagertop?></div>
 		<div style="float: right;"><input type="submit"
-			value="Удалить выбранное!" onClick="return confirm('Вы уверены?')"></div>
+			value="РЈРґР°Р»РёС‚СЊ РІС‹Р±СЂР°РЅРЅРѕРµ!" onClick="return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?')"></div>
 		</td>
 	</tr>
 	<tr>
-		<td class=colhead align=center>Отправитель/Получатель</td>
+		<td class=colhead align=center>РћС‚РїСЂР°РІРёС‚РµР»СЊ/РџРѕР»СѓС‡Р°С‚РµР»СЊ</td>
 		<td class=colhead align=center>ID</td>
-		<td class=colhead align=center>Содержание</td>
-		<td class=colhead align=center>Дата</td>
+		<td class=colhead align=center>РЎРѕРґРµСЂР¶Р°РЅРёРµ</td>
+		<td class=colhead align=center>Р”Р°С‚Р°</td>
 		<td class=colhead>
-		<center><INPUT type="checkbox" title="Выбрать все" value="Выбрать все"
+		<center><INPUT type="checkbox" title="Р’С‹Р±СЂР°С‚СЊ РІСЃРµ" value="Р’С‹Р±СЂР°С‚СЊ РІСЃРµ"
 			id="toggle-all"></center>
 		</td>
 	</tr>
@@ -67,7 +67,7 @@ $REL_TPL->stdhead("ЛС пользователей");
 		$arr2 = mysql_fetch_assoc($res2);
 
 		if($arr["receiver"] == 0 or !$arr["receiver"]){
-			$receiver = "<strike><b>Неизвестен</b></strike>";
+			$receiver = "<strike><b>РќРµРёР·РІРµСЃС‚РµРЅ</b></strike>";
 		} else {
 			$receiver = "<a href=\"".$REL_SEO->make_link('userdetails','id',$arr["receiver"],'username',translit($arr2["username"]))."\">".get_user_class_color($arr2["class"], $arr2["username"])."</a>";
 		}
@@ -76,7 +76,7 @@ $REL_TPL->stdhead("ЛС пользователей");
 		$arr3 = mysql_fetch_assoc($res3);
 
 		if($arr["sender"] == 0){
-			$sender = "<font color=red><b>Системное</b></font>";
+			$sender = "<font color=red><b>РЎРёСЃС‚РµРјРЅРѕРµ</b></font>";
 		} else {
 			$sender = "<a href=\"".$REL_SEO->make_link('userdetails','id',$arr['sender'],'username',translit($arr3["username"]))."\">".get_user_class_color($arr3["class"], $arr3["username"])."</a>";
 		}
@@ -84,8 +84,8 @@ $REL_TPL->stdhead("ЛС пользователей");
 		$added = mkprettytime($arr['added']);
 
 		print("<td align='left'>
-        <div style='padding-top:5px; padding-bottom:10px;'>Отправитель:&nbsp;".$sender."</div>
-        <div style='padding-top:10px; padding-bottom:5px;'>Получатель:&nbsp;".$receiver."</div>
+        <div style='padding-top:5px; padding-bottom:10px;'>РћС‚РїСЂР°РІРёС‚РµР»СЊ:&nbsp;".$sender."</div>
+        <div style='padding-top:10px; padding-bottom:5px;'>РџРѕР»СѓС‡Р°С‚РµР»СЊ:&nbsp;".$receiver."</div>
         </td><td align=center><a href=\"".$REL_SEO->make_link('message','action','viewmessage','id',$arr["id"])."\">".$arr["id"]."</a></td>
         <td>$msg</td>
         <td align=center>$added</td>");
@@ -96,8 +96,8 @@ $REL_TPL->stdhead("ЛС пользователей");
 		<tr>
 			<td class=colhead colspan="4"></td>
 			<td class=colhead>
-			<center><INPUT type="checkbox" title="Выбрать все"
-				value="Выбрать все" id="toggle-all"></center>
+			<center><INPUT type="checkbox" title="Р’С‹Р±СЂР°С‚СЊ РІСЃРµ"
+				value="Р’С‹Р±СЂР°С‚СЊ РІСЃРµ" id="toggle-all"></center>
 			</td>
 		</tr>
 
@@ -105,8 +105,8 @@ $REL_TPL->stdhead("ЛС пользователей");
 		if ($where && $count){
 			?>
 		<tr>
-			<td colspan="5"><a href="<?=$REL_SEO->make_link('spam');?>">Вернуться
-			к общему списку сообщений</a></td>
+			<td colspan="5"><a href="<?=$REL_SEO->make_link('spam');?>">Р’РµСЂРЅСѓС‚СЊСЃСЏ
+			Рє РѕР±С‰РµРјСѓ СЃРїРёСЃРєСѓ СЃРѕРѕР±С‰РµРЅРёР№</a></td>
 		</tr>
 		<?}?>
 
@@ -114,7 +114,7 @@ $REL_TPL->stdhead("ЛС пользователей");
 			<td colspan="5">
 			<div><?=$pagerbottom?></div>
 			<div style="float: right;"><input type="submit"
-				value="Удалить выбранное!" onClick="return confirm('Вы уверены?')">
+				value="РЈРґР°Р»РёС‚СЊ РІС‹Р±СЂР°РЅРЅРѕРµ!" onClick="return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?')">
 			</div>
 			</td>
 		</tr>

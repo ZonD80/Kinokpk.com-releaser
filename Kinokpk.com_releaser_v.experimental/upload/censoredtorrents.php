@@ -36,10 +36,10 @@ if ($action == 'new') {
 	if ($_SERVER['REQUEST_METHOD']=='POST') {
 		$tname = htmlspecialchars($_POST["tname"]);
 		if (!$tname)
-		stderr($REL_LANG->say_by_key('error'),"Вы не ввели название");
+		stderr($REL_LANG->say_by_key('error'),"Р’С‹ РЅРµ РІРІРµР»Рё РЅР°Р·РІР°РЅРёРµ");
 		$reason = unesc($_POST["reason"]);
 		if (!$reason)
-		stderr($REL_LANG->say_by_key('error'),"Вы должны ввести причину запрета!");
+		stderr($REL_LANG->say_by_key('error'),"Р’С‹ РґРѕР»Р¶РЅС‹ РІРІРµСЃС‚Рё РїСЂРёС‡РёРЅСѓ Р·Р°РїСЂРµС‚Р°!");
 		$tname = sqlesc($tname);
 		$reason = sqlesc($reason);
 		sql_query("INSERT INTO censoredtorrents (name,reason) VALUES($tname,$reason)") or sqlerr(__FILE__,__LINE__);
@@ -50,18 +50,18 @@ if ($action == 'new') {
 		safe_redirect($REL_SEO->make_link('censoredtorrents','id',$id));
 		die;
 	}
-	$REL_TPL->stdhead("Запретить релиз");
+	$REL_TPL->stdhead("Р—Р°РїСЂРµС‚РёС‚СЊ СЂРµР»РёР·");
 
-	print("<h1>Запретить релиз</h1><p>Запрет релиза выполняетя по обращению правообладателя и действует до тех пор, пока показ фильма не закончится в кинотеатрах</p>\n<br />\n");
+	print("<h1>Р—Р°РїСЂРµС‚РёС‚СЊ СЂРµР»РёР·</h1><p>Р—Р°РїСЂРµС‚ СЂРµР»РёР·Р° РІС‹РїРѕР»РЅСЏРµС‚СЏ РїРѕ РѕР±СЂР°С‰РµРЅРёСЋ РїСЂР°РІРѕРѕР±Р»Р°РґР°С‚РµР»СЏ Рё РґРµР№СЃС‚РІСѓРµС‚ РґРѕ С‚РµС… РїРѕСЂ, РїРѕРєР° РїРѕРєР°Р· С„РёР»СЊРјР° РЅРµ Р·Р°РєРѕРЅС‡РёС‚СЃСЏ РІ РєРёРЅРѕС‚РµР°С‚СЂР°С…</p>\n<br />\n");
 
 	print("<form method=post action=\"".$REL_SEO->make_link('censoredtorrents')."\" name=reason>\n");
 	print("<table border=1 cellspacing=0 cellpadding=5 width=100%>\n");
-	print("<tr><td class=colhead align=left colspan=2>Заполните необходимые поля</a></td><tr>\n");
-	print("<tr><td align=center><b>Название: </b><br /><input type=text size=80 name=tname></td>");
-	print("<tr><td align=center colspan=2><b>Причина запрета: </b><br />\n");
+	print("<tr><td class=colhead align=left colspan=2>Р—Р°РїРѕР»РЅРёС‚Рµ РЅРµРѕР±С…РѕРґРёРјС‹Рµ РїРѕР»СЏ</a></td><tr>\n");
+	print("<tr><td align=center><b>РќР°Р·РІР°РЅРёРµ: </b><br /><input type=text size=80 name=tname></td>");
+	print("<tr><td align=center colspan=2><b>РџСЂРёС‡РёРЅР° Р·Р°РїСЂРµС‚Р°: </b><br />\n");
 	print textbbcode("reason");
 	print ("<input type=hidden name=action value=new>");
-	print("<tr><td align=center colspan=2><input type=submit value=\"Запретить\">\n");
+	print("<tr><td align=center colspan=2><input type=submit value=\"Р—Р°РїСЂРµС‚РёС‚СЊ\">\n");
 	print("</form>\n");
 	print("</table>\n");
 	$REL_TPL->stdfoot();
@@ -76,15 +76,15 @@ $num = mysql_fetch_array($res);
 
 $s = $num["name"];
 
-$REL_TPL->stdhead("Детали запрета \"$s\"");
+$REL_TPL->stdhead("Р”РµС‚Р°Р»Рё Р·Р°РїСЂРµС‚Р° \"$s\"");
 
 print("<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-print("<tr><td class=\"colhead\" colspan=\"2\">Детали запрета \"$s\"</td></tr>");
-print("<tr><td align=center>Название</td><td width=90% align=left>$num[name]</td></tr>");
-print("<tr><td align=center>Причина</td><td width=90% align=left>" . format_comment($num["reason"]) . "</td></tr>");
+print("<tr><td class=\"colhead\" colspan=\"2\">Р”РµС‚Р°Р»Рё Р·Р°РїСЂРµС‚Р° \"$s\"</td></tr>");
+print("<tr><td align=center>РќР°Р·РІР°РЅРёРµ</td><td width=90% align=left>$num[name]</td></tr>");
+print("<tr><td align=center>РџСЂРёС‡РёРЅР°</td><td width=90% align=left>" . format_comment($num["reason"]) . "</td></tr>");
 
 if (get_user_class() >= UC_MODERATOR || $CURUSER["id"] == $num["userid"])
-print("<tr><td align=left>Опции</td><td width=50% align=left><a href=\"".$REL_SEO->make_link('viewcensoredtorrents','delt[]',$id)."\">".$REL_LANG->say_by_key('delete')."</a> | <a href=\"".$REL_SEO->make_link('viewcensoredtorrents')."\">Все запреты</a></td></tr>");
+print("<tr><td align=left>РћРїС†РёРё</td><td width=50% align=left><a href=\"".$REL_SEO->make_link('viewcensoredtorrents','delt[]',$id)."\">".$REL_LANG->say_by_key('delete')."</a> | <a href=\"".$REL_SEO->make_link('viewcensoredtorrents')."\">Р’СЃРµ Р·Р°РїСЂРµС‚С‹</a></td></tr>");
 print("</table>");
 
 $REL_TPL->stdfoot();

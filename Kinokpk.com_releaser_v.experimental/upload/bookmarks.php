@@ -53,7 +53,7 @@ if (!$count) {
 
 	print("<p>$pagerbottom</p>");
 	print '</div>';
-	print("<div align=\"right\"><input type=\"submit\" OnClick=\"return confirm('Βϋ σβεπενϋ?');\" value=\"".$REL_LANG->say_by_key('delete')."\"/></div></form>\n");
+	print("<div align=\"right\"><input type=\"submit\" OnClick=\"return confirm('Π’Ρ‹ ΡƒΠ²ΠµΡ€ΠµΠ½Ρ‹?');\" value=\"".$REL_LANG->say_by_key('delete')."\"/></div></form>\n");
 	$REL_TPL->end_frame();
 }
 

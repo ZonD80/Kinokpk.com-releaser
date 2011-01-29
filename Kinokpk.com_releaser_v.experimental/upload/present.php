@@ -106,7 +106,7 @@ if (!$fid) {
 	print("<form method=\"get\" action=\"".$REL_SEO->make_link('present')."\">\n");
 	print($REL_LANG->say_by_key('search')." <input type=\"text\" size=\"30\" name=\"search\" value=\"".$search."\">\n");
 	print("<select name=\"class\">\n");
-	print("<option value=\"-\">(Все уровни)</option>\n");
+	print("<option value=\"-\">(Р’СЃРµ СѓСЂРѕРІРЅРё)</option>\n");
 	for ($i = 0;;++$i) {
 		if ($c = get_user_class_name($i))
 		print("<option value=\"$i\"" . (is_valid_user_class($class) && $class == $i ? " selected" : "") . ">$c</option>\n");
@@ -132,7 +132,7 @@ if (!$fid) {
 	print ('<div id="users-table">');
 	print ("<p>$pagertop</p>");
 	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-	print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td><td class=\"colhead\">Подтвержден</td><td class=\"colhead\">Действия</td></tr>\n");
+	print("<tr><td class=\"colhead\" align=\"left\">РРјСЏ</td><td class=\"colhead\">Р—Р°СЂРµРіРµСЃС‚СЂРёСЂРѕРІР°РЅ</td><td class=\"colhead\">РџРѕСЃР»РµРґРЅРёР№ РІС…РѕРґ</td><td class=\"colhead\">Р РµР№С‚РёРЅРі</td><td class=\"colhead\">РџРѕР»</td><td class=\"colhead\" align=\"left\">РЈСЂРѕРІРµРЅСЊ</td><td class=\"colhead\">РЎС‚СЂР°РЅР°</td><td class=\"colhead\">РџРѕРґС‚РІРµСЂР¶РґРµРЅ</td><td class=\"colhead\">Р”РµР№СЃС‚РІРёСЏ</td></tr>\n");
 	while ($arr = mysql_fetch_assoc($res)) {
 		if ($arr['country'] > 0) {
 			$country = "<td style=\"padding: 0px\" align=\"center\"><img src=\"pic/flag/$arr[flagpic]\" alt=\"$arr[name]\" title=\"$arr[name]\"></td>";
@@ -142,8 +142,8 @@ if (!$fid) {
 		$ratingsum = ratearea($arr['ratingsum'],$arr['friend'],'users',$CURUSER['id']);
 
 
-		if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" alt=\"Парень\" title=\"Парень\" style=\"margin-left: 4pt\">";
-		elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" alt=\"Девушка\" title=\"Девушка\" style=\"margin-left: 4pt\">";
+		if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" alt=\"РџР°СЂРµРЅСЊ\" title=\"РџР°СЂРµРЅСЊ\" style=\"margin-left: 4pt\">";
+		elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" alt=\"Р”РµРІСѓС€РєР°\" title=\"Р”РµРІСѓС€РєР°\" style=\"margin-left: 4pt\">";
 		else $gender = "<div align=\"center\"><b>?</b></div>";
 
 		print("<tr".(!$arr['fconf']?' style="background-color: #ffc;"':'')."><td align=\"left\"><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',translit($arr["username"]))."\"><b>".get_user_class_color($arr["class"], $arr["username"])."</b></a>" .get_user_icons($arr).($arr['init']?$REL_LANG->say_by_key('init'):'')."</td>" .

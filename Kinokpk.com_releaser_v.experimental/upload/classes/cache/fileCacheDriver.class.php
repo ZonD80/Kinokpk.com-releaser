@@ -6,7 +6,7 @@
  *
  * @access public
  * @license GPL
- * @author Mateusz 'MatheW' Wójcik, <mat.wojcik@gmail.com>
+ * @author Mateusz 'MatheW' WГіjcik, <mat.wojcik@gmail.com>
  * @link http://mwojcik.pl
  * @version 1.0
  */

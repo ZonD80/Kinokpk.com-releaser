@@ -15,7 +15,7 @@ loggedinorreturn();
 if (get_user_class() < UC_MODERATOR)
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
-$REL_TPL->stdhead("Статистика");
+$REL_TPL->stdhead("РЎС‚Р°С‚РёСЃС‚РёРєР°");
 ?>
 
 <STYLE TYPE="text/css" MEDIA=screen>
@@ -64,22 +64,22 @@ $query = "SELECT u.id, u.username AS name, MAX(t.added) AS last, COUNT(DISTINCT 
 $res = sql_query($query) or sqlerr(__FILE__, __LINE__);
 
 if (mysql_num_rows($res) == 0)
-stdmsg("Извините", "Нет заливающих.");
+stdmsg("РР·РІРёРЅРёС‚Рµ", "РќРµС‚ Р·Р°Р»РёРІР°СЋС‰РёС….");
 else
 {
-	$REL_TPL->begin_frame("Статистика заливающих", True);
+	$REL_TPL->begin_frame("РЎС‚Р°С‚РёСЃС‚РёРєР° Р·Р°Р»РёРІР°СЋС‰РёС…", True);
 	print("<table width=\"100%\"><tr>\n
-	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder','uploader','catorder',$catorder)."\" class=colheadlink>Заливающий</a></td>\n
-	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','lastul','uploader','catorder',$catorder)."\" class=colheadlink>Последняя заливка</a></td>\n
-	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','torrents','uploader','catorder',$catorder)."\" class=colheadlink>Торрентов</a></td>\n
-	<td class=colhead>Завершено</td>\n
-	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder','peers','catorder',$catorder)."\" class=colheadlink>Пиров</a></td>\n
-	<td class=colhead>Завершено</td>\n
+	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder','uploader','catorder',$catorder)."\" class=colheadlink>Р—Р°Р»РёРІР°СЋС‰РёР№</a></td>\n
+	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','lastul','uploader','catorder',$catorder)."\" class=colheadlink>РџРѕСЃР»РµРґРЅСЏСЏ Р·Р°Р»РёРІРєР°</a></td>\n
+	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','torrents','uploader','catorder',$catorder)."\" class=colheadlink>РўРѕСЂСЂРµРЅС‚РѕРІ</a></td>\n
+	<td class=colhead>Р—Р°РІРµСЂС€РµРЅРѕ</td>\n
+	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder','peers','catorder',$catorder)."\" class=colheadlink>РџРёСЂРѕРІ</a></td>\n
+	<td class=colhead>Р—Р°РІРµСЂС€РµРЅРѕ</td>\n
 	</tr>\n");
 	while ($uper = mysql_fetch_array($res))
 	{
 		print("<tr><td><a href=\"".$REL_SEO->make_link('userdetails','id',$uper['id'],'username',translit($uper['name']))."\"><b>".$uper['name']."</b></a></td>\n");
-		print("<td " . ($uper['last']?(">".mkprettytime($uper['last'])." (".get_elapsed_time($uper['last'])." назад)"):"align=center>---") . "</td>\n");
+		print("<td " . ($uper['last']?(">".mkprettytime($uper['last'])." (".get_elapsed_time($uper['last'])." РЅР°Р·Р°Рґ)"):"align=center>---") . "</td>\n");
 		print("<td align=right>" . $uper['n_t'] . "</td>\n");
 		print("<td align=right>" . ($n_tor > 0?number_format(100 * $uper['n_t']/$n_tor,1)."%":"---") . "</td>\n");
 		print("<td align=right>" . $uper['n_p']."</td>\n");
@@ -90,7 +90,7 @@ else
 }
 
 if ($n_tor == 0)
-stdmsg("Извините", "Данные по категориям отсутствуют!");
+stdmsg("РР·РІРёРЅРёС‚Рµ", "Р”Р°РЅРЅС‹Рµ РїРѕ РєР°С‚РµРіРѕСЂРёСЏРј РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‚!");
 else
 {
 	if ($catorder == "lastul")
@@ -106,18 +106,18 @@ else
 	FROM categories as c LEFT JOIN torrents as t ON t.category = c.id LEFT JOIN peers as p
 	ON t.id = p.torrent GROUP BY c.id ORDER BY $orderby") or sqlerr(__FILE__, __LINE__);
 
-	$REL_TPL->begin_frame("Активность категорий", True);
+	$REL_TPL->begin_frame("РђРєС‚РёРІРЅРѕСЃС‚СЊ РєР°С‚РµРіРѕСЂРёР№", True);
 	print("<table width=\"100%\" border=\"1\">
-	<tr><td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder',$uporder,'catorder','category')."\" class=colheadlink>Категория</a></td>
-	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder',$uporder,'catorder','lastul')."\" class=colheadlink>Последняя заливка</a></td>
-	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder',$uporder,'catorder','torrents')."\" class=colheadlink>Торрентов</a></td>
-	<td class=colhead>Завершено</td>
-	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder',$uporder,'catorder','peers')."\" class=colheadlink>Пиров</a></td>
-	<td class=colhead>Завершено</td></tr>\n");
+	<tr><td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder',$uporder,'catorder','category')."\" class=colheadlink>РљР°С‚РµРіРѕСЂРёСЏ</a></td>
+	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder',$uporder,'catorder','lastul')."\" class=colheadlink>РџРѕСЃР»РµРґРЅСЏСЏ Р·Р°Р»РёРІРєР°</a></td>
+	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder',$uporder,'catorder','torrents')."\" class=colheadlink>РўРѕСЂСЂРµРЅС‚РѕРІ</a></td>
+	<td class=colhead>Р—Р°РІРµСЂС€РµРЅРѕ</td>
+	<td class=colhead><a href=\"".$REL_SEO->make_link('stats','uporder',$uporder,'catorder','peers')."\" class=colheadlink>РџРёСЂРѕРІ</a></td>
+	<td class=colhead>Р—Р°РІРµСЂС€РµРЅРѕ</td></tr>\n");
 	while ($cat = mysql_fetch_array($res))
 	{
 		print("<tr><td class=rowhead>" . get_cur_position_str($tree,$cat['catid']) . "</b></a></td>");
-		print("<td " . ($cat['last']?(">".mkprettytime($cat['last'])." (".get_elapsed_time($cat['last'])." назад)"):"align = center>---") ."</td>");
+		print("<td " . ($cat['last']?(">".mkprettytime($cat['last'])." (".get_elapsed_time($cat['last'])." РЅР°Р·Р°Рґ)"):"align = center>---") ."</td>");
 		print("<td align=right>" . $cat['n_t'] . "</td>");
 		print("<td align=right>" . number_format(100 * $cat['n_t']/$n_tor,1) . "%</td>");
 		print("<td align=right>" . $cat['n_p'] . "</td>");

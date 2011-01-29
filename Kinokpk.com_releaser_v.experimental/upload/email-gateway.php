@@ -18,7 +18,7 @@ stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 $id = (int) $_GET["id"];
 
 $res = sql_query("SELECT username, class, email FROM users WHERE id=$id");
-$arr = mysql_fetch_assoc($res) or stderr($REL_LANG->say_by_key('error'), "Нет такого пользователя.");
+$arr = mysql_fetch_assoc($res) or stderr($REL_LANG->say_by_key('error'), "РќРµС‚ С‚Р°РєРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.");
 $username = $arr["username"];
 if ($arr["class"] < UC_MODERATOR)
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
@@ -28,22 +28,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$to = $arr["email"];
 
 	$from = substr(trim($_POST["from"]), 0, 80);
-	if ($from == "") $from = "Анонимно";
+	if ($from == "") $from = "РђРЅРѕРЅРёРјРЅРѕ";
 
 	$from_email = substr(trim($_POST["from_email"]), 0, 80);
 	if ($from_email == "") $from_email = $REL_CONFIG['siteemail'];
-	if (!strpos($from_email, "@")) stderr($REL_LANG->say_by_key('error'), "Введеный e-mail адрес не похож на верный.");
+	if (!strpos($from_email, "@")) stderr($REL_LANG->say_by_key('error'), "Р’РІРµРґРµРЅС‹Р№ e-mail Р°РґСЂРµСЃ РЅРµ РїРѕС…РѕР¶ РЅР° РІРµСЂРЅС‹Р№.");
 
 	$from = "$from <$from_email>";
 
 	$subject = substr(trim($_POST["subject"]), 0, 80);
-	if ($subject == "") $subject = "(Без темы)";
+	if ($subject == "") $subject = "(Р‘РµР· С‚РµРјС‹)";
 
 	$message = trim($_POST["message"]);
-	if ($message == "") stderr($REL_LANG->say_by_key('error'), "Вы не ввели сообщение!");
+	if ($message == "") stderr($REL_LANG->say_by_key('error'), "Р’С‹ РЅРµ РІРІРµР»Рё СЃРѕРѕР±С‰РµРЅРёРµ!");
 
-	$message = "Сообщение отправлено от пользователя ".$CURUSER['username']." в " . date("Y-m-d H:i:s") . " GMT.\n" .
-		"Внимание: Отвечая на это письмо, вы раскроете ваш e-mail адрес.\n" .
+	$message = "РЎРѕРѕР±С‰РµРЅРёРµ РѕС‚РїСЂР°РІР»РµРЅРѕ РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ ".$CURUSER['username']." РІ " . date("Y-m-d H:i:s") . " GMT.\n" .
+		"Р’РЅРёРјР°РЅРёРµ: РћС‚РІРµС‡Р°СЏ РЅР° СЌС‚Рѕ РїРёСЃСЊРјРѕ, РІС‹ СЂР°СЃРєСЂРѕРµС‚Рµ РІР°С€ e-mail Р°РґСЂРµСЃ.\n" .
 		"---------------------------------------------------------------------\n\n" .
 	$message . "\n\n" .
 		"---------------------------------------------------------------------\n{$REL_CONFIG['sitename']}\n";
@@ -51,45 +51,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$success = sent_mail($to, $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], $subject, $message);
 
 	if ($success)
-	stderr($REL_LANG->say_by_key('success'), "E-mail успешно отправлен.");
+	stderr($REL_LANG->say_by_key('success'), "E-mail СѓСЃРїРµС€РЅРѕ РѕС‚РїСЂР°РІР»РµРЅ.");
 	else
-	stderr($REL_LANG->say_by_key('error'), "Письмо не может быть отправлено. Пожалуйтса, попробуйте позже.");
+	stderr($REL_LANG->say_by_key('error'), "РџРёСЃСЊРјРѕ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РѕС‚РїСЂР°РІР»РµРЅРѕ. РџРѕР¶Р°Р»СѓР№С‚СЃР°, РїРѕРїСЂРѕР±СѓР№С‚Рµ РїРѕР·Р¶Рµ.");
 }
 
-$REL_TPL->stdhead("Отправить e-mail");
+$REL_TPL->stdhead("РћС‚РїСЂР°РІРёС‚СЊ e-mail");
 ?>
 <table border=1 cellspacing=0 cellpadding=5>
 	<tr>
-		<td class=colhead colspan=2>Отправить e-mail пользователю <?=$username;?></td>
+		<td class=colhead colspan=2>РћС‚РїСЂР°РІРёС‚СЊ e-mail РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ <?=$username;?></td>
 	</tr>
 	<form method=post
 		action="<?=$REL_SEO->make_link('email-gateway','id',$id)?>">
 	<tr>
-		<td class=rowhead>Ваше имя</td>
+		<td class=rowhead>Р’Р°С€Рµ РёРјСЏ</td>
 		<td><input type=text name=from size=80 value=<?=$CURUSER["username"]?>
 			disabled></td>
 	</tr>
 	<tr>
-		<td class=rowhead>Ваш e-mail</td>
+		<td class=rowhead>Р’Р°С€ e-mail</td>
 		<td><input type=text name=from_email size=80
 			value=<?=$CURUSER["email"]?> disabled></td>
 	</tr>
 	<tr>
-		<td class=rowhead>Тема</td>
+		<td class=rowhead>РўРµРјР°</td>
 		<td><input type=text name=subject size=80></td>
 	</tr>
 	<tr>
-		<td class=rowhead>Сообщение</td>
+		<td class=rowhead>РЎРѕРѕР±С‰РµРЅРёРµ</td>
 		<td><textarea name=message cols=80 rows=20></textarea></td>
 	</tr>
 	<tr>
-		<td colspan=2 align=center><input type=submit value="Отправить"
+		<td colspan=2 align=center><input type=submit value="РћС‚РїСЂР°РІРёС‚СЊ"
 			class=btn></td>
 	</tr>
 	</form>
 </table>
-<p><font class=small><b>Внимание:</b> Ваш IP-адрес будет записан и будет
-виден получателю, для предотвращния обмана.<br />
-Убедитесь что вы ввели правильны e-mail адрес если вы ожидаете ответа.</font>
+<p><font class=small><b>Р’РЅРёРјР°РЅРёРµ:</b> Р’Р°С€ IP-Р°РґСЂРµСЃ Р±СѓРґРµС‚ Р·Р°РїРёСЃР°РЅ Рё Р±СѓРґРµС‚
+РІРёРґРµРЅ РїРѕР»СѓС‡Р°С‚РµР»СЋ, РґР»СЏ РїСЂРµРґРѕС‚РІСЂР°С‰РЅРёСЏ РѕР±РјР°РЅР°.<br />
+РЈР±РµРґРёС‚РµСЃСЊ С‡С‚Рѕ РІС‹ РІРІРµР»Рё РїСЂР°РІРёР»СЊРЅС‹ e-mail Р°РґСЂРµСЃ РµСЃР»Рё РІС‹ РѕР¶РёРґР°РµС‚Рµ РѕС‚РІРµС‚Р°.</font>
 </p>
 <? $REL_TPL->stdfoot(); ?>

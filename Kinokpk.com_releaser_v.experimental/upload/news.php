@@ -37,7 +37,7 @@ if ($action == 'delete')
 	if ($returnto != "")
 	safe_redirect($returnto);
 	else
-	$warning = "Новость <b>успешно</b> удалена";
+	$warning = "РќРѕРІРѕСЃС‚СЊ <b>СѓСЃРїРµС€РЅРѕ</b> СѓРґР°Р»РµРЅР°";
 }
 
 elseif ($action == 'add')
@@ -45,11 +45,11 @@ elseif ($action == 'add')
 
 	$subject = htmlspecialchars((string)$_POST["subject"]);
 	if (!$subject)
-	stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
+	stderr($REL_LANG->say_by_key('error'),"РўРµРјР° РЅРѕРІРѕСЃС‚Рё РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚РѕР№!");
 
 	$body = ((string)$_POST["body"]);
 	if (!$body)
-	stderr($REL_LANG->say_by_key('error'),"Тело новости не может быть пустым!");
+	stderr($REL_LANG->say_by_key('error'),"РўРµР»Рѕ РЅРѕРІРѕСЃС‚Рё РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј!");
 
 	$added = time();
 
@@ -57,7 +57,7 @@ elseif ($action == 'add')
 	$CURUSER['id'] . ", $added, " . sqlesc($body) . ", " . sqlesc($subject) . ")") or sqlerr(__FILE__, __LINE__);
 
 	$REL_CACHE->clearGroupCache("block-news");
-	$warning = "Новость <b>успешно добавлена</b>";
+	$warning = "РќРѕРІРѕСЃС‚СЊ <b>СѓСЃРїРµС€РЅРѕ РґРѕР±Р°РІР»РµРЅР°</b>";
 
 }
 
@@ -75,10 +75,10 @@ elseif ($action == 'edit')
 		$subject = htmlspecialchars((string)$_POST['subject']);
 
 		if (!$subject)
-		stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
+		stderr($REL_LANG->say_by_key('error'),"РўРµРјР° РЅРѕРІРѕСЃС‚Рё РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚РѕР№!");
 
 		if (!$body)
-		stderr($REL_LANG->say_by_key('error'), "Тело новости не может быть пустым!");
+		stderr($REL_LANG->say_by_key('error'), "РўРµР»Рѕ РЅРѕРІРѕСЃС‚Рё РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј!");
 
 		$body = sqlesc(($body));
 
@@ -95,7 +95,7 @@ elseif ($action == 'edit')
 		if ($returnto != "")
 		safe_redirect($returnto);
 		else
-		$warning = "Новость <b>успешно</b> отредактирована";
+		$warning = "РќРѕРІРѕСЃС‚СЊ <b>СѓСЃРїРµС€РЅРѕ</b> РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°РЅР°";
 	}
 	else
 	{
@@ -106,16 +106,16 @@ elseif ($action == 'edit')
 
 		$arr = mysql_fetch_array($res);
 		$returnto = makesafe($_GET['returnto']);
-		$REL_TPL->stdhead("Редактирование новости");
+		$REL_TPL->stdhead("Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РЅРѕРІРѕСЃС‚Рё");
 		print("<form method=post name=news action=\"".$REL_SEO->make_link('news','action','edit','newsid',$newsid)."\">\n");
 		print("<table border=1 cellspacing=0 cellpadding=5>\n");
-		print("<tr><td class=colhead>Редактирование новости<input type=hidden name=returnto value=$returnto></td></tr>\n");
-		print("<tr><td>Тема: <input type=text name=subject maxlength=70 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
+		print("<tr><td class=colhead>Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РЅРѕРІРѕСЃС‚Рё<input type=hidden name=returnto value=$returnto></td></tr>\n");
+		print("<tr><td>РўРµРјР°: <input type=text name=subject maxlength=70 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
 		print("<tr><td style='padding: 0px'>");
 		print textbbcode("body",$arr["body"]);
 		//<textarea name=body cols=145 rows=5 style='border: 0px'>" . htmlspecialchars($arr["body"]) .
 		print("</textarea></td></tr>\n");
-		print("<tr><td align=center><input type=submit value='Отредактировать'></td></tr>\n");
+		print("<tr><td align=center><input type=submit value='РћС‚СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ'></td></tr>\n");
 		print("</table>\n");
 		print("</form>\n");
 		$REL_TPL->stdfoot();
@@ -125,18 +125,18 @@ elseif ($action == 'edit')
 
 //   Other Actions and followup    ////////////////////////////////////////////
 
-$REL_TPL->stdhead("Новости");
+$REL_TPL->stdhead("РќРѕРІРѕСЃС‚Рё");
 if ($warning)
 print("<p><font size=-3>($warning)</font></p>");
 print("<form method=post name=news action=\"".$REL_SEO->make_link('news','action','add')."\">\n");
 print("<table border=1 cellspacing=0 cellpadding=5>\n");
-print("<tr><td class=colhead>Добавить новость</td></tr>\n");
-print("<tr><td>Тема: <input type=text name=subject maxlength=40 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
+print("<tr><td class=colhead>Р”РѕР±Р°РІРёС‚СЊ РЅРѕРІРѕСЃС‚СЊ</td></tr>\n");
+print("<tr><td>РўРµРјР°: <input type=text name=subject maxlength=40 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
 print("<tr><td style='padding: 0px'>");
 print textbbcode("body",$arr["body"]);
 //<textarea name=body cols=145 rows=5 style='border: 0px'>
 print("</textarea></td></tr>\n");
-print("<tr><td align=center><input type=submit value='Добавить' class=btn></td></tr>\n");
+print("<tr><td align=center><input type=submit value='Р”РѕР±Р°РІРёС‚СЊ' class=btn></td></tr>\n");
 print("</table></form><br /><br />\n");
 
 $REL_TPL->stdfoot();

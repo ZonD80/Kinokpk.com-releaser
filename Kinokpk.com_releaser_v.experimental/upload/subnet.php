@@ -19,7 +19,7 @@ $ip = $tmpip[0].".".$tmpip[1].".".$tmpip[2].".0";
 $regex = "/^(((1?\d{1,2})|(2[0-4]\d)|(25[0-5]))(\.\b|$)){4}$/";
 if (substr($mask,0,1) == "/")
 {
-	$n = substr($mask, 1, strlen($mask) - 1);
+	$n = substr($mask, 1, mb_strlen($mask) - 1);
 	if (!is_numeric($n) or $n < 0 or $n > 32)
 	{
 		stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_subnet'));

@@ -46,7 +46,7 @@ if (isset($_GET['checkonly'])) {
 		if (!$row['moderated']) {
 			sql_query("UPDATE users SET ratingsum = ratingsum + {$REL_CRON['rating_perrelease']} WHERE id={$row['owner']}");
 			$bfooter = <<<EOD
-Чтобы посмотреть релиз, перейдите по этой ссылке:
+Р§С‚РѕР±С‹ РїРѕСЃРјРѕС‚СЂРµС‚СЊ СЂРµР»РёР·, РїРµСЂРµР№РґРёС‚Рµ РїРѕ СЌС‚РѕР№ СЃСЃС‹Р»РєРµ:
 
 {$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
 
@@ -60,9 +60,9 @@ send_notifs('torrents',format_comment($descr));
 } elseif(isset($_POST['add_trackers'])) {
 	if (get_user_class() < UC_UPLOADER) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_deined'));
 
-	if (!isset($_POST['trackers'])) stderr($REL_LANG->say_by_key('error'),'Не все поля заполнены');
+	if (!isset($_POST['trackers'])) stderr($REL_LANG->say_by_key('error'),'РќРµ РІСЃРµ РїРѕР»СЏ Р·Р°РїРѕР»РЅРµРЅС‹');
 	$POSTtrackers = explode("\n",trim((string)$_POST['trackers']));
-	if (!$POSTtrackers) stderr($REL_LANG->say_by_key('error'), 'Ошибка обработки трекеров');
+	if (!$POSTtrackers) stderr($REL_LANG->say_by_key('error'), 'РћС€РёР±РєР° РѕР±СЂР°Р±РѕС‚РєРё С‚СЂРµРєРµСЂРѕРІ');
 
 	$POSTtrackers = array_map("trim",$POSTtrackers);
 	$POSTtrackers = array_map("makesafe",$POSTtrackers);
@@ -101,7 +101,7 @@ send_notifs('torrents',format_comment($descr));
 	print "</table>";
 	stdmsg($REL_LANG->say_by_key('success'),'<h1><a href="'.$REL_SEO->make_link('details','id', $row['id'] ,'name',translit($row['name'])).'">'.$REL_LANG->say_by_key('back_to_details').'</a>');
 	$REL_TPL->stdfoot();
-	write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">{$CURUSER['username']}</a> отредактировал трекера торрента с ID <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\">$id</a>",'torrent');
+	write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">{$CURUSER['username']}</a> РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°Р» С‚СЂРµРєРµСЂР° С‚РѕСЂСЂРµРЅС‚Р° СЃ ID <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\">$id</a>",'torrent');
 	die();
 }
 
@@ -113,7 +113,7 @@ function bark($msg) {
 
 foreach(explode(":","type:name") as $v) {
 	if (!isset($_POST[$v]))
-	bark("Не все поля заполнены");
+	bark("РќРµ РІСЃРµ РїРѕР»СЏ Р·Р°РїРѕР»РЅРµРЅС‹");
 }
 
 $name = htmlspecialchars((string)($_POST['name']));
@@ -121,7 +121,7 @@ if (!preg_match("#(.*?) \/ (.*?) \([0-9-]+\) \[(.*?)\]#si",$name))
 bark ("{$REL_LANG->_("Release name does not corresponding to rule, please change it and try again:")}<br/>{$REL_LANG->say_by_key('taken_from_torrent')}");
 
 if (!is_array($_POST["type"]))
-bark("Ошибка обработки выбранных категорий!");
+bark("РћС€РёР±РєР° РѕР±СЂР°Р±РѕС‚РєРё РІС‹Р±СЂР°РЅРЅС‹С… РєР°С‚РµРіРѕСЂРёР№!");
 else
 foreach ($_POST['type'] as $cat) if (!is_valid_id($cat)) bark($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
@@ -134,7 +134,7 @@ if ($_POST['nofile']) {} else {
 	if (isset($_FILES["tfile"]) && !empty($_FILES["tfile"]["name"]))
 	$update_torrent = true;
 	$tiger_hash = trim((string)$_POST['tiger_hash']);
-	if ((!preg_match("/[^a-zA-Z0-9]/",$tiger_hash) || (strlen($tiger_hash)<>38)) && $tiger_hash) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_tiger_hash'));
+	if ((!preg_match("/[^a-zA-Z0-9]/",$tiger_hash) || (mb_strlen($tiger_hash)<>38)) && $tiger_hash) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_tiger_hash'));
 	$updateset[] = "tiger_hash = ".sqlesc($tiger_hash);
 }
 
@@ -156,14 +156,14 @@ for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
 
 	if (!empty($_POST['img'.$x])) {
 		$img=trim(htmlspecialchars((string)$_POST['img'.$x]));
-		if (strpos($img,',') || strpos($img,'?')) stderr($REL_LANG->say_by_key('error'),'Динамические изображения запрещены');
+		if (strpos($img,',') || strpos($img,'?')) stderr($REL_LANG->say_by_key('error'),'Р”РёРЅР°РјРёС‡РµСЃРєРёРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ Р·Р°РїСЂРµС‰РµРЅС‹');
 
 		if (!preg_match('/^(.+)\.(gif|png|jpeg|jpg)$/si', $img))
-		stderr($REL_LANG->say_by_key('error'),'Загружаемая картинка '.($x+1).' - не картинка');
+		stderr($REL_LANG->say_by_key('error'),'Р—Р°РіСЂСѓР¶Р°РµРјР°СЏ РєР°СЂС‚РёРЅРєР° '.($x+1).' - РЅРµ РєР°СЂС‚РёРЅРєР°');
 
 		/*  $check = remote_fsize($img);
-		 if (!$check) stderr($REL_LANG->say_by_key('error'),'Не удалось определить размер картинки '.$y);
-		 if ($check>$maxfilesize) stderr($REL_LANG->say_by_key('error'),'Максимальный размер картинки 512kb. Ошибка при загрузке картинки '.$y);
+		 if (!$check) stderr($REL_LANG->say_by_key('error'),'РќРµ СѓРґР°Р»РѕСЃСЊ РѕРїСЂРµРґРµР»РёС‚СЊ СЂР°Р·РјРµСЂ РєР°СЂС‚РёРЅРєРё '.$y);
+		 if ($check>$maxfilesize) stderr($REL_LANG->say_by_key('error'),'РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ РєР°СЂС‚РёРЅРєРё 512kb. РћС€РёР±РєР° РїСЂРё Р·Р°РіСЂСѓР·РєРµ РєР°СЂС‚РёРЅРєРё '.$y);
 		 */ $inames[]=$img;
 	} else unset($images[$x]);
 }
@@ -177,7 +177,7 @@ $updateset[]="images=".sqlesc($images);
 
 ////////////////////////////////////////////////
 
-if (($_POST['nofile']) && (empty($_POST['nofilesize']))) bark("Вы не указали размер не торрент релиза!");
+if (($_POST['nofile']) && (empty($_POST['nofilesize']))) bark("Р’С‹ РЅРµ СѓРєР°Р·Р°Р»Рё СЂР°Р·РјРµСЂ РЅРµ С‚РѕСЂСЂРµРЅС‚ СЂРµР»РёР·Р°!");
 
 if ($_POST['nofile']) {$fname = 'nofile'; } else {
 	$fname = $row["filename"];
@@ -191,22 +191,22 @@ if ($update_torrent) {
 	$fname = unesc($f["name"]);
 
 	if (empty($fname))
-	bark("Файл не загружен. Пустое имя файла!");
+	bark("Р¤Р°Р№Р» РЅРµ Р·Р°РіСЂСѓР¶РµРЅ. РџСѓСЃС‚РѕРµ РёРјСЏ С„Р°Р№Р»Р°!");
 	if (!validfilename($fname))
-	bark("Неверное имя файла!");
+	bark("РќРµРІРµСЂРЅРѕРµ РёРјСЏ С„Р°Р№Р»Р°!");
 	if (!preg_match('/^(.+)\.torrent$/si', $fname, $matches))
-	bark("Неверное имя файла (не .torrent).");
+	bark("РќРµРІРµСЂРЅРѕРµ РёРјСЏ С„Р°Р№Р»Р° (РЅРµ .torrent).");
 	$tmpname = $f["tmp_name"];
 	if (!is_uploaded_file($tmpname))
 	bark("eek");
 	if (!filesize($tmpname))
-	bark("Пустой файл!");
+	bark("РџСѓСЃС‚РѕР№ С„Р°Р№Р»!");
 	$dict = bdec_file($tmpname, $REL_CONFIG['max_torrent_size']);
 	if (!isset($dict))
-	bark("Что за хрень ты загружаешь? Это не бинарно-кодированый файл!");
+	bark("Р§С‚Рѕ Р·Р° С…СЂРµРЅСЊ С‚С‹ Р·Р°РіСЂСѓР¶Р°РµС€СЊ? Р­С‚Рѕ РЅРµ Р±РёРЅР°СЂРЅРѕ-РєРѕРґРёСЂРѕРІР°РЅС‹Р№ С„Р°Р№Р»!");
 	list($info) = dict_check($dict, "info");
 	list($dname, $plen, $pieces) = dict_check($info, "name(string):piece length(integer):pieces(string)");
-	if (strlen($pieces) % 20 != 0)
+	if (mb_strlen($pieces) % 20 != 0)
 	bark("invalid pieces");
 
 	$filelist = array();
@@ -236,7 +236,7 @@ if ($update_torrent) {
 			$filelist[] = array($ffe, $ll);
 			if ($ffe == 'Thumbs.db')
 			{
-				stderr("Ошибка", "В торрентах запрещено держать файлы Thumbs.db!");
+				stderr("РћС€РёР±РєР°", "Р’ С‚РѕСЂСЂРµРЅС‚Р°С… Р·Р°РїСЂРµС‰РµРЅРѕ РґРµСЂР¶Р°С‚СЊ С„Р°Р№Р»С‹ Thumbs.db!");
 				die;
 			}
 		}
@@ -262,7 +262,7 @@ if ($update_torrent) {
 
 	} else $anarray = get_announce_urls($dict);
 
-	if ($multi && !$anarray) stderr($REL_LANG->say_by_key('error'),'Этот торрент-файл не является мультитрекерным. <a href="javascript:history.go(-1);">Назад</a>');
+	if ($multi && !$anarray) stderr($REL_LANG->say_by_key('error'),'Р­С‚РѕС‚ С‚РѕСЂСЂРµРЅС‚-С„Р°Р№Р» РЅРµ СЏРІР»СЏРµС‚СЃСЏ РјСѓР»СЊС‚РёС‚СЂРµРєРµСЂРЅС‹Рј. <a href="javascript:history.go(-1);">РќР°Р·Р°Рґ</a>');
 
 	$dict=bdec(benc($dict)); // double up on the becoding solves the occassional misgenerated infohash
 
@@ -272,7 +272,7 @@ if ($update_torrent) {
 	move_uploaded_file($tmpname, ROOT_PATH."torrents/$id.torrent");
 	$fp = fopen("torrents/$id.torrent", "w");
 	if ($fp) {
-		@fwrite($fp, benc($dict['value']['info']), strlen(benc($dict['value']['info'])));
+		@fwrite($fp, benc($dict['value']['info']), mb_strlen(benc($dict['value']['info'])));
 		fclose($fp);
 		@chmod($fp, 0644);
 	}
@@ -297,12 +297,12 @@ if ($update_torrent) {
 	if ($_POST['nofile']) $dname = 'nofile';
 
 }
-// конец НЕ загрузки
+// РєРѕРЅРµС† РќР• Р·Р°РіСЂСѓР·РєРё
 
 $updateset[] = "name = " . sqlesc($name);
 
 $modcomm = (string)$_POST['modcomm'];
-if ($row['modcomm'] != $modcomm) $updateset[] = "modcomm = ".sqlesc('Последнее изменение '.$CURUSER['username'].' в '.mkprettytime(time())."\n".htmlspecialchars($modcomm));
+if ($row['modcomm'] != $modcomm) $updateset[] = "modcomm = ".sqlesc('РџРѕСЃР»РµРґРЅРµРµ РёР·РјРµРЅРµРЅРёРµ '.$CURUSER['username'].' РІ '.mkprettytime(time())."\n".htmlspecialchars($modcomm));
 
 $catsstr = implode(',',$_POST['type']);
 
@@ -359,7 +359,7 @@ if ((get_user_class() >= UC_UPLOADER) && isset($_POST['approve'])) {
 	// send notifs
 	if (!$row['moderated']) {
 		$bfooter = <<<EOD
-Чтобы посмотреть релиз, перейдите по этой ссылке:
+Р§С‚РѕР±С‹ РїРѕСЃРјРѕС‚СЂРµС‚СЊ СЂРµР»РёР·, РїРµСЂРµР№РґРёС‚Рµ РїРѕ СЌС‚РѕР№ СЃСЃС‹Р»РєРµ:
 
 {$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
 
@@ -389,7 +389,7 @@ $REL_DB->query($update_xbt_query);
 
 $REL_CACHE->clearGroupCache('block-indextorrents');
 
-write_log("Торрент '$name' был отредактирован пользователем $CURUSER[username]\n","torrent");
+write_log("РўРѕСЂСЂРµРЅС‚ '$name' Р±С‹Р» РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°РЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј $CURUSER[username]\n","torrent");
 
 $returl = $REL_SEO->make_link('details','id',$id,'name',translit($row['name']));
 if (isset($_POST["returnto"]))
@@ -398,6 +398,6 @@ $returl .= "&returnto=" . strip_tags($_POST["returnto"]);
 
 safe_redirect($returl,1);
 
-stderr($REL_LANG->say_by_key('success'),"Релиз успешно обновлен, сейчас вы перейдете к его деталям".($anarray?"<img src=\"".$REL_SEO->make_link('remote_check','id',$id)."\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
+stderr($REL_LANG->say_by_key('success'),"Р РµР»РёР· СѓСЃРїРµС€РЅРѕ РѕР±РЅРѕРІР»РµРЅ, СЃРµР№С‡Р°СЃ РІС‹ РїРµСЂРµР№РґРµС‚Рµ Рє РµРіРѕ РґРµС‚Р°Р»СЏРј".($anarray?"<img src=\"".$REL_SEO->make_link('remote_check','id',$id)."\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
 
 ?>

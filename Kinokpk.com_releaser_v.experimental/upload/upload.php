@@ -19,17 +19,17 @@ dbconn();
 loggedinorreturn();
 
 
-//stderr('Загрузка релизов временно отключена','Загрузка новых релизов временно отключена администрацией');
+//stderr('Р—Р°РіСЂСѓР·РєР° СЂРµР»РёР·РѕРІ РІСЂРµРјРµРЅРЅРѕ РѕС‚РєР»СЋС‡РµРЅР°','Р—Р°РіСЂСѓР·РєР° РЅРѕРІС‹С… СЂРµР»РёР·РѕРІ РІСЂРµРјРµРЅРЅРѕ РѕС‚РєР»СЋС‡РµРЅР° Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРµР№');
 $REL_TPL->stdhead($REL_LANG->say_by_key('upload_torrent'));
 $tree = make_tree();
 
 if (!isset($_GET['type'])) {
-	$REL_TPL->begin_frame("Выберите категорию релиза");
+	$REL_TPL->begin_frame("Р’С‹Р±РµСЂРёС‚Рµ РєР°С‚РµРіРѕСЂРёСЋ СЂРµР»РёР·Р°");
 	print '<div align="center">
 <form name="upload" action="'.$REL_SEO->make_link('upload').'" method="GET">
 <table border="0" cellspacing="0" cellpadding="5">
 <tr><td align="center" style="border: 0px;">'.gen_select_area('type',$tree).'</td></tr>
-<tr><td align="center" colspan="2" style="border:0;"><input type="submit" class="btn button" value="Далее" /></td></tr>
+<tr><td align="center" colspan="2" style="border:0;"><input type="submit" class="btn button" value="Р”Р°Р»РµРµ" /></td></tr>
 </table>
 </form>
 </div>
@@ -48,7 +48,7 @@ $cat = get_cur_branch($tree,$type);
 if (!$cat) {			stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id')); $REL_TPL->stdfoot();   exit;}
 
 
-if (strlen($CURUSER['passkey']) != 32) {
+if (mb_strlen($CURUSER['passkey']) != 32) {
 	$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
 	$REL_DB->query("UPDATE xbt_users SET torrent_pass=".sqlesc($CURUSER[passkey])." WHERE uid=".sqlesc($CURUSER[id]));
 }
@@ -81,7 +81,7 @@ function checkname() {
 	if (get_user_class()>=UC_UPLOADER && $REL_CONFIG['use_dc'])
 	tr($REL_LANG->say_by_key('tiger_hash'),"<input type=\"text\" size=\"60\" maxlength=\"38\" name=\"tiger_hash\" value=\"{$row['tiger_hash']}\"><br/>".$REL_LANG->say_by_key('tiger_hash_notice'),1);
 
-	tr($REL_LANG->say_by_key('torrent_name')."<font color=\"red\">*</font>", "<input type=\"text\" id=\"name\" name=\"name\" size=\"80\" value=\"Русский / Original (год или диапазон годов) [качество, примечание]\"/><br /><div id=\"namematch\">{$REL_LANG->_("Example")}: ".$REL_LANG->say_by_key('taken_from_torrent')."</div>\n", 1);
+	tr($REL_LANG->say_by_key('torrent_name')."<font color=\"red\">*</font>", "<input type=\"text\" id=\"name\" name=\"name\" size=\"80\" value=\"Р СѓСЃСЃРєРёР№ / Original (РіРѕРґ РёР»Рё РґРёР°РїР°Р·РѕРЅ РіРѕРґРѕРІ) [РєР°С‡РµСЃС‚РІРѕ, РїСЂРёРјРµС‡Р°РЅРёРµ]\"/><br /><div id=\"namematch\">{$REL_LANG->_("Example")}: ".$REL_LANG->say_by_key('taken_from_torrent')."</div>\n", 1);
 
 	$imagecontent = '<br />';
 
@@ -120,10 +120,10 @@ function checkname() {
 
 	if (get_user_class() >= UC_MODERATOR) {
 		tr($REL_LANG->say_by_key('golden'), "<input type=checkbox name=free value=\"1\"> ".$REL_LANG->say_by_key('golden_descr'), 1);
-		tr("Важный", "<input type=\"checkbox\" name=\"sticky\" value=\"1\">Прикрепить этот торрент (всегда наверху)", 1);
+		tr("Р’Р°Р¶РЅС‹Р№", "<input type=\"checkbox\" name=\"sticky\" value=\"1\">РџСЂРёРєСЂРµРїРёС‚СЊ СЌС‚РѕС‚ С‚РѕСЂСЂРµРЅС‚ (РІСЃРµРіРґР° РЅР°РІРµСЂС…Сѓ)", 1);
 	}
-	tr("Релиз без торрента", "<input type=\"checkbox\" name=\"nofile\" value=\"1\">Этот релиз без торрента ; Размер: <input type=\"text\" name=\"nofilesize\" size=\"20\" /> МБ", 1);
-	tr("<font color=\"red\">АНОНС</font>", "<input type=\"checkbox\" name=\"annonce\" value=\"1\">Это всего-лишь анонс релиза. Ссылки указывать не обязательно,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;но обязательно выложить релиз после анонсирования!", 1);
+	tr("Р РµР»РёР· Р±РµР· С‚РѕСЂСЂРµРЅС‚Р°", "<input type=\"checkbox\" name=\"nofile\" value=\"1\">Р­С‚РѕС‚ СЂРµР»РёР· Р±РµР· С‚РѕСЂСЂРµРЅС‚Р° ; Р Р°Р·РјРµСЂ: <input type=\"text\" name=\"nofilesize\" size=\"20\" /> РњР‘", 1);
+	tr("<font color=\"red\">РђРќРћРќРЎ</font>", "<input type=\"checkbox\" name=\"annonce\" value=\"1\">Р­С‚Рѕ РІСЃРµРіРѕ-Р»РёС€СЊ Р°РЅРѕРЅСЃ СЂРµР»РёР·Р°. РЎСЃС‹Р»РєРё СѓРєР°Р·С‹РІР°С‚СЊ РЅРµ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;РЅРѕ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РІС‹Р»РѕР¶РёС‚СЊ СЂРµР»РёР· РїРѕСЃР»Рµ Р°РЅРѕРЅСЃРёСЂРѕРІР°РЅРёСЏ!", 1);
 	?>
 	<tr>
 		<td align="center" colspan="2"><input type="submit" class="btn button"

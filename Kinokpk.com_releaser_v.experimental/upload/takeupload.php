@@ -26,7 +26,7 @@ loggedinorreturn();
 
 foreach(explode(":","type:name") as $v) {
 	if (!isset($_POST[$v]))
-	bark("Не все поля заполнены");
+	bark("РќРµ РІСЃРµ РїРѕР»СЏ Р·Р°РїРѕР»РЅРµРЅС‹");
 }
 
 
@@ -37,17 +37,17 @@ if ($_POST['nofile']) {} else {
 	if (!isset($_FILES["tfile"]))
 	bark("missing form data");
 
-	if (($_POST['nofile']) && (empty($_POST['nofilesize']))) bark("Вы не указали размер не торрент релиза!");
+	if (($_POST['nofile']) && (empty($_POST['nofilesize']))) bark("Р’С‹ РЅРµ СѓРєР°Р·Р°Р»Рё СЂР°Р·РјРµСЂ РЅРµ С‚РѕСЂСЂРµРЅС‚ СЂРµР»РёР·Р°!");
 
 	$f = $_FILES["tfile"];
 	$fname = unesc($f["name"]);
 	if (empty($fname))
-	bark("Файл не загружен. Пустое имя файла!");
+	bark("Р¤Р°Р№Р» РЅРµ Р·Р°РіСЂСѓР¶РµРЅ. РџСѓСЃС‚РѕРµ РёРјСЏ С„Р°Р№Р»Р°!");
 }
 
 
 if (!is_array($_POST["type"]))
-bark("Ошибка обработки выбранных категорий!");
+bark("РћС€РёР±РєР° РѕР±СЂР°Р±РѕС‚РєРё РІС‹Р±СЂР°РЅРЅС‹С… РєР°С‚РµРіРѕСЂРёР№!");
 else
 foreach ($_POST['type'] as $cat) if (!is_valid_id($cat)) bark($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
@@ -56,18 +56,18 @@ $catsstr = implode(',',$_POST['type']);
 if ($_POST['nofile']) {} else {
 
 	if (!validfilename($fname))
-	bark("Неверное имя файла!");
+	bark("РќРµРІРµСЂРЅРѕРµ РёРјСЏ С„Р°Р№Р»Р°!");
 	if (!preg_match('/^(.+)\.torrent$/si', $fname, $matches))
-	bark("Неверное имя файла (не .torrent).");
+	bark("РќРµРІРµСЂРЅРѕРµ РёРјСЏ С„Р°Р№Р»Р° (РЅРµ .torrent).");
 	$shortfname = $torrent = $matches[1];
 	$tiger_hash = trim((string)$_POST['tiger_hash']);
-	if ((!preg_match("/[^a-zA-Z0-9]/",$tiger_hash) || (strlen($tiger_hash)<>38)) && $tiger_hash) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_tiger_hash'));
+	if ((!preg_match("/[^a-zA-Z0-9]/",$tiger_hash) || (mb_strlen($tiger_hash)<>38)) && $tiger_hash) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_tiger_hash'));
 }
 
 if ($_POST['multi']) $multi=1; else $multi=0;
 
 if (!empty($_POST["name"]))
-$torrent = unesc((string)$_POST["name"]); else bark("Вы не ввели название релиза");
+$torrent = unesc((string)$_POST["name"]); else bark("Р’С‹ РЅРµ РІРІРµР»Рё РЅР°Р·РІР°РЅРёРµ СЂРµР»РёР·Р°");
 
 if (!preg_match("#(.*?) \/ (.*?) \([0-9-]+\) \[(.*?)\]#si",$torrent))
 bark ("{$REL_LANG->_("Release name does not corresponding to rule, please change it and try again:")}<br/>{$REL_LANG->say_by_key('taken_from_torrent')}");
@@ -77,11 +77,11 @@ if ($_POST['nofile']) {} else {
 	if (!is_uploaded_file($tmpname))
 	bark("eek");
 	if (!filesize($tmpname))
-	bark("Пустой файл!");
+	bark("РџСѓСЃС‚РѕР№ С„Р°Р№Р»!");
 
 	$dict = bdec_file($tmpname, $REL_CONFIG['max_torrent_size']);
 	if (!isset($dict))
-	bark("Что за хрень ты загружаешь? Это не бинарно-кодированый файл!");
+	bark("Р§С‚Рѕ Р·Р° С…СЂРµРЅСЊ С‚С‹ Р·Р°РіСЂСѓР¶Р°РµС€СЊ? Р­С‚Рѕ РЅРµ Р±РёРЅР°СЂРЅРѕ-РєРѕРґРёСЂРѕРІР°РЅС‹Р№ С„Р°Р№Р»!");
 }
 
 if ($_POST['free'] AND get_user_class() >= UC_MODERATOR) {
@@ -113,7 +113,7 @@ if ($_POST['nofile']) {} else {
 
 	} else $anarray = get_announce_urls($dict);
 
-	if ($multi && !$anarray) stderr($REL_LANG->say_by_key('error'),'Этот торрент-файл не является мультитрекерным. <a href="javascript:history.go(-1);">Назад</a>');
+	if ($multi && !$anarray) stderr($REL_LANG->say_by_key('error'),'Р­С‚РѕС‚ С‚РѕСЂСЂРµРЅС‚-С„Р°Р№Р» РЅРµ СЏРІР»СЏРµС‚СЃСЏ РјСѓР»СЊС‚РёС‚СЂРµРєРµСЂРЅС‹Рј. <a href="javascript:history.go(-1);">РќР°Р·Р°Рґ</a>');
 
 	$dict=bdec(benc($dict)); // double up on the becoding solves the occassional misgenerated infohash
 
@@ -122,9 +122,9 @@ if ($_POST['nofile']) {} else {
 	list($dname, $plen, $pieces) = dict_check($info, "name(string):piece length(integer):pieces(string)");
 
 	/*if (!in_array($ann, $announce_urls, 1))
-	 bark("Неверный Announce URL! Должен быть ".$announce_urls[0]);*/
+	 bark("РќРµРІРµСЂРЅС‹Р№ Announce URL! Р”РѕР»Р¶РµРЅ Р±С‹С‚СЊ ".$announce_urls[0]);*/
 
-	if (strlen($pieces) % 20 != 0)
+	if (mb_strlen($pieces) % 20 != 0)
 	bark("invalid pieces");
 
 	$filelist = array();
@@ -154,7 +154,7 @@ if ($_POST['nofile']) {} else {
 			$filelist[] = array($ffe, $ll);
 			/*	if ($ffe == 'Thumbs.db')
 			 {
-			 stderr("Ошибка", "В торрентах запрещено держать файлы Thumbs.db!");
+			 stderr("РћС€РёР±РєР°", "Р’ С‚РѕСЂСЂРµРЅС‚Р°С… Р·Р°РїСЂРµС‰РµРЅРѕ РґРµСЂР¶Р°С‚СЊ С„Р°Р№Р»С‹ Thumbs.db!");
 			 die;
 			 }*/
 		}
@@ -174,14 +174,14 @@ for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
 	$y=$x+1;
 	if (!empty($_POST['img'.$x])) {
 		$img=trim(htmlspecialchars((string)$_POST['img'.$x]));
-		if (strpos($img,',') || strpos($img,'?')) stderr($REL_LANG->say_by_key('error'),'Динамические изображения запрещены');
+		if (strpos($img,',') || strpos($img,'?')) stderr($REL_LANG->say_by_key('error'),'Р”РёРЅР°РјРёС‡РµСЃРєРёРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ Р·Р°РїСЂРµС‰РµРЅС‹');
 
 		if (!preg_match('/^(.+)\.(gif|png|jpeg|jpg)$/si', $img))
-		stderr($REL_LANG->say_by_key('error'),'Загружаемая картинка '.($x+1).' - не картинка');
+		stderr($REL_LANG->say_by_key('error'),'Р—Р°РіСЂСѓР¶Р°РµРјР°СЏ РєР°СЂС‚РёРЅРєР° '.($x+1).' - РЅРµ РєР°СЂС‚РёРЅРєР°');
 
 		/*  $check = remote_fsize($img);
-		 if (!$check) stderr($REL_LANG->say_by_key('error'),'Не удалось определить размер картинки '.$y);
-		 if ($check>$maxfilesize) stderr($REL_LANG->say_by_key('error'),'Максимальный размер картинки 512kb. Ошибка при загрузке картинки '.$y);
+		 if (!$check) stderr($REL_LANG->say_by_key('error'),'РќРµ СѓРґР°Р»РѕСЃСЊ РѕРїСЂРµРґРµР»РёС‚СЊ СЂР°Р·РјРµСЂ РєР°СЂС‚РёРЅРєРё '.$y);
+		 if ($check>$maxfilesize) stderr($REL_LANG->say_by_key('error'),'РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ РєР°СЂС‚РёРЅРєРё 512kb. РћС€РёР±РєР° РїСЂРё Р·Р°РіСЂСѓР·РєРµ РєР°СЂС‚РёРЅРєРё '.$y);
 		 */ $inames[]=$img;
 	}
 }
@@ -195,11 +195,11 @@ $image = @array_shift($image);
 
 // FORUMDESC will be used in email notifs
 if (!$image) $forumdesc = "<div align=\"center\"><img src=\"{$REL_CONFIG['defaultbaseurl']}/pic/noimage.gif\" border=\"0\" class=\"linked-image\" /></div><br />";
-if ($image) $forumdesc = "<div align=\"center\"><a href=\"$image\" target=\"_blank\"><img alt=\"Постер для релиза (кликните для просмотра полного изображения)\" src=\"$image\" border=\"0\" class=\"linked-image\" /></a></div><br />";
+if ($image) $forumdesc = "<div align=\"center\"><a href=\"$image\" target=\"_blank\"><img alt=\"РџРѕСЃС‚РµСЂ РґР»СЏ СЂРµР»РёР·Р° (РєР»РёРєРЅРёС‚Рµ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° РїРѕР»РЅРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ)\" src=\"$image\" border=\"0\" class=\"linked-image\" /></a></div><br />";
 $catssql= sql_query("SELECT name FROM categories WHERE id IN ($catsstr)");
 while (list($catname) = mysql_fetch_array($catssql)) $forumcats[]=$catname;
 $forumcats = implode(', ',$forumcats);
-$forumdesc .= "<table width=\"100%\" border=\"1\"><tr><td valign=\"top\"><b>Тип (жанр):</b></td><td>".$forumcats."</td></tr><tr><td><b>Название:</b></td><td>" . sqlesc($torrent) ."</td></tr>";
+$forumdesc .= "<table width=\"100%\" border=\"1\"><tr><td valign=\"top\"><b>РўРёРї (Р¶Р°РЅСЂ):</b></td><td>".$forumcats."</td></tr><tr><td><b>РќР°Р·РІР°РЅРёРµ:</b></td><td>" . sqlesc($torrent) ."</td></tr>";
 
 
 // DEFINE size FOR forum & email notifs
@@ -209,7 +209,7 @@ if ($_POST['nofile']) {
 
 	$descr = (string) $_POST['descr'];
 
-	if (!$descr) stderr($REL_LANG->say_by_key('error'),'Вы не ввели описание');
+	if (!$descr) stderr($REL_LANG->say_by_key('error'),'Р’С‹ РЅРµ РІРІРµР»Рё РѕРїРёСЃР°РЅРёРµ');
 
 	//////////////////////////////////////////////
 
@@ -235,7 +235,7 @@ if ($_POST['nofile']) {
 		$infohash = md5($torrent);
 		$torrent = htmlspecialchars(str_replace("_", " ", $torrent));
 		if ($_POST['annonce'])
-		$torrent .= " | АНОНС"; else $torrent .= " - релиз без торрента";
+		$torrent .= " | РђРќРћРќРЎ"; else $torrent .= " - СЂРµР»РёР· Р±РµР· С‚РѕСЂСЂРµРЅС‚Р°";
 
 		$totallen = (float)($nofilesize*1024*1024);
 
@@ -268,9 +268,9 @@ if ($_POST['nofile']) {
 	// making forum desc
 	$forumdesc .= "<tr><td valign=\"top\"><b>".$REL_LANG->say_by_key('description').":</b></td><td>".format_comment($descr)."</td></tr>";
 
-	$forumdesc .= "<tr><td valign=\"top\"><b>Размер файла:</b></td><td>".$forumsize."</td></tr>";
+	$forumdesc .= "<tr><td valign=\"top\"><b>Р Р°Р·РјРµСЂ С„Р°Р№Р»Р°:</b></td><td>".$forumsize."</td></tr>";
 
-	$topicfooter .= "<tr><td valign=\"top\"><b>".((!$_POST['nofile'])?"Торрент {$REL_CONFIG['defaultbaseurl']}:":"Релиз {$REL_CONFIG['defaultbaseurl']}:")."</b></td><td><div align=\"center\">[<span style=\"color:#FF0000\"><a href=\"{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}\">Посмотреть этот релиз на {$REL_CONFIG['defaultbaseurl']}</a></span>]</div></td></tr></table>";
+	$topicfooter .= "<tr><td valign=\"top\"><b>".((!$_POST['nofile'])?"РўРѕСЂСЂРµРЅС‚ {$REL_CONFIG['defaultbaseurl']}:":"Р РµР»РёР· {$REL_CONFIG['defaultbaseurl']}:")."</b></td><td><div align=\"center\">[<span style=\"color:#FF0000\"><a href=\"{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}\">РџРѕСЃРјРѕС‚СЂРµС‚СЊ СЌС‚РѕС‚ СЂРµР»РёР· РЅР° {$REL_CONFIG['defaultbaseurl']}</a></span>]</div></td></tr></table>";
 
 	$forumdesc .=$topicfooter;
 	// end
@@ -288,30 +288,30 @@ if ($_POST['nofile']) {
 	}
 	if ($_POST['nofile']) {} else {
 		$fp = @file_put_contents("torrents/$id.torrent", benc($dict['value']['info']));
-		if (!$fp) stderr($REL_LANG->say_by_key('error'),'Загрузка torrent файла не удалась');
+		if (!$fp) stderr($REL_LANG->say_by_key('error'),'Р—Р°РіСЂСѓР·РєР° torrent С„Р°Р№Р»Р° РЅРµ СѓРґР°Р»Р°СЃСЊ');
 	}
 
-	write_log("Торрент номер $id ($torrent) был залит пользователем " . $CURUSER["username"],"torrent");
+	write_log("РўРѕСЂСЂРµРЅС‚ РЅРѕРјРµСЂ $id ($torrent) Р±С‹Р» Р·Р°Р»РёС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј " . $CURUSER["username"],"torrent");
 
 	/* Email notifs */
 
 	$body = <<<EOD
-Новый непроверенный релиз на {$REL_CONFIG['sitename']}!
+РќРѕРІС‹Р№ РЅРµРїСЂРѕРІРµСЂРµРЅРЅС‹Р№ СЂРµР»РёР· РЅР° {$REL_CONFIG['sitename']}!
 
-Внимание! Это сообщение отправлено автоматически, и релиз может быть еще не проверен модератором и может быть удален!
-Название: $torrent
-Размер файла: $forumsize
-Категория: {$forumcats}
-Залил: {$CURUSER['username']}
+Р’РЅРёРјР°РЅРёРµ! Р­С‚Рѕ СЃРѕРѕР±С‰РµРЅРёРµ РѕС‚РїСЂР°РІР»РµРЅРѕ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё, Рё СЂРµР»РёР· РјРѕР¶РµС‚ Р±С‹С‚СЊ РµС‰Рµ РЅРµ РїСЂРѕРІРµСЂРµРЅ РјРѕРґРµСЂР°С‚РѕСЂРѕРј Рё РјРѕР¶РµС‚ Р±С‹С‚СЊ СѓРґР°Р»РµРЅ!
+РќР°Р·РІР°РЅРёРµ: $torrent
+Р Р°Р·РјРµСЂ С„Р°Р№Р»Р°: $forumsize
+РљР°С‚РµРіРѕСЂРёСЏ: {$forumcats}
+Р—Р°Р»РёР»: {$CURUSER['username']}
 
-Информация о Релизе:
+РРЅС„РѕСЂРјР°С†РёСЏ Рѕ Р РµР»РёР·Рµ:
 -------------------------------------------------------------------------------
 	$forumdesc
 -------------------------------------------------------------------------------
 EOD;
 
 	$bfooter = <<<EOD
-Чтобы посмотреть релиз, перейдите по этой ссылке:
+Р§С‚РѕР±С‹ РїРѕСЃРјРѕС‚СЂРµС‚СЊ СЂРµР»РёР·, РїРµСЂРµР№РґРёС‚Рµ РїРѕ СЌС‚РѕР№ СЃСЃС‹Р»РєРµ:
 
 	{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}
 

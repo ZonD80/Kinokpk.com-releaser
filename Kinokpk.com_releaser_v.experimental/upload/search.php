@@ -19,7 +19,7 @@ httpauth();
 // HTML Code to allow changes to current class
 $REL_TPL->stdhead($REL_LANG->say_by_key('change_class'));
 
-function e5cjs($str=''){//эскейпинг уровня JavaScript
+function e5cjs($str=''){//СЌСЃРєРµР№РїРёРЅРі СѓСЂРѕРІРЅСЏ JavaScript
 	$result=$str;
 	$result=str_replace ('\\', '\\\\', $result);
 	$result=str_replace ("'", "\'", $result);
@@ -30,7 +30,7 @@ function e5cjs($str=''){//эскейпинг уровня JavaScript
 	return $result;
 }
 
-function defvar($default_value, $waited){//если отсутствуют данные - отдает значение по умолчанию
+function defvar($default_value, $waited){//РµСЃР»Рё РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ РґР°РЅРЅС‹Рµ - РѕС‚РґР°РµС‚ Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 	$result=($waited!='')?$waited:$default_value;
 	return $result;
 }
@@ -49,7 +49,7 @@ function defvar($default_value, $waited){//если отсутствуют данные - отдает знач
 </style>
 <script type="text/javascript" src="/js/search.js" charset="utf-8"></script>
 <div id="searchBox">
-	<p>Чтобы воспользоваться поиском, необходимо включить поддержку JavaScript.</p>
+	<p>Р§С‚РѕР±С‹ РІРѕСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РїРѕРёСЃРєРѕРј, РЅРµРѕР±С…РѕРґРёРјРѕ РІРєР»СЋС‡РёС‚СЊ РїРѕРґРґРµСЂР¶РєСѓ JavaScript.</p>
 </div>
 
 <script type="text/javascript"><!--

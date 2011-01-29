@@ -24,7 +24,7 @@ if ($ctorrents===false) {
 if ($ctorrents)
 foreach ($ctorrents as $ct) {
 
-	if (strlen($ct['reason']) > 500) $reason = format_comment(substr($ct['reason'],0,500)."..."); else $reason = format_comment($ct['reason']);
+	if (mb_strlen($ct['reason']) > 500) $reason = format_comment(substr($ct['reason'],0,500)."..."); else $reason = format_comment($ct['reason']);
 
 	$content .= "<tr><td><b>".$ct['name']."</b><br/>".$reason."</tr>";
 }

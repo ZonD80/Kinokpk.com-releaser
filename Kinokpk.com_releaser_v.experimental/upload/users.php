@@ -45,10 +45,10 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('users'));
 
 if ((get_user_class () >= UC_MODERATOR) && $_GET['act']) {
 	if ($_GET['act'] == "users") {
-		$REL_TPL->begin_frame("Пользователи с рейтингом ниже 0");
+		$REL_TPL->begin_frame("РџРѕР»СЊР·РѕРІР°С‚РµР»Рё СЃ СЂРµР№С‚РёРЅРіРѕРј РЅРёР¶Рµ 0");
 
 		echo '<table width="100%" border="0" align="center" cellpadding="2" cellspacing="0">';
-		echo "<tr><td class=colhead align=left>Пользователь</td><td class=colhead>Рейтинг</td><td class=colhead>IP</td><td class=colhead>Зарегистрирован</td><td class=colhead>Последний раз был на трекере</td>"/*<td class=colhead>Скачанно</td><td class=colhead>Раздает</td>*/."</tr>";
+		echo "<tr><td class=colhead align=left>РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ</td><td class=colhead>Р РµР№С‚РёРЅРі</td><td class=colhead>IP</td><td class=colhead>Р—Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ</td><td class=colhead>РџРѕСЃР»РµРґРЅРёР№ СЂР°Р· Р±С‹Р» РЅР° С‚СЂРµРєРµСЂРµ</td>"/*<td class=colhead>РЎРєР°С‡Р°РЅРЅРѕ</td><td class=colhead>Р Р°Р·РґР°РµС‚</td>*/."</tr>";
 
 
 		$result = sql_query ("SELECT users.id,users.username,users.class,users.ratingsum,users.added,users.last_access,users.ip"/*, (SELECT SUM(1) FROM peers WHERE seeder=1 AND userid=users.id) AS seeding, (SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE snatched.finished=1 AND torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid=users.id AND snatched.userid<>torrents.owner) AS downloaded*/." FROM users WHERE ratingsum<0 AND enabled = 1 ORDER BY ratingsum DESC");
@@ -65,10 +65,10 @@ if ((get_user_class () >= UC_MODERATOR) && $_GET['act']) {
 		$REL_TPL->end_frame(); }
 
 		elseif ($_GET['act'] == "last") {
-			$REL_TPL->begin_frame("Последние пользователи");
+			$REL_TPL->begin_frame("РџРѕСЃР»РµРґРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»Рё");
 
 			echo '<table width="100%" border="0" align="center" cellpadding="2" cellspacing="0">';
-			echo "<tr><td class=colhead align=left>Пользователь</td><td class=colhead>Рейтинг</td><td class=colhead>IP</td><td class=colhead>Зарегистрирован</td><td class=colhead>Последний&nbsp;раз&nbsp;был&nbsp;на&nbsp;трекере</td></tr>";
+			echo "<tr><td class=colhead align=left>РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ</td><td class=colhead>Р РµР№С‚РёРЅРі</td><td class=colhead>IP</td><td class=colhead>Р—Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ</td><td class=colhead>РџРѕСЃР»РµРґРЅРёР№&nbsp;СЂР°Р·&nbsp;Р±С‹Р»&nbsp;РЅР°&nbsp;С‚СЂРµРєРµСЂРµ</td></tr>";
 
 			$result = sql_query ("SELECT * FROM users WHERE enabled = 1 AND confirmed=1 ORDER BY added DESC LIMIT 100");
 			while($row = mysql_fetch_array($result)) {
@@ -83,10 +83,10 @@ if ((get_user_class () >= UC_MODERATOR) && $_GET['act']) {
 			$REL_TPL->end_frame(); }
 
 			elseif ($_GET['act'] == "banned") {
-				$REL_TPL->begin_frame("Забаненые пользователи");
+				$REL_TPL->begin_frame("Р—Р°Р±Р°РЅРµРЅС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»Рё");
 
 				echo '<table width="100%" border="0" align="center" cellpadding="2" cellspacing="0">';
-				echo "<tr><td class=colhead align=left>Пользователь</td><td class=colhead>Рейтинг</td><td class=colhead>IP</td><td class=colhead>Зарегистрирован</td><td class=colhead>Последний раз был</td></tr>";
+				echo "<tr><td class=colhead align=left>РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ</td><td class=colhead>Р РµР№С‚РёРЅРі</td><td class=colhead>IP</td><td class=colhead>Р—Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ</td><td class=colhead>РџРѕСЃР»РµРґРЅРёР№ СЂР°Р· Р±С‹Р»</td></tr>";
 				$result = sql_query ("SELECT * FROM users WHERE enabled = 0 ORDER BY last_access DESC ");
 				if ($row = mysql_fetch_array($result)) {
 					do {
@@ -95,19 +95,19 @@ if ((get_user_class () >= UC_MODERATOR) && $_GET['act']) {
 
 
 					} while($row = mysql_fetch_array($result));
-				} else {print "<tr><td colspan=7>Извините, записей не обнаружено!</td></tr>";}
+				} else {print "<tr><td colspan=7>РР·РІРёРЅРёС‚Рµ, Р·Р°РїРёСЃРµР№ РЅРµ РѕР±РЅР°СЂСѓР¶РµРЅРѕ!</td></tr>";}
 				echo "</table>";
 				$REL_TPL->end_frame(); }
 
 }
 elseif (!isset($_GET['act'])) {
 
-	print("<h1>Пользователи</h1>\n");
+	print("<h1>РџРѕР»СЊР·РѕРІР°С‚РµР»Рё</h1>\n");
 	print("<div class=\"friends_search\">");
 	print("<form method=\"get\" style='margin-bottom: 20px;' action=\"".$REL_SEO->make_link('users')."\">\n");
 	print("<span class='browse_users'>".$REL_LANG->say_by_key('search')."<input type=\"text\" size=\"30\" name=\"search\" value=\"".$search."\"></span> \n");
 	print("<select name=\"class\">\n");
-	print("<option value=\"-\">(Все уровни)</option>\n");
+	print("<option value=\"-\">(Р’СЃРµ СѓСЂРѕРІРЅРё)</option>\n");
 	for ($i = 0;;++$i) {
 		if ($c = get_user_class_name($i))
 		print("<option value=\"$i\"" . (is_valid_user_class($class) && $class == $i ? " selected" : "") . ">$c</option>\n");
@@ -133,7 +133,7 @@ elseif (!isset($_GET['act'])) {
 	print ('<div id="users-table">');
 	print ("<p>$pagertop</p>");
 	print("<table cellspacing=\"0\" cellpadding=\"5\" border=\"1\" style=\"width: 964px;\">\n");
-	print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td></tr>\n");
+	print("<tr><td class=\"colhead\" align=\"left\">РРјСЏ</td><td class=\"colhead\">Р—Р°СЂРµРіРµСЃС‚СЂРёСЂРѕРІР°РЅ</td><td class=\"colhead\">РџРѕСЃР»РµРґРЅРёР№ РІС…РѕРґ</td><td class=\"colhead\">Р РµР№С‚РёРЅРі</td><td class=\"colhead\">РџРѕР»</td><td class=\"colhead\" align=\"left\">РЈСЂРѕРІРµРЅСЊ</td><td class=\"colhead\">РЎС‚СЂР°РЅР°</td></tr>\n");
 	while ($arr = mysql_fetch_assoc($res)) {
 		if ($arr['country'] > 0) {
 			$country = "<td style=\"padding: 0px\" align=\"center\"><img src=\"pic/flag/$arr[flagpic]\" alt=\"$arr[name]\" title=\"$arr[name]\"></td>";
@@ -142,8 +142,8 @@ elseif (!isset($_GET['act'])) {
 		$country = "<td align=\"center\">---</td>";
 		$ratio = ratearea($arr['ratingsum'],$arr['id'],'users', $CURUSER['id']);
 
-		if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" alt=\"Парень\" title=\"Парень\" style=\"margin-left: 4pt\">";
-		elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" alt=\"Девушка\" title=\"Девушка\" style=\"margin-left: 4pt\">";
+		if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" alt=\"РџР°СЂРµРЅСЊ\" title=\"РџР°СЂРµРЅСЊ\" style=\"margin-left: 4pt\">";
+		elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" alt=\"Р”РµРІСѓС€РєР°\" title=\"Р”РµРІСѓС€РєР°\" style=\"margin-left: 4pt\">";
 		else $gender = "<div align=\"center\"><b>?</b></div>";
 
 		print("<tr><td align=\"left\"><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['id'],'username',translit($arr["username"]))."\"><b>".get_user_class_color($arr["class"], $arr["username"])."</b></a>" .($arr["donated"] > 0 ? "<img src=\"pic/star.gif\" border=\"0\" alt=\"Donor\">" : "")."</td>" .

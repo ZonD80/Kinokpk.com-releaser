@@ -12,7 +12,7 @@
 require_once("include/bittorrent.php");
 
 function bark($msg) {
-	stderr("Произошла ошибка", $msg);
+	stderr("РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°", $msg);
 }
 
 $SETlang = substr(trim((string)$_POST["language"]),0,2);
@@ -30,12 +30,12 @@ $updateset = array();
 $changedemail = 0;
 
 if ($chpassword != "") {
-	if (strlen($chpassword) > 40)
-	bark("Извините, ваш пароль слишком длинный (максимум 40 символов)");
+	if (mb_strlen($chpassword) > 40)
+	bark("РР·РІРёРЅРёС‚Рµ, РІР°С€ РїР°СЂРѕР»СЊ СЃР»РёС€РєРѕРј РґР»РёРЅРЅС‹Р№ (РјР°РєСЃРёРјСѓРј 40 СЃРёРјРІРѕР»РѕРІ)");
 	if ($chpassword != $passagain)
-	bark("Пароли не совпадают. Попробуйте еще раз.");
+	bark("РџР°СЂРѕР»Рё РЅРµ СЃРѕРІРїР°РґР°СЋС‚. РџРѕРїСЂРѕР±СѓР№С‚Рµ РµС‰Рµ СЂР°Р·.");
 	if ($CURUSER["passhash"] != md5($CURUSER["secret"] . $oldpassword . $CURUSER["secret"]))
-	bark("Вы ввели неправильный старый пароль.");
+	bark("Р’С‹ РІРІРµР»Рё РЅРµРїСЂР°РІРёР»СЊРЅС‹Р№ СЃС‚Р°СЂС‹Р№ РїР°СЂРѕР»СЊ.");
 
 	$sec = mksecret();
 
@@ -48,17 +48,17 @@ if ($chpassword != "") {
 }
 if ($email != $CURUSER["email"]) {
 	if (!validemail($email))
-	bark("Это не похоже на настоящий E-Mail.");
+	bark("Р­С‚Рѕ РЅРµ РїРѕС…РѕР¶Рµ РЅР° РЅР°СЃС‚РѕСЏС‰РёР№ E-Mail.");
 	$r = sql_query("SELECT id FROM users WHERE email=" . sqlesc($email)) or sqlerr(__FILE__, __LINE__);
 	if (mysql_num_rows($r) > 0)
-	bark("Этот e-mail адрес уже используется одним из пользователей трекера. (<b>$email</b>)");
+	bark("Р­С‚РѕС‚ e-mail Р°РґСЂРµСЃ СѓР¶Рµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РѕРґРЅРёРј РёР· РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ С‚СЂРµРєРµСЂР°. (<b>$email</b>)");
 	$changedemail = 1;
 }
 
 $username = trim((string)$_POST['username']);
 
 if ($username<>$CURUSER['username']) {
-	if (strlen($username) > 12)
+	if (mb_strlen($username) > 12)
 	bark($REL_LANG->_('Sorry, but your username is too big. It must be < 12 symbols. Please <a href="javascript:history.go(-1);">try again</a>.'));
 
 	if (!validusername($username))
@@ -81,14 +81,14 @@ $extra_ef = ($_POST["extra_ef"]? 1 : 0);
 
 if (isset($_POST['timezone'])) $updateset[] = "timezone = ".(int)$_POST['timezone'];
 
-if (!is_valid_id($_POST["gender"])) stderr($REL_LANG->say_by_key('error'),"Какой же у вас пол?");
+if (!is_valid_id($_POST["gender"])) stderr($REL_LANG->say_by_key('error'),"РљР°РєРѕР№ Р¶Рµ Сѓ РІР°СЃ РїРѕР»?");
 $gender = (int)$_POST["gender"];
 $updateset[] = "gender =  " . $gender;
 
 ///////////////// BIRTHDAY MOD /////////////////////
 
 $birthday = @date("{$_POST["year"]}.{$_POST["month"]}.{$_POST["day"]}");
-if (!$birthday) stderr($REL_LANG->say_by_key('error'),"Вы указали неверную дату рождения");
+if (!$birthday) stderr($REL_LANG->say_by_key('error'),"Р’С‹ СѓРєР°Р·Р°Р»Рё РЅРµРІРµСЂРЅСѓСЋ РґР°С‚Сѓ СЂРѕР¶РґРµРЅРёСЏ");
 
 ///////////////// BIRTHDAY MOD /////////////////////
 $updateset[] = "birthday = " . sqlesc($birthday);
@@ -97,41 +97,41 @@ if ($_POST['resetpasskey'])
 $REL_DB->query("UPDATE xbt_users SET torrent_pass='' WHERE uid=".sqlesc($CURUSER[id]));
 
 $info = trim((string)$_POST["info"]);
-if (!is_valid_id($_POST["stylesheet"])) stderr($REL_LANG->say_by_key('error'),"Неверно выбран стиль оформления");
+if (!is_valid_id($_POST["stylesheet"])) stderr($REL_LANG->say_by_key('error'),"РќРµРІРµСЂРЅРѕ РІС‹Р±СЂР°РЅ СЃС‚РёР»СЊ РѕС„РѕСЂРјР»РµРЅРёСЏ");
 $stylesheet = $_POST["stylesheet"];
-if (!is_valid_id($_POST['country'])) stderr($REL_LANG->say_by_key('error'),"Неверно выбрана страна");
+if (!is_valid_id($_POST['country'])) stderr($REL_LANG->say_by_key('error'),"РќРµРІРµСЂРЅРѕ РІС‹Р±СЂР°РЅР° СЃС‚СЂР°РЅР°");
 $country = (int)$_POST["country"];
 
 $updateset[] = "language = " . sqlesc($SETlang);
 
 $icq =  unesc((int)$_POST["icq"]);
-if (strlen($icq) > 10)
-bark("Жаль, Номер icq слишком длинный  (Макс - 10)");
+if (mb_strlen($icq) > 10)
+bark("Р–Р°Р»СЊ, РќРѕРјРµСЂ icq СЃР»РёС€РєРѕРј РґР»РёРЅРЅС‹Р№  (РњР°РєСЃ - 10)");
 $updateset[] = "icq = " . sqlesc($icq);
 
 $msn = unesc($_POST["msn"]);
-if (strlen($msn) > 30)
-bark("Жаль, Ваш msn слишком длинный  (Макс - 30)");
+if (mb_strlen($msn) > 30)
+bark("Р–Р°Р»СЊ, Р’Р°С€ msn СЃР»РёС€РєРѕРј РґР»РёРЅРЅС‹Р№  (РњР°РєСЃ - 30)");
 $updateset[] = "msn = " . sqlesc(htmlspecialchars($msn));
 
 $aim = unesc($_POST["aim"]);
-if (strlen($aim) > 30)
-bark("Жаль, Ваш aim слишком длинный  (Макс - 30)");
+if (mb_strlen($aim) > 30)
+bark("Р–Р°Р»СЊ, Р’Р°С€ aim СЃР»РёС€РєРѕРј РґР»РёРЅРЅС‹Р№  (РњР°РєСЃ - 30)");
 $updateset[] = "aim = " . sqlesc(htmlspecialchars($aim));
 
 $yahoo = unesc($_POST["yahoo"]);
-if (strlen($yahoo) > 30)
-bark("Жаль, Ваш yahoo слишком длинный  (Макс - 30)");
+if (mb_strlen($yahoo) > 30)
+bark("Р–Р°Р»СЊ, Р’Р°С€ yahoo СЃР»РёС€РєРѕРј РґР»РёРЅРЅС‹Р№  (РњР°РєСЃ - 30)");
 $updateset[] = "yahoo = " . sqlesc(htmlspecialchars($yahoo));
 
 $mirc = unesc($_POST["mirc"]);
-if (strlen($mirc) > 30)
-bark("Жаль, Ваш mirc слишком длинный  (Макс - 30)");
+if (mb_strlen($mirc) > 30)
+bark("Р–Р°Р»СЊ, Р’Р°С€ mirc СЃР»РёС€РєРѕРј РґР»РёРЅРЅС‹Р№  (РњР°РєСЃ - 30)");
 $updateset[] = "mirc = " . sqlesc(htmlspecialchars($mirc));
 
 $skype = unesc($_POST["skype"]);
-if (strlen($skype) > 20)
-bark("Жаль, Ваш skype слишком длинный  (Макс - 20)");
+if (mb_strlen($skype) > 20)
+bark("Р–Р°Р»СЊ, Р’Р°С€ skype СЃР»РёС€РєРѕРј РґР»РёРЅРЅС‹Р№  (РњР°РєСЃ - 20)");
 $updateset[] = "skype = " . sqlesc(htmlspecialchars($skype));
 
 $privacy = (string)$_POST['privacy'];
@@ -163,17 +163,17 @@ if ($changedemail) {
 	$obemail = urlencode($email);
 	$updateset[] = "editsecret = " . sqlesc($sec);
 	$body = <<<EOD
-Вы подали запрос на изменения e-mail для пользователя {$CURUSER["username"]}
-на {$REL_CONFIG['defaultbaseurl']}. Новым адресом станет:$email.
+Р’С‹ РїРѕРґР°Р»Рё Р·Р°РїСЂРѕСЃ РЅР° РёР·РјРµРЅРµРЅРёСЏ e-mail РґР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ {$CURUSER["username"]}
+РЅР° {$REL_CONFIG['defaultbaseurl']}. РќРѕРІС‹Рј Р°РґСЂРµСЃРѕРј СЃС‚Р°РЅРµС‚:$email.
 
-Если вы НЕ совершали действий, указанных в этом письме, то проигнорируйте это письмо.
+Р•СЃР»Рё РІС‹ РќР• СЃРѕРІРµСЂС€Р°Р»Рё РґРµР№СЃС‚РІРёР№, СѓРєР°Р·Р°РЅРЅС‹С… РІ СЌС‚РѕРј РїРёСЃСЊРјРµ, С‚Рѕ РїСЂРѕРёРіРЅРѕСЂРёСЂСѓР№С‚Рµ СЌС‚Рѕ РїРёСЃСЊРјРѕ.
 
-Если вы действительно хотите изменить e-mail, то проследуйте по следующей ссылке:
+Р•СЃР»Рё РІС‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ РёР·РјРµРЅРёС‚СЊ e-mail, С‚Рѕ РїСЂРѕСЃР»РµРґСѓР№С‚Рµ РїРѕ СЃР»РµРґСѓСЋС‰РµР№ СЃСЃС‹Р»РєРµ:
 {$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('confirmemail','id',$CURUSER['id'],'confirmcode',$hash,'email',$obemail)}
 
 EOD;
 
-sent_mail($email, $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], "{$REL_CONFIG['defaultbaseurl']} подтверждение изменения профиля", $body);
+sent_mail($email, $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], "{$REL_CONFIG['defaultbaseurl']} РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РёР·РјРµРЅРµРЅРёСЏ РїСЂРѕС„РёР»СЏ", $body);
 $string.= "<br /><h2>".$REL_LANG->say_by_key('my_mail_sent')."</h2>";
 }
 

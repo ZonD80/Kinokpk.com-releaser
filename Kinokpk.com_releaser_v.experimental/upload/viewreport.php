@@ -4,11 +4,11 @@ dbconn();
 loggedinorreturn();
 
 if (get_user_class() < UC_MODERATOR){
-	stderr("Ошибка", "У Вас нет прав для просмотра этой страницы.");
+	stderr("РћС€РёР±РєР°", "РЈ Р’Р°СЃ РЅРµС‚ РїСЂР°РІ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° СЌС‚РѕР№ СЃС‚СЂР°РЅРёС†С‹.");
 }
 
 
-//Удалить все жалобы
+//РЈРґР°Р»РёС‚СЊ РІСЃРµ Р¶Р°Р»РѕР±С‹
 if ($_POST['deleteall']) {
 
 	sql_query("TRUNCATE TABLE report") or sqlerr(__FILE__,__LINE__);
@@ -16,7 +16,7 @@ if ($_POST['deleteall']) {
 //
 
 
-//Удалить выбранные жалобы
+//РЈРґР°Р»РёС‚СЊ РІС‹Р±СЂР°РЅРЅС‹Рµ Р¶Р°Р»РѕР±С‹
 if ($_POST['delete'] && $_POST['reports']) {
 	$reports = $_POST['reports'];
 
@@ -26,7 +26,7 @@ if ($_POST['delete'] && $_POST['reports']) {
 }
 //
 
-$REL_TPL->stdhead("Просмотр жалоб на раздачи");
+$REL_TPL->stdhead("РџСЂРѕСЃРјРѕС‚СЂ Р¶Р°Р»РѕР± РЅР° СЂР°Р·РґР°С‡Рё");
 
 $count = get_row_count("report");
 if (!$count) {
@@ -56,12 +56,12 @@ if (!$count) {
         </script>
 
 <center>
-<h1>Поступившие жалобы на раздачи</h1>
+<h1>РџРѕСЃС‚СѓРїРёРІС€РёРµ Р¶Р°Р»РѕР±С‹ РЅР° СЂР°Р·РґР°С‡Рё</h1>
 </center>
 <div align=center>
 <form action="<?=$REL_SEO->make_link('viewreport');?>" method="post"><input
 	type="hidden" name="deleteall" value="deleteall"> <input type="submit"
-	value="Удалить все жалобы" onClick="return confirm('Вы уверены?')"></form>
+	value="РЈРґР°Р»РёС‚СЊ РІСЃРµ Р¶Р°Р»РѕР±С‹" onClick="return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?')"></form>
 </div>
 <br />
 
@@ -70,19 +70,19 @@ if (!$count) {
 <table border="0" cellspacing="0" width="100%" cellpadding="3">
 	<tr>
 		<td class=colhead>
-		<center>Дата&nbsp;поступления</center>
+		<center>Р”Р°С‚Р°&nbsp;РїРѕСЃС‚СѓРїР»РµРЅРёСЏ</center>
 		</td>
 		<td class=colhead>
-		<center>Жалоба&nbsp;от</center>
+		<center>Р–Р°Р»РѕР±Р°&nbsp;РѕС‚</center>
 		</td>
 		<td class=colhead>
-		<center>Жалоба&nbsp;на&nbsp;торрент</center>
+		<center>Р–Р°Р»РѕР±Р°&nbsp;РЅР°&nbsp;С‚РѕСЂСЂРµРЅС‚</center>
 		</td>
 		<td class=colhead>
-		<center>Причина&nbsp;жалобы</center>
+		<center>РџСЂРёС‡РёРЅР°&nbsp;Р¶Р°Р»РѕР±С‹</center>
 		</td>
 		<td class=colhead>
-		<center><INPUT type="checkbox" title="Выбрать все" value="Выбрать все"
+		<center><INPUT type="checkbox" title="Р’С‹Р±СЂР°С‚СЊ РІСЃРµ" value="Р’С‹Р±СЂР°С‚СЊ РІСЃРµ"
 			onClick="this.value=check(document.form1.elements);"></center>
 		</td>
 	</tr>
@@ -107,7 +107,7 @@ if (!$count) {
 			$userclass = $row1["class"];
 
 			if ($username == ""){
-				$username = "<b><font color='red'>Аноним<font></b>";
+				$username = "<b><font color='red'>РђРЅРѕРЅРёРј<font></b>";
 			}
 
 			$res2 = sql_query("SELECT id, name FROM torrents WHERE id = $torrentid") or sqlerr(__FILE__, __LINE__);
@@ -117,7 +117,7 @@ if (!$count) {
 				$torrentname = $row2["name"];
 				$torrenturl = "<a target='_blank' href='".$REL_SEO->make_link('details','id',$torrentid,'name',translit($torrentname))."'>$torrentname</a>";
 			} else {
-				$torrenturl = "<b><font color='red'>торрент удален<font></b>";
+				$torrenturl = "<b><font color='red'>С‚РѕСЂСЂРµРЅС‚ СѓРґР°Р»РµРЅ<font></b>";
 			}
 
 
@@ -127,14 +127,14 @@ if (!$count) {
         <td>$torrenturl</td>
         <td>$motive</td>
         <td align='center'>
-        <INPUT type=\"checkbox\" name=\"reports[]\" title=\"Выбрать\" value=\"".$reportid."\" id=\"checkbox_tbl_".$reportid."\"></td></tr>");
+        <INPUT type=\"checkbox\" name=\"reports[]\" title=\"Р’С‹Р±СЂР°С‚СЊ\" value=\"".$reportid."\" id=\"checkbox_tbl_".$reportid."\"></td></tr>");
 
 		}
 
 	}
 	else
 	{
-		print("<tr><td align='center' colspan='5'>Нет ни одной жалобы на раздачи...</td></tr>");
+		print("<tr><td align='center' colspan='5'>РќРµС‚ РЅРё РѕРґРЅРѕР№ Р¶Р°Р»РѕР±С‹ РЅР° СЂР°Р·РґР°С‡Рё...</td></tr>");
 	}
 
 	?>
@@ -142,7 +142,7 @@ if (!$count) {
 	<tr>
 		<td class=colhead colspan="5">
 		<div align=right><input type="submit" name="delete"
-			value="Удалить выбранное" onClick="return confirm('Вы уверены?')"></div>
+			value="РЈРґР°Р»РёС‚СЊ РІС‹Р±СЂР°РЅРЅРѕРµ" onClick="return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?')"></div>
 		</td>
 	</tr>
 </table>

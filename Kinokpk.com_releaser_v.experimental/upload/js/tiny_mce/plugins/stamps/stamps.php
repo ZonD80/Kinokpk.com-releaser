@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type"
-	content="text/html; charset=windows-1251" />
+	content="text/html; charset=utf-8" />
 <title>{#stamps_dlg.title}</title>
 <script type="text/javascript" src="../../tiny_mce_popup.js"></script>
 <script type="text/javascript" src="js/stamps.js"></script>
@@ -20,10 +20,15 @@ require_once ($path."include/bittorrent.php");
 dbconn();
 if (!$CURUSER) die('Only users enabled');
 $stamparray = sql_query("SELECT image FROM stamps WHERE class <= ".get_user_class()." ORDER BY sort ASC");
-while ((list($img) = mysql_fetch_array($stamparray))) print('<tr><td><a href="javascript:StampsDialog.insert(\''.$img.'\');"><img src="'.$REL_CONFIG['defaultbaseurl'].'/pic/stamp/'.$img.'" border="0" alt="Stamp" title="Stamp" /></a></td></tr>');
+while ((list($img) = mysql_fetch_array($stamparray))) 
+print('
+<div class="stamps"><a href="javascript:StampsDialog.insert(\''.$img.'\');"><img src="'.$REL_CONFIG['defaultbaseurl'].'/pic/stamp/'.$img.'" border="0" style="width:100px;height:100px;" class="stamp" alt="Stamp" title="Stamp" /></a></div>');
 
 ?>
 </table>
 </div>
+<style type="text/css">
+.stamps{float:left;padding:5px;}
+</style>
 </body>
 </html>

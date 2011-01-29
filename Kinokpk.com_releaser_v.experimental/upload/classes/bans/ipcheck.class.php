@@ -4,7 +4,7 @@ class IPAddressSubnetSniffer {
 	 * Author:  Jeff Silverman
 	 * Date:    28-OCT-2005
 	 * Version: 0.1
-	 * Copyright � 2005, The Johns Hopkins University, All rights reserved.
+	 * Copyright пїЅ 2005, The Johns Hopkins University, All rights reserved.
 	 * To Do:
 	 *       Need to let the "okay ip addresses" be set after class
 	 *       instantiation

@@ -67,7 +67,7 @@ function smarty_modifier_debug_print_var ($var, $depth = 0, $length = 40)
             break;
         case 'string' :
             $results = strtr($var, $_replace);
-            if (strlen($var) > $length) {
+            if (mb_strlen($var) > $length) {
                 $results = substr($var, 0, $length - 3) . '...';
             } 
             $results = htmlspecialchars('"' . $results . '"');
@@ -75,7 +75,7 @@ function smarty_modifier_debug_print_var ($var, $depth = 0, $length = 40)
         case 'unknown type' :
         default :
             $results = strtr((string) $var, $_replace);
-            if (strlen($results) > $length) {
+            if (mb_strlen($results) > $length) {
                 $results = substr($results, 0, $length - 3) . '...';
             } 
             $results = htmlspecialchars($results);

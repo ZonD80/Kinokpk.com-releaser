@@ -6,8 +6,8 @@
  * Generates RSS/Atom feeds
  *
  * @package	FeedGenerator
- * @author	Mateusz 'MatheW' Wójcik
- * @copyright 	2007 Mateusz 'MatheW' Wójcik
+ * @author	Mateusz 'MatheW' WГіjcik
+ * @copyright 	2007 Mateusz 'MatheW' WГіjcik
  * @link	http://mwojcik.pl
  * @license	GPL
  * @version	v1.1
@@ -50,7 +50,7 @@ include('classes/rssatom/atomgenerator.class.php');
  * </pre>
  *
  * @package	FeedGenerator
- * @author	Mateusz 'MatheW' Wójcik
+ * @author	Mateusz 'MatheW' WГіjcik
  * @version	1.1
  *
  */
@@ -297,7 +297,7 @@ function date3339($timestamp=0) {
  *
  *
  * @package FeedGenerator
- * @author 	Mateusz 'MatheW' Wójcik
+ * @author 	Mateusz 'MatheW' WГіjcik
  */
 
 class FeedItem {

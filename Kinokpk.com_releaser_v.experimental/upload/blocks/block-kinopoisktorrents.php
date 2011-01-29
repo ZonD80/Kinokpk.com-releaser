@@ -59,8 +59,8 @@ if ($content===false) {
 
 		$row['descr'] = strip_tags($row['descr']);
 
-		if (strlen($row['descr'])>300) $row['descr']=substr($row['descr'],0,300).'...';
-		$content .= '<li><a href="'.$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name'])).'">'.(($row['free'])?'<img border="0" src="pic/freedownload.gif" alt="Çîëîòîé òîððåíò" title="Çîëîòîé òîððåíò"/>&nbsp;':'').$row['name'].'</a><div>
+		if (mb_strlen($row['descr'])>300) $row['descr']=substr($row['descr'],0,300).'...';
+		$content .= '<li><a href="'.$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name'])).'">'.(($row['free'])?'<img border="0" src="pic/freedownload.gif" alt="Ð—Ð¾Ð»Ð¾Ñ‚Ð¾Ð¹ Ñ‚Ð¾Ñ€Ñ€ÐµÐ½Ñ‚" title="Ð—Ð¾Ð»Ð¾Ñ‚Ð¾Ð¹ Ñ‚Ð¾Ñ€Ñ€ÐµÐ½Ñ‚"/>&nbsp;':'').$row['name'].'</a><div>
   <h5>'.$row['name'].'</h5><p>'.$row['descr'].'</p>'.($filmid?'<a href="http://www.kinopoisk.ru/level/1/film/'.$filmid.'/" class="info icon">info</a> '.($flashcode?'<a href="#__ClipID='.$flashcode.'" class="trailer icon">trailer</a> ':'').' ':'').'<a href="'.$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name'])).'" class="details icon">details</a></div><img class="changeImage" src="'.$imgcode.'" alt="'.$row['name'].'" title="'.$row['name'].'" /></li>';
 		//break;
 	}

@@ -26,7 +26,7 @@ require_once("include/bittorrent.php");
 dbconn();
 loggedinorreturn();
 
-$REL_TPL->stdhead("Где пользователь");
+$REL_TPL->stdhead("Р“РґРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ");
 if (get_user_class() < UC_MODERATOR)
 {
 	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'), 'error');
@@ -34,7 +34,7 @@ if (get_user_class() < UC_MODERATOR)
 	die();
 }
 
-$secs = 1 * 300;//Время выборки (5 последних минут)
+$secs = 1 * 300;//Р’СЂРµРјСЏ РІС‹Р±РѕСЂРєРё (5 РїРѕСЃР»РµРґРЅРёС… РјРёРЅСѓС‚)
 $dt = time() - $secs;
 
 
@@ -46,11 +46,11 @@ $per_list = 100;
 list($pagertop, $pagerbottom, $limit) = pager($per_list, $count, array('online'));
 $spy_res = sql_query("SELECT url, uid, username, class, ip, useragent FROM sessions WHERE time > $dt ORDER BY uid ASC $limit");
 
-echo "<table  class=\"embedded\" cellspacing=\"0\" cellpadding=\"3\" width=\"100%\"><tr><td class=\"colhead\" align=\"center\" colspan=\"3\">Где находятся пользователи (активность за последние 5 минут)</td></tr>";
+echo "<table  class=\"embedded\" cellspacing=\"0\" cellpadding=\"3\" width=\"100%\"><tr><td class=\"colhead\" align=\"center\" colspan=\"3\">Р“РґРµ РЅР°С…РѕРґСЏС‚СЃСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»Рё (Р°РєС‚РёРІРЅРѕСЃС‚СЊ Р·Р° РїРѕСЃР»РµРґРЅРёРµ 5 РјРёРЅСѓС‚)</td></tr>";
 
-echo "<tr><td  class=\"colhead\" align=\"center\">Пользователь</td>"
-."<td class=\"colhead\" align=\"center\">Звание</td>"
-."<td class=\"colhead\" align=\"center\">Просматривает</td></tr>";
+echo "<tr><td  class=\"colhead\" align=\"center\">РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ</td>"
+."<td class=\"colhead\" align=\"center\">Р—РІР°РЅРёРµ</td>"
+."<td class=\"colhead\" align=\"center\">РџСЂРѕСЃРјР°С‚СЂРёРІР°РµС‚</td></tr>";
 
 if($per_list < $count){
 	echo "<tr><td class=\"index\" colspan=\"3\">"
@@ -73,10 +73,10 @@ if($per_list < $count){
 		$read = "";
 		if($CURUSER['id'] == $user_id)
 		{
-			$read = "<font color=\"red\">(Вы здесь)</font>";
+			$read = "<font color=\"red\">(Р’С‹ Р·РґРµСЃСЊ)</font>";
 		}
 
-		$slep = "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td class=bottom width=50%><i>Открыть</i></td></tr></table></div><div class=\"sp-body\">"
+		$slep = "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td class=bottom width=50%><i>РћС‚РєСЂС‹С‚СЊ</i></td></tr></table></div><div class=\"sp-body\">"
 		."User_agent - ".$user_agent."<br />"
 		."IP - <a target='_blank' href=\"http://www.dnsstuff.com/tools/whois.ch?ip=".$user_ip."\">". $user_ip."</a></div></div>";
 
@@ -84,7 +84,7 @@ if($per_list < $count){
 			echo "<tr><td><a target='_blank' href=\"".$REL_SEO->make_link('userdetails','id',$user_id,'username',translit($user_name))."\">".get_user_class_color($user_class, $user_name)."</a> $slep</td>";
 			echo "<td><b>".get_user_class_name($user_class)."</b></td><td>";
 		}else{
-			echo "<tr><td><a target='_blank' href=\"http://www.dnsstuff.com/tools/whois.ch?ip=".$user_ip."\">Гость</a> $slep</td>";
+			echo "<tr><td><a target='_blank' href=\"http://www.dnsstuff.com/tools/whois.ch?ip=".$user_ip."\">Р“РѕСЃС‚СЊ</a> $slep</td>";
 			echo "<td>".$user_ip."</td><td>";
 		}
 		echo "<a target='_blank' href=\"".$spy_url."\">$spy_url</a> ".$read;

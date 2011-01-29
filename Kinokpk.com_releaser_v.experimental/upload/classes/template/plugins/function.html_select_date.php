@@ -169,7 +169,7 @@ function smarty_function_html_select_date($params, $smarty, $template)
             $start_year = strftime('%Y') - $match[2];
         } 
     } 
-    if (strlen($time[0]) > 0) {
+    if (mb_strlen($time[0]) > 0) {
         if ($start_year > $time[0] && !isset($params['start_year'])) {
             // force start year to include given date if not explicitly set
             $start_year = $time[0];

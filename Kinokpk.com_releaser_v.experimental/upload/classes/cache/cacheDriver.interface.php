@@ -4,7 +4,7 @@
  * Interface of cache driver strategy
  *
  * @access public
- * @author Mateusz 'MatheW' Wójcik, <mat.wojcik@gmail.com>
+ * @author Mateusz 'MatheW' WГіjcik, <mat.wojcik@gmail.com>
  * @link http://mwojcik.pl
  * @license GPL
  * @version 1.0

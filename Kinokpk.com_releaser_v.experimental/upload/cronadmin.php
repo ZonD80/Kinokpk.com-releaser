@@ -14,7 +14,7 @@ loggedinorreturn();
 if (get_user_class() < UC_SYSOP) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 httpauth();
 
-$REL_TPL->stdhead('Настройка cron-функций');
+$REL_TPL->stdhead('РќР°СЃС‚СЂРѕР№РєР° cron-С„СѓРЅРєС†РёР№');
 
 $action = trim((string)$_GET['a']);
 
@@ -52,57 +52,57 @@ if ($action == 'gencrontab') {
 }
 if (!isset($_POST['save']) && !isset($_POST['reset'])){
 
-	$REL_TPL->begin_frame("Настройка cron-функций");
+	$REL_TPL->begin_frame("РќР°СЃС‚СЂРѕР№РєР° cron-С„СѓРЅРєС†РёР№");
 	print('<form action="'.$REL_SEO->make_link('cronadmin').'" method="POST">');
 	print('<table width="100%" border="1">');
 
-	if ($REL_CRON['in_remotecheck'] && $REL_CRON['remotecheck_disabled']) $remotecheck_state .= '<font color="red">Запрос на остановку подан, но скрипт еще выполняется. Подождите пожалуйста</font>';
-	if (!$REL_CRON['in_remotecheck'] && $REL_CRON['remotecheck_disabled']) $remotecheck_state .= '<font color="green">Функция остановлена</font>';
-	if ($REL_CRON['in_remotecheck'] && !$REL_CRON['remotecheck_disabled']) $remotecheck_state .= '<font color="green">Функция работает</font>';
-	if (!$REL_CRON['in_remotecheck'] && !$REL_CRON['remotecheck_disabled']) $remotecheck_state .= '<font color="green">Функция в режиме ожидания</font>';
+	if ($REL_CRON['in_remotecheck'] && $REL_CRON['remotecheck_disabled']) $remotecheck_state .= '<font color="red">Р—Р°РїСЂРѕСЃ РЅР° РѕСЃС‚Р°РЅРѕРІРєСѓ РїРѕРґР°РЅ, РЅРѕ СЃРєСЂРёРїС‚ РµС‰Рµ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ. РџРѕРґРѕР¶РґРёС‚Рµ РїРѕР¶Р°Р»СѓР№СЃС‚Р°</font>';
+	if (!$REL_CRON['in_remotecheck'] && $REL_CRON['remotecheck_disabled']) $remotecheck_state .= '<font color="green">Р¤СѓРЅРєС†РёСЏ РѕСЃС‚Р°РЅРѕРІР»РµРЅР°</font>';
+	if ($REL_CRON['in_remotecheck'] && !$REL_CRON['remotecheck_disabled']) $remotecheck_state .= '<font color="green">Р¤СѓРЅРєС†РёСЏ СЂР°Р±РѕС‚Р°РµС‚</font>';
+	if (!$REL_CRON['in_remotecheck'] && !$REL_CRON['remotecheck_disabled']) $remotecheck_state .= '<font color="green">Р¤СѓРЅРєС†РёСЏ РІ СЂРµР¶РёРјРµ РѕР¶РёРґР°РЅРёСЏ</font>';
 	if ($REL_CRON['cron_is_native']==0) $cron_warn = "<br/><font color=\"red\">{$REL_LANG->_('You must edit /etc/crontab when changing this value.')} <a href=\"{$REL_SEO->make_link('cronadmin','a','gencrontab')}\">{$REL_LANG->_("Generate crontab entries")}</a>";
 	print('<tr><td align="center" colspan="2" class="colhead">'.$REL_LANG->_('Scheduled jobs activation method').'</td></tr>');
 	print ('<tr><td>'.$REL_LANG->_('Scheduled jobs activation method').':<br /><small>*'.$REL_LANG->_('You can use built-in functions or crontab. You must edit /etc/crontab corresponding your configuration.').'</small></td><td><select name="cron_is_native"><option value="1" '.($REL_CRON['cron_is_native']==1?"selected":"").'>'.$REL_LANG->_('Native').'</option><option value="0" '.($REL_CRON['cron_is_native']==0?"selected":"").'>'.$REL_LANG->_('crontab').'</option></select>'.($REL_CRON['cron_is_native']==0?" <a href=\"{$REL_SEO->make_link('cronadmin','a','gencrontab')}\">{$REL_LANG->_("Generate crontab entries")}</a>":"").'</td></tr>');
-	print('<tr><td align="center" colspan="2" class="colhead">Настройки мультитрекерной части | »» <a href="'.$REL_SEO->make_link('retrackeradmin').'">К управлению ретрекером</a></td></tr>');
-	print('<tr><td>Отключить функцию получения удаленных пиров:<br /><small>*Так как эта функция выполняется в фоновом режиме, на ее отключение может потребоваться некоторое время. Слева от значения указано текущее состояние функии.</small></td><td><select name="remotecheck_disabled"><option value="1" '.($REL_CRON['remotecheck_disabled']==1?"selected":"").'>Да</option><option value="0" '.($REL_CRON['remotecheck_disabled']==0?"selected":"").'>Нет</option></select> '.$remotecheck_state .'</td></tr>');
-	print('<tr><td>Время перепроверки удаленных пиров:<br /><small>*После N секунд торренты ставятся на проверку заново.</small></td><td><input type="text" name="remotepeers_cleantime" size="3" value="'.$REL_CRON['remotepeers_cleantime'].'"> <b>секунд</b></td></tr>');
-	print('<tr><td>Сколько трекеров проверять за раз:<br/><small>*На больших трекерах, таких как torrentsbook.com, необходимо ограничить количество проверяемых трекеров. При <b>нуле</b> будут проверены все мульитрекерные трекера</small></td><td><input type="text" name="remote_trackers" size="5" value="'.$REL_CRON['remote_trackers'].'">трекеров</td></tr>');
-	print('<tr><td>Интервал между проверками:<br/><small>*При сильной нагрузке желательно увеличить этот параметр. При <b>нуле</b> скрипт будет выполняться постоянно'.$cron_warn.'</small></td><td><input type="text" name="remotecheck_interval" size="3" value="'.$REL_CRON['remotecheck_interval'].'">секунд</td></tr>');
+	print('<tr><td align="center" colspan="2" class="colhead">РќР°СЃС‚СЂРѕР№РєРё РјСѓР»СЊС‚РёС‚СЂРµРєРµСЂРЅРѕР№ С‡Р°СЃС‚Рё | В»В» <a href="'.$REL_SEO->make_link('retrackeradmin').'">Рљ СѓРїСЂР°РІР»РµРЅРёСЋ СЂРµС‚СЂРµРєРµСЂРѕРј</a></td></tr>');
+	print('<tr><td>РћС‚РєР»СЋС‡РёС‚СЊ С„СѓРЅРєС†РёСЋ РїРѕР»СѓС‡РµРЅРёСЏ СѓРґР°Р»РµРЅРЅС‹С… РїРёСЂРѕРІ:<br /><small>*РўР°Рє РєР°Рє СЌС‚Р° С„СѓРЅРєС†РёСЏ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РІ С„РѕРЅРѕРІРѕРј СЂРµР¶РёРјРµ, РЅР° РµРµ РѕС‚РєР»СЋС‡РµРЅРёРµ РјРѕР¶РµС‚ РїРѕС‚СЂРµР±РѕРІР°С‚СЊСЃСЏ РЅРµРєРѕС‚РѕСЂРѕРµ РІСЂРµРјСЏ. РЎР»РµРІР° РѕС‚ Р·РЅР°С‡РµРЅРёСЏ СѓРєР°Р·Р°РЅРѕ С‚РµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ С„СѓРЅРєРёРё.</small></td><td><select name="remotecheck_disabled"><option value="1" '.($REL_CRON['remotecheck_disabled']==1?"selected":"").'>Р”Р°</option><option value="0" '.($REL_CRON['remotecheck_disabled']==0?"selected":"").'>РќРµС‚</option></select> '.$remotecheck_state .'</td></tr>');
+	print('<tr><td>Р’СЂРµРјСЏ РїРµСЂРµРїСЂРѕРІРµСЂРєРё СѓРґР°Р»РµРЅРЅС‹С… РїРёСЂРѕРІ:<br /><small>*РџРѕСЃР»Рµ N СЃРµРєСѓРЅРґ С‚РѕСЂСЂРµРЅС‚С‹ СЃС‚Р°РІСЏС‚СЃСЏ РЅР° РїСЂРѕРІРµСЂРєСѓ Р·Р°РЅРѕРІРѕ.</small></td><td><input type="text" name="remotepeers_cleantime" size="3" value="'.$REL_CRON['remotepeers_cleantime'].'"> <b>СЃРµРєСѓРЅРґ</b></td></tr>');
+	print('<tr><td>РЎРєРѕР»СЊРєРѕ С‚СЂРµРєРµСЂРѕРІ РїСЂРѕРІРµСЂСЏС‚СЊ Р·Р° СЂР°Р·:<br/><small>*РќР° Р±РѕР»СЊС€РёС… С‚СЂРµРєРµСЂР°С…, С‚Р°РєРёС… РєР°Рє torrentsbook.com, РЅРµРѕР±С…РѕРґРёРјРѕ РѕРіСЂР°РЅРёС‡РёС‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕРІРµСЂСЏРµРјС‹С… С‚СЂРµРєРµСЂРѕРІ. РџСЂРё <b>РЅСѓР»Рµ</b> Р±СѓРґСѓС‚ РїСЂРѕРІРµСЂРµРЅС‹ РІСЃРµ РјСѓР»СЊРёС‚СЂРµРєРµСЂРЅС‹Рµ С‚СЂРµРєРµСЂР°</small></td><td><input type="text" name="remote_trackers" size="5" value="'.$REL_CRON['remote_trackers'].'">С‚СЂРµРєРµСЂРѕРІ</td></tr>');
+	print('<tr><td>РРЅС‚РµСЂРІР°Р» РјРµР¶РґСѓ РїСЂРѕРІРµСЂРєР°РјРё:<br/><small>*РџСЂРё СЃРёР»СЊРЅРѕР№ РЅР°РіСЂСѓР·РєРµ Р¶РµР»Р°С‚РµР»СЊРЅРѕ СѓРІРµР»РёС‡РёС‚СЊ СЌС‚РѕС‚ РїР°СЂР°РјРµС‚СЂ. РџСЂРё <b>РЅСѓР»Рµ</b> СЃРєСЂРёРїС‚ Р±СѓРґРµС‚ РІС‹РїРѕР»РЅСЏС‚СЊСЃСЏ РїРѕСЃС‚РѕСЏРЅРЅРѕ'.$cron_warn.'</small></td><td><input type="text" name="remotecheck_interval" size="3" value="'.$REL_CRON['remotecheck_interval'].'">СЃРµРєСѓРЅРґ</td></tr>');
 
 
-	print('<tr><td align="center" colspan="2" class="colhead">Настройки очистки</td></tr>');
+	print('<tr><td align="center" colspan="2" class="colhead">РќР°СЃС‚СЂРѕР№РєРё РѕС‡РёСЃС‚РєРё</td></tr>');
 
-	print('<tr><td>Количество дней, по прошествии которых удаляются неактивированные аккаунты:</td><td><input type="text" name="signup_timeout" size="2" value="'.$REL_CRON['signup_timeout'].'">дней</td></tr>');
-	print('<tr><td>Время в сек, после которых торрент считается мертвым:</td><td><input type="text" name="max_dead_torrent_time" size="3" value="'.$REL_CRON['max_dead_torrent_time'].'">секунд</td></tr>');
-	print('<tr><td>Время очистки БД в секундах:'.($cron_warn?'<br/><small>'.$cron_warn.'</small>':'').'</td><td><input type="text" name="autoclean_interval" size="4" value="'.$REL_CRON['autoclean_interval'].'">секунд</td></tr>');
-	print('<tr><td>Количество дней для очистки личных сообщений от системы:</td><td><input type="text" name="pm_delete_sys_days" size="2" value="'.$REL_CRON['pm_delete_sys_days'].'">дней</td></tr>');
-	print('<tr><td>Количество дней для очистки личных сообщений от пользователя:</td><td><input type="text" name="pm_delete_user_days" size="2" value="'.$REL_CRON['pm_delete_user_days'].'">дней</td></tr>');
-	print('<tr><td>Время жизни мертвого торрента в днях:</td><td><input type="text" name="ttl_days" size="3" value="'.$REL_CRON['ttl_days'].'">дней</td></tr>');
+	print('<tr><td>РљРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№, РїРѕ РїСЂРѕС€РµСЃС‚РІРёРё РєРѕС‚РѕСЂС‹С… СѓРґР°Р»СЏСЋС‚СЃСЏ РЅРµР°РєС‚РёРІРёСЂРѕРІР°РЅРЅС‹Рµ Р°РєРєР°СѓРЅС‚С‹:</td><td><input type="text" name="signup_timeout" size="2" value="'.$REL_CRON['signup_timeout'].'">РґРЅРµР№</td></tr>');
+	print('<tr><td>Р’СЂРµРјСЏ РІ СЃРµРє, РїРѕСЃР»Рµ РєРѕС‚РѕСЂС‹С… С‚РѕСЂСЂРµРЅС‚ СЃС‡РёС‚Р°РµС‚СЃСЏ РјРµСЂС‚РІС‹Рј:</td><td><input type="text" name="max_dead_torrent_time" size="3" value="'.$REL_CRON['max_dead_torrent_time'].'">СЃРµРєСѓРЅРґ</td></tr>');
+	print('<tr><td>Р’СЂРµРјСЏ РѕС‡РёСЃС‚РєРё Р‘Р” РІ СЃРµРєСѓРЅРґР°С…:'.($cron_warn?'<br/><small>'.$cron_warn.'</small>':'').'</td><td><input type="text" name="autoclean_interval" size="4" value="'.$REL_CRON['autoclean_interval'].'">СЃРµРєСѓРЅРґ</td></tr>');
+	print('<tr><td>РљРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№ РґР»СЏ РѕС‡РёСЃС‚РєРё Р»РёС‡РЅС‹С… СЃРѕРѕР±С‰РµРЅРёР№ РѕС‚ СЃРёСЃС‚РµРјС‹:</td><td><input type="text" name="pm_delete_sys_days" size="2" value="'.$REL_CRON['pm_delete_sys_days'].'">РґРЅРµР№</td></tr>');
+	print('<tr><td>РљРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№ РґР»СЏ РѕС‡РёСЃС‚РєРё Р»РёС‡РЅС‹С… СЃРѕРѕР±С‰РµРЅРёР№ РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ:</td><td><input type="text" name="pm_delete_user_days" size="2" value="'.$REL_CRON['pm_delete_user_days'].'">РґРЅРµР№</td></tr>');
+	print('<tr><td>Р’СЂРµРјСЏ Р¶РёР·РЅРё РјРµСЂС‚РІРѕРіРѕ С‚РѕСЂСЂРµРЅС‚Р° РІ РґРЅСЏС…:</td><td><input type="text" name="ttl_days" size="3" value="'.$REL_CRON['ttl_days'].'">РґРЅРµР№</td></tr>');
 
 
-	print('<tr><td align="center" colspan="2" class="colhead">Параметры мульитрекерной рейтинговой системы</td></tr>');
-	print('<tr><td>Рейтинговая система включена:<br /><small>*Эта опция отвечает только <b>автоматическое</b> изменение рейтинга системой и ограничения, связанные с ним. Пользователи в любом случае смогут оценивать действия друг друга, но эти оценки не будут влиять ни на что.</small></td><td><select name="rating_enabled"><option value="1" '.($REL_CRON['rating_enabled']==1?"selected":"").'>Да</option><option value="0" '.($REL_CRON['rating_enabled']==0?"selected":"").'>Нет</option></select></td></tr>');
-	print('<tr><td>Время, в течении которого пользователь считается новичком (рейтинговая система на него не действует):</td><td><input type="text" name="rating_freetime" size="2" value="'.$REL_CRON['rating_freetime'].'">дней</td></tr>');
-	print('<tr><td>Интервал менжу пересчетом рейтинга для пользователей:</td><td><input type="text" name="rating_checktime" size="4" value="'.$REL_CRON['rating_checktime'].'">минут</td></tr>');
+	print('<tr><td align="center" colspan="2" class="colhead">РџР°СЂР°РјРµС‚СЂС‹ РјСѓР»СЊРёС‚СЂРµРєРµСЂРЅРѕР№ СЂРµР№С‚РёРЅРіРѕРІРѕР№ СЃРёСЃС‚РµРјС‹</td></tr>');
+	print('<tr><td>Р РµР№С‚РёРЅРіРѕРІР°СЏ СЃРёСЃС‚РµРјР° РІРєР»СЋС‡РµРЅР°:<br /><small>*Р­С‚Р° РѕРїС†РёСЏ РѕС‚РІРµС‡Р°РµС‚ С‚РѕР»СЊРєРѕ <b>Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРµ</b> РёР·РјРµРЅРµРЅРёРµ СЂРµР№С‚РёРЅРіР° СЃРёСЃС‚РµРјРѕР№ Рё РѕРіСЂР°РЅРёС‡РµРЅРёСЏ, СЃРІСЏР·Р°РЅРЅС‹Рµ СЃ РЅРёРј. РџРѕР»СЊР·РѕРІР°С‚РµР»Рё РІ Р»СЋР±РѕРј СЃР»СѓС‡Р°Рµ СЃРјРѕРіСѓС‚ РѕС†РµРЅРёРІР°С‚СЊ РґРµР№СЃС‚РІРёСЏ РґСЂСѓРі РґСЂСѓРіР°, РЅРѕ СЌС‚Рё РѕС†РµРЅРєРё РЅРµ Р±СѓРґСѓС‚ РІР»РёСЏС‚СЊ РЅРё РЅР° С‡С‚Рѕ.</small></td><td><select name="rating_enabled"><option value="1" '.($REL_CRON['rating_enabled']==1?"selected":"").'>Р”Р°</option><option value="0" '.($REL_CRON['rating_enabled']==0?"selected":"").'>РќРµС‚</option></select></td></tr>');
+	print('<tr><td>Р’СЂРµРјСЏ, РІ С‚РµС‡РµРЅРёРё РєРѕС‚РѕСЂРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃС‡РёС‚Р°РµС‚СЃСЏ РЅРѕРІРёС‡РєРѕРј (СЂРµР№С‚РёРЅРіРѕРІР°СЏ СЃРёСЃС‚РµРјР° РЅР° РЅРµРіРѕ РЅРµ РґРµР№СЃС‚РІСѓРµС‚):</td><td><input type="text" name="rating_freetime" size="2" value="'.$REL_CRON['rating_freetime'].'">РґРЅРµР№</td></tr>');
+	print('<tr><td>РРЅС‚РµСЂРІР°Р» РјРµРЅР¶Сѓ РїРµСЂРµСЃС‡РµС‚РѕРј СЂРµР№С‚РёРЅРіР° РґР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№:</td><td><input type="text" name="rating_checktime" size="4" value="'.$REL_CRON['rating_checktime'].'">РјРёРЅСѓС‚</td></tr>');
 	print('<tr><td>'.$REL_LANG->_("Amount of rating to promote to power user").'</td><td><input type="text" size="3" name="promote_rating" value="'.$REL_CRON['promote_rating'].'"></td></tr>');
-	print('<tr><td>Количество рейтинга, даваемое пользователю за заливку релиза:</td><td><input type="text" size="3" name="rating_perrelease" value="'.$REL_CRON['rating_perrelease'].'"></td></tr>');
-	print('<tr><td>Количество рейтинга, даваемое пользователю за регистрацию приглашенного пользователя:</td><td><input type="text" size="3" name="rating_perinvite" value="'.$REL_CRON['rating_perinvite'].'"></td></tr>');
-	print('<tr><td>Количество рейтинга, даваемое пользователю за выполнение запроса:</td><td><input type="text" size="3" name="rating_perrequest" value="'.$REL_CRON['rating_perrequest'].'"></td></tr>');
-	print('<tr><td>Количество рейтинга, даваемое пользователю за сидирование:<br /><small>*Точная формула для конкретного пользователя указана в '.$REL_SEO->make_link('myrating').'</small></td><td><input type="text" size="3" name="rating_perseed" value="'.$REL_CRON['rating_perseed'].'"></td></tr>');
-	print('<tr><td>Количество рейтинга, отнимаемое у пользователя за отсуствие раздач:</td><td><input type="text" size="3" name="rating_perleech" value="'.$REL_CRON['rating_perleech'].'"></td></tr>');
-	print('<tr><td>Количество рейтинга, отнимаемое у пользователя за скачивание релиза:</td><td><input type="text" size="3" name="rating_perdownload" value="'.$REL_CRON['rating_perdownload'].'"></td></tr>');
-	print('<tr><td>Лимит запрета скачивания торрентов:</td><td><input type="text" size="4" name="rating_downlimit" value="'.$REL_CRON['rating_downlimit'].'"></td></tr>');
-	print('<tr><td>Лимит отключения аккаунта:</td><td><input type="text" size="4" name="rating_dislimit" value="'.$REL_CRON['rating_dislimit'].'"></td></tr>');
-	print('<tr><td>Максимальное количество рейтинга:</td><td><input type="text" size="4" name="rating_max" value="'.$REL_CRON['rating_max'].'"></td></tr>');
-	print('<tr><td>Сколько единиц рейтинга стоит 1 единица откупа:</td><td><input type="text" size="2" name="rating_discounttorrent" value="'.$REL_CRON['rating_discounttorrent'].'"></td></tr>');
+	print('<tr><td>РљРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР№С‚РёРЅРіР°, РґР°РІР°РµРјРѕРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ Р·Р° Р·Р°Р»РёРІРєСѓ СЂРµР»РёР·Р°:</td><td><input type="text" size="3" name="rating_perrelease" value="'.$REL_CRON['rating_perrelease'].'"></td></tr>');
+	print('<tr><td>РљРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР№С‚РёРЅРіР°, РґР°РІР°РµРјРѕРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ Р·Р° СЂРµРіРёСЃС‚СЂР°С†РёСЋ РїСЂРёРіР»Р°С€РµРЅРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ:</td><td><input type="text" size="3" name="rating_perinvite" value="'.$REL_CRON['rating_perinvite'].'"></td></tr>');
+	print('<tr><td>РљРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР№С‚РёРЅРіР°, РґР°РІР°РµРјРѕРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ Р·Р° РІС‹РїРѕР»РЅРµРЅРёРµ Р·Р°РїСЂРѕСЃР°:</td><td><input type="text" size="3" name="rating_perrequest" value="'.$REL_CRON['rating_perrequest'].'"></td></tr>');
+	print('<tr><td>РљРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР№С‚РёРЅРіР°, РґР°РІР°РµРјРѕРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ Р·Р° СЃРёРґРёСЂРѕРІР°РЅРёРµ:<br /><small>*РўРѕС‡РЅР°СЏ С„РѕСЂРјСѓР»Р° РґР»СЏ РєРѕРЅРєСЂРµС‚РЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ СѓРєР°Р·Р°РЅР° РІ '.$REL_SEO->make_link('myrating').'</small></td><td><input type="text" size="3" name="rating_perseed" value="'.$REL_CRON['rating_perseed'].'"></td></tr>');
+	print('<tr><td>РљРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР№С‚РёРЅРіР°, РѕС‚РЅРёРјР°РµРјРѕРµ Сѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Р·Р° РѕС‚СЃСѓСЃС‚РІРёРµ СЂР°Р·РґР°С‡:</td><td><input type="text" size="3" name="rating_perleech" value="'.$REL_CRON['rating_perleech'].'"></td></tr>');
+	print('<tr><td>РљРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР№С‚РёРЅРіР°, РѕС‚РЅРёРјР°РµРјРѕРµ Сѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Р·Р° СЃРєР°С‡РёРІР°РЅРёРµ СЂРµР»РёР·Р°:</td><td><input type="text" size="3" name="rating_perdownload" value="'.$REL_CRON['rating_perdownload'].'"></td></tr>');
+	print('<tr><td>Р›РёРјРёС‚ Р·Р°РїСЂРµС‚Р° СЃРєР°С‡РёРІР°РЅРёСЏ С‚РѕСЂСЂРµРЅС‚РѕРІ:</td><td><input type="text" size="4" name="rating_downlimit" value="'.$REL_CRON['rating_downlimit'].'"></td></tr>');
+	print('<tr><td>Р›РёРјРёС‚ РѕС‚РєР»СЋС‡РµРЅРёСЏ Р°РєРєР°СѓРЅС‚Р°:</td><td><input type="text" size="4" name="rating_dislimit" value="'.$REL_CRON['rating_dislimit'].'"></td></tr>');
+	print('<tr><td>РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР№С‚РёРЅРіР°:</td><td><input type="text" size="4" name="rating_max" value="'.$REL_CRON['rating_max'].'"></td></tr>');
+	print('<tr><td>РЎРєРѕР»СЊРєРѕ РµРґРёРЅРёС† СЂРµР№С‚РёРЅРіР° СЃС‚РѕРёС‚ 1 РµРґРёРЅРёС†Р° РѕС‚РєСѓРїР°:</td><td><input type="text" size="2" name="rating_discounttorrent" value="'.$REL_CRON['rating_discounttorrent'].'"></td></tr>');
 
 
-	print('<tr><td align="center" colspan="2" class="colhead">Прочие параметры</td></tr>');
-	print('<tr><td>Интервал реанонса (обновления статистики в клиентах):</td><td><input type="text" size="5" name="announce_interval" value="'.$REL_CRON['announce_interval'].'">минут</td></tr>');
-	print('<tr><td>Интервал очистки данных о изменениии кармы/рейтинга:<br /><small>*После указанного времени пользователь сможет изменять рейтинг еще раз.<br />*Данное значение не может быть меньше интервала очистки, желательно, чтобы оно было кратно ему.<br />*Оставьте поле пустым, или 0, если хотите, чтобы рейтинг запоминался навсегда</td><td><input type="text" size="3" name="delete_votes" value="'.$REL_CRON['delete_votes'].'">минут</td></tr>');
+	print('<tr><td align="center" colspan="2" class="colhead">РџСЂРѕС‡РёРµ РїР°СЂР°РјРµС‚СЂС‹</td></tr>');
+	print('<tr><td>РРЅС‚РµСЂРІР°Р» СЂРµР°РЅРѕРЅСЃР° (РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚Р°С‚РёСЃС‚РёРєРё РІ РєР»РёРµРЅС‚Р°С…):</td><td><input type="text" size="5" name="announce_interval" value="'.$REL_CRON['announce_interval'].'">РјРёРЅСѓС‚</td></tr>');
+	print('<tr><td>РРЅС‚РµСЂРІР°Р» РѕС‡РёСЃС‚РєРё РґР°РЅРЅС‹С… Рѕ РёР·РјРµРЅРµРЅРёРёРё РєР°СЂРјС‹/СЂРµР№С‚РёРЅРіР°:<br /><small>*РџРѕСЃР»Рµ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РІСЂРµРјРµРЅРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃРјРѕР¶РµС‚ РёР·РјРµРЅСЏС‚СЊ СЂРµР№С‚РёРЅРі РµС‰Рµ СЂР°Р·.<br />*Р”Р°РЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РјРµРЅСЊС€Рµ РёРЅС‚РµСЂРІР°Р»Р° РѕС‡РёСЃС‚РєРё, Р¶РµР»Р°С‚РµР»СЊРЅРѕ, С‡С‚РѕР±С‹ РѕРЅРѕ Р±С‹Р»Рѕ РєСЂР°С‚РЅРѕ РµРјСѓ.<br />*РћСЃС‚Р°РІСЊС‚Рµ РїРѕР»Рµ РїСѓСЃС‚С‹Рј, РёР»Рё 0, РµСЃР»Рё С…РѕС‚РёС‚Рµ, С‡С‚РѕР±С‹ СЂРµР№С‚РёРЅРі Р·Р°РїРѕРјРёРЅР°Р»СЃСЏ РЅР°РІСЃРµРіРґР°</td><td><input type="text" size="3" name="delete_votes" value="'.$REL_CRON['delete_votes'].'">РјРёРЅСѓС‚</td></tr>');
 
-	print('<tr><td align="center" colspan="2"><input type="submit" name="save" value="Сохранить изменения"><input type="reset" value="Сбросить"><input type="submit" name="reset" value="Сбросить статистику cron"></td></tr>
-<tr><td colspan="2"><small>*Сброс статистики cron необходим, если скрипты неверно отображают состояние cron-функций, следить за выполнением скриптов cron удобно через <a href="http://httpd.apache.org/docs/2.0/mod/mod_status.html">mod_status</a> для apache</small></td></tr></table></form>');
+	print('<tr><td align="center" colspan="2"><input type="submit" name="save" value="РЎРѕС…СЂР°РЅРёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ"><input type="reset" value="РЎР±СЂРѕСЃРёС‚СЊ"><input type="submit" name="reset" value="РЎР±СЂРѕСЃРёС‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєСѓ cron"></td></tr>
+<tr><td colspan="2"><small>*РЎР±СЂРѕСЃ СЃС‚Р°С‚РёСЃС‚РёРєРё cron РЅРµРѕР±С…РѕРґРёРј, РµСЃР»Рё СЃРєСЂРёРїС‚С‹ РЅРµРІРµСЂРЅРѕ РѕС‚РѕР±СЂР°Р¶Р°СЋС‚ СЃРѕСЃС‚РѕСЏРЅРёРµ cron-С„СѓРЅРєС†РёР№, СЃР»РµРґРёС‚СЊ Р·Р° РІС‹РїРѕР»РЅРµРЅРёРµРј СЃРєСЂРёРїС‚РѕРІ cron СѓРґРѕР±РЅРѕ С‡РµСЂРµР· <a href="http://httpd.apache.org/docs/2.0/mod/mod_status.html">mod_status</a> РґР»СЏ apache</small></td></tr></table></form>');
 	$REL_TPL->end_frame();
 }
 elseif (isset($_POST['reset'])) {
@@ -119,20 +119,20 @@ elseif (isset($_POST['save'])) {
 	$updateset = array();
 
 	foreach ($reqparametres as $param) {
-		if (!isset($_POST[$param]) && (($param != 'rating_enabled') || ($param != 'delete_votes') || ($param != 'remote_trackers')))  { stdmsg($REL_LANG->say_by_key('error'),"Некоторые поля не заполнены ($param)",'error'); $REL_TPL->stdfoot(); die; }
+		if (!isset($_POST[$param]) && (($param != 'rating_enabled') || ($param != 'delete_votes') || ($param != 'remote_trackers')))  { stdmsg($REL_LANG->say_by_key('error'),"РќРµРєРѕС‚РѕСЂС‹Рµ РїРѕР»СЏ РЅРµ Р·Р°РїРѕР»РЅРµРЅС‹ ($param)",'error'); $REL_TPL->stdfoot(); die; }
 		$updateset[] = "UPDATE cron SET cron_value=".sqlesc($_POST[$param])." WHERE cron_name='$param'";
 	}
 
 	if ($_POST['remotecheck_disabled'] == 0) {
 		foreach ($multi_param as $param) {
-			if (!$_POST[$param] || !isset($_POST[$param])) { stdmsg($REL_LANG->say_by_key('error'),"Некоторые поля для мультитрекерности не заполнены",'error'); $REL_TPL->stdfoot(); die; }
+			if (!$_POST[$param] || !isset($_POST[$param])) { stdmsg($REL_LANG->say_by_key('error'),"РќРµРєРѕС‚РѕСЂС‹Рµ РїРѕР»СЏ РґР»СЏ РјСѓР»СЊС‚РёС‚СЂРµРєРµСЂРЅРѕСЃС‚Рё РЅРµ Р·Р°РїРѕР»РЅРµРЅС‹",'error'); $REL_TPL->stdfoot(); die; }
 			$updateset[] = "UPDATE cron SET cron_value=".sqlesc($_POST[$param])." WHERE cron_name='$param'";
 		}
 	}
 
 	if ($_POST['rating_enabled']) {
 		foreach ($rating_param as $param) {
-			if (!$_POST[$param] || !isset($_POST[$param])) { stdmsg($REL_LANG->say_by_key('error'),"Некоторые поля для рейтинговой системы не заполнены",'error'); $REL_TPL->stdfoot(); die; }
+			if (!$_POST[$param] || !isset($_POST[$param])) { stdmsg($REL_LANG->say_by_key('error'),"РќРµРєРѕС‚РѕСЂС‹Рµ РїРѕР»СЏ РґР»СЏ СЂРµР№С‚РёРЅРіРѕРІРѕР№ СЃРёСЃС‚РµРјС‹ РЅРµ Р·Р°РїРѕР»РЅРµРЅС‹",'error'); $REL_TPL->stdfoot(); die; }
 			$updateset[] = "UPDATE cron SET cron_value=".sqlesc($_POST[$param])." WHERE cron_name='$param'";
 		}
 	}
@@ -141,7 +141,7 @@ elseif (isset($_POST['save'])) {
 	safe_redirect($REL_SEO->make_link('cronadmin'),3);
 	stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('cron_settings_saved'));
 }
-$REL_TPL->begin_frame('Текущее состояние cron:');
+$REL_TPL->begin_frame('РўРµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ cron:');
 print ('<table width="100%"><tr><td>');
 if (!$REL_CRON['in_cleanup']) print $REL_LANG->say_by_key('cleanup_not_running').'<br />';
 if (!$REL_CRON['in_remotecheck']) print $REL_LANG->say_by_key('remotecheck_not_running').'<br />';

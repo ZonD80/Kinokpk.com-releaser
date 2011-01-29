@@ -21,10 +21,10 @@ $id = (int) $_GET["id"];
 $type = unesc($_GET["type"]);
 $invite = $_GET["invite"];
 
-$REL_TPL->stdhead("Приглашения");
+$REL_TPL->stdhead("РџСЂРёРіР»Р°С€РµРЅРёСЏ");
 
 function bark($msg) {
-	stdmsg("Ошибка", $msg);
+	stdmsg("РћС€РёР±РєР°", $msg);
 	$REL_TPL->stdfoot();
 }
 
@@ -36,43 +36,43 @@ if ($type == 'new') {
 	print("<form method=post action=\"".$REL_SEO->make_link('takeinvite')."\">".
 	"<input type=hidden name=id value=$id />".
 	"<table border=1 width=100% cellspacing=0 cellpadding=5>".
-	"<tr class=tabletitle><td colspan=2><b>Создать пригласительный код</b></td></tr>".
+	"<tr class=tabletitle><td colspan=2><b>РЎРѕР·РґР°С‚СЊ РїСЂРёРіР»Р°СЃРёС‚РµР»СЊРЅС‹Р№ РєРѕРґ</b></td></tr>".
 	"<tr class=tableb><td align=center colspan=2>{$REL_LANG->say_by_key('invite_notice_get')}</td></tr>");
-	tr("Введите email, куда будет выслано приглашение:",'<input type="text" size="40" name="email">',1,1);
+	tr("Р’РІРµРґРёС‚Рµ email, РєСѓРґР° Р±СѓРґРµС‚ РІС‹СЃР»Р°РЅРѕ РїСЂРёРіР»Р°С€РµРЅРёРµ:",'<input type="text" size="40" name="email">',1,1);
 	if ($REL_CONFIG['use_captcha']) {
 
 		require_once('include/recaptchalib.php');
-		tr ("Введите слова с картинки:",recaptcha_get_html($REL_CONFIG['re_publickey']),1,1);
+		tr ("Р’РІРµРґРёС‚Рµ СЃР»РѕРІР° СЃ РєР°СЂС‚РёРЅРєРё:",recaptcha_get_html($REL_CONFIG['re_publickey']),1,1);
 
 	}
 
-	print (	"<tr class=tableb><td align=center colspan=2><input type=submit value=\"Создать\"></td></tr>".
+	print (	"<tr class=tableb><td align=center colspan=2><input type=submit value=\"РЎРѕР·РґР°С‚СЊ\"></td></tr>".
 	"</form></table>");
 } elseif ($type == 'del') {
 	$ret = sql_query("SELECT * FROM invites WHERE invite = ".sqlesc($invite)) or sqlerr(__FILE__,__LINE__);
 	$num = mysql_fetch_assoc($ret);
 	if ($num[inviter]==$id) {
 		sql_query("DELETE FROM invites WHERE invite = ".sqlesc($invite)) or sqlerr(__FILE__,__LINE__);
-		stdmsg("Успешно", "Приглашение удалено.");
+		stdmsg("РЈСЃРїРµС€РЅРѕ", "РџСЂРёРіР»Р°С€РµРЅРёРµ СѓРґР°Р»РµРЅРѕ.");
 	} else
-	stdmsg("Ошибка", "Вам не разрешено удалять приглашения.");
+	stdmsg("РћС€РёР±РєР°", "Р’Р°Рј РЅРµ СЂР°Р·СЂРµС€РµРЅРѕ СѓРґР°Р»СЏС‚СЊ РїСЂРёРіР»Р°С€РµРЅРёСЏ.");
 } else {
 	if (get_user_class() <= UC_UPLOADER && !($id == $CURUSER["id"])) {
-		bark("У вас нет права видеть приглашения этого пользователя.");
+		bark("РЈ РІР°СЃ РЅРµС‚ РїСЂР°РІР° РІРёРґРµС‚СЊ РїСЂРёРіР»Р°С€РµРЅРёСЏ СЌС‚РѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.");
 	}
 
 
 	$ret = sql_query("SELECT u.id, u.username, u.class, u.email, u.ratingsum, u.warned, u.enabled, u.donor, u.email, invites.confirmed FROM invites LEFT JOIN users AS u ON u.id=invites.inviteid WHERE invitedby = $id") or sqlerr(__FILE__,__LINE__);
 	$num = mysql_num_rows($ret);
 	print("<form method=post action=\"".$REL_SEO->make_link('takeconfirm','id',$id)."\"><table border=1 width=100% cellspacing=0 cellpadding=5>".
-	"<tr class=tabletitle><td colspan=7><b>Статус приглашенных вами</b> (".(int)$num.")</td></tr>");
+	"<tr class=tabletitle><td colspan=7><b>РЎС‚Р°С‚СѓСЃ РїСЂРёРіР»Р°С€РµРЅРЅС‹С… РІР°РјРё</b> (".(int)$num.")</td></tr>");
 
 	if(!$num) {
-		print("<tr class=tableb><td colspan=7>Еще никто вами не приглашен.</tr>");
+		print("<tr class=tableb><td colspan=7>Р•С‰Рµ РЅРёРєС‚Рѕ РІР°РјРё РЅРµ РїСЂРёРіР»Р°С€РµРЅ.</tr>");
 	} else {
-		print("<tr class=tableb><td><b>Пользователь</b></td><td><b>Email</b></td><td><b>Рейтинг</b></td><td><b>Статус</b></td>");
+		print("<tr class=tableb><td><b>РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ</b></td><td><b>Email</b></td><td><b>Р РµР№С‚РёРЅРі</b></td><td><b>РЎС‚Р°С‚СѓСЃ</b></td>");
 		if ($CURUSER[id] == $id || get_user_class() >= UC_MODERATOR)
-		print("<td align=center><b>Подтвердить</b></td>");
+		print("<td align=center><b>РџРѕРґС‚РІРµСЂРґРёС‚СЊ</b></td>");
 		print("</tr>");
 		for ($i = 0; $i < $num; ++$i) {
 			$arr = mysql_fetch_assoc($ret);
@@ -84,9 +84,9 @@ if ($type == 'new') {
 			$ratio = (($arr['ratingsum']>0)?"+{$arr['ratingsum']}":$arr['ratingsum']);
 
 			if ($arr["confirmed"])
-			$status = "<a href=\"".$REL_SEO->make_link('userdetails','id',$arr['id'],'username',translit($arr['username']))."\"><font color=green>Подтвержден</font></a>";
+			$status = "<a href=\"".$REL_SEO->make_link('userdetails','id',$arr['id'],'username',translit($arr['username']))."\"><font color=green>РџРѕРґС‚РІРµСЂР¶РґРµРЅ</font></a>";
 			else
-			$status = "<font color=red>Не подтвержден</font>";
+			$status = "<font color=red>РќРµ РїРѕРґС‚РІРµСЂР¶РґРµРЅ</font>";
 
 			print("<tr class=tableb>$user<td>$arr[email]</td><td>$ratio</td><td>$status</td>");
 
@@ -101,7 +101,7 @@ if ($type == 'new') {
 	}
 	if ($CURUSER[id] == $id || get_user_class() >= UC_SYSOP) {
 		print("<input type=hidden name=email value=$arr[email]>");
-		print("<tr class=tableb><td colspan=7 align=right><input type=submit value=\"Подтвердить пользователей, получить рейтинг и добавить их в друзья!\"></form></td></tr>");
+		print("<tr class=tableb><td colspan=7 align=right><input type=submit value=\"РџРѕРґС‚РІРµСЂРґРёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, РїРѕР»СѓС‡РёС‚СЊ СЂРµР№С‚РёРЅРі Рё РґРѕР±Р°РІРёС‚СЊ РёС… РІ РґСЂСѓР·СЊСЏ!\"></form></td></tr>");
 	}
 	print("</table><br />");
 
@@ -112,20 +112,20 @@ if ($type == 'new') {
 	$num1 = mysql_num_rows($rer);
 
 	print("<table border=1 width=100% cellspacing=0 cellpadding=5>".
-	"<tr class=tabletitle><td colspan=6><b>Статус созданых приглашений</b> ($number1)</td></tr>");
+	"<tr class=tabletitle><td colspan=6><b>РЎС‚Р°С‚СѓСЃ СЃРѕР·РґР°РЅС‹С… РїСЂРёРіР»Р°С€РµРЅРёР№</b> ($number1)</td></tr>");
 
 	if(!$num1) {
-		print("<tr class=tableb><td colspan=6>На данный момент вами не создано ниодного приглашения.</tr>");
+		print("<tr class=tableb><td colspan=6>РќР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РІР°РјРё РЅРµ СЃРѕР·РґР°РЅРѕ РЅРёРѕРґРЅРѕРіРѕ РїСЂРёРіР»Р°С€РµРЅРёСЏ.</tr>");
 	} else {
-		print("<tr class=tableb><td><b>Код приглашения</b></td><td><b>Дата создания</b></td><td>Удалить</td></tr>");
+		print("<tr class=tableb><td><b>РљРѕРґ РїСЂРёРіР»Р°С€РµРЅРёСЏ</b></td><td><b>Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ</b></td><td>РЈРґР°Р»РёС‚СЊ</td></tr>");
 		for ($i = 0; $i < $num1; ++$i) {
 			$arr1 = mysql_fetch_assoc($rer);
 			print("<tr class=tableb><td>$arr1[invite]</td><td>".mkprettytime($arr1['time_invited'])."</td>");
-			print ("<td><a href=\"".$REL_SEO->make_link('invite','invite',$arr1['invite'],'type','del')."\" onClick=\"return confirm('Вы уверены?')\">Удалить приглашение</a></td></tr>");
+			print ("<td><a href=\"".$REL_SEO->make_link('invite','invite',$arr1['invite'],'type','del')."\" onClick=\"return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?')\">РЈРґР°Р»РёС‚СЊ РїСЂРёРіР»Р°С€РµРЅРёРµ</a></td></tr>");
 		}
 	}
 
-	print("<tr class=tableb><td colspan=7 align=center><form method=get action=\"".$REL_SEO->make_link('invite','id',$id,'type','new')."\"><input type='hidden' name='id' value='$id' /><input type='hidden' name='type' value='new' /><input type=submit value=\"Создать приглашение\"></form></td></tr>");
+	print("<tr class=tableb><td colspan=7 align=center><form method=get action=\"".$REL_SEO->make_link('invite','id',$id,'type','new')."\"><input type='hidden' name='id' value='$id' /><input type='hidden' name='type' value='new' /><input type=submit value=\"РЎРѕР·РґР°С‚СЊ РїСЂРёРіР»Р°С€РµРЅРёРµ\"></form></td></tr>");
 	print("</table>");
 }
 $REL_TPL->stdfoot();

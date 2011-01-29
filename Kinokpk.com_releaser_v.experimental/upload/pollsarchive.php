@@ -12,7 +12,7 @@ dbconn();
 
 loggedinorreturn();
 
-$spbegin = "<div style=\"position: static;\" class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"bottom\" width=\"50%\"><i>Посмотреть голосовавших</i></td></tr></table></div><div class=\"sp-body\">";
+$spbegin = "<div style=\"position: static;\" class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"bottom\" width=\"50%\"><i>РџРѕСЃРјРѕС‚СЂРµС‚СЊ РіРѕР»РѕСЃРѕРІР°РІС€РёС…</i></td></tr></table></div><div class=\"sp-body\">";
 $spend = "</div></div>";
 
 $count = get_row_count("polls");
@@ -21,7 +21,7 @@ list($pagertop, $pagerbottom, $limit) = pager(5, $count, array('pollsarchive'));
 
 $pollsrow = sql_query("SELECT id FROM polls ORDER BY id DESC $limit");
 
-$REL_TPL->stdhead("Архив опросов");
+$REL_TPL->stdhead("РђСЂС…РёРІ РѕРїСЂРѕСЃРѕРІ");
 
 print('<table width="100%" border="1"><tr><td>'.$pagertop.'</td></tr>');
 while (list($id) = mysql_fetch_array($pollsrow)) {
@@ -54,7 +54,7 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 
 	$pstart = @array_unique($pstart);
 	$pstart = $pstart[0];
-	if (!$pstart) stderr($REL_LANG->say_by_key('error'), "Такого опроса не существует");
+	if (!$pstart) stderr($REL_LANG->say_by_key('error'), "РўР°РєРѕРіРѕ РѕРїСЂРѕСЃР° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
 	$pexp = @array_unique($pexp);
 	$pexp = $pexp[0];
 	$pquestion = @array_unique($pquestion);
@@ -68,7 +68,7 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 	sort($sids);
 	reset($sids);
 
-	print('<tr><td><table width="100%" border="1"><tr><td>Опрос № '.$id.'</td><td>Открыт: '.mkprettytime($pstart).(!is_null($pexp)?(($pexp > time())?", заканчивается: ".mkprettytime($pexp):", <font color=\"red\">закончен</font>: ".mkprettytime($pexp)):'').'</td></tr><tr><td align="center" class="colhead" colspan="2">'.$pquestion.'</b>'.((get_user_class() >= UC_ADMINISTRATOR)?" [<a href=\"".$REL_SEO->make_link('pollsadmin','action','edit','id',$id)."\">Редактировать</a>][<a onClick=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('pollsadmin','action','delete','id',$id)."\">Удалить</a>]":"").'</td></tr>');
+	print('<tr><td><table width="100%" border="1"><tr><td>РћРїСЂРѕСЃ в„– '.$id.'</td><td>РћС‚РєСЂС‹С‚: '.mkprettytime($pstart).(!is_null($pexp)?(($pexp > time())?", Р·Р°РєР°РЅС‡РёРІР°РµС‚СЃСЏ: ".mkprettytime($pexp):", <font color=\"red\">Р·Р°РєРѕРЅС‡РµРЅ</font>: ".mkprettytime($pexp)):'').'</td></tr><tr><td align="center" class="colhead" colspan="2">'.$pquestion.'</b>'.((get_user_class() >= UC_ADMINISTRATOR)?" [<a href=\"".$REL_SEO->make_link('pollsadmin','action','edit','id',$id)."\">Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ</a>][<a onClick=\"return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?')\" href=\"".$REL_SEO->make_link('pollsadmin','action','delete','id',$id)."\">РЈРґР°Р»РёС‚СЊ</a>]":"").'</td></tr>');
 
 	foreach ($sids as $sid)
 	$votesres[$sid] = array();
@@ -102,7 +102,7 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 			if (!is_null($vid)) $votecount[$votedrow]++;
 
 			if ((($public) || (get_user_class() >= UC_MODERATOR)) && !is_null($vid))
-			$usercode[$votedrow] .= "<a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',translit($user['username']))."\">".get_user_class_color($user['class'],$user['username'])."</a>".((get_user_class() >= UC_MODERATOR)?" [<a onClick=\"return confirm('Удалить этот голос?')\" href=\"".$REL_SEO->make_link('polloverview','deletevote','vid',$vid)."\">D</a>] ":" ");
+			$usercode[$votedrow] .= "<a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',translit($user['username']))."\">".get_user_class_color($user['class'],$user['username'])."</a>".((get_user_class() >= UC_MODERATOR)?" [<a onClick=\"return confirm('РЈРґР°Р»РёС‚СЊ СЌС‚РѕС‚ РіРѕР»РѕСЃ?')\" href=\"".$REL_SEO->make_link('polloverview','deletevote','vid',$vid)."\">D</a>] ":" ");
 
 			if (($votecount[$votedrow]) >= $maxvotes) $maxvotes = $votecount[$votedrow];
 
@@ -117,12 +117,12 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 		if (!$percent) $percent = 0;
 		print("<tr><td width=\"250px\">");
 		if ($vsid == $voted)
-		print("<b>".$sidvals[$sidkey]." - ваш голос</b>");
+		print("<b>".$sidvals[$sidkey]." - РІР°С€ РіРѕР»РѕСЃ</b>");
 		else print($sidvals[$sidkey]);
-		print("</td><td><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_left.gif\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar.gif\" height=\"12\" width=\"".round($percentpervote*$votecount[$vsid])."%\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_right.gif\">$percent%, голосов: ".$votecount[$vsid]."<br />".((!$usercode[$vsid])?"Опрос приватный или никто не голосовал":$spbegin.$usercode[$vsid].$spend)."</td></tr>");
+		print("</td><td><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_left.gif\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar.gif\" height=\"12\" width=\"".round($percentpervote*$votecount[$vsid])."%\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_right.gif\">$percent%, РіРѕР»РѕСЃРѕРІ: ".$votecount[$vsid]."<br />".((!$usercode[$vsid])?"РћРїСЂРѕСЃ РїСЂРёРІР°С‚РЅС‹Р№ РёР»Рё РЅРёРєС‚Рѕ РЅРµ РіРѕР»РѕСЃРѕРІР°Р»":$spbegin.$usercode[$vsid].$spend)."</td></tr>");
 	}
-	print('<tr><td>Опрос находится в архиве, голосования запрещены</td>');
-	print("<td align=\"center\"><h1>Всего голосов: $tvotes, Комментариев: $comments</h1><br />[<a href=\"".$REL_SEO->make_link('polloverview','id',$id)."\"><b>Подробнее/Список комментариев</b></a>]</td></tr>");
+	print('<tr><td>РћРїСЂРѕСЃ РЅР°С…РѕРґРёС‚СЃСЏ РІ Р°СЂС…РёРІРµ, РіРѕР»РѕСЃРѕРІР°РЅРёСЏ Р·Р°РїСЂРµС‰РµРЅС‹</td>');
+	print("<td align=\"center\"><h1>Р’СЃРµРіРѕ РіРѕР»РѕСЃРѕРІ: $tvotes, РљРѕРјРјРµРЅС‚Р°СЂРёРµРІ: $comments</h1><br />[<a href=\"".$REL_SEO->make_link('polloverview','id',$id)."\"><b>РџРѕРґСЂРѕР±РЅРµРµ/РЎРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ</b></a>]</td></tr>");
 
 	print ('</table></td></tr>');
 }

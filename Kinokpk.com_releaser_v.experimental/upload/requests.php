@@ -24,13 +24,13 @@ if ($action == 'new') {
 	if ($_SERVER['REQUEST_METHOD']=='POST') {
 		$requesttitle = htmlspecialchars($_POST["requesttitle"]);
 		if (!$requesttitle)
-		stderr($REL_LANG->say_by_key('error'),"Вы не ввели название");
+		stderr($REL_LANG->say_by_key('error'),"Р’С‹ РЅРµ РІРІРµР»Рё РЅР°Р·РІР°РЅРёРµ");
 		$request = $requesttitle;
 		$descr = unesc($_POST["descr"]);
 		if (!$descr)
-		stderr($REL_LANG->say_by_key('error'),"Вы должны ввести описание!");
+		stderr($REL_LANG->say_by_key('error'),"Р’С‹ РґРѕР»Р¶РЅС‹ РІРІРµСЃС‚Рё РѕРїРёСЃР°РЅРёРµ!");
 		if (!is_valid_id($_POST["category"]))
-		stderr($REL_LANG->say_by_key('error'),"Вы должны выбрать категорию для запроса!");
+		stderr($REL_LANG->say_by_key('error'),"Р’С‹ РґРѕР»Р¶РЅС‹ РІС‹Р±СЂР°С‚СЊ РєР°С‚РµРіРѕСЂРёСЋ РґР»СЏ Р·Р°РїСЂРѕСЃР°!");
 		$cat = (int) $_POST["category"];
 		$request = sqlesc($request);
 		$descr = sqlesc($descr);
@@ -45,35 +45,35 @@ if ($action == 'new') {
 		safe_redirect($REL_SEO->make_link('requests','id',$id));
 		die;
 	}
-	$REL_TPL->stdhead("Сделать запрос");
+	$REL_TPL->stdhead("РЎРґРµР»Р°С‚СЊ Р·Р°РїСЂРѕСЃ");
 
-	print("<h1>Сделать запрос</h1><p>Чтобы посмотреть свои запросы, нажмите <a href=\"".$REL_SEO->make_link('viewrequests','requestorid',$CURUSER['id'])."\">здесь</a></p>\n<br />\n");
+	print("<h1>РЎРґРµР»Р°С‚СЊ Р·Р°РїСЂРѕСЃ</h1><p>Р§С‚РѕР±С‹ РїРѕСЃРјРѕС‚СЂРµС‚СЊ СЃРІРѕРё Р·Р°РїСЂРѕСЃС‹, РЅР°Р¶РјРёС‚Рµ <a href=\"".$REL_SEO->make_link('viewrequests','requestorid',$CURUSER['id'])."\">Р·РґРµСЃСЊ</a></p>\n<br />\n");
 	?>
 <table border=1 width=550 cellspacing=0 cellpadding=5>
 	<tr>
-		<td class=colhead align=left>Поиск торрентов (чтобы проверить, нет ли
-		уже такого торрента, который вы ищите)</td>
+		<td class=colhead align=left>РџРѕРёСЃРє С‚РѕСЂСЂРµРЅС‚РѕРІ (С‡С‚РѕР±С‹ РїСЂРѕРІРµСЂРёС‚СЊ, РЅРµС‚ Р»Рё
+		СѓР¶Рµ С‚Р°РєРѕРіРѕ С‚РѕСЂСЂРµРЅС‚Р°, РєРѕС‚РѕСЂС‹Р№ РІС‹ РёС‰РёС‚Рµ)</td>
 	</tr>
 	<tr>
 		<td align=left>
 		<form method="get" action="<?=$REL_SEO->make_link('browse');?>"><input
 			type="text" name="search" size="40"
-			value="<?= htmlspecialchars($searchstr) ?>" />&nbsp;в&nbsp<?php
-			print(gen_select_area('cat',$tree,(int)$_GET['cat'])."<input type=\"submit\" value=\"Искать!\">");
+			value="<?= htmlspecialchars($searchstr) ?>" />&nbsp;РІ&nbsp<?php
+			print(gen_select_area('cat',$tree,(int)$_GET['cat'])."<input type=\"submit\" value=\"РСЃРєР°С‚СЊ!\">");
 			print("</form>");
 			print("</td></tr></table>");
 			print("<form method=post action=\"".$REL_SEO->make_link('requests')."\" name=request>\n");
 			print("<table border=1 cellspacing=0 cellpadding=5>\n");
-			print("<tr><td class=colhead align=left colspan=2>Заполните необходимые поля</a></td><tr>\n");
-			print("<tr><td align=left><b>Название: </b><br /><input type=text size=80 name=requesttitle></td>");
-			print("<td align=center><b>Категория: </b><br />");
+			print("<tr><td class=colhead align=left colspan=2>Р—Р°РїРѕР»РЅРёС‚Рµ РЅРµРѕР±С…РѕРґРёРјС‹Рµ РїРѕР»СЏ</a></td><tr>\n");
+			print("<tr><td align=left><b>РќР°Р·РІР°РЅРёРµ: </b><br /><input type=text size=80 name=requesttitle></td>");
+			print("<td align=center><b>РљР°С‚РµРіРѕСЂРёСЏ: </b><br />");
 			print(gen_select_area('category',$tree));
 			print("</td></tr>");
 			print("<br />\n");
-			print("<tr><td align=center colspan=2><b>Описание: </b><br />\n");
+			print("<tr><td align=center colspan=2><b>РћРїРёСЃР°РЅРёРµ: </b><br />\n");
 			print textbbcode("descr");
 			print ("<input type=hidden name=action value=new>");
-			print("<tr><td align=center colspan=2><input type=submit value=\"Готово!\">\n");
+			print("<tr><td align=center colspan=2><input type=submit value=\"Р“РѕС‚РѕРІРѕ!\">\n");
 			print("</form>\n");
 			print("</table>\n");
 			$REL_TPL->stdfoot();
@@ -108,9 +108,9 @@ if ($action == 'edit') {
 	if ($CURUSER["id"] != $row["userid"])
 	{
 		if (get_user_class() < UC_MODERATOR)
-		stderr("Ошибка!", "Вы не владелец данного запроса.");
+		stderr("РћС€РёР±РєР°!", "Р’С‹ РЅРµ РІР»Р°РґРµР»РµС† РґР°РЅРЅРѕРіРѕ Р·Р°РїСЂРѕСЃР°.");
 	}
-	$REL_TPL->stdhead("Редактирование запроса \"" . $row["request"] . "\"");
+	$REL_TPL->stdhead("Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РїСЂРѕСЃР° \"" . $row["request"] . "\"");
 	if (!$row)
 	die();
 	$where = "WHERE userid = " . $CURUSER["id"] . "";
@@ -118,14 +118,14 @@ if ($action == 'edit') {
 	$num2 = mysql_num_rows($res2);
 	print("<form method=post name=form action=\"".$REL_SEO->make_link('requests')."\"></a>\n");
 	print("<table border=1 width=560 cellspacing=0 cellpadding=5>\n");
-	print("<tr><td class=colhead align=left>Редактирование запроса \"" . $row["request"] . "\"</td><tr>\n");
-	print("<tr><td align=left>Название: <input type=text size=40 name=requesttitle value=\"" . htmlspecialchars($row["request"]) . "\">");
+	print("<tr><td class=colhead align=left>Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РїСЂРѕСЃР° \"" . $row["request"] . "\"</td><tr>\n");
+	print("<tr><td align=left>РќР°Р·РІР°РЅРёРµ: <input type=text size=40 name=requesttitle value=\"" . htmlspecialchars($row["request"]) . "\">");
 
-	print("&nbsp;Категория: ".gen_select_area("category",$tree,$row['cat'])."<p /><b>Описание</b>:<br />\n");
+	print("&nbsp;РљР°С‚РµРіРѕСЂРёСЏ: ".gen_select_area("category",$tree,$row['cat'])."<p /><b>РћРїРёСЃР°РЅРёРµ</b>:<br />\n");
 	print textbbcode("msg",$row["descr"]);
 	print("<input type=\"hidden\" name=\"id\" value=\"$id\">\n");
 	print("<input type=\"hidden\" name=\"action\" value=\"edit\">\n");
-	print("<tr><td align=center><input type=submit value=\"Редактировать!\">\n");
+	print("<tr><td align=center><input type=submit value=\"Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ!\">\n");
 	print("</form>\n");
 	print("</table>\n");
 
@@ -147,10 +147,10 @@ if ($action=='reset')
 
 		$REL_CACHE->clearGroupCache("block-req");
 
-		stderr($REL_LANG->say_by_key('success'),"Запрос номер $requestid был успешно сброшен.",'success');
+		stderr($REL_LANG->say_by_key('success'),"Р—Р°РїСЂРѕСЃ РЅРѕРјРµСЂ $requestid Р±С‹Р» СѓСЃРїРµС€РЅРѕ СЃР±СЂРѕС€РµРЅ.",'success');
 	}
 	else
-	stderr($REL_LANG->say_by_key('error'),"Извините, но вы не можете сбросить данные этого запроса");
+	stderr($REL_LANG->say_by_key('error'),"РР·РІРёРЅРёС‚Рµ, РЅРѕ РІС‹ РЅРµ РјРѕР¶РµС‚Рµ СЃР±СЂРѕСЃРёС‚СЊ РґР°РЅРЅС‹Рµ СЌС‚РѕРіРѕ Р·Р°РїСЂРѕСЃР°");
 
 }
 
@@ -159,7 +159,7 @@ if ($action=='filled')
 	$filledurl = (string)$_POST["filledurl"];
 	if (!is_valid_id($_POST["requestid"])) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	$requestid = (int) $_POST["requestid"];
-	if (substr($filledurl, 0, strlen($REL_CONFIG['defaultbaseurl'])) != $REL_CONFIG['defaultbaseurl'])
+	if (substr($filledurl, 0, mb_strlen($REL_CONFIG['defaultbaseurl'])) != $REL_CONFIG['defaultbaseurl'])
 	{
 		stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	}
@@ -167,8 +167,8 @@ if ($action=='filled')
 	$res = sql_query("SELECT users.username, requests.userid, requests.request FROM requests INNER JOIN users ON requests.userid = users.id WHERE requests.id = " . sqlesc($requestid)) or sqlerr(__FILE__, __LINE__);
 	$arr = mysql_fetch_assoc($res);
 	$filledurl = htmlspecialchars($filledurl);
-	$msg = "Ваш запрос, <a href=\"".$REL_SEO->make_link('requests','id',$requestid)."\"><b>" . $arr['request'] . "</b></a> был выполнен пользователем <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER["id"],'username', translit($CURUSER["username"]))."\"><b>" . $CURUSER["username"] . "</b></a>. Вы можете скачать его <a href=" . $filledurl. "><b>тут</b></a>. Пожалуйста не забудьте сказать спасибо. Если это не то, что вы просили или по каким-то причинам вас не устраивает исполнение, то нажмите <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$requestid)."\">здесь</a>.";
-	$subject = "Ваш запрос выполнен";
+	$msg = "Р’Р°С€ Р·Р°РїСЂРѕСЃ, <a href=\"".$REL_SEO->make_link('requests','id',$requestid)."\"><b>" . $arr['request'] . "</b></a> Р±С‹Р» РІС‹РїРѕР»РЅРµРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER["id"],'username', translit($CURUSER["username"]))."\"><b>" . $CURUSER["username"] . "</b></a>. Р’С‹ РјРѕР¶РµС‚Рµ СЃРєР°С‡Р°С‚СЊ РµРіРѕ <a href=" . $filledurl. "><b>С‚СѓС‚</b></a>. РџРѕР¶Р°Р»СѓР№СЃС‚Р° РЅРµ Р·Р°Р±СѓРґСЊС‚Рµ СЃРєР°Р·Р°С‚СЊ СЃРїР°СЃРёР±Рѕ. Р•СЃР»Рё СЌС‚Рѕ РЅРµ С‚Рѕ, С‡С‚Рѕ РІС‹ РїСЂРѕСЃРёР»Рё РёР»Рё РїРѕ РєР°РєРёРј-С‚Рѕ РїСЂРёС‡РёРЅР°Рј РІР°СЃ РЅРµ СѓСЃС‚СЂР°РёРІР°РµС‚ РёСЃРїРѕР»РЅРµРЅРёРµ, С‚Рѕ РЅР°Р¶РјРёС‚Рµ <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$requestid)."\">Р·РґРµСЃСЊ</a>.";
+	$subject = "Р’Р°С€ Р·Р°РїСЂРѕСЃ РІС‹РїРѕР»РЅРµРЅ";
 	sql_query ("UPDATE requests SET filled = " . sqlesc($filledurl) . ", filledby = $CURUSER[id] WHERE id = " . sqlesc($requestid)) or sqlerr(__FILE__, __LINE__);
 
 	if ($REL_CRON['rating_enabled']) sql_query("UPDATE users SET ratingsum=ratingsum+{$REL_CRON['rating_perrequest']} WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__,__LINE__);
@@ -176,7 +176,7 @@ if ($action=='filled')
 	$REL_CACHE->clearGroupCache("block-req");
 
 	sql_query("INSERT INTO messages (poster, sender, receiver, added, msg, location, subject) VALUES(0, 0, $arr[userid], '" . time() . "', " . sqlesc($msg) . ", 1, " . sqlesc($subject) . ")") or sqlerr(__FILE__, __LINE__);
-	stderr($REL_LANG->say_by_key('success'),"Запрос номер $requestid был успешно выполнен с <a href=\"$filledurl\">$filledurl</a>. Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$arr['userid'],'username',translit($arr['username']))."\"><b>$arr[username]</b></a> автоматически получит об этом сообщение. Если вы сделали ошибку при указании адреса выполненного запроса, то пожалуйста отмените свое выполнение нажав <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$requestid)."\">здесь</a>.",'success');
+	stderr($REL_LANG->say_by_key('success'),"Р—Р°РїСЂРѕСЃ РЅРѕРјРµСЂ $requestid Р±С‹Р» СѓСЃРїРµС€РЅРѕ РІС‹РїРѕР»РЅРµРЅ СЃ <a href=\"$filledurl\">$filledurl</a>. РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ <a href=\"".$REL_SEO->make_link('userdetails','id',$arr['userid'],'username',translit($arr['username']))."\"><b>$arr[username]</b></a> Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїРѕР»СѓС‡РёС‚ РѕР± СЌС‚РѕРј СЃРѕРѕР±С‰РµРЅРёРµ. Р•СЃР»Рё РІС‹ СЃРґРµР»Р°Р»Рё РѕС€РёР±РєСѓ РїСЂРё СѓРєР°Р·Р°РЅРёРё Р°РґСЂРµСЃР° РІС‹РїРѕР»РЅРµРЅРЅРѕРіРѕ Р·Р°РїСЂРѕСЃР°, С‚Рѕ РїРѕР¶Р°Р»СѓР№СЃС‚Р° РѕС‚РјРµРЅРёС‚Рµ СЃРІРѕРµ РІС‹РїРѕР»РЅРµРЅРёРµ РЅР°Р¶Р°РІ <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$requestid)."\">Р·РґРµСЃСЊ</a>.",'success');
 }
 
 if ($action == 'vote')
@@ -188,7 +188,7 @@ if ($action == 'vote')
 	$arr = mysql_fetch_assoc($res);
 	$voted = $arr;
 	if ($voted) {
-		stderr($REL_LANG->say_by_key('error'), "<p>Вы уже голосовали за этот запрос, можно голосовать только один раз за один запрос</p><p>Вернуться к <a href=\"".$REL_SEO->make_link('viewrequests')."\"><b>запросам</b></a></p>");
+		stderr($REL_LANG->say_by_key('error'), "<p>Р’С‹ СѓР¶Рµ РіРѕР»РѕСЃРѕРІР°Р»Рё Р·Р° СЌС‚РѕС‚ Р·Р°РїСЂРѕСЃ, РјРѕР¶РЅРѕ РіРѕР»РѕСЃРѕРІР°С‚СЊ С‚РѕР»СЊРєРѕ РѕРґРёРЅ СЂР°Р· Р·Р° РѕРґРёРЅ Р·Р°РїСЂРѕСЃ</p><p>Р’РµСЂРЅСѓС‚СЊСЃСЏ Рє <a href=\"".$REL_SEO->make_link('viewrequests')."\"><b>Р·Р°РїСЂРѕСЃР°Рј</b></a></p>");
 	} else {
 		sql_query("UPDATE requests SET hits = hits + 1 WHERE id=$requestid") or sqlerr(__FILE__, __LINE__);
 		@sql_query("INSERT INTO addedrequests VALUES(0, $requestid, $userid)") or sqlerr(__FILE__, __LINE__);
@@ -196,7 +196,7 @@ if ($action == 'vote')
 
 		$REL_CACHE->clearGroupCache("block-req");
 
-		stderr("Ваш голос принят", "<p>Ваш голос был принят</p><p>Вернуться к <a href=\"".$REL_SEO->make_link('viewrequests')."\"><b>списку</b></a></p>",'success');
+		stderr("Р’Р°С€ РіРѕР»РѕСЃ РїСЂРёРЅСЏС‚", "<p>Р’Р°С€ РіРѕР»РѕСЃ Р±С‹Р» РїСЂРёРЅСЏС‚</p><p>Р’РµСЂРЅСѓС‚СЊСЃСЏ Рє <a href=\"".$REL_SEO->make_link('viewrequests')."\"><b>СЃРїРёСЃРєСѓ</b></a></p>",'success');
 	}
 }
 
@@ -211,33 +211,33 @@ stderr ($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 $s = $num["request"];
 
-$REL_TPL->stdhead("Детали запроса \"$s\"");
+$REL_TPL->stdhead("Р”РµС‚Р°Р»Рё Р·Р°РїСЂРѕСЃР° \"$s\"");
 
 print("<table width=\"600\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-print("<tr><td class=\"colhead\" colspan=\"2\">Детали запроса \"$s\"</td></tr>");
-print("<tr><td align=left>Запрос</td><td width=90% align=left>$num[request]</td></tr>");
-print("<tr><td align=left>Инфо</td><td width=90% align=left>" . format_comment($num["descr"]) . "</td></tr>");
-print("<tr><td align=left>Добавлен</td><td width=90% align=left>".mkprettytime($num[added])."</td></tr>");
+print("<tr><td class=\"colhead\" colspan=\"2\">Р”РµС‚Р°Р»Рё Р·Р°РїСЂРѕСЃР° \"$s\"</td></tr>");
+print("<tr><td align=left>Р—Р°РїСЂРѕСЃ</td><td width=90% align=left>$num[request]</td></tr>");
+print("<tr><td align=left>РРЅС„Рѕ</td><td width=90% align=left>" . format_comment($num["descr"]) . "</td></tr>");
+print("<tr><td align=left>Р”РѕР±Р°РІР»РµРЅ</td><td width=90% align=left>".mkprettytime($num[added])."</td></tr>");
 
 $cres = sql_query("SELECT username, id, class FROM users WHERE id=$num[userid]");
 
 $carr = mysql_fetch_assoc($cres);
 $username = $carr['username'];
 $user_req_id = $carr["id"];
-print("<tr><td align=left>Запросил</td><td width=90% align=left><a href=\"".$REL_SEO->make_link('userdetails','id',$user_req_id,'username',translit($username))."\">".get_user_class_color($carr['class'], $username)."</a></td></tr>");
-print("<tr><td align=left>Голосовать за этот запрос</td><td width=50% align=left><a href=\"".$REL_SEO->make_link('requests','action','vote','voteid',$id)."\"><b>Голосовать</b></a></td></tr></tr>");
+print("<tr><td align=left>Р—Р°РїСЂРѕСЃРёР»</td><td width=90% align=left><a href=\"".$REL_SEO->make_link('userdetails','id',$user_req_id,'username',translit($username))."\">".get_user_class_color($carr['class'], $username)."</a></td></tr>");
+print("<tr><td align=left>Р“РѕР»РѕСЃРѕРІР°С‚СЊ Р·Р° СЌС‚РѕС‚ Р·Р°РїСЂРѕСЃ</td><td width=50% align=left><a href=\"".$REL_SEO->make_link('requests','action','vote','voteid',$id)."\"><b>Р“РѕР»РѕСЃРѕРІР°С‚СЊ</b></a></td></tr></tr>");
 
 if ($num["filled"] == '')
 {
 	print("<form method=post action=\"".$REL_SEO->make_link('requests')."\">");
-	print("<tr><td align=left>Выполнить запрос</td><td>Введите <b>полный</b> адрес торрента, например как ".$REL_SEO->make_link('details','id',11)." (просто скопируйте/вставьте его из другого окна/вкладки)");
+	print("<tr><td align=left>Р’С‹РїРѕР»РЅРёС‚СЊ Р·Р°РїСЂРѕСЃ</td><td>Р’РІРµРґРёС‚Рµ <b>РїРѕР»РЅС‹Р№</b> Р°РґСЂРµСЃ С‚РѕСЂСЂРµРЅС‚Р°, РЅР°РїСЂРёРјРµСЂ РєР°Рє ".$REL_SEO->make_link('details','id',11)." (РїСЂРѕСЃС‚Рѕ СЃРєРѕРїРёСЂСѓР№С‚Рµ/РІСЃС‚Р°РІСЊС‚Рµ РµРіРѕ РёР· РґСЂСѓРіРѕРіРѕ РѕРєРЅР°/РІРєР»Р°РґРєРё)");
 	print("<input type=text size=80 name=filledurl>\n");
 	print("<input type=hidden value=$id name=requestid>");
 	print("<input type=hidden name=action value=filled>");
-	print("<input type=submit value=\"Выполнить запрос\">\n</form></td></tr>");
+	print("<input type=submit value=\"Р’С‹РїРѕР»РЅРёС‚СЊ Р·Р°РїСЂРѕСЃ\">\n</form></td></tr>");
 }
 if (get_user_class() >= UC_MODERATOR || $CURUSER["id"] == $num["userid"])
-print("<tr><td align=left>Опции</td><td width=50% align=left><a OnClich=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('viewrequests','delreq[]',$id)."\">".$REL_LANG->say_by_key('delete')."</a> <b>|</b> <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$id)."\">Сбросить выполнение</a>  <b>|</b>  <a href=\"".$REL_SEO->make_link('requests','action','edit','id',$id)."\">".$REL_LANG->say_by_key('edit')."</a></center></td></tr>");
+print("<tr><td align=left>РћРїС†РёРё</td><td width=50% align=left><a OnClich=\"return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?')\" href=\"".$REL_SEO->make_link('viewrequests','delreq[]',$id)."\">".$REL_LANG->say_by_key('delete')."</a> <b>|</b> <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$id)."\">РЎР±СЂРѕСЃРёС‚СЊ РІС‹РїРѕР»РЅРµРЅРёРµ</a>  <b>|</b>  <a href=\"".$REL_SEO->make_link('requests','action','edit','id',$id)."\">".$REL_LANG->say_by_key('edit')."</a></center></td></tr>");
 
 $subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = $id AND type='req'");
 $subrow = mysql_fetch_array($subres);
@@ -249,10 +249,10 @@ print("<p><a name=\"startcomments\"></a></p>\n");
 if (!$count) {
 	print('<div id="newcomment_placeholder">'."<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">");
 	print("<tr><td class=colhead align=\"left\" colspan=\"2\">");
-	print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев ".is_i_notified($id,'reqcomments')."</div>");
-	print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('requests','id',$id)."#comments\">Добавить комментарий</a></div>");
+	print("<div style=\"float: left; width: auto;\" align=\"left\"> :: РЎРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ ".is_i_notified($id,'reqcomments')."</div>");
+	print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('requests','id',$id)."#comments\">Р”РѕР±Р°РІРёС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёР№</a></div>");
 	print("</td></tr><tr><td align=\"center\">");
-	print("Комментариев нет. <a href=\"".$REL_SEO->make_link('requests','id',$id)."#comments\">Желаете добавить?</a>");
+	print("РљРѕРјРјРµРЅС‚Р°СЂРёРµРІ РЅРµС‚. <a href=\"".$REL_SEO->make_link('requests','id',$id)."#comments\">Р–РµР»Р°РµС‚Рµ РґРѕР±Р°РІРёС‚СЊ?</a>");
 	print("</td></tr></table><br /></div>");
 
 } else {
@@ -263,8 +263,8 @@ if (!$count) {
 		$allrows = prepare_for_commenttable($subres, $s,$REL_SEO->make_link('requests','id',$id));
 	print("<table class=main cellSpacing=\"0\" cellPadding=\"5\" width=\"100%\" >");
 	print("<tr><td class=\"colhead\" align=\"center\" >");
-	print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>");
-	print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('requests','id',$id)."#comments\" class=altlink_white>Добавить комментарий</a></div>");
+	print("<div style=\"float: left; width: auto;\" align=\"left\"> :: РЎРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ</div>");
+	print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('requests','id',$id)."#comments\" class=altlink_white>Р”РѕР±Р°РІРёС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёР№</a></div>");
 	print("</td></tr>");
 	//		print($commentbar);
 	print("<tr><td>");

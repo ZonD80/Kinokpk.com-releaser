@@ -92,13 +92,13 @@ while ($row = mysql_fetch_assoc($res)) {
 
  */
 
-//Удаляем системные прочтенные сообщения старше n дней
-$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
-$dt_system = time() - $secs_system; // Сегодня минус количество дней
+//РЈРґР°Р»СЏРµРј СЃРёСЃС‚РµРјРЅС‹Рµ РїСЂРѕС‡С‚РµРЅРЅС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ СЃС‚Р°СЂС€Рµ n РґРЅРµР№
+$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // РљРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№
+$dt_system = time() - $secs_system; // РЎРµРіРѕРґРЅСЏ РјРёРЅСѓСЃ РєРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№
 $REL_DB->query("DELETE FROM messages WHERE sender = 0 AND archived = 0 AND archived_receiver = 0 AND unread = 0 AND added < $dt_system") or sqlerr(__FILE__, __LINE__);
-//Удаляем ВСЕ прочтенные сообщения старше n дней
-$secs_all = $REL_CRON['pm_delete_user_days']*86400; // Количество дней
-$dt_all = time() - $secs_all; // Сегодня минус количество дней
+//РЈРґР°Р»СЏРµРј Р’РЎР• РїСЂРѕС‡С‚РµРЅРЅС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ СЃС‚Р°СЂС€Рµ n РґРЅРµР№
+$secs_all = $REL_CRON['pm_delete_user_days']*86400; // РљРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№
+$dt_all = time() - $secs_all; // РЎРµРіРѕРґРЅСЏ РјРёРЅСѓСЃ РєРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№
 $REL_DB->query("DELETE FROM messages WHERE unread = 0 AND archived = 0 AND archived_receiver = 0 AND added < $dt_all") or sqlerr(__FILE__, __LINE__);
 
 
@@ -112,14 +112,14 @@ if (mysql_num_rows($res) > 0) {
 
 	}
 }
-//отключение предупрежденных пользователей (у тех у кого 5 звезд)
+//РѕС‚РєР»СЋС‡РµРЅРёРµ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ (Сѓ С‚РµС… Сѓ РєРѕРіРѕ 5 Р·РІРµР·Рґ)
 /*$res = $REL_DB->query("SELECT id, username, modcomment FROM users WHERE num_warned > 4 AND enabled = 1 ") or sqlerr(__FILE__,__LINE__);
 $num = mysql_num_rows($res);
 while ($arr = mysql_fetch_assoc($res)) {
-	$modcom = sqlesc(date("Y-m-d") . " - Отключен системой (5 и более предупреждений) " . "\n". $arr[modcomment]);
-	$REL_DB->query("UPDATE users SET enabled = 0, dis_reason = 'Отключен системой (5 и более предупреждений)' WHERE id = $arr[id]") or sqlerr(__FILE__, __LINE__);
+	$modcom = sqlesc(date("Y-m-d") . " - РћС‚РєР»СЋС‡РµРЅ СЃРёСЃС‚РµРјРѕР№ (5 Рё Р±РѕР»РµРµ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёР№) " . "\n". $arr[modcomment]);
+	$REL_DB->query("UPDATE users SET enabled = 0, dis_reason = 'РћС‚РєР»СЋС‡РµРЅ СЃРёСЃС‚РµРјРѕР№ (5 Рё Р±РѕР»РµРµ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёР№)' WHERE id = $arr[id]") or sqlerr(__FILE__, __LINE__);
 	$REL_DB->query("UPDATE users SET modcomment = $modcom WHERE id = $arr[id]") or sqlerr(__FILE__, __LINE__);
-	write_log("Пользователь $arr[username] был отключен системой (5 и более предупреждений)","tracker");
+	write_log("РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ $arr[username] Р±С‹Р» РѕС‚РєР»СЋС‡РµРЅ СЃРёСЃС‚РµРјРѕР№ (5 Рё Р±РѕР»РµРµ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёР№)","tracker");
 }
 */
 // Update user ratings MODIFY TO XBT!
@@ -162,23 +162,23 @@ if ($REL_CRON['rating_enabled']) {
 
 //remove expired warnings
 $now = time();
-$modcomment = sqlesc(date("Y-m-d") . " - Предупреждение снято системой по таймауту.\n");
-$msg = sqlesc("Ваше предупреждение снято по таймауту. Постарайтесь больше не получать предупреждений и следовать правилам.\n");
+$modcomment = sqlesc(date("Y-m-d") . " - РџСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ СЃРЅСЏС‚Рѕ СЃРёСЃС‚РµРјРѕР№ РїРѕ С‚Р°Р№РјР°СѓС‚Сѓ.\n");
+$msg = sqlesc("Р’Р°С€Рµ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ СЃРЅСЏС‚Рѕ РїРѕ С‚Р°Р№РјР°СѓС‚Сѓ. РџРѕСЃС‚Р°СЂР°Р№С‚РµСЃСЊ Р±РѕР»СЊС€Рµ РЅРµ РїРѕР»СѓС‡Р°С‚СЊ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёР№ Рё СЃР»РµРґРѕРІР°С‚СЊ РїСЂР°РІРёР»Р°Рј.\n");
 $REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster) SELECT 0, id, $now, $msg, 0 FROM users WHERE warned=1 AND warneduntil < ".time()." AND warneduntil <> 0") or sqlerr(__FILE__,__LINE__);
 $REL_DB->query("UPDATE users SET warned=0, warneduntil = 0, modcomment = CONCAT($modcomment, modcomment) WHERE warned=1 AND warneduntil < ".time()." AND warneduntil <> 0") or sqlerr(__FILE__,__LINE__);
 
 // promote power users
 if ($REL_CRON['rating_enabled']) {
-	$msg = sqlesc("Наши поздравления, вы были авто-повышены до ранга <b>Опытный пользовать</b>.");
-	$subject = sqlesc("Вы были повышены");
-	$modcomment = sqlesc(date("Y-m-d") . " - Повышен до уровня \"".$REL_LANG->say_by_key("class_power_user")."\" системой.\n");
+	$msg = sqlesc("РќР°С€Рё РїРѕР·РґСЂР°РІР»РµРЅРёСЏ, РІС‹ Р±С‹Р»Рё Р°РІС‚Рѕ-РїРѕРІС‹С€РµРЅС‹ РґРѕ СЂР°РЅРіР° <b>РћРїС‹С‚РЅС‹Р№ РїРѕР»СЊР·РѕРІР°С‚СЊ</b>.");
+	$subject = sqlesc("Р’С‹ Р±С‹Р»Рё РїРѕРІС‹С€РµРЅС‹");
+	$modcomment = sqlesc(date("Y-m-d") . " - РџРѕРІС‹С€РµРЅ РґРѕ СѓСЂРѕРІРЅСЏ \"".$REL_LANG->say_by_key("class_power_user")."\" СЃРёСЃС‚РµРјРѕР№.\n");
 	$REL_DB->query("UPDATE users SET class = ".UC_POWER_USER.", modcomment = CONCAT($modcomment, modcomment) WHERE class = ".UC_USER." AND ratingsum>={$REL_CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
 	$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, id, $now, $msg, 0, $subject FROM users WHERE class = ".UC_USER." AND ratingsum>={$REL_CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
 
 	// demote power users
-	$msg = sqlesc("Вы были авто-понижены с ранга <b>Опытный пользователь</b> до ранга <b>Пользователь</b> потому-что ваш рейтинг упал ниже <b>+{$REL_CRON['promote_rating']}</b>.");
-	$subject = sqlesc("Вы были понижены");
-	$modcomment = sqlesc(date("Y-m-d") . " - Понижен до уровня \"".$REL_LANG->say_by_key("class_user")."\" системой.\n");
+	$msg = sqlesc("Р’С‹ Р±С‹Р»Рё Р°РІС‚Рѕ-РїРѕРЅРёР¶РµРЅС‹ СЃ СЂР°РЅРіР° <b>РћРїС‹С‚РЅС‹Р№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ</b> РґРѕ СЂР°РЅРіР° <b>РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ</b> РїРѕС‚РѕРјСѓ-С‡С‚Рѕ РІР°С€ СЂРµР№С‚РёРЅРі СѓРїР°Р» РЅРёР¶Рµ <b>+{$REL_CRON['promote_rating']}</b>.");
+	$subject = sqlesc("Р’С‹ Р±С‹Р»Рё РїРѕРЅРёР¶РµРЅС‹");
+	$modcomment = sqlesc(date("Y-m-d") . " - РџРѕРЅРёР¶РµРЅ РґРѕ СѓСЂРѕРІРЅСЏ \"".$REL_LANG->say_by_key("class_user")."\" СЃРёСЃС‚РµРјРѕР№.\n");
 	$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, id, $now, $msg, 0, $subject FROM users WHERE class = 1 AND ratingsum<{$REL_CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
 	$REL_DB->query("UPDATE users SET class = ".UC_USER.", modcomment = CONCAT($modcomment, modcomment) WHERE class = ".UC_POWER_USER." AND ratingsum<{$REL_CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
 }
@@ -189,7 +189,7 @@ if ($REL_CRON['rating_enabled']) {
 	while ($arr = mysql_fetch_assoc($res))
 	{
 		deletetorrent($arr['id']);
-		write_log("Торрент $arr[id] ($arr[name]) был удален системой (старше чем {$REL_CRON['ttl_days']} дней)","torrent");
+		write_log("РўРѕСЂСЂРµРЅС‚ $arr[id] ($arr[name]) Р±С‹Р» СѓРґР°Р»РµРЅ СЃРёСЃС‚РµРјРѕР№ (СЃС‚Р°СЂС€Рµ С‡РµРј {$REL_CRON['ttl_days']} РґРЅРµР№)","torrent");
 	}
 }
 */

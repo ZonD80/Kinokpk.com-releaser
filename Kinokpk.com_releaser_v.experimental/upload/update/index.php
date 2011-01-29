@@ -13,11 +13,11 @@ define('REL_CACHEDRIVER','native');
 
 if ($_GET['setlang']) {
 	setcookie('lang',(string)$_GET['setlang']);
-	print('<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1251" /></head><a href="index.php">Продолжить / Continue / Продовжити</a></html>');
+	print('<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1251" /></head><a href="index.php">РџСЂРѕРґРѕР»Р¶РёС‚СЊ / Continue / РџСЂРѕРґРѕРІР¶РёС‚Рё</a></html>');
 	die();
 }
 if (!$_COOKIE['lang'] || (strlen($_COOKIE['lang'])>2)) {
-	print("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1251\" /></head><h1>Выберите язык / Choose a language / Виберіть мову: <a href=\"index.php?setlang=ru\">Русский</a>, <a href=\"index.php?setlang=en\">English</a>, <a href=\"index.php?setlang=ua\">Український</a></h1></html>");
+	print("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1251\" /></head><h1>Р’С‹Р±РµСЂРёС‚Рµ СЏР·С‹Рє / Choose a language / Р’РёР±РµСЂС–С‚СЊ РјРѕРІСѓ: <a href=\"index.php?setlang=ru\">Р СѓСЃСЃРєРёР№</a>, <a href=\"index.php?setlang=en\">English</a>, <a href=\"index.php?setlang=ua\">РЈРєСЂР°С—РЅСЃСЊРєРёР№</a></h1></html>");
 	die();
 }
 
@@ -284,12 +284,12 @@ elseif ($step==8) {
 	hr();
 	print $REL_LANG->_("Donate to project:");
 	?>
-<p><pre>Вы всегда можете помочь материально создателю движка (по вашему желанию), реквизиты:
+<p><pre>Р’С‹ РІСЃРµРіРґР° РјРѕР¶РµС‚Рµ РїРѕРјРѕС‡СЊ РјР°С‚РµСЂРёР°Р»СЊРЅРѕ СЃРѕР·РґР°С‚РµР»СЋ РґРІРёР¶РєР° (РїРѕ РІР°С€РµРјСѓ Р¶РµР»Р°РЅРёСЋ), СЂРµРєРІРёР·РёС‚С‹:
 Webmoney: U361584411086 E326225084100 R153898361884 Z113282224168,
-Yandex.деньги: 41001423787643,
+Yandex.РґРµРЅСЊРіРё: 41001423787643,
 Paypal: zond80@gmail.com</pre></p>
 <hr />
-<div align="right"><i>С уважением, разработчики Kinokpk.com releaser</i></div>
+<div align="right"><i>РЎ СѓРІР°Р¶РµРЅРёРµРј, СЂР°Р·СЂР°Р±РѕС‚С‡РёРєРё Kinokpk.com releaser</i></div>
 	<?php
 }
 footers();

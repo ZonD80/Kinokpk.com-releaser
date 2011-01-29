@@ -17,14 +17,14 @@ if (get_user_class() < UC_MODERATOR) stderr($REL_LANG->say_by_key('error'),$REL_
 // delete items older than a week
 if (isset($_GET['truncate']) && (get_user_class() >= UC_SYSOP)) {
 	sql_query("TRUNCATE TABLE sitelog") or sqlerr(__FILE__,__LINE__);
-	stderr($REL_LANG->say_by_key('success'),'Логи очищены <a href="'.$REL_SEO->make_link('log').'">К логам</a>','success');
+	stderr($REL_LANG->say_by_key('success'),'Р›РѕРіРё РѕС‡РёС‰РµРЅС‹ <a href="'.$REL_SEO->make_link('log').'">Рљ Р»РѕРіР°Рј</a>','success');
 
-} elseif (isset($_GET['truncate'])) 	stderr($REL_LANG->say_by_key('error'),'Логи могут быть очищены только системным администратором');
+} elseif (isset($_GET['truncate'])) 	stderr($REL_LANG->say_by_key('error'),'Р›РѕРіРё РјРѕРіСѓС‚ Р±С‹С‚СЊ РѕС‡РёС‰РµРЅС‹ С‚РѕР»СЊРєРѕ СЃРёСЃС‚РµРјРЅС‹Рј Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂРѕРј');
 $REL_TPL->stdhead($REL_LANG->say_by_key('logs'));
 
 $type = htmlspecialchars(trim((string)$_GET["type"]));
 if(!$type) {
-	print ('<h1><a href="'.$REL_SEO->make_link('log','truncate','').'">Очистить логи</a></h1>');
+	print ('<h1><a href="'.$REL_SEO->make_link('log','truncate','').'">РћС‡РёСЃС‚РёС‚СЊ Р»РѕРіРё</a></h1>');
 	print("<p align=center>");
 	$logs = sql_query("SELECT type FROM sitelog GROUP BY type");
 	while (list($logt) = mysql_fetch_array($logs)) {
@@ -44,7 +44,7 @@ else
 	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, array('log','type',$type));
 
 	$res = sql_query("SELECT txt, added FROM `sitelog` WHERE type = ".sqlesc($type)." ORDER BY `added` DESC $limit") or sqlerr(__FILE__, __LINE__);
-	print("<h1>".$REL_LANG->say_by_key('logs')."| <a href=\"".$REL_SEO->make_link('log')."\">к типам логов</a></h1>\n");
+	print("<h1>".$REL_LANG->say_by_key('logs')."| <a href=\"".$REL_SEO->make_link('log')."\">Рє С‚РёРїР°Рј Р»РѕРіРѕРІ</a></h1>\n");
 	print "<p>$pagertop</p>";
 	print("<table border=1 cellspacing=0 cellpadding=5>\n");
 	print("<tr><td class=colhead align=left>".$REL_LANG->say_by_key('time')."</td><td class=colhead align=left>".$REL_LANG->say_by_key('event')."</td></tr>\n");

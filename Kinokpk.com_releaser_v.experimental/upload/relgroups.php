@@ -81,23 +81,23 @@ if (!$id) {
 </div>
 <div class="relgroups_name">
 <dl class="clearfix">
-	<dt>Название</dt>
+	<dt>РќР°Р·РІР°РЅРёРµ</dt>
 	<dd class="result_name"><a
-		href="<?=$REL_SEO->make_link('relgroups','id',$row['id']);?>"><?=makesafe($row['name']).($row['private']?' (Приватная)':'') ?></a></dd>
+		href="<?=$REL_SEO->make_link('relgroups','id',$row['id']);?>"><?=makesafe($row['name']).($row['private']?' (РџСЂРёРІР°С‚РЅР°СЏ)':'') ?></a></dd>
 		<?php if ($row['page_pay'] || $row['private']) {?>
-	<dt>Подписано</dt>
-	<dd><?=(int)$row['users']?> человек</dd>
-	<dt>Информация о подписке</dt>
-	<dd><?=($row['page_pay']?$REL_LANG->say_by_key('pay_required'):$REL_LANG->say_by_key('no_pay')).' ('.($row['subscribe_length']?$row['subscribe_length'].' дней':$REL_LANG->say_by_key('lifetime')).')'?></dd>
+	<dt>РџРѕРґРїРёСЃР°РЅРѕ</dt>
+	<dd><?=(int)$row['users']?> С‡РµР»РѕРІРµРє</dd>
+	<dt>РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїРѕРґРїРёСЃРєРµ</dt>
+	<dd><?=($row['page_pay']?$REL_LANG->say_by_key('pay_required'):$REL_LANG->say_by_key('no_pay')).' ('.($row['subscribe_length']?$row['subscribe_length'].' РґРЅРµР№':$REL_LANG->say_by_key('lifetime')).')'?></dd>
 	<?php }?>
-	<dt>Специализация</dt>
+	<dt>РЎРїРµС†РёР°Р»РёР·Р°С†РёСЏ</dt>
 	<dd><?=makesafe($row['spec'])?></dd>
 </dl>
 </div>
 <div class="relgroups_input">
 
 <ul class="relgroups_input">
-	<li><a href="<?=$REL_SEO->make_link('relgroups','id',$row['id']);?>">Просмотр</a></li>
+	<li><a href="<?=$REL_SEO->make_link('relgroups','id',$row['id']);?>">РџСЂРѕСЃРјРѕС‚СЂ</a></li>
 	<?php
 	if ($row['private']) {
 		$i_subscribed = mysql_fetch_row(sql_query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$row['id']}"));
@@ -106,8 +106,8 @@ if (!$id) {
 	}
 	else $open_relgroup= true;
 	if ($open_relgroup) {}
-	elseif ($i_subscribed) print ("<li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','deny')."\">Отписаться от группы</a></li><li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','invite')."\">{$REL_LANG->say_by_key('create_invite')}</a></li>");
-	else print ("<li>".(($row['private']&&$row['only_invites'])?$REL_LANG->say_by_key('private_group_friend_subscribe'):"<a href=\"".($row['page_pay']?$row['page_pay']:$REL_SEO->make_link('relgroups','id',$row['id'],'action','suggest'))."\">Подписаться на релизы</a>")."</li>");
+	elseif ($i_subscribed) print ("<li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','deny')."\">РћС‚РїРёСЃР°С‚СЊСЃСЏ РѕС‚ РіСЂСѓРїРїС‹</a></li><li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','invite')."\">{$REL_LANG->say_by_key('create_invite')}</a></li>");
+	else print ("<li>".(($row['private']&&$row['only_invites'])?$REL_LANG->say_by_key('private_group_friend_subscribe'):"<a href=\"".($row['page_pay']?$row['page_pay']:$REL_SEO->make_link('relgroups','id',$row['id'],'action','suggest'))."\">РџРѕРґРїРёСЃР°С‚СЊСЃСЏ РЅР° СЂРµР»РёР·С‹</a>")."</li>");
 	?>
 </ul>
 </div>
@@ -153,7 +153,7 @@ else {
 <div align="right" style="margin-top: -22px;"><a
 	href="<?=$REL_SEO->make_link('relgroups');?>"><img
 	src="/themes/<?php print $REL_CONFIG['ss_uri'];?>/images/strelka.gif" border="0"
-	title="Вернуться к просмотру групп"
+	title="Р’РµСЂРЅСѓС‚СЊСЃСЏ Рє РїСЂРѕСЃРјРѕС‚СЂСѓ РіСЂСѓРїРї"
 	style="margin-top: 5px; margin-right: 5px;" /></a></div>
 
 </div>
@@ -163,17 +163,17 @@ else {
 	title="<?=makesafe($row['name'])?>" /><? $REL_LANG->say_by_key('no_image')?>
 
 <div id="input_right" class="relgroups_input_right"><? //print (int)$row['users'].'&nbsp;';
-		//ПЕРЕДЕЛАТЬ
+		//РџР•Р Р•Р”Р•Р›РђРўР¬
 		//$i_subscribed = @mysql_result(sql_query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid=$id"),0);
 		if ($row['private'])
 		$i_subscribed = mysql_fetch_row(sql_query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$row['id']}"));
-		if ($i_subscribed) print ("<li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','deny')."\">Отписаться от группы</a></li><li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','invite')."\">{$REL_LANG->say_by_key('create_invite')}</a></li>");
-		else print ("<li>".(($row['private']&&$row['only_invites'])?$REL_LANG->say_by_key('private_group_friend_subscribe'):"<a href=\"".($row['page_pay']?$row['page_pay']:$REL_SEO->make_link('relgroups','id',$id,'action','suggest"'))."\">Подписаться на релизы</a>")."</li>");
+		if ($i_subscribed) print ("<li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','deny')."\">РћС‚РїРёСЃР°С‚СЊСЃСЏ РѕС‚ РіСЂСѓРїРїС‹</a></li><li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','invite')."\">{$REL_LANG->say_by_key('create_invite')}</a></li>");
+		else print ("<li>".(($row['private']&&$row['only_invites'])?$REL_LANG->say_by_key('private_group_friend_subscribe'):"<a href=\"".($row['page_pay']?$row['page_pay']:$REL_SEO->make_link('relgroups','id',$id,'action','suggest"'))."\">РџРѕРґРїРёСЃР°С‚СЊСЃСЏ РЅР° СЂРµР»РёР·С‹</a>")."</li>");
 		?></div>
 </div>
 <div id="boxes_right" class="box_right">
 <div id="box_app_right">
-<h3 class="box_right_block"><span>Директор</span><?print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
+<h3 class="box_right_block"><span>Р”РёСЂРµРєС‚РѕСЂ</span><?print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="inside basic_infor_summary_list">
 <dl class="infor">
 	<dd><?=$ownersview?></dd>
@@ -183,7 +183,7 @@ else {
 </div>
 <div id="boxes_right" class="box_right">
 <div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Состав Группы</span><? print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
+<h3 class="box_right_block"><span>РЎРѕСЃС‚Р°РІ Р“СЂСѓРїРїС‹</span><? print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="inside basic_infor_summary_list">
 <dl class="infor">
 	<dd><?=$membersview?></dd>
@@ -193,7 +193,7 @@ else {
 </div>
 <div id="boxes_right" class="box_right">
 <div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Тип Группы</span><? print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
+<h3 class="box_right_block"><span>РўРёРї Р“СЂСѓРїРїС‹</span><? print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="inside basic_infor_summary_list">
 <dl class="infor">
 	<dd><?php
@@ -206,10 +206,10 @@ else {
 </div>
 <div id="boxes_right" class="box_right">
 <div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Группы Друзья</span><?print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
+<h3 class="box_right_block"><span>Р“СЂСѓРїРїС‹ Р”СЂСѓР·СЊСЏ</span><?print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="inside basic_infor_summary_list">
 <dl class="infor">
-	<dd>Нет</dd>
+	<dd>РќРµС‚</dd>
 
 </div>
 </div>
@@ -221,12 +221,12 @@ else {
 <div id="relgroups_table_left">
 <div id="boxes_left" class="box_left">
 <div id="box_left" style="margin-top: 9px;">
-<h3 class="box_right_left"><span>Информация о группе</span><?print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
+<h3 class="box_right_left"><span>РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РіСЂСѓРїРїРµ</span><?print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="basic_infor_summary_list box_left_page">
 <dl class="infor_left">
-	<dt>Название</dt>
+	<dt>РќР°Р·РІР°РЅРёРµ</dt>
 	<dd><b><?=makesafe($row['name']) ?></b></dd>
-	<dt>Специализация</dt>
+	<dt>РЎРїРµС†РёР°Р»РёР·Р°С†РёСЏ</dt>
 	<dd><?=$row['spec']?></dd>
 	<dt><?=$REL_LANG->say_by_key('description')?></dt>
 	<dd><?=$row['descr']?></dd>
@@ -245,7 +245,7 @@ else {
 		if ($rgusers) { $rgusers = implode(', ',$rgusers);
 		?>
 <div id="box_left" class="box_left" style="margin-top: 9px;">
-<h3 class="box_right_left"><span>Участники (последние 10)</span> <?print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
+<h3 class="box_right_left"><span>РЈС‡Р°СЃС‚РЅРёРєРё (РїРѕСЃР»РµРґРЅРёРµ 10)</span> <?print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="basic_infor_summary_list box_left_page">
 <dl class="infor_left">
 <?=$rgusers?>
@@ -255,7 +255,7 @@ else {
 <?php }
 	}?>
 <div id="box_left" class="box_left" style="margin-top: 9px;">
-<h3 class="box_right_left"><span>Обсуждение последних новостей</span></h3>
+<h3 class="box_right_left"><span>РћР±СЃСѓР¶РґРµРЅРёРµ РїРѕСЃР»РµРґРЅРёС… РЅРѕРІРѕСЃС‚РµР№</span></h3>
 	<?print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"".$REL_SEO->make_link('rgnews','id',$id)."\"></a>" : "").'</div>');
 
 	$resource = $REL_CACHE->get('relgroups-'.$id, 'newsquery');
@@ -279,9 +279,9 @@ else {
 				$content .="<hr/><div align=\"right\">";
 				if ((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) {
 					$content .= "[<a href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link('relgroups', 'id',$id))."\"><b>E</b></a>]";
-					$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link('relgroups', 'id',$id))."\"><b>D</b></a>] ";
+					$content .= "[<a onclick=\"return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?');\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link('relgroups', 'id',$id))."\"><b>D</b></a>] ";
 				}
-				$content .= "Комментариев: ".$array['comments']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."#comments\">Комментировать</a>]</div>";
+				$content .= "РљРѕРјРјРµРЅС‚Р°СЂРёРµРІ: ".$array['comments']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."#comments\">РљРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ</a>]</div>";
 				$content .= "</div></div>";
 				$news_flag = 1;
 			} else {
@@ -290,13 +290,13 @@ else {
 				$content .="<hr/><div align=\"right\">";
 				if ((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) {
 					$content .= "[<a href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link('relgroups', 'id',$id))."\"><b>E</b></a>]";
-					$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link('relgroups', 'id',$id))."\"><b>D</b></a>] ";
+					$content .= "[<a onclick=\"return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?');\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link('relgroups', 'id',$id))."\"><b>D</b></a>] ";
 				}
-				$content .= "Комментариев: ".$array['comments']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."\">Комментировать</a>]</div>";
+				$content .= "РљРѕРјРјРµРЅС‚Р°СЂРёРµРІ: ".$array['comments']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."\">РљРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ</a>]</div>";
 				$content .= "</div></div>";
 			}
 		}
-		$content .= "<p align=\"right\">[<a href=\"".$REL_SEO->make_link('rgnewsarchive','id',$id)."\">Архив новостей</a>]</p></td></tr></table>\n";
+		$content .= "<p align=\"right\">[<a href=\"".$REL_SEO->make_link('rgnewsarchive','id',$id)."\">РђСЂС…РёРІ РЅРѕРІРѕСЃС‚РµР№</a>]</p></td></tr></table>\n";
 	} else {
 		$content .= "<table class=\"main\" align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"text\" border=\"0\">";
 		$content .= "<div align=\"center\"><h3>".$REL_LANG->say_by_key('no_news')."</h3></div>\n";
@@ -309,7 +309,7 @@ else {
 </div>
 <div id="box_left_wall" class="box_left"
 	style="margin-top: 9px; margin-bottom: 5px;">
-<h3 class="box_right_left"><span>Комментарии к Группе</span><? print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></a></h3>
+<h3 class="box_right_left"><span>РљРѕРјРјРµРЅС‚Р°СЂРёРё Рє Р“СЂСѓРїРїРµ</span><? print('<div align="center">'.(((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></a></h3>
 	<?php
 	$REL_TPL->begin_frame();
 
@@ -321,10 +321,10 @@ else {
 		
 		print('<div id="newcomment_placeholder">'."<table id=\"comments-table\" class=\"rgcomm\" cellspacing=\"0\" cellPadding=\"5\">");
 		print("<tr><td class=colhead align=\"left\" colspan=\"2\">");
-		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев | <b><u>Новости комментируются отдельно</u></b></div>");
-		print("<div align=\"right\">Добавить комментарий</div>");
+		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: РЎРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ | <b><u>РќРѕРІРѕСЃС‚Рё РєРѕРјРјРµРЅС‚РёСЂСѓСЋС‚СЃСЏ РѕС‚РґРµР»СЊРЅРѕ</u></b></div>");
+		print("<div align=\"right\">Р”РѕР±Р°РІРёС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёР№</div>");
 		print("</td></tr><tr><td align=\"center\">");
-		print("Комментариев нет. Желаете добавить?");
+		print("РљРѕРјРјРµРЅС‚Р°СЂРёРµРІ РЅРµС‚. Р–РµР»Р°РµС‚Рµ РґРѕР±Р°РІРёС‚СЊ?");
 		print("</td></tr></table></div>");
 
 	}
@@ -340,7 +340,7 @@ else {
 		print("<table id=\"comments-table\" class=\"rgcomm\" cellspacing=\"0\" cellPadding=\"5\">");
 		print("<tr>
 					<td class=\"colhead_rgcomm\" align=\"center\">");
-					print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев | <b><u>Новости комментируются отдельно</u></b></div>");
+					print("<div style=\"float: left; width: auto;\" align=\"left\"> :: РЎРїРёСЃРѕРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ | <b><u>РќРѕРІРѕСЃС‚Рё РєРѕРјРјРµРЅС‚РёСЂСѓСЋС‚СЃСЏ РѕС‚РґРµР»СЊРЅРѕ</u></b></div>");
 		print("<div align=\"right\"><b>{$REL_LANG->say_by_key('add_comment')}</b></div>");
 			print("</td>
 			</tr>");
@@ -398,10 +398,10 @@ $REL_TPL->display('commenttable_form.tpl');
       "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable unfolded\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"bottom\" width=\"50%\"><i>".mkprettytime($array['added'])."</i> - <b>".$array['subject']."</b></td></tr></table></div><div style=\"display: block;\" class=\"sp-body\">".format_comment($array['body']);
 				$content .="<hr/><div align=\"right\">";
 				if ((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) {
-					$content .= "[<a href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link(substr($_SERVER['PHP_SELF'], 0, (strlen($_SERVER['PHP_SELF']) - 1), 'id',$id)))."\"><b>E</b></a>]";
-					$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link(substr($_SERVER['PHP_SELF'], 0, (strlen($_SERVER['PHP_SELF']) - 1), 'id',$id)))."\"><b>D</b></a>] ";
+					$content .= "[<a href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link(substr($_SERVER['PHP_SELF'], 0, (mb_strlen($_SERVER['PHP_SELF']) - 1), 'id',$id)))."\"><b>E</b></a>]";
+					$content .= "[<a onclick=\"return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?');\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link(substr($_SERVER['PHP_SELF'], 0, (mb_strlen($_SERVER['PHP_SELF']) - 1), 'id',$id)))."\"><b>D</b></a>] ";
 				}
-				$content .= "Комментариев: ".$array['comments']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."#comments\">Комментировать</a>]</div>";
+				$content .= "РљРѕРјРјРµРЅС‚Р°СЂРёРµРІ: ".$array['comments']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."#comments\">РљРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ</a>]</div>";
 				$content .= "</div></div>";
 				$news_flag = 1;
 			} else {
@@ -410,13 +410,13 @@ $REL_TPL->display('commenttable_form.tpl');
 				$content .="<hr/><div align=\"right\">";
 				if ((get_user_class() >= UC_ADMINISTRATOR) || $I_OWNER) {
 					$content .= "[<a href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link("relgroups.php", 'id',$id))."\"><b>E</b></a>]";
-					$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link("relgroups","id",$id))."\"><b>D</b></a>] ";
+					$content .= "[<a onclick=\"return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?');\" href=\"".$REL_SEO->make_link('rgnews','action','delete','id',$id,'newsid',$array['id'],'returnto',$REL_SEO->make_link("relgroups","id",$id))."\"><b>D</b></a>] ";
 				}
-				$content .= "Комментариев: ".$array['comments']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."\">Комментировать</a>]</div>";
+				$content .= "РљРѕРјРјРµРЅС‚Р°СЂРёРµРІ: ".$array['comments']." [<a href=\"".$REL_SEO->make_link('rgnewsoverview','id',$array['id'])."\">РљРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ</a>]</div>";
 				$content .= "</div></div>";
 			}
 		}
-		$content .= "<p align=\"right\">[<a href=\"".$REL_SEO->make_link('rgnewsarchive','id',$id)."\">Архив новостей</a>]</p></td></tr></table>\n";
+		$content .= "<p align=\"right\">[<a href=\"".$REL_SEO->make_link('rgnewsarchive','id',$id)."\">РђСЂС…РёРІ РЅРѕРІРѕСЃС‚РµР№</a>]</p></td></tr></table>\n";
 	} else {
 		$content .= "<table class=\"main\" align=\"center\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"text\">";
 		$content .= "<div align=\"center\"><h3>".$REL_LANG->say_by_key('no_news')."</h3></div>\n";
@@ -438,9 +438,9 @@ $REL_TPL->display('commenttable_form.tpl');
 		if ($_SERVER['REQUEST_METHOD']<>'POST') {
 			$message = '';
 			if (!$row['only_invites'])
-			$message .= sprintf($REL_LANG->say_by_key('join_notice'),$row['name'],($row['subscribe_length']?"{$row['subscribe_length']} дней":$REL_LANG->say_by_key('lifetime')),$row['amount'],$CURUSER['discount']);
+			$message .= sprintf($REL_LANG->say_by_key('join_notice'),$row['name'],($row['subscribe_length']?"{$row['subscribe_length']} РґРЅРµР№":$REL_LANG->say_by_key('lifetime')),$row['amount'],$CURUSER['discount']);
 			else
-			$message .= sprintf($REL_LANG->say_by_key('join_by_invite'),$row['name'],($row['subscribe_length']?"{$row['subscribe_length']} дней":$REL_LANG->say_by_key('lifetime')),$invitecode,$row['name']);
+			$message .= sprintf($REL_LANG->say_by_key('join_by_invite'),$row['name'],($row['subscribe_length']?"{$row['subscribe_length']} РґРЅРµР№":$REL_LANG->say_by_key('lifetime')),$invitecode,$row['name']);
 			$message .= "<br/><div align=\"center\"><form action=\"".$REL_SEO->make_link('relgroups','id',$id,'action','suggest')."\" method=\"POST\"><input type=\"hidden\" name=\"invitecode\" value=\"$invitecode\"><input type=\"submit\" value=\"{$REL_LANG->say_by_key('continue')}\"></form><hr/><form action=\"".$REL_SEO->make_link('relgroups','id',$id,'action','suggest')."\" method=\"POST\">{$REL_LANG->say_by_key('enter_invite_code')}<input type=\"text\" name=\"invitecode\" size=\"32\" maxlength=\"32\" value=\"$invitecode\">&nbsp;<input type=\"submit\" value=\"{$REL_LANG->say_by_key('continue')}\"></form></div>";
 			stderr($REL_LANG->say_by_key('rginvite_my'),$message,'success');
 		}
@@ -489,7 +489,7 @@ $REL_TPL->display('commenttable_form.tpl');
 			die();
 		} else {
 			if (!isset($_GET['ok'])) {
-				stderr($REL_LANG->say_by_key('invite_code'),sprintf($REL_LANG->say_by_key('invite_notice_rg'),$row['name'],($row['subscribe_length']?"{$row['subscribe_length']} дней":$REL_LANG->say_by_key('lifetime')),$row['amount'],$CURUSER['discount'])
+				stderr($REL_LANG->say_by_key('invite_code'),sprintf($REL_LANG->say_by_key('invite_notice_rg'),$row['name'],($row['subscribe_length']?"{$row['subscribe_length']} РґРЅРµР№":$REL_LANG->say_by_key('lifetime')),$row['amount'],$CURUSER['discount'])
 				. "<br/><div align=\"center\"><form action=\"".$REL_SEO->make_link('relgroups','id',$id,'action','invite','ok','')."\" method=\"POST\"><input type=\"submit\" value=\"{$REL_LANG->say_by_key('continue')}\"></form></div>",'success');
 			} else {
 				if ($CURUSER['discount']<$row['amount']) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_discount_invite'));

@@ -18,13 +18,13 @@ if (get_user_class() < UC_ADMINISTRATOR) stderr($REL_LANG->say_by_key('error'), 
 
 
 if (!isset($_GET['action']))  {
-	$REL_TPL->stdhead("Опросы");
-	print('<table width="100%" border="1"><tr><td><a href="'.$REL_SEO->make_link('pollsadmin','action','add').'">Добавить опрос</a></td><td>Опросы v.2 by ZonD80</td></tr></table>');
-	print('<table width="100%" border="1"><tr><td>Опрос</td><td>Создан</td><td>Заканчивается</td><td>Ред / Уд</td></tr>');
+	$REL_TPL->stdhead("РћРїСЂРѕСЃС‹");
+	print('<table width="100%" border="1"><tr><td><a href="'.$REL_SEO->make_link('pollsadmin','action','add').'">Р”РѕР±Р°РІРёС‚СЊ РѕРїСЂРѕСЃ</a></td><td>РћРїСЂРѕСЃС‹ v.2 by ZonD80</td></tr></table>');
+	print('<table width="100%" border="1"><tr><td>РћРїСЂРѕСЃ</td><td>РЎРѕР·РґР°РЅ</td><td>Р—Р°РєР°РЅС‡РёРІР°РµС‚СЃСЏ</td><td>Р РµРґ / РЈРґ</td></tr>');
 	$pollsrow = sql_query("SELECT * FROM polls ORDER BY id DESC");
 	while ($poll = mysql_fetch_array($pollsrow)) {
 
-		print('<tr><td><a href="'.$REL_SEO->make_link('polloverview','id',$poll['id']).'">'.$poll['question'].'</a></td><td>'.mkprettytime($poll['start']).'</td><td>'.(!is_null($poll['exp'])?(($poll['exp']< time())?mkprettytime($poll['exp'])." (закрыт)":mkprettytime($poll['exp'])):"Бесконечен")."</td><td><a href=\"".$REL_SEO->make_link('pollsadmin','action','edit','id',$poll['id'])."\">E</a> / <a onClick=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('pollsadmin','action','delete','id',$poll['id'])."\">D</a></td></tr>");
+		print('<tr><td><a href="'.$REL_SEO->make_link('polloverview','id',$poll['id']).'">'.$poll['question'].'</a></td><td>'.mkprettytime($poll['start']).'</td><td>'.(!is_null($poll['exp'])?(($poll['exp']< time())?mkprettytime($poll['exp'])." (Р·Р°РєСЂС‹С‚)":mkprettytime($poll['exp'])):"Р‘РµСЃРєРѕРЅРµС‡РµРЅ")."</td><td><a href=\"".$REL_SEO->make_link('pollsadmin','action','edit','id',$poll['id'])."\">E</a> / <a onClick=\"return confirm('Р’С‹ СѓРІРµСЂРµРЅС‹?')\" href=\"".$REL_SEO->make_link('pollsadmin','action','delete','id',$poll['id'])."\">D</a></td></tr>");
 	}
 	print("</table>");
 
@@ -36,9 +36,9 @@ if (!isset($_GET['action']))  {
 }
 elseif ($_GET['action'] == 'add') {
 
-	$REL_TPL->stdhead("Добавление опроса");
+	$REL_TPL->stdhead("Р”РѕР±Р°РІР»РµРЅРёРµ РѕРїСЂРѕСЃР°");
 	print('<form name="add" action="'.$REL_SEO->make_link('pollsadmin','action','add2').'" method="post"><table width="100%" border="1">
-  <tr><td>Количество вариантов ответов: <input type="text" name="howq" size="2"></td></tr><tr><td><input type="submit" value="Дальше"></td></tr></table></form>');
+  <tr><td>РљРѕР»РёС‡РµСЃС‚РІРѕ РІР°СЂРёР°РЅС‚РѕРІ РѕС‚РІРµС‚РѕРІ: <input type="text" name="howq" size="2"></td></tr><tr><td><input type="submit" value="Р”Р°Р»СЊС€Рµ"></td></tr></table></form>');
 	$REL_TPL->stdfoot();
 }
 elseif ($_GET['action'] == 'add2') {
@@ -47,20 +47,20 @@ elseif ($_GET['action'] == 'add2') {
 	if (!isset($_POST['howq'])) stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	$howq = intval($_POST['howq']);
 
-	$REL_TPL->stdhead("Добавление опроса Шаг 2");
+	$REL_TPL->stdhead("Р”РѕР±Р°РІР»РµРЅРёРµ РѕРїСЂРѕСЃР° РЁР°Рі 2");
 
 	print('<table width="100%" border="1"><form name="add2" action="'.$REL_SEO->make_link('pollsadmin','action','saveadd').'" method="post">
-   <tr><td>Вопрос:</td><td><input type="text" name="question"></td></tr>
-   <tr><td>Продолжительность опроса:</td><td><input type="text" name="exp" size="2"> дней | 0 - бесконечно</td></tr>
+   <tr><td>Р’РѕРїСЂРѕСЃ:</td><td><input type="text" name="question"></td></tr>
+   <tr><td>РџСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ РѕРїСЂРѕСЃР°:</td><td><input type="text" name="exp" size="2"> РґРЅРµР№ | 0 - Р±РµСЃРєРѕРЅРµС‡РЅРѕ</td></tr>
    <tr><td><input type="hidden" name="type" value="'.$type.'"></td></tr>
    ');
 
-	print('<tr><td>Публичный?</td><td><input type="checkbox" name="public" value="1"> (пользователи смогут видеть, кто и как голосовал)</td></tr>');
+	print('<tr><td>РџСѓР±Р»РёС‡РЅС‹Р№?</td><td><input type="checkbox" name="public" value="1"> (РїРѕР»СЊР·РѕРІР°С‚РµР»Рё СЃРјРѕРіСѓС‚ РІРёРґРµС‚СЊ, РєС‚Рѕ Рё РєР°Рє РіРѕР»РѕСЃРѕРІР°Р»)</td></tr>');
 
 
 	for ($i=1;$i<=$howq;$i++)
-	print('<tr><td>Опция '.$i.':</td><td><input type="text" name="option['.$i.']"></td></tr>');
-	print('<tr><td><input type="submit" value="Создать опрос"></td></tr></table>');
+	print('<tr><td>РћРїС†РёСЏ '.$i.':</td><td><input type="text" name="option['.$i.']"></td></tr>');
+	print('<tr><td><input type="submit" value="РЎРѕР·РґР°С‚СЊ РѕРїСЂРѕСЃ"></td></tr></table>');
 	$REL_TPL->stdfoot();
 }
 
@@ -109,21 +109,21 @@ elseif ($_GET['action'] == 'delete') {
 elseif ($_GET['action'] == 'edit') {
 	if (!is_valid_id($_GET['id'])) stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	$id = $_GET['id'];
-	$REL_TPL->stdhead("Редактирование опроса");
+	$REL_TPL->stdhead("Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РѕРїСЂРѕСЃР°");
 
 	$pollrow = sql_query("SELECT id,question,exp,public FROM polls WHERE id=$id");
 	$pollres = mysql_fetch_array($pollrow);
 
-	print('<table width="100%" border="1"><form action="'.$REL_SEO->make_link('pollsadmin','action','saveedit','id',$id).'" method="post"><tr><td>Вопрос:</td><td><input type="text" name="question" value="'.$pollres['question'].'"></td><tr><td>Истекает через:</td><td><input type="text" name="exp" value="'.(!is_null($pollres['exp'])?round(($pollres['exp']-time())/86400):"0").'" size="2"> дней 0 - бесконечно</td>');
+	print('<table width="100%" border="1"><form action="'.$REL_SEO->make_link('pollsadmin','action','saveedit','id',$id).'" method="post"><tr><td>Р’РѕРїСЂРѕСЃ:</td><td><input type="text" name="question" value="'.$pollres['question'].'"></td><tr><td>РСЃС‚РµРєР°РµС‚ С‡РµСЂРµР·:</td><td><input type="text" name="exp" value="'.(!is_null($pollres['exp'])?round(($pollres['exp']-time())/86400):"0").'" size="2"> РґРЅРµР№ 0 - Р±РµСЃРєРѕРЅРµС‡РЅРѕ</td>');
 
-	print('<tr><td>Публичный?</td><td><input type="checkbox" name="public" value="1" '.(($pollres['public'])?"checked":"")."></td></tr>");
+	print('<tr><td>РџСѓР±Р»РёС‡РЅС‹Р№?</td><td><input type="checkbox" name="public" value="1" '.(($pollres['public'])?"checked":"")."></td></tr>");
 	$srow = sql_query("SELECT id,value FROM polls_structure WHERE pollid=$id");
 	$i = 0;
 	while ($sres = mysql_fetch_array($srow)) {
 		$i++;
-		print("<tr><td>Опция $i:</td><td><input type=\"text\" name=\"option[".$sres['id']."]\" value=\"".$sres['value']."\"></td></tr>");
+		print("<tr><td>РћРїС†РёСЏ $i:</td><td><input type=\"text\" name=\"option[".$sres['id']."]\" value=\"".$sres['value']."\"></td></tr>");
 	}
-	print('<tr><td><input type="hidden" name="type" value="'.$pollres['type'].'"><input type="submit" value="Отредактировать"</td></tr></form></table>');
+	print('<tr><td><input type="hidden" name="type" value="'.$pollres['type'].'"><input type="submit" value="РћС‚СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ"</td></tr></form></table>');
 	$REL_TPL->stdfoot();
 }
 

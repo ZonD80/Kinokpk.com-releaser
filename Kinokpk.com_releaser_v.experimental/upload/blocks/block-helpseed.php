@@ -13,7 +13,7 @@ $res = sql_query("SELECT id, name, seeders, leechers FROM torrents WHERE (seeder
 if (mysql_num_rows($res) > 0) {
 	while ($arr = mysql_fetch_assoc($res)) {
 		$torrname = $arr['name'];
-		if (strlen($torrname) > 55)
+		if (mb_strlen($torrname) > 55)
 		$torrname = substr($torrname, 0, 55) . "...";
 		$content .= "<small><b><a href=\"".$REL_SEO->make_link('details','id',$arr['id'],'name',translit($arr['name']))."\" title=\"".$arr['name']."\">".$torrname."</a></b><font color=\"#0099FF\"><b> (".sprintf($REL_LANG->say_by_key('new_torrents_stats'), number_format($arr['seeders']), number_format($arr['leechers'])).")</b></font></small><br />\n";
 	}

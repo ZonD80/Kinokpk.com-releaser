@@ -9,7 +9,7 @@ if (!defined('BLOCK_FILE')) {
 
 $content .= "<table  width=\"100%\"><tr><td  valign=\"top\" align=\"center\">";
 
-$content .= "<small>[<a href=\"".$REL_SEO->make_link('viewrequests')."\">Всё</a>] [<a href=\"".$REL_SEO->make_link('requests','action','new')."\">Заказать</a>]</small><hr /><table border=\"1\"><tr><td align=\"center\">";
+$content .= "<small>[<a href=\"".$REL_SEO->make_link('viewrequests')."\">Р’СЃС‘</a>] [<a href=\"".$REL_SEO->make_link('requests','action','new')."\">Р—Р°РєР°Р·Р°С‚СЊ</a>]</small><hr /><table border=\"1\"><tr><td align=\"center\">";
 
 $reqarray = $REL_CACHE->get('block-req', 'query');
 
@@ -24,16 +24,16 @@ if ($reqarray===false) {
 	$REL_CACHE->set('block-req', 'query', $reqarray);
 }
 
-if (!$reqarray) {$content .= '<b>Нет запросов</b>'; } else
+if (!$reqarray) {$content .= '<b>РќРµС‚ Р·Р°РїСЂРѕСЃРѕРІ</b>'; } else
 foreach ($reqarray as $requests) {
 	if ($requests[filledby]!=0) {
-		$done = "<a href=".$REL_SEO->make_link(addslashes($requests['filled']))."><img border=\"0\" src=\"pic/chk.gif\" alt=\"Выполнен\"/></a>";
+		$done = "<a href=".$REL_SEO->make_link(addslashes($requests['filled']))."><img border=\"0\" src=\"pic/chk.gif\" alt=\"Р’С‹РїРѕР»РЅРµРЅ\"/></a>";
 	}
 	else {
 		$done = "";
 	}
 
-	$content .= "<a href=\"".$REL_SEO->make_link('requests','id',$requests['id'])."\"><b>$requests[request]</b></a>&nbsp;&nbsp;&nbsp;$done<br /><small> [комм:  $requests[comments], нуждающихся: $requests[hits]]<br /><a href=\"".$REL_SEO->make_link('requests','action','vote','voteid',$requests['id'])."\">Присоединиться к запросу</a></small><br />";
+	$content .= "<a href=\"".$REL_SEO->make_link('requests','id',$requests['id'])."\"><b>$requests[request]</b></a>&nbsp;&nbsp;&nbsp;$done<br /><small> [РєРѕРјРј:  $requests[comments], РЅСѓР¶РґР°СЋС‰РёС…СЃСЏ: $requests[hits]]<br /><a href=\"".$REL_SEO->make_link('requests','action','vote','voteid',$requests['id'])."\">РџСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ Рє Р·Р°РїСЂРѕСЃСѓ</a></small><br />";
 
 }
 

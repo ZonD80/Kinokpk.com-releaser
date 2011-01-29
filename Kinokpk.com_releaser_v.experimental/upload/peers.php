@@ -37,7 +37,7 @@ if ($view == 'seeders') {$condition = "AND p.seeder = 1"; $countcond = " WHERE s
 
 $count = @mysql_result(sql_query("SELECT SUM(1) FROM peers".$countcond),0);
 
-if (!$count) stderr($REL_LANG->say_by_key('error'), "Нет статистики, удовлетворяющей выбранным фильтрам.");
+if (!$count) stderr($REL_LANG->say_by_key('error'), "РќРµС‚ СЃС‚Р°С‚РёСЃС‚РёРєРё, СѓРґРѕРІР»РµС‚РІРѕСЂСЏСЋС‰РµР№ РІС‹Р±СЂР°РЅРЅС‹Рј С„РёР»СЊС‚СЂР°Рј.");
 $torrentsperpage = $REL_CONFIG['torrentsperpage'];
 
 
@@ -46,21 +46,21 @@ list($pagertop, $pagerbottom, $limit) = pager($torrentsperpage, $count, array('p
 
 $cheaters = sql_query("SELECT p.torrent AS tid, t.name AS tname, p.ip, p.port, p.seeder, p.peer_id, p.userid, u.username, u.class, u.enabled, u.warned, u.donor, u.ratingsum FROM peers AS p INNER JOIN users AS u ON u.id = p.userid INNER JOIN torrents AS t ON t.id = p.torrent WHERE u.enabled = 1 ".$condition." ORDER BY p.last_action DESC $limit") or sqlerr(__FILE__,__LINE__);
 
-$REL_TPL->stdhead("Статистика пиров");
+$REL_TPL->stdhead("РЎС‚Р°С‚РёСЃС‚РёРєР° РїРёСЂРѕРІ");
 print($pagertop);
 
 print("<table cellpadding=\"3\" cellspacing=\"0\" width=\"100%\">");
 if (get_user_class() >= UC_MODERATOR)
-print("<tr><td class=\"colhead\">Юзер</td><td class=\"colhead\">Торрент</td><td class=\"colhead\">IP&nbsp;/&nbsp;Порт</td><td class=\"colhead\">Сид</td><td class=\"colhead\">Peer_id</td></tr>");
+print("<tr><td class=\"colhead\">Р®Р·РµСЂ</td><td class=\"colhead\">РўРѕСЂСЂРµРЅС‚</td><td class=\"colhead\">IP&nbsp;/&nbsp;РџРѕСЂС‚</td><td class=\"colhead\">РЎРёРґ</td><td class=\"colhead\">Peer_id</td></tr>");
 else
-print("<tr><td class=\"colhead\">Юзер</td><td class=\"colhead\">Торрент</td><td class=\"colhead\">Сид</td></tr>");
+print("<tr><td class=\"colhead\">Р®Р·РµСЂ</td><td class=\"colhead\">РўРѕСЂСЂРµРЅС‚</td><td class=\"colhead\">РЎРёРґ</td></tr>");
 while ($cheater = mysql_fetch_array($cheaters)) {
 	list($tid, $tname, $ip, $port, $seeder, $peer_id, $userid, $username, $class, $enabled, $warned, $donor) = $cheater;
 	if ($seeder)
 	$is_seed = "<span style=\"color: green\">".$REL_LANG->say_by_key('yes')."</span>";
 	else
 	$is_seed = "<span style=\"color: red\">".$REL_LANG->say_by_key('no')."</span>";
-	if (strlen($tname) > 50)
+	if (mb_strlen($tname) > 50)
 	$tname = substr($tname, 0, 50)."...";
 	$peer_id = substr($peer_id, 0, 7);
 

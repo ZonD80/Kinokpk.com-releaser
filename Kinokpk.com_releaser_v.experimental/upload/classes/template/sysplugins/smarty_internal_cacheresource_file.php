@@ -125,7 +125,7 @@ class Smarty_Internal_CacheResource_File {
         $_dir_sep = $this->smarty->use_sub_dirs ? '/' : '^';
         $_compile_id_offset = $this->smarty->use_sub_dirs ? 3 : 0;
         $_dir = rtrim($this->smarty->cache_dir, '/\\') . DS;
-        $_dir_length = strlen($_dir);
+        $_dir_length = mb_strlen($_dir);
         if (isset($_cache_id)) {
             $_cache_id_parts = explode('|', $_cache_id);
             $_cache_id_parts_count = count($_cache_id_parts);
