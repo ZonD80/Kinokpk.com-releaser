@@ -13,11 +13,11 @@ define("REL_CACHEDRIVER",'native');
 
 if ($_GET['setlang']) {
 	setcookie('lang',(string)$_GET['setlang']);
-	print('<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1251" /></head><a href="index.php">Продолжить / Continue / Продовжити</a></html>');
+	print('<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><a href="index.php">Продолжить / Continue / Продовжити</a></html>');
 	die();
 }
 if (!$_COOKIE['lang'] || (strlen($_COOKIE['lang'])>2)) {
-	print("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1251\" /></head><h1>Выберите язык / Choose a language / Виберіть мову: <a href=\"index.php?setlang=ru\">Русский</a>, <a href=\"index.php?setlang=en\">English</a>, <a href=\"index.php?setlang=ua\">Український</a></h1></html>");
+	print("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /></head><h1>Выберите язык / Choose a language / Виберіть мову: <a href=\"index.php?setlang=ru\">Русский</a>, <a href=\"index.php?setlang=en\">English</a>, <a href=\"index.php?setlang=ua\">Український</a></h1></html>");
 	die();
 }
 
@@ -47,7 +47,7 @@ function headers2() {
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
 <head>
 <title>'.$REL_LANG->_("Kinokpk.com releaser 3.30 installer").', '.$REL_LANG->_("step").': '.$step.'</title>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" /></head><body>');
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body>');
 
 	if (ini_get("register_globals")) die('<font color="red" size="20">'.$REL_LANG->_("Turn off register globals, noob!").'</font>');
 
@@ -166,7 +166,7 @@ elseif ($_GET['step'] == 2) {
 
 <tr><td>'.$REL_LANG->_('User password').'</td><td><input type="password" name="mysql_pass"></td></tr>
 
-<tr><td>'.$REL_LANG->_('Database charset').'</td><td><input type="text" name="mysql_charset" value="cp1251"></td></tr>
+<tr><td>'.$REL_LANG->_('Database charset').'</td><td><input type="text" name="mysql_charset" value="utf8"></td></tr>
 
 <tr><td>'.$REL_LANG->_('Cookie secret (used to make your site hash unique)').'</td><td><input type="text" name="cookie_secret"></td></tr>
 

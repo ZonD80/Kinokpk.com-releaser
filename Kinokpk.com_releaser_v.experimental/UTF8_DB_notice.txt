@@ -1,0 +1,9 @@
+For conversion database to utf8 do the following:
+1. Preform these SQL-queries:
+ALTER TABLE  `seorules` CHANGE  `parameter`  `parameter` VARCHAR( 100 ) CHARACTER SET cp1251 COLLATE cp1251_general_ci NULL DEFAULT NULL;
+ALTER TABLE  `seorules` CHANGE  `script`  `script` VARCHAR( 100 ) CHARACTER SET cp1251 COLLATE cp1251_general_ci NULL DEFAULT NULL;
+
+2. DUMP your data to *.sql file with utf-8 encoding.
+3. REPLACE all "cp1251" to "utf8" in this file, e.g. using sed linux command:
+  sed -i 's/cp1251/utf8/g' YOUR_DUMP_FILE.sql
+4. RESTORE your database from *.sql file

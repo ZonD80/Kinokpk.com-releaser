@@ -13,11 +13,11 @@ define('REL_CACHEDRIVER','native');
 
 if ($_GET['setlang']) {
 	setcookie('lang',(string)$_GET['setlang']);
-	print('<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1251" /></head><a href="index.php">Продолжить / Continue / Продовжити</a></html>');
+	print('<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><a href="index.php">Продолжить / Continue / Продовжити</a></html>');
 	die();
 }
 if (!$_COOKIE['lang'] || (strlen($_COOKIE['lang'])>2)) {
-	print("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1251\" /></head><h1>Выберите язык / Choose a language / Виберіть мову: <a href=\"index.php?setlang=ru\">Русский</a>, <a href=\"index.php?setlang=en\">English</a>, <a href=\"index.php?setlang=ua\">Український</a></h1></html>");
+	print("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /></head><h1>Выберите язык / Choose a language / Виберіть мову: <a href=\"index.php?setlang=ru\">Русский</a>, <a href=\"index.php?setlang=en\">English</a>, <a href=\"index.php?setlang=ua\">Український</a></h1></html>");
 	die();
 }
 
@@ -50,7 +50,7 @@ function headers2() {
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
 <head>
 <title>'.$REL_LANG->_("Kinokpk.com releaser 3.00 to 3.30 updater").', '.$REL_LANG->_("step").': '.$step.'</title>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" /></head><body>');
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body>');
 
 	if (ini_get("register_globals")) die('<font color="red" size="20">'.$REL_LANG->_("Turn off register globals, noob!").'</font>');
 
@@ -85,6 +85,8 @@ if (!$step) {
 	print $REL_LANG->_("This update will convert database engine to InnoDB");
 	hr();
 	print $REL_LANG->_("This update will convert pages to forum posts, pages categories to forum categories");
+	hr();
+	print $REL_LANG->_("<h4>Please, convert your database to utf8 codepage with utf8_general_ci collation before you continue</h4>");
 	hr();
 	print $REL_LANG->_("Next step will change database schema");
 	hr();
@@ -251,7 +253,7 @@ if(!defined('IN_TRACKER') && !defined('IN_ANNOUNCE')) die("Direct access to this
 
 \$mysql_db = '$mysql_db';
 
-\$mysql_charset = '$mysql_charset';
+\$mysql_charset = 'utf8';
 
 
 define("COOKIE_SECRET",'$secret');
