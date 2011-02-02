@@ -15,7 +15,7 @@ $url = strip_tags(trim((string)preg_replace("#(.*?)url=#si", "", getenv("REQUEST
 print('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset='.$REL_LANG->say_by_key('language_charset').'" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="Description" content="'.$REL_CONFIG['description'].'" />
 <meta name="Keywords" content="'.$REL_CONFIG['keywords'].'" />
 <title>'.$REL_CONFIG['sitename'].' - Переход по внешней ссылке</title>

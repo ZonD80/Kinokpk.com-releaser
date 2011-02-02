@@ -1346,13 +1346,12 @@ function sqlwildcardesc($x) {
  * @param boolean $ajax Send headers for ajax? Default false
  */
 function headers($ajax=false) {
-	global $REL_LANG;
 	header("X-Powered-By: Kinokpk.com releaser ".RELVERSION);
 	header("Cache-Control: no-cache, must-revalidate, max-age=0");
 	//header("Expires:" . gmdate("D, d M Y H:i:s") . " GMT");
 	header("Expires: 0");
 	header("Pragma: no-cache");
-	if ($ajax)   header ("Content-Type: text/html; charset=" . $REL_LANG->say_by_key('language_charset'));
+	if ($ajax)   header ("Content-Type: text/html; charset=utf-8");
 	return;
 }
 

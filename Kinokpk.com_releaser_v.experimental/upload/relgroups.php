@@ -168,7 +168,7 @@ else {
 		if ($row['private'])
 		$i_subscribed = mysql_fetch_row(sql_query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$row['id']}"));
 		if ($i_subscribed) print ("<li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','deny')."\">Отписаться от группы</a></li><li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','invite')."\">{$REL_LANG->say_by_key('create_invite')}</a></li>");
-		else print ("<li>".(($row['private']&&$row['only_invites'])?$REL_LANG->say_by_key('private_group_friend_subscribe'):"<a href=\"".($row['page_pay']?$row['page_pay']:$REL_SEO->make_link('relgroups','id',$id,'action','suggest"'))."\">Подписаться на релизы</a>")."</li>");
+		else print ("<li>".(($row['private']&&$row['only_invites'])?$REL_LANG->say_by_key('private_group_friend_subscribe'):"<a href=\"".($row['page_pay']?$row['page_pay']:$REL_SEO->make_link('relgroups','id',$id,'action','suggest'))."\">Подписаться на релизы</a>")."</li>");
 		?></div>
 </div>
 <div id="boxes_right" class="box_right">
