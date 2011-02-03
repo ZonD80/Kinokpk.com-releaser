@@ -206,7 +206,7 @@ if ($update_torrent) {
 	bark("Что за хрень ты загружаешь? Это не бинарно-кодированый файл!");
 	list($info) = dict_check($dict, "info");
 	list($dname, $plen, $pieces) = dict_check($info, "name(string):piece length(integer):pieces(string)");
-	if (mb_strlen($pieces) % 20 != 0)
+	if (strlen($pieces) % 20 != 0)
 	bark("invalid pieces");
 
 	$filelist = array();
@@ -269,13 +269,9 @@ if ($update_torrent) {
 	list($info) = dict_check($dict, "info");
 
 	$infohash = sha1($info["string"]);
-	move_uploaded_file($tmpname, ROOT_PATH."torrents/$id.torrent");
-	$fp = fopen("torrents/$id.torrent", "w");
-	if ($fp) {
-		@fwrite($fp, benc($dict['value']['info']), mb_strlen(benc($dict['value']['info'])));
-		fclose($fp);
-		@chmod($fp, 0644);
-	}
+	//move_uploaded_file($tmpname, ROOT_PATH."torrents/$id.torrent");
+	@file_put_contents(ROOT_PATH."torrents/$id.torrent",benc($dict['value']['info']));
+	
 	$updateset[] = "info_hash = " . sqlesc($infohash);
 	$update_xbt_query = "UPDATE xbt_files SET info_hash='".pack('H*', $infohash)."' WHERE fid=$id";
 	$updateset[] = "filename = " . sqlesc($fname);

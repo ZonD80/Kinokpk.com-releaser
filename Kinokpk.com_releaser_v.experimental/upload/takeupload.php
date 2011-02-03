@@ -124,7 +124,7 @@ if ($_POST['nofile']) {} else {
 	/*if (!in_array($ann, $announce_urls, 1))
 	 bark("Неверный Announce URL! Должен быть ".$announce_urls[0]);*/
 
-	if (mb_strlen($pieces) % 20 != 0)
+	if (strlen($pieces) % 20 != 0)
 	bark("invalid pieces");
 
 	$filelist = array();
