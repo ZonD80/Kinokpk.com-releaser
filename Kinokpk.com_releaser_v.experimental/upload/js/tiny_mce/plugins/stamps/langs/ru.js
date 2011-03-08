@@ -1,3 +1,3 @@
 tinyMCE.addI18n('ru.stamps',{
-stamps_desc: "РџРµС‡Р°С‚Рё Рё С€С‚Р°РјРїС‹"
+stamps_desc: "\u0428\u0442\u0430\u043c\u043f\u044b"
 });
