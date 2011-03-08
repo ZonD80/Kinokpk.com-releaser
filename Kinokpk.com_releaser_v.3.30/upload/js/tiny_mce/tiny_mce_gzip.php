@@ -1,186 +1,272 @@
 <?php
 /**
- * $Id: tiny_mce_gzip.php 315 2007-10-25 14:03:43Z spocke $
+ * tiny_mce_gzip.php
  *
- * @author Moxiecode
- * @copyright Copyright ╘ 2005-2006, Moxiecode Systems AB, All rights reserved.
+ * Copyright 2010, Moxiecode Systems AB
+ * Released under LGPL License.
  *
- * This file compresses the TinyMCE JavaScript using GZip and
- * enables the browser to do two requests instead of one for each .js file.
- * Notice: This script defaults the button_tile_map option to true for extra performance.
+ * License: http://tinymce.moxiecode.com/license
+ * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-// Set the error reporting to minimal.
-@error_reporting(E_ERROR | E_WARNING | E_PARSE);
+// Handle incoming request if it's a script call
 
-// Get input
-$plugins = explode(',', getParam("plugins", ""));
-$languages = explode(',', getParam("languages", ""));
-$themes = explode(',', getParam("themes", ""));
-$diskCache = getParam("diskcache", "") == "true";
-$isJS = getParam("js", "") == "true";
-$compress = getParam("compress", "true") == "true";
-$core = getParam("core", "true") == "true";
-$suffix = getParam("suffix", "_src") == "_src" ? "_src" : "";
+// Kinokpk.com releaser addition
+$dir = dirname(dirname(dirname(__FILE__)))."/cache/tinymce";
 
-$path = dirname(dirname(dirname(__FILE__)))."/cache/tinymce";
-if (!is_dir($path)) mkdir($path);
-$cachePath = $path;//realpath("../../cache"); // Cache path, this is where the .gz files will be stored
-$expiresOffset = 3600 * 24 * 10; // Cache for 10 days in browser cache
-$content = "";
-$encodings = array();
-$supportsGzip = false;
-$enc = "";
-$cacheKey = "";
+if (!is_dir($dir)) mkdir($dir);
 
-// Custom extra javascripts to pack
-$custom = array(/*
-"some custom .js file",
-"some custom .js file"
-*/);
+if (TinyMCE_Compressor::getParam("js")) {
+	// Default settings
+	$tinyMCECompressor = new TinyMCE_Compressor(array(
+		"plugins" => "",
+		"themes" => "",
+		"languages" => "",
+		"disk_cache" => true,
+		"expires" => "30d",
+		"cache_dir" => $dir,
+		"compress" => true,
+		"suffix" => ""
+	));
 
-// Headers
-header("Content-type: text/javascript");
-header("Vary: Accept-Encoding");  // Handle proxies
-header("Expires: " . gmdate("D, d M Y H:i:s", time() + $expiresOffset) . " GMT");
+	// Add custom scripts here
+	//$tinyMCECompressor->addFile("somescript.js");
 
-// Is called directly then auto init with default settings
-if (!$isJS) {
-	echo getFileContents("tiny_mce_gzip.js");
-	echo "tinyMCE_GZ.init({});";
-	die();
+	// Handle request, compress and stream to client
+	$tinyMCECompressor->handleRequest();
 }
 
-// Setup cache info
-if ($diskCache) {
-	if (!$cachePath)
-	die("alert('Real path failed.');");
+/**
+ * This class combines and compresses the TinyMCE core, plugins, themes and
+ * language packs into one disk cached gzipped request. It improves the loading speed of TinyMCE dramatically but
+ * still provides dynamic initialization.
+ *
+ * Example of direct usage:
+ * require_once("../jscripts/tiny_mce/tiny_mce_gzip.php");
+ *
+ * // Renders script tag with compressed scripts
+ * TinyMCE_Compressor::renderTag(array(
+ *    "url" => "../jscripts/tiny_mce/tiny_mce_gzip.php",
+ *    "plugins" => "pagebreak,style",
+ *    "themes" => "advanced",
+ *    "languages" => "en"
+ * ));
+ */
+class TinyMCE_Compressor {
+	private $files, $settings;
 
-	$cacheKey = getParam("plugins", "") . getParam("languages", "") . getParam("themes", "") . $suffix;
+	/**
+	 * Constructs a new compressor instance.
+	 *
+	 * @param Array $settings Name/value array with settings for the compressor instance.
+	 */
+	public function __construct($settings = array()) {
+		$this->files = array();
+		$this->settings = $settings;
+	}
 
-	foreach ($custom as $file)
-	$cacheKey .= $file;
+	/**
+	 * Adds a file to the concatenation/compression process.
+	 *
+	 * @param String $path Path to the file to include in the compressed package/output.
+	 */
+	public function &addFile($file) {
+		$this->files[] = $file;
 
-	$cacheKey = md5($cacheKey);
+		return $this;
+	}
 
-	if ($compress)
-	$cacheFile = $cachePath . "/tiny_mce_" . $cacheKey . ".gz";
-	else
-	$cacheFile = $cachePath . "/tiny_mce_" . $cacheKey . ".js";
-}
+	/**
+	 * Handles the incoming HTTP request and sends back a compressed script depending on settings and client support.
+	 */
+	public function handleRequest() {
+		$files = array();
+		$supportsGzip = false;
+		$expiresOffset = $this->parseTime($this->settings["expires"]);
+		$tinymceDir = dirname(__FILE__);
 
-// Check if it supports gzip
-if (isset($_SERVER['HTTP_ACCEPT_ENCODING']))
-$encodings = explode(',', strtolower(preg_replace("/\s+/", "", $_SERVER['HTTP_ACCEPT_ENCODING'])));
+		// Override settings with querystring params
+		$plugins = self::getParam("plugins");
+		if ($plugins)
+			$this->settings["plugins"] = $plugins;
 
-if ((in_array('gzip', $encodings) || in_array('x-gzip', $encodings) || isset($_SERVER['---------------'])) && function_exists('ob_gzhandler') && !ini_get('zlib.output_compression')) {
-	$enc = in_array('x-gzip', $encodings) ? "x-gzip" : "gzip";
-	$supportsGzip = true;
-}
+		$themes = self::getParam("themes");
+		if ($themes)
+			$this->settings["themes"] = $themes;
 
-// Use cached file disk cache
-if ($diskCache && $supportsGzip && file_exists($cacheFile)) {
-	if ($compress)
-	header("Content-Encoding: " . $enc);
+		$languages = self::getParam("languages");
+		if ($languages)
+			$this->settings["languages"] = $languages;
 
-	echo getFileContents($cacheFile);
-	die();
-}
+		$diskCache = self::getParam("diskcache");
+		if ($diskCache)
+			$this->settings["disk_cache"] = $diskCache === "true";
 
-// Add core
-if ($core == "true") {
-	$content .= getFileContents("tiny_mce" . $suffix . ".js");
+		$languages = explode(',', $this->settings["languages"]);
 
-	// Patch loading functions
-	$content .= "tinyMCE_GZ.start();";
-}
+		// Add core
+		$files[] = "tiny_mce.js";
+		foreach ($languages as $language)
+			$files[] = "langs/" . $language . ".js";
 
-// Add core languages
-foreach ($languages as $lang)
-$content .= getFileContents("langs/" . $lang . ".js");
+		// Add plugins
+		$plugins = explode(',', $this->settings["plugins"]);
+		foreach ($plugins as $plugin) {
+			$files[] = "plugins/" . $plugin . "/editor_plugin.js";
 
-// Add themes
-foreach ($themes as $theme) {
-	$content .= getFileContents( "themes/" . $theme . "/editor_template" . $suffix . ".js");
+			foreach ($languages as $language)
+				$files[] = "plugins/" . $plugin . "/langs/" . $language . ".js";
+		}
 
-	foreach ($languages as $lang)
-	$content .= getFileContents("themes/" . $theme . "/langs/" . $lang . ".js");
-}
+		// Add themes
+		$themes = explode(',', $this->settings["themes"]);
+		foreach ($themes as $theme) {
+			$files[] = "themes/" . $theme . "/editor_template.js";
 
-// Add plugins
-foreach ($plugins as $plugin) {
-	$content .= getFileContents("plugins/" . $plugin . "/editor_plugin" . $suffix . ".js");
+			foreach ($languages as $language)
+				$files[] = "themes/" . $theme . "/langs/" . $language . ".js";
+		}
 
-	foreach ($languages as $lang)
-	$content .= getFileContents("plugins/" . $plugin . "/langs/" . $lang . ".js");
-}
+		// Generate hash for all files
+		$hash = "";
+		foreach ($files as $file)
+			$hash .= $file;
+		$hash = md5($hash);
 
-// Add custom files
-foreach ($custom as $file)
-$content .= getFileContents($file);
+		// Set basic headers
+		header("Content-type: text/javascript");
+		header("Vary: Accept-Encoding");  // Handle proxies
 
-// Restore loading functions
-if ($core == "true")
-$content .= "tinyMCE_GZ.end();";
+		// Check if it supports gzip
+		if (isset($_SERVER['HTTP_ACCEPT_ENCODING']))
+			$encodings = explode(',', strtolower(preg_replace("/\s+/", "", $_SERVER['HTTP_ACCEPT_ENCODING'])));
 
-// Generate GZIP'd content
-if ($supportsGzip) {
-	if ($compress) {
-		header("Content-Encoding: " . $enc);
-		$cacheData = gzencode($content, 9, FORCE_GZIP);
-	} else
-	$cacheData = $content;
+		// Check if the server and client supports gzip compression
+		if ($this->settings['compress'] && (in_array('gzip', $encodings) || in_array('x-gzip', $encodings) || isset($_SERVER['---------------'])) && function_exists('gzencode') && !ini_get('zlib.output_compression')) {
+			header("Content-Encoding: " . (in_array('x-gzip', $encodings) ? "x-gzip" : "gzip"));
+			$cacheFile = $this->settings["cache_dir"] . "/" . $hash . ".gz";
+			$supportsGzip = true;
+		} else
+			$cacheFile = $this->settings["cache_dir"] . "/" . $hash . ".js";
 
-	// Write gz file
-	if ($diskCache && $cacheKey != "")
-	putFileContents($cacheFile, $cacheData);
+		header("Expires: " . gmdate("D, d M Y H:i:s", time() + $expiresOffset) . " GMT");
+		header("Cache-Control: public, max-age=" . $expiresOffset);
 
-	// Stream to client
-	echo $cacheData;
-} else {
-	// Stream uncompressed content
-	echo $content;
-}
+		// Use cached file
+		if ($this->settings['disk_cache'] && file_exists($cacheFile)) {
+			readfile($cacheFile);
+			return;
+		}
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		// Set base URL for where tinymce is loaded from
+		$buffer = "var tinyMCEPreInit={base:'" . dirname($_SERVER["SCRIPT_NAME"]) . "',suffix:''};";
 
-function getParam($name, $def = false) {
-	if (!isset($_GET[$name]))
-	return $def;
+		// Load all tinymce script files into buffer
+		foreach ($files as $file)
+			$buffer .= $this->getFileContents($tinymceDir . "/" . $file);
 
-	return preg_replace("/[^0-9a-z\-_,]+/i", "", $_GET[$name]); // Remove anything but 0-9,a-z,-_
-}
+		// Mark all themes, plugins and languages as done
+		$buffer .= 'tinymce.each("' . implode(',', $files) . '".split(","),function(f){tinymce.ScriptLoader.markDone(tinyMCE.baseURL+"/"+f);});';
 
-function getFileContents($path) {
-	$path = realpath($path);
+		// Load any custom scripts into buffer
+		foreach ($this->files as $file)
+			$buffer .= $this->getFileContents($file);
 
-	if (!$path || !@is_file($path))
-	return "";
+		// Compress data
+		if ($supportsGzip)
+			$buffer = gzencode($buffer, 9, FORCE_GZIP);
 
-	if (function_exists("file_get_contents"))
-	return @file_get_contents($path);
+		// Write cached file
+		if ($this->settings["disk_cache"])
+			@file_put_contents($cacheFile, $buffer);	
 
-	$content = "";
-	$fp = @fopen($path, "r");
-	if (!$fp)
-	return "";
+		// Stream contents to client
+		echo $buffer;
+	}
 
-	while (!feof($fp))
-	$content .= fgets($fp);
+	/**
+	 * Renders a script tag that loads the TinyMCE script.
+	 *
+	 * @param Array $settings Name/value array with settings for the script tag.
+	 */
+	public static function renderTag($settings) {
+		$scriptSrc = $settings["url"] . "?js=1";
 
-	fclose($fp);
+		// Add plugins
+		if (isset($settings["plugins"]))
+			$scriptSrc .= "&plugins=" . (is_array($settings["plugins"]) ? implode(',', $settings["plugins"]) : $settings["plugins"]);
 
-	return $content;
-}
+		// Add themes
+		if (isset($settings["themes"]))
+			$scriptSrc .= "&themes=" . (is_array($settings["themes"]) ? implode(',', $settings["themes"]) : $settings["themes"]);
 
-function putFileContents($path, $content) {
-	if (function_exists("file_put_contents"))
-	return @file_put_contents($path, $content);
+		// Add languages
+		if (isset($settings["languages"]))
+			$scriptSrc .= "&languages=" . (is_array($settings["languages"]) ? implode(',', $settings["languages"]) : $settings["languages"]);
 
-	$fp = @fopen($path, "wb");
-	if ($fp) {
-		fwrite($fp, $content);
-		fclose($fp);
+		// Add disk_cache
+		if (isset($settings["disk_cache"]))
+			$scriptSrc .= "&diskcache=" . ($settings["disk_cache"] === true ? "true" : "false");
+
+		echo '<script type="text/javascript" src="' . htmlspecialchars($scriptSrc) . '"></script>';
+	}
+
+	/**
+	 * Returns a sanitized query string parameter.
+	 *
+	 * @param String $name Name of the query string param to get.
+	 * @param String $default Default value if the query string item shouldn't exist.
+	 * @return String Sanitized query string parameter value.
+	 */
+	public static function getParam($name, $default = "") {
+		if (!isset($_GET[$name]))
+			return $default;
+
+		return preg_replace("/[^0-9a-z\-_,]+/i", "", $_GET[$name]); // Sanatize for security, remove anything but 0-9,a-z,-_,
+	}
+
+	/**
+	 * Parses the specified time format into seconds. Supports formats like 10h, 10d, 10m.
+	 *
+	 * @param String $time Time format to convert into seconds.
+	 * @return Int Number of seconds for the specified format.
+	 */
+	private function parseTime($time) {
+		$multipel = 1;
+
+		// Hours
+		if (strpos($time, "h") > 0)
+			$multipel = 3600;
+
+		// Days
+		if (strpos($time, "d") > 0)
+			$multipel = 86400;
+
+		// Months
+		if (strpos($time, "m") > 0)
+			$multipel = 2592000;
+
+		// Trim string
+		return intval($time) * $multipel;
+	}
+
+	/**
+	 * Returns the contents of the script file if it exists and removes the UTF-8 BOM header if it exists.
+	 *
+	 * @param String $file File to load.
+	 * @return String File contents or empty string if it doesn't exist.
+	 */
+	private function getFileContents($file) {
+		if (file_exists($file)) {
+			$content = file_get_contents($file);
+
+			// Remove UTF-8 BOM
+			if (substr($content, 0, 3) === pack("CCC", 0xef, 0xbb, 0xbf))
+				$content = substr($content, 3);
+		} else
+			$content = "";
+
+		return $content;
 	}
 }
 ?>

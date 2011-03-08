@@ -66,6 +66,9 @@
 			t.url = url;
 			t.onResolveName = new tinymce.util.Dispatcher(this);
 
+			ed.forcedHighContrastMode = ed.settings.detect_highcontrast && t._isHighContrast();
+			ed.settings.skin = ed.forcedHighContrastMode ? 'highcontrast' : ed.settings.skin;
+
 			// Default settings
 			t.settings = s = extend({
 				theme_advanced_path : true,
@@ -81,6 +84,7 @@
 				theme_advanced_resize_horizontal : 1,
 				theme_advanced_resizing_use_cookie : 1,
 				theme_advanced_font_sizes : "1,2,3,4,5,6,7",
+				theme_advanced_font_selector : "span",
 				readonly : ed.settings.readonly
 			}, ed.settings);
 
@@ -119,13 +123,19 @@
 			if (s.theme_advanced_statusbar_location == 'none')
 				s.theme_advanced_statusbar_location = 0;
 
+			if (ed.settings.content_css !== false)
+				ed.contentCSS.push(ed.baseURI.toAbsolute(url + "/skins/" + ed.settings.skin + "/content.css"));
+
 			// Init editor
 			ed.onInit.add(function() {
-				if (!ed.settings.readonly)
+				if (!ed.settings.readonly) {
 					ed.onNodeChange.add(t._nodeChanged, t);
-
-				if (ed.settings.content_css !== false)
-					ed.dom.loadCSS(ed.baseURI.toAbsolute(url + "/skins/" + ed.settings.skin + "/content.css"));
+					ed.onKeyUp.add(t._updateUndoStatus, t);
+					ed.onMouseUp.add(t._updateUndoStatus, t);
+					ed.dom.bind(ed.dom.getRoot(), 'dragend', function() {
+						t._updateUndoStatus(ed);
+					});
+				}
 			});
 
 			ed.onSetProgressState.add(function(ed, b, ti) {
@@ -151,6 +161,15 @@
 
 			if (s.skin_variant)
 				DOM.loadCSS(url + "/skins/" + ed.settings.skin + "/ui_" + s.skin_variant + ".css");
+		},
+
+		_isHighContrast : function() {
+			var actualColor, div = DOM.add(DOM.getRoot(), 'div', {'style': 'background-color: rgb(171,239,86);'});
+
+			actualColor = (DOM.getStyle(div, 'background-color', true) + '').toLowerCase().replace(/ /g, '');
+			DOM.remove(div);
+
+			return actualColor != 'rgb(171,239,86)' && actualColor != '#abef56';
 		},
 
 		createControl : function(n, cf) {
@@ -230,9 +249,10 @@
 
 					// Toggle off the current format
 					matches = ed.formatter.matchAll(formatNames);
-					if (!name || matches[0] == name)
-						ed.formatter.remove(matches[0]);
-					else
+					if (!name || matches[0] == name) {
+						if (matches[0]) 
+							ed.formatter.remove(matches[0]);
+					} else
 						ed.formatter.apply(name);
 
 					ed.undoManager.add();
@@ -468,12 +488,19 @@
 		renderUI : function(o) {
 			var n, ic, tb, t = this, ed = t.editor, s = t.settings, sc, p, nl;
 
-			n = p = DOM.create('span', {id : ed.id + '_parent', 'class' : 'mceEditor ' + ed.settings.skin + 'Skin' + (s.skin_variant ? ' ' + ed.settings.skin + 'Skin' + t._ufirst(s.skin_variant) : '')});
+			if (ed.settings) {
+				ed.settings.aria_label = s.aria_label + ed.getLang('advanced.help_shortcut');
+			}
+
+			// TODO: ACC Should have an aria-describedby attribute which is user-configurable to describe what this field is actually for.
+			// Maybe actually inherit it from the original textara?
+			n = p = DOM.create('span', {role : 'application', 'aria-labelledby' : ed.id + '_voice', id : ed.id + '_parent', 'class' : 'mceEditor ' + ed.settings.skin + 'Skin' + (s.skin_variant ? ' ' + ed.settings.skin + 'Skin' + t._ufirst(s.skin_variant) : '')});
+			DOM.add(n, 'span', {'class': 'mceVoiceLabel', 'style': 'display:none;', id: ed.id + '_voice'}, s.aria_label);
 
 			if (!DOM.boxModel)
 				n = DOM.add(n, 'div', {'class' : 'mceOldBoxModel'});
 
-			n = sc = DOM.add(n, 'table', {id : ed.id + '_tbl', 'class' : 'mceLayout', cellSpacing : 0, cellPadding : 0});
+			n = sc = DOM.add(n, 'table', {role : "presentation", id : ed.id + '_tbl', 'class' : 'mceLayout', cellSpacing : 0, cellPadding : 0});
 			n = tb = DOM.add(n, 'tbody');
 
 			switch ((s.theme_advanced_layout_manager || '').toLowerCase()) {
@@ -492,7 +519,7 @@
 			n = o.targetNode;
 
 			// Add classes to first and last TRs
-			nl = DOM.stdMode ? sc.getElementsByTagName('tr') : sc.rows; // Quick fix for IE 8
+			nl = sc.rows;
 			DOM.addClass(nl[0], 'mceFirst');
 			DOM.addClass(nl[nl.length - 1], 'mceLast');
 
@@ -547,6 +574,23 @@
 
 			t.deltaHeight = o.deltaHeight;
 			o.targetNode = null;
+
+			ed.onKeyDown.add(function(ed, evt) {
+				var DOM_VK_F10 = 121, DOM_VK_F11 = 122;
+
+				if (evt.altKey) {
+		 			if (evt.keyCode === DOM_VK_F10) {
+						t.toolbarGroup.focus();
+						return Event.cancel(evt);
+					} else if (evt.keyCode === DOM_VK_F11) {
+						DOM.get(ed.id + '_path_row').focus();
+						return Event.cancel(evt);
+					}
+				}
+			});
+
+			// alt+0 is the UK recommended shortcut for accessing the list of access controls.
+			ed.addShortcut('alt+0', '', 'mceShortcuts', t);
 
 			return {
 				iframeContainer : ic,
@@ -763,17 +807,19 @@
 		},
 
 		_addToolbars : function(c, o) {
-			var t = this, i, tb, ed = t.editor, s = t.settings, v, cf = ed.controlManager, di, n, h = [], a;
+			var t = this, i, tb, ed = t.editor, s = t.settings, v, cf = ed.controlManager, di, n, h = [], a, toolbarGroup;
+
+			toolbarGroup = cf.createToolbarGroup('toolbargroup', {
+				'name': ed.getLang('advanced.toolbar'),
+				'tab_focus_toolbar':ed.getParam('theme_advanced_tab_focus_toolbar')
+			});
+
+			t.toolbarGroup = toolbarGroup;
 
 			a = s.theme_advanced_toolbar_align.toLowerCase();
 			a = 'mce' + t._ufirst(a);
 
-			n = DOM.add(DOM.add(c, 'tr'), 'td', {'class' : 'mceToolbar ' + a});
-
-			if (!ed.getParam('accessibility_focus'))
-				h.push(DOM.createHTML('a', {href : '#', onfocus : 'tinyMCE.get(\'' + ed.id + '\').focus();'}, '<!-- IE -->'));
-
-			h.push(DOM.createHTML('a', {href : '#', accesskey : 'q', title : ed.getLang("advanced.toolbar_focus")}, '<!-- IE -->'));
+			n = DOM.add(DOM.add(c, 'tr', {role: 'presentation'}), 'td', {'class' : 'mceToolbar ' + a, "role":"presentation"});
 
 			// Create toolbar and add the controls
 			for (i=1; (v = s['theme_advanced_buttons' + i]); i++) {
@@ -786,13 +832,11 @@
 					v = s['theme_advanced_buttons' + i + '_add_before'] + ',' + v;
 
 				t._addControls(v, tb);
-
-				//n.appendChild(n = tb.render());
-				h.push(tb.renderHTML());
+				toolbarGroup.add(tb);
 
 				o.deltaHeight -= s.theme_advanced_row_height;
 			}
-
+			h.push(toolbarGroup.renderHTML());
 			h.push(DOM.createHTML('a', {href : '#', accesskey : 'z', title : ed.getLang("advanced.toolbar_focus"), onfocus : 'tinyMCE.getInstanceById(\'' + ed.id + '\').focus();'}, '<!-- IE -->'));
 			DOM.setHTML(n, h.join(''));
 		},
@@ -801,9 +845,15 @@
 			var n, t = this, ed = t.editor, s = t.settings, r, mf, me, td;
 
 			n = DOM.add(tb, 'tr');
-			n = td = DOM.add(n, 'td', {'class' : 'mceStatusbar'});
-			n = DOM.add(n, 'div', {id : ed.id + '_path_row'}, s.theme_advanced_path ? ed.translate('advanced.path') + ': ' : '&#160;');
-			DOM.add(n, 'a', {href : '#', accesskey : 'x'});
+			n = td = DOM.add(n, 'td', {'class' : 'mceStatusbar'}); 
+			n = DOM.add(n, 'div', {id : ed.id + '_path_row', 'role': 'group', 'aria-labelledby': ed.id + '_path_voice'});
+			if (s.theme_advanced_path) {
+				DOM.add(n, 'span', {id: ed.id + '_path_voice'}, ed.translate('advanced.path'));
+				DOM.add(n, 'span', {}, ': ');
+			} else {
+				DOM.add(n, 'span', {}, '&#160;');
+			}
+			
 
 			if (s.theme_advanced_resizing) {
 				DOM.add(td, 'a', {id : ed.id + '_resize', href : 'javascript:;', onclick : "return false;", 'class' : 'mceResize'});
@@ -870,6 +920,13 @@
 
 			o.deltaHeight -= 21;
 			n = tb = null;
+		},
+
+		_updateUndoStatus : function(ed) {
+			var cm = ed.controlManager;
+
+			cm.setDisabled('undo', !ed.undoManager.hasUndo() && !ed.typing);
+			cm.setDisabled('redo', !ed.undoManager.hasRedo());
 		},
 
 		_nodeChanged : function(ed, cm, n, co, ob) {
@@ -944,7 +1001,9 @@
 				if (n.nodeName === 'SPAN') {
 					if (!cl && n.className)
 						cl = n.className;
+				}
 
+				if (ed.dom.is(n, s.theme_advanced_font_selector)) {
 					if (!fz && n.style.fontSize)
 						fz = n.style.fontSize;
 
@@ -976,16 +1035,37 @@
 				});
 			}
 
+			if (s.theme_advanced_show_current_color) {
+				function updateColor(controlId, color) {
+					if (c = cm.get(controlId)) {
+						if (!color)
+							color = c.settings.default_color;
+						if (color !== c.value) {
+							c.displayColor(color);
+						}
+					}
+				};
+
+				updateColor('forecolor', fc);
+				updateColor('backcolor', bc);
+			}
+
 			if (s.theme_advanced_path && s.theme_advanced_statusbar_location) {
 				p = DOM.get(ed.id + '_path') || DOM.add(ed.id + '_path_row', 'span', {id : ed.id + '_path'});
+
+				if (t.statusKeyboardNavigation) {
+					t.statusKeyboardNavigation.destroy();
+					t.statusKeyboardNavigation = null;
+				}
+
 				DOM.setHTML(p, '');
 
 				getParent(function(n) {
 					var na = n.nodeName.toLowerCase(), u, pi, ti = '';
 
-					/*if (n.getAttribute('_mce_bogus'))
+					if (n.getAttribute('data-mce-bogus'))
 						return;
-*/
+
 					// Ignore non element and hidden elements
 					if (n.nodeType != 1 || n.nodeName === 'BR' || (DOM.hasClass(n, 'mceItemHidden') || DOM.hasClass(n, 'mceItemRemoved')))
 						return;
@@ -1068,14 +1148,25 @@
 					na = na.name;
 
 					//u = "javascript:tinymce.EditorManager.get('" + ed.id + "').theme._sel('" + (de++) + "');";
-					pi = DOM.create('a', {'href' : "javascript:;", onmousedown : "return false;", title : ti, 'class' : 'mcePath_' + (de++)}, na);
+					pi = DOM.create('a', {'href' : "javascript:;", role: 'button', onmousedown : "return false;", title : ti, 'class' : 'mcePath_' + (de++)}, na);
 
 					if (p.hasChildNodes()) {
-						p.insertBefore(DOM.doc.createTextNode(' \u00bb '), p.firstChild);
+						p.insertBefore(DOM.create('span', {'aria-hidden': 'true'}, '&nbsp;\u00bb '), p.firstChild);
 						p.insertBefore(pi, p.firstChild);
 					} else
 						p.appendChild(pi);
 				}, ed.getBody());
+
+				if (DOM.select('a', p).length > 0) {
+					t.statusKeyboardNavigation = new tinymce.ui.KeyboardNavigation({
+						root: ed.id + "_path_row",
+						items: DOM.select('a', p),
+						excludeFromTabOrder: true,
+						onCancel: function() {
+							ed.focus();
+						}
+					}, DOM);
+				}
 			}
 		},
 
@@ -1121,6 +1212,18 @@
 				inline : true
 			}, {
 				theme_url : this.url
+			});
+		},
+
+		_mceShortcuts : function() {
+			var ed = this.editor;
+			ed.windowManager.open({
+				url: this.url + '/shortcuts.htm',
+				width: 480,
+				height: 380,
+				inline: true
+			}, {
+				theme_url: this.url
 			});
 		},
 
