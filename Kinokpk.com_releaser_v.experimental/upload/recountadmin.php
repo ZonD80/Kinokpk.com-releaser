@@ -16,7 +16,7 @@ httpauth();
 
 $action = trim((string)$_GET['a']);
 
-if ($action=='recountorrents') {
+if ($action=='recounttorrents') {
 	do {
 
 		$res = sql_query("SELECT id, filename FROM torrents") or sqlerr(__FILE__,__LINE__);
