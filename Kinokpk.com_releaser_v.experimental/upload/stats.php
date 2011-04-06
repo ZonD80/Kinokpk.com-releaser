@@ -9,11 +9,10 @@
  */
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 loggedinorreturn();
 
-if (get_user_class() < UC_MODERATOR)
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
+get_privilege('view_general_statistics');
 
 $REL_TPL->stdhead("Статистика");
 ?>

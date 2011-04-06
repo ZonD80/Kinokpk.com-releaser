@@ -10,7 +10,7 @@
 
 require_once "include/bittorrent.php";
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
@@ -40,10 +40,11 @@ if (is_valid_user_class($class)) {
 if ($query) $query = " WHERE ".$query;
 
 
+if (!pagercheck())
 $REL_TPL->stdhead($REL_LANG->say_by_key('users'));
 
 
-if ((get_user_class () >= UC_MODERATOR) && $_GET['act']) {
+if ((get_privilege('is_moderator',false)) && $_GET['act']) {
 	if ($_GET['act'] == "users") {
 		$REL_TPL->begin_frame("Пользователи с рейтингом ниже 0");
 
@@ -102,38 +103,31 @@ if ((get_user_class () >= UC_MODERATOR) && $_GET['act']) {
 }
 elseif (!isset($_GET['act'])) {
 
+	if (!pagercheck()) {
 	print("<h1>Пользователи</h1>\n");
 	print("<div class=\"friends_search\">");
 	print("<form method=\"get\" style='margin-bottom: 20px;' action=\"".$REL_SEO->make_link('users')."\">\n");
 	print("<span class='browse_users'>".$REL_LANG->say_by_key('search')."<input type=\"text\" size=\"30\" name=\"search\" value=\"".$search."\"></span> \n");
-	print("<select name=\"class\">\n");
-	print("<option value=\"-\">(Все уровни)</option>\n");
-	for ($i = 0;;++$i) {
-		if ($c = get_user_class_name($i))
-		print("<option value=\"$i\"" . (is_valid_user_class($class) && $class == $i ? " selected" : "") . ">$c</option>\n");
-		else
-		break;
-	}
-	print("</select>\n");
+	print make_classes_select('class',$class);
 	print("<input type=\"submit\" class=\"button\" style=\"margin-top:5px\" value=\"{$REL_LANG->say_by_key('go')}\">\n");
 	print("</form>\n");
-	print("</div\n");
-
+	print("</div>\n");
+	}
 	$res = sql_query("SELECT SUM(1) FROM users$query") or sqlerr(__FILE__, __LINE__);
 	$count = mysql_result($res,0);
 	if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); $REL_TPL->stdfoot(); die(); }
-	$perpage = 50;
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $q);
+
+		$limit = ajaxpager(25, $count, array('users'), 'userst > tbody:last');
 
 
 
 	$res = sql_query("SELECT u.*, c.name, c.flagpic FROM users AS u LEFT JOIN countries AS c ON c.id = u.country$query ORDER BY username $limit") or sqlerr(__FILE__, __LINE__);
 	$num = mysql_num_rows($res);
 
-	print ('<div id="users-table">');
-	print ("<p>$pagertop</p>");
-	print("<table cellspacing=\"0\" cellpadding=\"5\" border=\"1\" style=\"width: 964px;\">\n");
+	if (!pagercheck()) {
+	print("<div id=\"pager_scrollbox\"><table id=\"userst\"  cellspacing=\"0\" cellpadding=\"5\" border=\"1\" style=\"width: 964px;\">\n");
 	print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td></tr>\n");
+	}
 	while ($arr = mysql_fetch_assoc($res)) {
 		if ($arr['country'] > 0) {
 			$country = "<td style=\"padding: 0px\" align=\"center\"><img src=\"pic/flag/$arr[flagpic]\" alt=\"$arr[name]\" title=\"$arr[name]\"></td>";
@@ -150,9 +144,8 @@ elseif (!isset($_GET['act'])) {
 "<td>".mkprettytime($arr['added'])."</td><td>".mkprettytime($arr['last_access'])." (".get_elapsed_time($arr["last_access"],false)." {$REL_LANG->say_by_key('ago')})</td><td>$ratio</td><td>$gender</td>".
 "<td align=\"left\">" . get_user_class_name($arr["class"]) . "</td>$country</tr>\n");
 	}
-	print("</table>\n");
-	print ("<p>$pagerbottom</p>");
-	print('</div></div>');
+	if (pagercheck()) die();
+	print("</table></div>");
 
 }
 $REL_TPL->stdfoot();

@@ -24,7 +24,7 @@
 
 require "include/bittorrent.php";
 
-dbconn();
+INIT();
 loggedinorreturn();
 
 if ($_SERVER["REQUEST_METHOD"] == 'POST')
@@ -83,7 +83,7 @@ print("<tr><td class=\"colhead\" colspan=\"2\">Детали запрета \"$s\
 print("<tr><td align=center>Название</td><td width=90% align=left>$num[name]</td></tr>");
 print("<tr><td align=center>Причина</td><td width=90% align=left>" . format_comment($num["reason"]) . "</td></tr>");
 
-if (get_user_class() >= UC_MODERATOR || $CURUSER["id"] == $num["userid"])
+if (get_privilege('is_moderator',false) || $CURUSER["id"] == $num["userid"])
 print("<tr><td align=left>Опции</td><td width=50% align=left><a href=\"".$REL_SEO->make_link('viewcensoredtorrents','delt[]',$id)."\">".$REL_LANG->say_by_key('delete')."</a> | <a href=\"".$REL_SEO->make_link('viewcensoredtorrents')."\">Все запреты</a></td></tr>");
 print("</table>");
 

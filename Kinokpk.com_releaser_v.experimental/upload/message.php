@@ -10,7 +10,7 @@
 
 require_once ("include/bittorrent.php");
 
-dbconn ();
+INIT();
 
 loggedinorreturn ();
 
@@ -169,9 +169,9 @@ if ($action == "viewmailbox") {
 	?>
 	<tr class="colhead">
 		<td class="colhead">&nbsp;</td>
-		<td colspan="6" align="right" width="100%" class="colhead" /><input
-			type="hidden" name="box" value="<?=$mailbox?>" /> <input
-			type="submit" name="delete"
+		<td colspan="6" align="right" width="100%" class="colhead" />
+		<input type="hidden" name="box" value="<?=$mailbox?>" />
+		<input type="submit" name="delete"
 			title="<?=$REL_LANG->say_by_key('delete_marked_messages');?>"
 			value="<?=$REL_LANG->say_by_key('delete');?>"
 			onClick="return confirm('<?=$REL_LANG->say_by_key('sure_mark_delete');?>')" />
@@ -184,7 +184,8 @@ if ($action == "viewmailbox") {
 			onClick="return confirm('Архивировать выбранные сообщения? (они не будут удалены системой автоматически)')" />
 		<input type="submit" name="unarchive" title="Разархивировать"
 			value="Разархивировать"
-			onClick="return confirm('Разархивировать выбранные сообщения? (они будут удалены системой автоматически)')" /></td>
+			onClick="return confirm('Разархивировать выбранные сообщения? (они будут удалены системой автоматически)')" />
+		</td>
 
 	</tr>
 </table>
@@ -201,10 +202,10 @@ if ($action == "viewmailbox") {
 elseif ($action == "viewmessage") {
 	if (! is_valid_id ( $_GET ["id"] ))
 	stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
-	$pm_id = $_GET ['id'];
+	$pm_id = (int)$_GET ['id'];
 
 	// Get the message
-	if (get_user_class () != UC_SYSOP) {
+	if (!get_privilege('view_pms',false)) {
 		$res = sql_query ( 'SELECT * FROM messages WHERE messages.id=' . sqlesc ( $pm_id ) . ' AND (messages.receiver=' . sqlesc ( $CURUSER ['id'] ) . ' OR (messages.sender=' . sqlesc ( $CURUSER ['id'] ) . ' AND messages.saved=1)) LIMIT 1' ) or sqlerr ( __FILE__, __LINE__ );
 		if (mysql_num_rows ( $res ) == 0) {
 			stderr ( $REL_LANG->say_by_key('error'), "Такого сообщения не существует." );
@@ -241,11 +242,8 @@ elseif ($action == "viewmessage") {
 	}
 	$body = format_comment ( $message ['msg'] );
 	$added = mkprettytime ( $message ['added'] );
-	if (get_user_class () >= UC_MODERATOR && $message ['sender'] == $CURUSER ['id']) {
-		$unread = ($message ['unread'] ? "<SPAN style=\"color: #FF0000;\"><b>(Новое)</b></A>" : "");
-	} else {
-		$unread = "";
-	}
+	$unread = ($message ['unread'] ? "<SPAN style=\"color: #FF0000;\"><b>(Новое)</b></A>" : "");
+
 	$subject = makesafe ( $message ['subject'] );
 	if (mb_strlen ( $subject ) <= 0) {
 		$subject = "Без темы";
@@ -449,29 +447,21 @@ elseif ($action == 'takemessage') {
 			$modcomment = sql_query ( "SELECT modcomment FROM users WHERE id=" . $CURUSER ['id'] );
 			$modcomment = mysql_result ( $modcomment, 0 );
 			if (strpos ( $modcomment, "Maybe spammer" ) === false) {
-				$arow = sql_query ( "SELECT id FROM users WHERE class = '" . UC_SYSOP . "'" );
-
-				while ( list ( $admin ) = mysql_fetch_array ( $arow ) ) {
-					sql_query ( "INSERT INTO messages (poster, sender, receiver, added, msg, subject, location) VALUES(0, 0,
-					$admin, '" . time () . "', 'Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER ['id'],'username',translit($CURUSER['username']))."\">" . $CURUSER ['username'] . "</a> может быть спамером, т.к. его 5 последних посланных сообщений полностью совпадают.$msgview', 'Сообщение о спаме!', 1)" ) or sqlerr ( __FILE__, __LINE__ );
-				}
+				$reason = sqlesc("Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER ['id'],'username',translit($CURUSER['username']))."\">" . $CURUSER ['username'] . "</a> может быть спамером, т.к. его 5 последних посланных сообщений полностью совпадают.$msgview");
+				sql_query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
 				$modcomment .= "\n" . time () . " - Maybe spammer";
 				sql_query ( "UPDATE users SET modcomment = " . sqlesc ( $modcomment ) . " WHERE id =" . $CURUSER ['id'] );
 					
 			} else {
 				sql_query ( "UPDATE users SET enabled=0, dis_reason='Spam' WHERE id=" . $CURUSER ['id'] );
 
-				$arow = sql_query ( "SELECT id FROM users WHERE class = '" . UC_SYSOP . "'" );
-
-				while ( list ( $admin ) = mysql_fetch_array ( $arow ) ) {
-					sql_query ( "INSERT INTO messages (poster, sender, receiver, added, msg, subject, location) VALUES(0, 0,
-					$admin, '" . time () . "', 'Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER ['id'],'username',translit($CURUSER['username']))."\">" . $CURUSER ['username'] . "</a> забанен системой за спам, его IP адрес (" . $CURUSER ['ip'] . ")', 'Сообщение о спаме [бан]!', 1)" ) or sqlerr ( __FILE__, __LINE__ );
-					stderr ( "Поздравляем!", "Вы успешно забанены системой за спам в Личных Сообщениях! Если вы не согласны с решением системы, <a href=\"".$REL_SEO->make_link('contact')."\">подайте жалобу админам</a>." );
-				}
+				$reason = sqlesc("Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER ['id'],'username',translit($CURUSER['username']))."\">" . $CURUSER ['username'] . "</a> забанен системой за спам, его IP адрес (" . $CURUSER ['ip'] . ")");
+				sql_query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
+				stderr ( "Поздравляем!", "Вы успешно забанены системой за спам в Личных Сообщениях! Если вы не согласны с решением системы, <a href=\"".$REL_SEO->make_link('contact')."\">подайте жалобу админам</a>." );
 			}
-			stderr ( $REL_LANG->say_by_key('error'), "На нашем сайте стоит защита от спама, ваши 5 последних сообщений совпадают. В отсылке личного сообщения отказано. <b><u>ВНИМАНИЕ! ЕСЛИ ВЫ ЕЩЕ РАЗ ПОПЫТАЕТЕСЬ ОТПРАВИТЬ ИДЕНТИЧНОЕ СООБЩЕНИЕ, ВЫ БУДЕТЕ АВТОМАТИЧЕСКИ ЗАБЛОКИРОВАНЫ СИСТЕМОЙ!!!</u></b> <a href=\"javascript: history.go(-1)\">Назад</a>" );
-
 		}
+		stderr ( $REL_LANG->say_by_key('error'), "На нашем сайте стоит защита от спама, ваши 5 последних сообщений совпадают. В отсылке личного сообщения отказано. <b><u>ВНИМАНИЕ! ЕСЛИ ВЫ ЕЩЕ РАЗ ПОПЫТАЕТЕСЬ ОТПРАВИТЬ ИДЕНТИЧНОЕ СООБЩЕНИЕ, ВЫ БУДЕТЕ АВТОМАТИЧЕСКИ ЗАБЛОКИРОВАНЫ СИСТЕМОЙ!!!</u></b> <a href=\"javascript: history.go(-1)\">Назад</a>" );
+
 	}
 	// ANTISPAM SYSTEM END
 	$pms = sql_query ( "SELECT SUM(1) FROM messages WHERE (receiver = $receiver AND location=1) OR (sender = $receiver AND saved = 1)" );
@@ -496,7 +486,7 @@ elseif ($action == 'takemessage') {
 	stderr ( $REL_LANG->say_by_key('error'), "Нет пользователя с таким ID $receiver." );
 	//Make sure recipient wants this message
 
-	if (get_user_class () < UC_MODERATOR) {
+	if (!get_privilege('is_moderator')) {
 		if ($user ["acceptpms"] == "friends") {
 			$res2 = sql_query ( "SELECT * FROM friends WHERE userid=$receiver AND friendid=" . $CURUSER ["id"] ) or sqlerr ( __FILE__, __LINE__ );
 			if (mysql_num_rows ( $res2 ) != 1)
@@ -554,8 +544,7 @@ elseif ($action == 'takemessage') {
 
 //начало массовая рассылка
 elseif ($action == 'mass_pm') {
-	if (get_user_class () < UC_MODERATOR)
-	stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied') );
+	get_privilege('mass_pm');
 	if (! is_valid_id ( $_POST ['n_pms'] ))
 	stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 	$n_pms = ( int ) $_POST ['n_pms'];
@@ -622,8 +611,7 @@ elseif ($action == 'mass_pm') {
 
 //начало прием сообщений из массовой рассылки
 elseif ($action == 'takemass_pm') {
-	if (get_user_class () < UC_MODERATOR)
-	stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied') );
+	get_privilege('mass_pm');
 	$msg = trim ( $_POST ["msg"] );
 	if (! $msg)
 	stderr ( $REL_LANG->say_by_key('error'), "Пожалуйста введите сообщение." );
@@ -917,7 +905,7 @@ elseif ($action == "forward") {
 		}
 
 		//Make sure recipient wants this message
-		if (get_user_class () < UC_MODERATOR) {
+		if (get_privilege('is_moderator',false)) {
 			if ($from ["acceptpms"] == "friends") {
 				$res2 = sql_query ( "SELECT * FROM friends WHERE userid=$to AND friendid=" . $CURUSER ["id"] ) or sqlerr ( __FILE__, __LINE__ );
 				if (mysql_num_rows ( $res2 ) != 1)

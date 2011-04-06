@@ -9,12 +9,11 @@
  */
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 loggedinorreturn();
 httpauth();
 
-if (get_user_class() < UC_ADMINISTRATOR)
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
+get_privilege('access_to_ban_emails');
 
 
 

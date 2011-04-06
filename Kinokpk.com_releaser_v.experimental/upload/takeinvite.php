@@ -10,7 +10,7 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
@@ -26,7 +26,7 @@ if (!$id) $id = (int) $_POST['id'];
 if (!$id)
 stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
-if (get_user_class() <= UC_MODERATOR)
+if (get_privilege('approve_invites',false))
 $id = $CURUSER["id"];
 
 $hash  = md5(mt_rand(1, 1000000));

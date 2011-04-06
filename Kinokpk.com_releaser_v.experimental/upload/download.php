@@ -11,7 +11,7 @@
 require_once("include/bittorrent.php");
 require_once (ROOT_PATH."include/benc.php");
 
-dbconn();
+INIT();
 loggedinorreturn();
 
 $action = trim((string)$_GET['a']);
@@ -90,7 +90,7 @@ stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 if ($row['rgid']) $rgcontent = "<a href=\"relgroups.php?id={$row['rgid']}\">".($row['rgimage']?"<img style=\"border:none;\" title=\"Релиз группы {$row['rgname']}\" src=\"{$row['rgimage']}\"/>":'Релиз группы '.$row['rgname'])."</a>&nbsp;";
 
-if ((get_user_class()<UC_MODERATOR) && !$row['relgroup_allowed'] && $row['rgid']) stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('private_release_access_denied'),$rgcontent));
+if ((!get_privilege('access_to_private_relgroups')) && !$row['relgroup_allowed'] && $row['rgid']) stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('private_release_access_denied'),$rgcontent));
 
 
 
@@ -103,7 +103,7 @@ if ($row['freefor']) {
 
 $already_downloaded = @mysql_result(sql_query("SELECT 1 FROM snatched WHERE torrent = $id AND userid = {$CURUSER['id']}"),0);
 
-$rating_enabled = (($REL_CRON['rating_enabled'] && ((time()-$CURUSER['added'])>($REL_CRON['rating_freetime']*86400)) && ($row['userid']<>$CURUSER['id']) && (get_user_class() <> UC_VIP) && !$userfree && !$row['free'] && !$already_downloaded)?true:false);
+$rating_enabled = (($REL_CRON['rating_enabled'] && ((time()-$CURUSER['added'])>($REL_CRON['rating_freetime']*86400)) && ($row['userid']<>$CURUSER['id']) && (!get_privilege('is_vip')) && !$userfree && !$row['free'] && !$already_downloaded)?true:false);
 
 
 if ($rating_enabled && ($CURUSER['ratingsum']<$REL_CRON['rating_downlimit'])) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('rating_low'));

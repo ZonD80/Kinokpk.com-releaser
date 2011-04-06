@@ -10,12 +10,11 @@
 
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 loggedinorreturn();
+get_privilege('spamadmin');
 httpauth();
 
-if (get_user_class() < UC_SYSOP)
-stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 
 $res2 = sql_query("SELECT SUM(1) FROM messages");
 $row = mysql_fetch_array($res2);
@@ -25,10 +24,7 @@ if (!$count){
 	stderr("Извините, но сообщения не найдены.");
 }
 
-$perpage = 50;
-
-list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('spam'));
-
+$limit = "LIMIT 50";
 $REL_TPL->stdhead("ЛС пользователей");
 
 ?>
@@ -43,7 +39,6 @@ $REL_TPL->stdhead("ЛС пользователей");
 	</tr>
 	<tr>
 		<td colspan="5">
-		<div><?=$pagertop?></div>
 		<div style="float: right;"><input type="submit"
 			value="Удалить выбранное!" onClick="return confirm('Вы уверены?')"></div>
 		</td>
@@ -112,7 +107,6 @@ $REL_TPL->stdhead("ЛС пользователей");
 
 		<tr>
 			<td colspan="5">
-			<div><?=$pagerbottom?></div>
 			<div style="float: right;"><input type="submit"
 				value="Удалить выбранное!" onClick="return confirm('Вы уверены?')">
 			</div>

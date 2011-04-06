@@ -10,7 +10,7 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
@@ -27,10 +27,10 @@ stderr($REL_LANG->say_by_key("error"),$REL_LANG->say_by_key("invalid_id"));
 
 if (isset($_GET['checkonly'])) {
 
+		get_privilege('edit_releases');
+		
 	headers(true);
 
-
-	if (get_user_class() < UC_MODERATOR) die($REL_LANG->say_by_key('error').': '.$REL_LANG->say_by_key('invalid_id'));
 
 	$id = (int) $_GET['id'];
 
@@ -58,7 +58,7 @@ send_notifs('torrents',format_comment($descr));
 		die($REL_LANG->say_by_key('checked_by').'<a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username'])).'">'.get_user_class_color(get_user_class(),$CURUSER['username']).'</a> <a onclick="return ajaxcheck();" href="'.$REL_SEO->make_link('takeedit','checkonly','','id',$id).'">'.$REL_LANG->say_by_key('uncheck').'</a>'.$return);
 	}
 } elseif(isset($_POST['add_trackers'])) {
-	if (get_user_class() < UC_UPLOADER) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_deined'));
+		get_privilege('edit_releases');
 
 	if (!isset($_POST['trackers'])) stderr($REL_LANG->say_by_key('error'),'Не все поля заполнены');
 	$POSTtrackers = explode("\n",trim((string)$_POST['trackers']));
@@ -138,22 +138,34 @@ if ($_POST['nofile']) {} else {
 	$updateset[] = "tiger_hash = ".sqlesc($tiger_hash);
 }
 
-if (($row["filename"] == 'nofile') && (get_user_class() == UC_UPLOADER)) $tedit = 1; else $tedit = 0;
 
-if ($CURUSER["id"] != $row["owner"] && get_user_class() < UC_MODERATOR && !$tedit)
+if ($CURUSER["id"] != $row["owner"] && !get_privilege('edit_releases'))
 bark("You're not the owner! How did that happen?\n");
 
-////////////////////////////////////////////////
-
-$images = explode(',',$row['images']);
-
-//////////////////////////////////////////////
-//////////////Take Image Uploads//////////////
+// IMAGE UPLOADS
 
 $maxfilesize = 512000; // 500kb
-
+$allowed_types = array(
+"image/gif" => "gif",
+"image/jpeg" => "jpg",
+"image/jpg" => "jpg",
+"image/png" => "png"
+// Add more types here if you like
+);
+    // Where to upload?
+    // Update for your own server. Make sure the folder has chmod write permissions. Remember this director
+    $uploaddir = "torrents/images/";
+		
 for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
-
+	$y=$x+1;
+	
+	if ($_FILES[image.$x]['name'] != "") {
+	$_FILES[image.$x]['type'] = strtolower($_FILES[image.$x]['type']);
+    $_FILES[image.$x]['name'] = strtolower($_FILES[image.$x]['name']);
+    $_POST['img'.$x] = $uploaddir.$id."-$x.".$allowed_types[$_FILES[image.$x]['type']];
+    $image_upload[$x] = true;
+	} else $image_upload[$x] = false;
+	
 	if (!empty($_POST['img'.$x])) {
 		$img=trim(htmlspecialchars((string)$_POST['img'.$x]));
 		if (strpos($img,',') || strpos($img,'?')) stderr($REL_LANG->say_by_key('error'),'Динамические изображения запрещены');
@@ -161,16 +173,25 @@ for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
 		if (!preg_match('/^(.+)\.(gif|png|jpeg|jpg)$/si', $img))
 		stderr($REL_LANG->say_by_key('error'),'Загружаемая картинка '.($x+1).' - не картинка');
 
-		/*  $check = remote_fsize($img);
-		 if (!$check) stderr($REL_LANG->say_by_key('error'),'Не удалось определить размер картинки '.$y);
-		 if ($check>$maxfilesize) stderr($REL_LANG->say_by_key('error'),'Максимальный размер картинки 512kb. Ошибка при загрузке картинки '.$y);
-		 */ $inames[]=$img;
-	} else unset($images[$x]);
+		 //$check = remote_fsize($img);
+		 if ($image_upload[$x]) {
+		 $check = $_FILES[image.$x]['size'];
+		 
+		 if (!$check) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unable to check size of image %s',$y));
+		 if ($check>$maxfilesize) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Image size is greather then %s. Please select smaller image and try again.',$maxfilesize));
+		
+		    // Upload the file
+    		$copy = move_uploaded_file($_FILES[image.$x]['tmp_name'], ROOT_PATH.$img);
+    		
+    		if (!$copy) $REL_TPL->stderr($REL_LANG->_("Error"),$REL_LANG->_("Unable to save image, contact site administration"));
+		 }
+		 $inames[]=$img;
+	}
+	
+	
+	
 }
 
-$image = $inames;
-
-$image = @array_shift($image);
 $images = @implode(',',$inames);
 
 $updateset[]="images=".sqlesc($images);
@@ -336,7 +357,7 @@ if ($relgroup) {
 }
 $updateset[] = "relgroup = $relgroup";
 
-if(get_user_class() >= UC_MODERATOR) {
+if(get_privilege('edit_releases',false)) {
 	$updateset[] = "free = '".($_POST["free"]? 1 : 0)."'";
 
 	$updateset[] = "banned = ".($_POST["banned"]?1:0);
@@ -346,7 +367,7 @@ if(get_user_class() >= UC_MODERATOR) {
 }
 
 
-if ((get_user_class() >= UC_UPLOADER) && isset($_POST['approve'])) {
+if ((get_privilege('edit_releases',false)) && isset($_POST['approve'])) {
 	if (!$row['moderated']) {
 		sql_query("UPDATE users SET ratingsum = ratingsum + {$REL_CRON['rating_perrelease']} WHERE id={$row['owner']}");
 	}

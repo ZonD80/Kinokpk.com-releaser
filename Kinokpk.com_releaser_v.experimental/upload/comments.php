@@ -12,7 +12,7 @@ require_once("include/bittorrent.php");
 
 $action = (string)$_GET["action"];
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
@@ -61,26 +61,19 @@ if ($action == "add")
 				$modcomment = sql_query("SELECT modcomment FROM users WHERE id=".$CURUSER['id']);
 				$modcomment = mysql_result($modcomment,0);
 				if (strpos($modcomment,"Maybe spammer in comments") === false) {
-					$arow = sql_query("SELECT id FROM users WHERE class = '".UC_SYSOP."'");
-
-					while (list($admin) = mysql_fetch_array($arow)) {
-						sql_query("INSERT INTO messages (poster, sender, receiver, added, msg, subject, location) VALUES(0, 0,
-						$admin, '" . time() . "', 'Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".$CURUSER['username']."</a> может быть спамером, т.к. его 5 последних посланных комментариев полностью совпадают.$msgview', 'Сообщение о спаме!', 1)") or sqlerr(__FILE__, __LINE__);
-					}
+					$reason = sqlesc("Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".$CURUSER['username']."</a> может быть спамером, т.к. его 5 последних посланных комментариев полностью совпадают.$msgview");
+					sql_query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
 					$modcomment .= "\n".time()." - Maybe spammer in comments";
 					sql_query("UPDATE users SET modcomment = ".sqlesc($modcomment)." WHERE id =".$CURUSER['id']);
 
 				} else {
 					sql_query("UPDATE users SET enabled=0, dis_reason='Spam in comments' WHERE id=".$CURUSER['id']);
 
-					$arow = sql_query("SELECT id FROM users WHERE class = '".UC_SYSOP."'");
-
-					while (list($admin) = mysql_fetch_array($arow)) {
-						sql_query("INSERT INTO messages (poster, sender, receiver, added, msg, subject, location) VALUES(0, 0,
-						$admin, '" . time() . "', 'Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".$CURUSER['username']."</a> забанен системой за спам, его IP адрес (".$CURUSER['ip'].")', 'Сообщение о спаме [бан]!', 1)") or sqlerr(__FILE__, __LINE__);
-						stderr("Поздравляем!","Вы успешно забанены системой за спам в комментариях! Если вы не согласны с решением системы, <a href=\"".$REL_SEO->make_link('contact')."\">подайте жалобу админам</a>.");
-					}
-				}
+					$reason = sqlesc("Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".$CURUSER['username']."</a> забанен системой за спам, его IP адрес (".$CURUSER['ip'].")");
+					sql_query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
+					
+					stderr("Поздравляем!","Вы успешно забанены системой за спам в комментариях! Если вы не согласны с решением системы, <a href=\"".$REL_SEO->make_link('contact')."\">подайте жалобу админам</a>.");
+						}
 				stderr($REL_LANG->say_by_key('error'),"На нашем сайте стоит защита от спама, ваши 5 последних комментариев совпадают. В отсылке комментария отказано. <b><u>ВНИМАНИЕ! ЕСЛИ ВЫ ЕЩЕ РАЗ ПОПЫТАЕТЕСЬ ОТПРАВИТЬ ИДЕНТИЧНОЕ СООБЩЕНИЕ, ВЫ БУДЕТЕ АВТОМАТИЧЕСКИ ЗАБЛОКИРОВАНЫ СИСТЕМОЙ!!!</u></b> <a href=\"javascript: history.go(-1)\">Назад</a>");
 
 			}
@@ -110,7 +103,7 @@ if ($action == "add")
 				$subres = sql_query ( "SELECT c.id, c.type, c.ip, c.ratingsum, c.text, c.user, c.added, c.toid, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.id=$newid AND c.type='$type'" ) or sqlerr ( __FILE__, __LINE__ );
 				//$link = $allowed_links[$type].$allrows[0]['toid'];
 				$allrows = prepare_for_commenttable($subres,$name,$returnto);
-				$IS_MODERATOR = (get_user_class()>=UC_MODERATOR);
+				$IS_MODERATOR = (get_privilege('edit_comments',false));
 				$REL_TPL->assignByRef('IS_MODERATOR',$IS_MODERATOR);
 				headers(REL_AJAX);
 				$REL_TPL->assignByRef('row',$allrows[0]);
@@ -172,7 +165,7 @@ elseif ($action == "edit")
 	if (!$arr)
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
-	if ($arr["user"] != $CURUSER["id"] && get_user_class() < UC_MODERATOR)
+	if ($arr["user"] != $CURUSER["id"] && !get_privilege('edit_comments',false))
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
 	if ($_SERVER["REQUEST_METHOD"] == "POST")
@@ -222,8 +215,7 @@ elseif ($action == "edit")
 }
 elseif ($action == "delete")
 {
-	if (get_user_class() < UC_MODERATOR)
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
+	get_privilege('edit_comments');
 
 	if (!is_array($_GET["cid"])||!$_GET["cid"])
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));

@@ -187,7 +187,7 @@ function getip() {
  * Sets up a database connection
  * @return void
  */
-function dbconn() {
+function INIT() {
 	global $mysql_host, $mysql_charset, $mysql_user, $mysql_pass, $mysql_db, $REL_CONFIG, $REL_CACHE;
 	if (!@mysql_connect($mysql_host, $mysql_user, $mysql_pass))
 	{

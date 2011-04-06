@@ -17,7 +17,7 @@ function bark($msg) {
 
 $SETlang = substr(trim((string)$_POST["language"]),0,2);
 setcookie("lang", $SETlang, 0x7fffffff);
-dbconn();
+INIT();
 
 loggedinorreturn();
 

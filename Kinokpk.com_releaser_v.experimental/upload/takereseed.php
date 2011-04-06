@@ -10,12 +10,12 @@
 
 require "include/bittorrent.php";
 
-dbconn();
+INIT();
 loggedinorreturn();
 
 $id = (int) $_GET["torrent"];
 
-$res = sql_query("SELECT torrents.seeders, torrents.banned, torrents.leechers, torrents.name, torrents.id, torrents.last_reseed AS lr FROM torrents WHERE torrents.id = $id GROUP BY torrents.id") or sqlerr(__FILE__, __LINE__);
+$res = sql_query("SELECT torrents.seeders, torrents.banned, torrents.leechers, torrents.name, torrents.id, torrents.last_reseed AS lr FROM torrents WHERE torrents.id = $id") or sqlerr(__FILE__, __LINE__);
 $row = mysql_fetch_array($res);
 
 if (!$row || $row["banned"])

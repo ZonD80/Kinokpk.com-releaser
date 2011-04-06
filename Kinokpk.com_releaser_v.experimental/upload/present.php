@@ -9,7 +9,7 @@
  */
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 loggedinorreturn();
 
 
@@ -105,15 +105,7 @@ if (!$fid) {
 
 	print("<form method=\"get\" action=\"".$REL_SEO->make_link('present')."\">\n");
 	print($REL_LANG->say_by_key('search')." <input type=\"text\" size=\"30\" name=\"search\" value=\"".$search."\">\n");
-	print("<select name=\"class\">\n");
-	print("<option value=\"-\">(Все уровни)</option>\n");
-	for ($i = 0;;++$i) {
-		if ($c = get_user_class_name($i))
-		print("<option value=\"$i\"" . (is_valid_user_class($class) && $class == $i ? " selected" : "") . ">$c</option>\n");
-		else
-		break;
-	}
-	print("</select>\n");
+	print make_classes_select('class',$class);
 	if ($type) print("<input type=\"hidden\" name=\"type\" value=\"$type\">");
 	if ($to) print("<input type=\"hidden\" name=\"to\" value=\"$to\">");
 	print("<input type=\"submit\" value=\"{$REL_LANG->say_by_key('go')}\">\n");
@@ -122,15 +114,13 @@ if (!$fid) {
 	$res = sql_query("SELECT SUM(1) FROM friends$query") or sqlerr(__FILE__, __LINE__);
 	$count = @mysql_result($res,0);
 	if (!$count) { $REL_TPL->end_frame(); stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_friends'),'error'); $REL_TPL->stdfoot(); die(); }
-	$perpage = 50;
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $q);
+	//$limit
 
 
 
 	$res = sql_query("SELECT IF (friends.userid={$CURUSER['id']},friends.friendid,friends.userid) AS friend, IF (friends.userid={$CURUSER['id']},0,1) AS init, friends.confirmed AS fconf, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON IF (friends.userid={$CURUSER['id']},u.id=friendid,u.id=userid) LEFT JOIN countries AS c ON c.id = u.country$query ORDER BY friends.id,friends.confirmed DESC $limit") or sqlerr(__FILE__, __LINE__);
 
 	print ('<div id="users-table">');
-	print ("<p>$pagertop</p>");
 	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
 	print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td><td class=\"colhead\">Подтвержден</td><td class=\"colhead\">Действия</td></tr>\n");
 	while ($arr = mysql_fetch_assoc($res)) {
@@ -160,7 +150,6 @@ if (!$fid) {
 		print ('</td></tr>');
 	}
 	print("</table>\n");
-	print ("<p>$pagerbottom</p>");
 	print('</div>');
 
 	$REL_TPL->end_frame();

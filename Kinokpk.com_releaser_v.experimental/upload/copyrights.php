@@ -24,7 +24,7 @@
 
 require "include/bittorrent.php";
 
-dbconn();
+INIT();
 
 
 

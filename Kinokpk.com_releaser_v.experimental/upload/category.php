@@ -10,13 +10,12 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 loggedinorreturn();
+get_privilege('category_admin');
 httpauth();
-if (get_user_class() < UC_SYSOP) {
-	stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
-}
+
 
 
 $tree = make_tree();

@@ -10,12 +10,11 @@
 
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 
 loggedinorreturn();
 
-if (get_user_class() < UC_ADMINISTRATOR)
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_access'));
+get_privilege('delete_site_users');
 
 httpauth();
 

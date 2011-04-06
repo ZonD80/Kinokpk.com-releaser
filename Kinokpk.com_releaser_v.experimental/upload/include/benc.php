@@ -328,9 +328,9 @@ function get_announce_urls($dict){
 	if ($dict['value']['announce-list']) {
 
 		if (!$dict['value']['announce-list']['value']) return false;
-		$retrackers = get_retrackers(true);
 		foreach ($dict['value']['announce-list']['value'] as $urls) {
-			if (!in_array($urls['value'][0]['value'],$retrackers))
+			// Remove retrackers			
+			if (!preg_match('/retracker/', $urls['value'][0]['value']))
 			$anarray[] = $urls['value'][0]['value'];
 		}
 

@@ -9,14 +9,14 @@
  */
 
 require_once('include/bittorrent.php');
-dbconn();
+INIT();
 loggedinorreturn();
-if (get_user_class()<UC_ADMINISTRATOR) stderr($REL_LANG->_("Error"),$REL_LANG->_("Access denied"));
+get_privilege('recountadmin');
 httpauth();
 
 $action = trim((string)$_GET['a']);
 
-if ($action=='recounttorrents') {
+if ($action=='recountorrents') {
 	do {
 
 		$res = sql_query("SELECT id, filename FROM torrents") or sqlerr(__FILE__,__LINE__);

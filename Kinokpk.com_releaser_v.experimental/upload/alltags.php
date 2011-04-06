@@ -25,7 +25,7 @@
 # IMPORTANT: Do not edit below unless you know what you are doing!
 
 require_once("include/bittorrent.php");
-dbconn();
+INIT();
 
 $REL_TPL->stdhead($REL_LANG->say_by_key('cloud_tags'));
 $content = cloud("bigtagsplayer",'','#ffffff','100%','400','300','');;

@@ -10,10 +10,11 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
+get_privilege('blocksadmin');
+
 loggedinorreturn();
 
-if (get_user_class() < UC_SYSOP) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 
 httpauth();
 
@@ -26,7 +27,7 @@ function prepare_data($arr) {
 		$arr['expire'] = (int)strtotime((string)$arr['expire']);
 		$arr['content'] = sqlesc((string)$arr['content']);
 		foreach ($intval as $k) $arr[$k] = (int)$arr[$k];
-		$arr['view'] = sqlesc(implode(',',array_keys((array)$arr['view'])));
+		$arr['view'] = sqlesc(implode(',',(array)$arr['view']));
 		$arr['active'] = ($arr['active']?1:0);
 		$arr['bposition'] = sqlesc(substr((string)$arr['bposition'],0,1));
 		return $arr;
@@ -80,7 +81,6 @@ elseif ($action=='edit'||$action=='add') {
 		}
 	} else 	$block['weight'] = 0;
 	$block['content'] = textbbcode('arr[content]',$block['content']);
-	if ($block['view']) $block['view'] = explode(',',$block['view']); else $block['view'] = array();
 	$REL_TPL->assignByRef('block',$block);
 
 	$REL_TPL->assign('ACTION',$action);
@@ -97,13 +97,7 @@ elseif ($action=='edit'||$action=='add') {
 	}
 	closedir($handle);
 	$REL_TPL->assign('blockfiles',$blockfiles);
-	$i=-1;
-	while($i<=UC_SYSOP) {
-		$classes[$i] = get_user_class_name($i);
-		$i=$i+1;
-	}
-	//var_Dump($classes);
-	$REL_TPL->assign('user_classes',$classes);
+	$REL_TPL->assign('user_classes',make_classes_checkbox("arr[view]",$block['view']));
 
 }
 elseif ($action=='saveedit'||$action=='saveadd') {

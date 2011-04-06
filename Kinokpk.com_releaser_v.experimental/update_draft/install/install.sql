@@ -1259,3 +1259,105 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table `users`
 --
 
+CREATE TABLE IF NOT EXISTS `classes` (
+  `id` int(3) unsigned NOT NULL AUTO_INCREMENT,
+  `prior` int(5) NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL,
+  `style` varchar(255) NOT NULL,
+  `remark` varchar(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+
+--
+-- Dumping data for table `classes`
+--
+
+INSERT INTO `classes` (`id`, `prior`, `name`, `style`, `remark`) VALUES
+(1, 6, 'Owner', '', 'sysop'),
+(2, 5, 'Administrator', '', ''),
+(3, 4, 'Moderator', '', ''),
+(4, 3, 'Releaser', '', 'uploader'),
+(5, 2, 'VIP', '', 'vip'),
+(6, 1, 'Power user', '', 'rating'),
+(7, 0, 'User', '', 'reg'),
+(8, -1, 'Guest', '', 'guest');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `privileges`
+--
+
+CREATE TABLE IF NOT EXISTS `privileges` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `classes_allowed` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_2` (`name`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=59 ;
+
+--
+-- Dumping data for table `privileges`
+--
+
+INSERT INTO `privileges` (`id`, `name`, `classes_allowed`, `description`) VALUES
+(1, 'is_owner', '1', 'You are owner'),
+(2, 'is_administrator', '2,1', 'You are administartor'),
+(3, 'is_moderator', '3,2,1', 'You have moderation rights'),
+(4, 'is_releaser', '4,3,2,1', 'You have releaser''s rights'),
+(5, 'is_vip', '5,4,3,2,1', 'You have a VIP account'),
+(6, 'is_power_user', '6,5,4,3,2,1', 'You are power user'),
+(7, 'is_user', '7,6,5,4,3,2,1', 'You are registered user'),
+(8, 'is_guest', '8,7,6,5,4,3,2,1', 'You are guest'),
+(9, 'debug_template', '1', 'View teplate debugging information'),
+(10, 'deny_disabled_site', '3,4,5,6,7', 'Deny form viewing disabled site'),
+(11, 'view_disabled_site_notice', '1,2,3,4,5,6,7', 'View disabled site notice'),
+(12, 'view_sql_debug', '1', 'View SQL debug information'),
+(13, 'access_to_private_relgroups', '1,2,3', 'Access to private relgroups'),
+(14, 'access_to_admincp', '1,2,3', 'Access to admin control panel'),
+(15, 'access_to_ban_emails', '1,2', 'Access to email bans administration'),
+(16, 'add_users', '1,2', 'Ability to add new users to site manually'),
+(17, 'bans_admin', '1,2,3,4', 'Ability to ban user accounts'),
+(18, 'blocksadmin', '1', 'Ability to administer blocks'),
+(19, 'category_admin', '1', 'Ability to administer release categories'),
+(20, 'clear_caches', '1,2', 'Ability to clear releaser cache'),
+(21, 'edit_comments', '1,2,3', 'Ability to edit site comments'),
+(22, 'edit_general_configuration', '1', 'Edit general releaser configuration'),
+(23, 'edit_countries', '1', 'Edit registered user countries'),
+(24, 'cronadmin', '1', 'Edit scheduled jobs configuration'),
+(25, 'edit_dchubs', '1', 'Edit Direct-Connect Hubs configuration'),
+(26, 'delete_site_users', '1,2', 'Ability to delete site users'),
+(27, 'delete_releases', '1,2,3,4', 'Ability to delete releases from site'),
+(28, 'edit_releases', '1,2,3,4', 'Ability to edit releases'),
+(29, 'send_emails', '1,2,3', 'Ability to send emails'),
+(30, 'edit_forum_settings', '1', 'Ability to administer forum in admin panel'),
+(31, 'approve_invites', '1,2,3', 'Ability to approve other user''s invites'),
+(32, 'add_invites', '1,2', 'Add new invites count to user'),
+(33, 'view_duplicate_ip', '1,2,3', 'View dupliate ip information'),
+(34, 'langadmin', '1', 'Access to language administration panel'),
+(35, 'view_logs', '1,2,3', 'Ability to view site logs'),
+(36, 'truncate_logs', '1', 'Ability to delete site logs'),
+(37, 'view_pms', '1', 'Ability to view other user PMs'),
+(38, 'mass_pm', '1,2', 'Ability to send mass PMs'),
+(39, 'edit_users', '1,2,3', 'Ability to change user account details'),
+(40, 'ownsupport', '1,2,3', 'Ability do add yourself to support desk'),
+(41, 'add_comments_to_user', '1,2,3', 'Ability to add moderation comments to users'),
+(42, 'view_sql_stats', '1', 'Ability to view SQL database statistics'),
+(43, 'news_operation', '1,2', 'Ability to preform operations with site news'),
+(44, 'change_user_passwords', '1,2', 'Ability to change user passwords'),
+(45, 'polls_operation', '1,2', 'Ability to administer polls'),
+(46, 'recountadmin', '1', 'Access to synchronization panel'),
+(47, 'edit_relgroups', '1,2', 'Ability to edit release groups'),
+(48, 'edit_release_templates', '1,2,3', 'Access to release templates administration'),
+(49, 'requests_operation', '1,2,3', 'Ability to magange release requests'),
+(50, 'edit_retrackers', '1', 'Access to retracker administration panel'),
+(51, 'relgroups_admin', '1,2,3', 'Access to release groups administration panel'),
+(52, 'seo_admincp', '1', 'Access to SEO-friedly URL administration panel'),
+(53, 'spamadmin', '1', 'Access to private message viewer (administration)'),
+(54, 'stampadmin', '1,2,3', 'Access to stamps administration panel'),
+(55, 'view_general_statistics', '1', 'Ability to view general site statistics'),
+(56, 'edit_site_templates', '1', 'Access to site templates administration panel'),
+(57, 'view_private_user_profiles', '1,2,3', 'Ability to view private user profiles'),
+(58, 'censored_admin', '1,2,3', 'Ability to administrate censored releases');

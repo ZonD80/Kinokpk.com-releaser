@@ -8,7 +8,7 @@
  * @link http://dev.kinokpk.com
  */
 require_once("include/bittorrent.php");
-dbconn();
+INIT();
 
 loggedinorreturn();
 
@@ -17,13 +17,12 @@ $spend = "</div></div>";
 
 $count = get_row_count("polls");
 
-list($pagertop, $pagerbottom, $limit) = pager(5, $count, array('pollsarchive'));
+$limit = "LIMIT 50";
 
 $pollsrow = sql_query("SELECT id FROM polls ORDER BY id DESC $limit");
 
 $REL_TPL->stdhead("Архив опросов");
-
-print('<table width="100%" border="1"><tr><td>'.$pagertop.'</td></tr>');
+print('<table width="100%" border="1">');
 while (list($id) = mysql_fetch_array($pollsrow)) {
 
 	$poll = sql_query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
@@ -68,7 +67,7 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 	sort($sids);
 	reset($sids);
 
-	print('<tr><td><table width="100%" border="1"><tr><td>Опрос № '.$id.'</td><td>Открыт: '.mkprettytime($pstart).(!is_null($pexp)?(($pexp > time())?", заканчивается: ".mkprettytime($pexp):", <font color=\"red\">закончен</font>: ".mkprettytime($pexp)):'').'</td></tr><tr><td align="center" class="colhead" colspan="2">'.$pquestion.'</b>'.((get_user_class() >= UC_ADMINISTRATOR)?" [<a href=\"".$REL_SEO->make_link('pollsadmin','action','edit','id',$id)."\">Редактировать</a>][<a onClick=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('pollsadmin','action','delete','id',$id)."\">Удалить</a>]":"").'</td></tr>');
+	print('<tr><td><table width="100%" border="1"><tr><td>Опрос № '.$id.'</td><td>Открыт: '.mkprettytime($pstart).(!is_null($pexp)?(($pexp > time())?", заканчивается: ".mkprettytime($pexp):", <font color=\"red\">закончен</font>: ".mkprettytime($pexp)):'').'</td></tr><tr><td align="center" class="colhead" colspan="2">'.$pquestion.'</b>'.((get_privilege('polls_operation',false))?" [<a href=\"".$REL_SEO->make_link('pollsadmin','action','edit','id',$id)."\">Редактировать</a>][<a onClick=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('pollsadmin','action','delete','id',$id)."\">Удалить</a>]":"").'</td></tr>');
 
 	foreach ($sids as $sid)
 	$votesres[$sid] = array();
@@ -101,8 +100,8 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 			if ($vote['userid'] == $CURUSER['id']) $voted = $votedrow;
 			if (!is_null($vid)) $votecount[$votedrow]++;
 
-			if ((($public) || (get_user_class() >= UC_MODERATOR)) && !is_null($vid))
-			$usercode[$votedrow] .= "<a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',translit($user['username']))."\">".get_user_class_color($user['class'],$user['username'])."</a>".((get_user_class() >= UC_MODERATOR)?" [<a onClick=\"return confirm('Удалить этот голос?')\" href=\"".$REL_SEO->make_link('polloverview','deletevote','vid',$vid)."\">D</a>] ":" ");
+			if ((($public) || (get_privilege('polls_operation',false))) && !is_null($vid))
+			$usercode[$votedrow] .= "<a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',translit($user['username']))."\">".get_user_class_color($user['class'],$user['username'])."</a>".((get_privilege('polls_operation',false))?" [<a onClick=\"return confirm('Удалить этот голос?')\" href=\"".$REL_SEO->make_link('polloverview','deletevote','vid',$vid)."\">D</a>] ":" ");
 
 			if (($votecount[$votedrow]) >= $maxvotes) $maxvotes = $votecount[$votedrow];
 
@@ -126,7 +125,7 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 
 	print ('</table></td></tr>');
 }
-print('<tr><td>'.$pagerbottom.'</td></tr></table>');
+print('</table>');
 $REL_TPL->stdfoot();
 
 ?>

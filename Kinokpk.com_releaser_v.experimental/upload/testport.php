@@ -1,6 +1,6 @@
 <?
 require "include/bittorrent.php";
-dbconn();
+INIT();
 
 loggedinorreturn();
 $REL_TPL->stdhead($REL_LANG->say_by_key('test_port'));

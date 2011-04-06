@@ -17,13 +17,11 @@ function bark($msg) {
 	$REL_TPL->stdfoot();
 	exit;
 }
-dbconn();
+INIT();
 
 loggedinorreturn();
 if(isset($_POST["nowarned"])&&($_POST["nowarned"]=="nowarned")){
-	//if (get_user_class() >= UC_SYSOP) {
-	if (get_user_class() < UC_MODERATOR)
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
+	get_privilege('edit_users');
 	{
 		if (empty($_POST["usernw"]) && empty($_POST["desact"]) && empty($_POST["delete"]))
 		bark($REL_LANG->say_by_key('select_user'));

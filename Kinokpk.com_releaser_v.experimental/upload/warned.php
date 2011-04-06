@@ -10,12 +10,11 @@
 
 require "include/bittorrent.php";
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
-if (get_user_class() < UC_MODERATOR)
-stderr($REL_LANG->say_by_key('error'), "Отказано в доступе.");
+get_privilege('edit_users');
 
 $REL_TPL->stdhead("Предупрежденные пользователи");
 $warned = number_format(get_row_count("users", "WHERE warned=1"));

@@ -10,12 +10,12 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 loggedinorreturn();
 
 
 $allowed_types_view = array ('unread', 'torrents', 'relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments','forumcomments'/*,'rgnewscomments'*/,'friends');
-if (get_user_class() >= UC_MODERATOR) {
+if (get_privilege('is_moderator',false)) {
 	//   $allowed_types_moderator = array('users' => 'userdetails.php?id=', 'reports' => 'reports.php?id=', 'unchecked' => 'details.php?id=');
 	$allowed_types_moderator = array('users', 'reports', 'unchecked');
 	$allowed_types_view = array_merge($allowed_types_view,$allowed_types_moderator);
@@ -132,17 +132,14 @@ if (!$type) {
 	}
 	elseif (in_array($type,array('relcomments','pollcomments','newscomments','usercomments','reqcomments','rgcomments','forumcomments'))) {
 		$typeq = str_replace('comments','',$type);
-		$addition = ($type<>'forumcomments'?"CONCAT_WS('#comm',comments.toid,comments.id) AS cid, NULL":'comments.toid AS cid, comments.id').", {$name_fields[$type]}, comments.user, users.username, users.class, comments.added"; $from = "FROM comments LEFT JOIN users ON comments.user = users.id{$leftjoin_fields[$type]} WHERE comments.added>{$CURUSER['last_login']} AND comments.type='$typeq'".($type=='forumcomments'?" AND forum_categories.class<=".get_user_class():'')." ORDER BY comments.added DESC"; 
+		$addition = ($type<>'forumcomments'?"CONCAT_WS('#comm',comments.toid,comments.id) AS cid, NULL":'comments.toid AS cid, comments.id').", {$name_fields[$type]}, comments.user, users.username, users.class, comments.added"; $from = "FROM comments LEFT JOIN users ON comments.user = users.id{$leftjoin_fields[$type]} WHERE comments.added>{$CURUSER['last_login']} AND comments.type='$typeq'".($type=='forumcomments'?" AND FIND_IN_SET(".get_user_class().",forum_categories.class)":'')." ORDER BY comments.added DESC"; 
 	}
 	$limited = 50;
 	$count = @mysql_result(sql_query("SELECT SUM(1) $from"),0);
-	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, array('mynotifs','type',$type) );
+	$limit = "LIMIT 50";
 
 	$query = sql_query("SELECT $addition $from $limit");
 	print ('<h1>'.$REL_LANG->say_by_key("you_watching_$type").'</h1>');
-	if(isset($pagertop)){
-		print "<p>$pagertop</p>";
-	}
 
 	print '<div id="mynotif">';
 	while ($array = mysql_fetch_array($query, MYSQL_NUM)) {
@@ -156,9 +153,6 @@ if (!$type) {
 		</div>");
 	}
 	print '</div>';
-	if(isset($pagerbottom)){
-		print "<p>$pagerbottom</p>";
-	}
 
 
 }

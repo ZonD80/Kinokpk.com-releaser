@@ -9,7 +9,7 @@
  */
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 
 loggedinorreturn();

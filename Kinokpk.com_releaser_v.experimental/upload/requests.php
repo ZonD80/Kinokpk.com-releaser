@@ -11,7 +11,7 @@
 
 require "include/bittorrent.php";
 
-dbconn();
+INIT();
 loggedinorreturn();
 
 if ($_SERVER["REQUEST_METHOD"] == 'POST')
@@ -107,7 +107,7 @@ if ($action == 'edit') {
 	$row = mysql_fetch_array($res);
 	if ($CURUSER["id"] != $row["userid"])
 	{
-		if (get_user_class() < UC_MODERATOR)
+		if (get_privilege('is_moderator'))
 		stderr("Ошибка!", "Вы не владелец данного запроса.");
 	}
 	$REL_TPL->stdhead("Редактирование запроса \"" . $row["request"] . "\"");
@@ -140,7 +140,7 @@ if ($action=='reset')
 	$requestid = (int) $_GET["requestid"];
 	$res = sql_query("SELECT userid, filledby FROM requests WHERE id =$requestid") or sqlerr(__FILE__, __LINE__);
 	$arr = mysql_fetch_assoc($res);
-	if (($CURUSER[id] == $arr[userid]) || (get_user_class() >= UC_MODERATOR) || ($CURUSER[id] == $arr[filledby]))
+	if (($CURUSER[id] == $arr[userid]) || (get_privilege('requests_operation',false)) || ($CURUSER[id] == $arr[filledby]))
 	{
 		@sql_query("UPDATE requests SET filled='', filledby=0 WHERE id=$requestid") or sqlerr(__FILE__, __LINE__);
 
@@ -209,42 +209,45 @@ $num = mysql_fetch_array($res);
 if (mysql_num_rows($res) == 0)
 stderr ($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
+
 $s = $num["request"];
+if (!pagercheck()) {
+	$REL_TPL->stdhead("Детали запроса \"$s\"");
 
-$REL_TPL->stdhead("Детали запроса \"$s\"");
+	print("<table width=\"600\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
+	print("<tr><td class=\"colhead\" colspan=\"2\">Детали запроса \"$s\"</td></tr>");
+	print("<tr><td align=left>Запрос</td><td width=90% align=left>$num[request]</td></tr>");
+	print("<tr><td align=left>Инфо</td><td width=90% align=left>" . format_comment($num["descr"]) . "</td></tr>");
+	print("<tr><td align=left>Добавлен</td><td width=90% align=left>".mkprettytime($num[added])."</td></tr>");
 
-print("<table width=\"600\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-print("<tr><td class=\"colhead\" colspan=\"2\">Детали запроса \"$s\"</td></tr>");
-print("<tr><td align=left>Запрос</td><td width=90% align=left>$num[request]</td></tr>");
-print("<tr><td align=left>Инфо</td><td width=90% align=left>" . format_comment($num["descr"]) . "</td></tr>");
-print("<tr><td align=left>Добавлен</td><td width=90% align=left>".mkprettytime($num[added])."</td></tr>");
+	$cres = sql_query("SELECT username, id, class FROM users WHERE id=$num[userid]");
 
-$cres = sql_query("SELECT username, id, class FROM users WHERE id=$num[userid]");
+	$carr = mysql_fetch_assoc($cres);
+	$username = $carr['username'];
+	$user_req_id = $carr["id"];
+	print("<tr><td align=left>Запросил</td><td width=90% align=left><a href=\"".$REL_SEO->make_link('userdetails','id',$user_req_id,'username',translit($username))."\">".get_user_class_color($carr['class'], $username)."</a></td></tr>");
+	print("<tr><td align=left>Голосовать за этот запрос</td><td width=50% align=left><a href=\"".$REL_SEO->make_link('requests','action','vote','voteid',$id)."\"><b>Голосовать</b></a></td></tr></tr>");
 
-$carr = mysql_fetch_assoc($cres);
-$username = $carr['username'];
-$user_req_id = $carr["id"];
-print("<tr><td align=left>Запросил</td><td width=90% align=left><a href=\"".$REL_SEO->make_link('userdetails','id',$user_req_id,'username',translit($username))."\">".get_user_class_color($carr['class'], $username)."</a></td></tr>");
-print("<tr><td align=left>Голосовать за этот запрос</td><td width=50% align=left><a href=\"".$REL_SEO->make_link('requests','action','vote','voteid',$id)."\"><b>Голосовать</b></a></td></tr></tr>");
+	if ($num["filled"] == '')
+	{
+		print("<form method=post action=\"".$REL_SEO->make_link('requests')."\">");
+		print("<tr><td align=left>Выполнить запрос</td><td>Введите <b>полный</b> адрес торрента, например как ".$REL_SEO->make_link('details','id',11)." (просто скопируйте/вставьте его из другого окна/вкладки)");
+		print("<input type=text size=80 name=filledurl>\n");
+		print("<input type=hidden value=$id name=requestid>");
+		print("<input type=hidden name=action value=filled>");
+		print("<input type=submit value=\"Выполнить запрос\">\n</form></td></tr>");
+	}
+	if (get_privilege('requests_operation',false) || $CURUSER["id"] == $num["userid"])
+	print("<tr><td align=left>Опции</td><td width=50% align=left><a OnClich=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('viewrequests','delreq[]',$id)."\">".$REL_LANG->say_by_key('delete')."</a> <b>|</b> <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$id)."\">Сбросить выполнение</a>  <b>|</b>  <a href=\"".$REL_SEO->make_link('requests','action','edit','id',$id)."\">".$REL_LANG->say_by_key('edit')."</a></center></td></tr>");
 
-if ($num["filled"] == '')
-{
-	print("<form method=post action=\"".$REL_SEO->make_link('requests')."\">");
-	print("<tr><td align=left>Выполнить запрос</td><td>Введите <b>полный</b> адрес торрента, например как ".$REL_SEO->make_link('details','id',11)." (просто скопируйте/вставьте его из другого окна/вкладки)");
-	print("<input type=text size=80 name=filledurl>\n");
-	print("<input type=hidden value=$id name=requestid>");
-	print("<input type=hidden name=action value=filled>");
-	print("<input type=submit value=\"Выполнить запрос\">\n</form></td></tr>");
+	print("</table>");
+
+	print("<p><a name=\"startcomments\"></a></p>\n");
 }
-if (get_user_class() >= UC_MODERATOR || $CURUSER["id"] == $num["userid"])
-print("<tr><td align=left>Опции</td><td width=50% align=left><a OnClich=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('viewrequests','delreq[]',$id)."\">".$REL_LANG->say_by_key('delete')."</a> <b>|</b> <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$id)."\">Сбросить выполнение</a>  <b>|</b>  <a href=\"".$REL_SEO->make_link('requests','action','edit','id',$id)."\">".$REL_LANG->say_by_key('edit')."</a></center></td></tr>");
 
 $subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = $id AND type='req'");
 $subrow = mysql_fetch_array($subres);
 $count = $subrow[0];
-print("</table>");
-
-print("<p><a name=\"startcomments\"></a></p>\n");
 
 if (!$count) {
 	print('<div id="newcomment_placeholder">'."<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">");
@@ -256,27 +259,30 @@ if (!$count) {
 	print("</td></tr></table><br /></div>");
 
 } else {
-	list($pagertop, $pagerbottom, $limit) = pager(20, $count, array('requests','id',$id), array(lastpagedefault => 1));
+	$limit = ajaxpager(25, $count, array('requests','id',$id), 'comments-table > tbody:last');
 	$subres = sql_query("SELECT c.type, c.id, c.ip, c.text, c.ratingsum, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
 		"u.username, u.title, u.info, u.class, u.donor, u.ratingsum AS urating, u.enabled, s.time AS last_access, e.username AS editedbyname FROM comments c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .
-		"$id AND c.type='req' GROUP BY c.id ORDER BY c.id $limit") or sqlerr(__FILE__, __LINE__);
-		$allrows = prepare_for_commenttable($subres, $s,$REL_SEO->make_link('requests','id',$id));
-	print("<table class=main cellSpacing=\"0\" cellPadding=\"5\" width=\"100%\" >");
-	print("<tr><td class=\"colhead\" align=\"center\" >");
-	print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>");
-	print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('requests','id',$id)."#comments\" class=altlink_white>Добавить комментарий</a></div>");
-	print("</td></tr>");
-	//		print($commentbar);
-	print("<tr><td>");
-	print($pagertop);
-	print("</td></tr>");
-	print("<tr><td>");
-	commenttable($allrows);
-	print("</td></tr>");
-	print("<tr><td>");
-	print($pagerbottom);
-	print("</td></tr>");
-	print("</table>");
+		"$id AND c.type='req' GROUP BY c.id ORDER BY c.id DESC $limit") or sqlerr(__FILE__, __LINE__);
+	$allrows = prepare_for_commenttable($subres, $s,$REL_SEO->make_link('requests','id',$id));
+	if (!pagercheck()) {
+		print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=main cellSpacing=\"0\" cellPadding=\"5\" width=\"100%\" >");
+		print("<tr><td class=\"colhead\" align=\"center\" >");
+		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>");
+		print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('requests','id',$id)."#comments\" class=altlink_white>Добавить комментарий</a></div>");
+		print("</td></tr>");
+		print ( "<tr><td><div id=\"newcomment_placeholder\"></td></tr>" );
+
+		print("<tr><td>");
+		commenttable($allrows);
+		print("</td></tr>");
+
+		print("</table></div>");
+	} else {
+		print("<tr><td>");
+		commenttable($allrows);
+		print("</td></tr>");
+		die();
+	}
 }
 $REL_TPL->assignByRef('to_id',$id);
 $REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'reqcomments' ));

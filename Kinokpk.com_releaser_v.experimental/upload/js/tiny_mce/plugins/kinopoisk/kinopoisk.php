@@ -6,7 +6,7 @@
 <?php
 $path = str_replace("js/tiny_mce/plugins/kinopoisk",'',dirname(__FILE__));
 require_once ($path."include/bittorrent.php");
-dbconn();
+INIT();
 ?>
 <base href="<?=$REL_CONFIG['defaultbaseurl'];?>" />
 <title>{#kinopoisk_dlg.title}</title>
@@ -232,10 +232,6 @@ function fillform(){
 <td align="center">[<a href="javascript:fillform();">Да, заполнить форму</a>]<br/>[<a href="js/tiny_mce/plugins/kinopoisk/kinopoisk.php">Повторить поиск</a>]<br/>[<a href="javascript:window.close()">Закрыть окно</a>]</td></tr>
 </table>');
 }
-
-//$kinopoiskarray = sql_query("SELECT image FROM kinopoisk WHERE class <= ".get_user_class()." ORDER BY sort ASC");
-//while ((list($img) = mysql_fetch_array($kinopoiskarray))) print('<tr><td><a href="javascript:KinopoiskDialog.insert(\''.$img.'\',\'\');"><img src="'.$REL_CONFIG['defaultbaseurl'].'/pic/kinopoisk/'.$img.'" border="0" alt="" title="" /></a></td></tr>');
-
 ?></div>
 </body>
 </html>

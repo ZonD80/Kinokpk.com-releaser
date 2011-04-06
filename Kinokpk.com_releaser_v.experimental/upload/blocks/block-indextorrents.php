@@ -1,7 +1,12 @@
 <?php
 
+if ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'&& $_GET["AJAXPAGER"]) {
+	$pager=true;
+	require_once ('../include/bittorrent.php');
+	INIT();
+	$page=(int)$_GET['page'];
+} else {
 global $REL_LANG, $REL_CACHE, $REL_CONFIG, $CURUSER, $REL_SEO;
-
 
 
 
@@ -10,10 +15,11 @@ if (!defined('BLOCK_FILE')) {
 	exit;
 }
 
+
 $blocktitle = "<span>Релизы</span>".(get_user_class() >= UC_USER ? "<font class=\"small\"> - [<a class=\"altlink\" href=\"".$REL_SEO->make_link('upload')."\"><b>Залить</b></a>]  </font>" : "<font class=\"small\"> - (новые поступления)</font>");
 
-$page = (int) $_GET['page'];
 
+}
 
 $count = $REL_CACHE->get('block-indextorrents','count');
 if ($count===false) {
@@ -23,12 +29,11 @@ if ($count===false) {
 
 if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; } else {
 
-	$content = '<div id="releases-table">';
 
 	$perpage = 9;
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('index') );
 
 	$resarray = $REL_CACHE->get('block-indextorrents','page'.($page?$page:''));
+	$limit = ajaxpager(12, $count, array('blocks/block-indextorrents'), 'releases-table > tbody:last');
 	if ($resarray===false) {
 		$resarray=array();
 		$res = sql_query("SELECT id,name,images,free,category FROM torrents WHERE visible=1 AND banned=0 AND moderatedby<>0 ORDER BY added DESC $limit") or sqlerr(__FILE__, __LINE__);
@@ -37,12 +42,13 @@ if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; }
 	}
 	$num = count($resarray);
 
-	$content .= "<table border=\"1\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"100%\">";
-	$content .=('<tr><td colspan="4">'.$pagertop.'</td></tr>');
+	if (!$pager) {
+	$content .= "<div id=\"pager_scrollbox\"><table id=\"releases-table\" border=\"1\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"100%\">";
+	}
 	$nc=1;
 
 	$REL_CONFIG['pron_cats'] = explode(',',$REL_CONFIG['pron_cats']);
-
+	
 	foreach ($resarray as $row) {
 		$pron=false;
 		if ($nc == 1) { $content .= "<tr>"; }
@@ -62,9 +68,9 @@ if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; }
 		++$nc;
 		if ($nc == 4) { $nc=1; $content .= "</tr>"; }
 	}
-
-	$content .= "<tr><td colspan=\"5\">$pagerbottom</td></tr></table></div>";
-
+	if (!$pager)
+	$content.='</table></div>';
+	else print $content;
 }
 ?>
 

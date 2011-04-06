@@ -8,9 +8,10 @@
  * @link http://dev.kinokpk.com
  */
 require "include/bittorrent.php";
-dbconn();
+INIT();
 
 loggedinorreturn();
+get_privilege('edit_users');
 httpauth();
 
 $REL_TPL->stdhead($REL_LANG->say_by_key('not_confirmed_users'));
@@ -18,8 +19,6 @@ $REL_TPL->begin_main_frame();
 $REL_TPL->begin_frame($REL_LANG->say_by_key('not_confirmed_users'));
 
 
-if (get_user_class() < UC_ADMINISTRATOR)
-die;
 $res = sql_query("SELECT * FROM users WHERE confirmed=0 ORDER BY username" ) or sqlerr(__FILE__, __LINE__);
 if( mysql_num_rows($res) != 0 )
 {

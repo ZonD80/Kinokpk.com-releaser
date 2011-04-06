@@ -9,12 +9,10 @@
  */
 
 require_once ("include/bittorrent.php");
-dbconn ();
+INIT();
 loggedinorreturn ();
 
-if (get_user_class () < UC_MODERATOR) {
-	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied') );
-}
+get_privilege('is_moderator');
 
 //Удалить все жалобы
 if ($_POST ['deleteall']) {

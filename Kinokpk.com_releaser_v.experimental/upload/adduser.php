@@ -9,13 +9,13 @@
  */
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 
 loggedinorreturn();
 httpauth();
 
-if (get_user_class() < UC_MODERATOR)
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
+get_privilege('add_users');
+
 if ($_SERVER["REQUEST_METHOD"] == "POST")
 {
 	if ($_POST["username"] == "" || $_POST["password"] == "" || $_POST["email"] == "")

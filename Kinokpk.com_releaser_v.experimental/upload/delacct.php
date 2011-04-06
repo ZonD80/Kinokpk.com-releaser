@@ -9,7 +9,7 @@
  */
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST")
@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	if (mysql_num_rows($res) != 1)
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_username'));
 	$arr = mysql_fetch_assoc($res);
-	if ($arr['class']>=UC_MODERATOR) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('cant_del_acc'));
+	get_privilege('delete_site_users');
 	$id = $arr['id'];
 	$avatar = $arr['avatar'];
 	delete_user($id);

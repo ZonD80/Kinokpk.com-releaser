@@ -9,9 +9,10 @@
  */
 
 require_once('include/bittorrent.php');
-dbconn();
+INIT();
 loggedinorreturn();
-if (get_user_class()<UC_SYSOP) stderr($REL_LANG->_("Error"),$REL_LANG->_("Access denied"));
+get_privilege('langadmin');
+
 httpauth();
 
 $lang_export = substr(trim((string)$_GET['lang_export']),0,2);
@@ -194,8 +195,13 @@ function ajaxdel(key,lang) {
 	</tr>
 </table>
 </form>
+<?php 
+
+	$limit = "LIMIT 50";
+	?>
 <form
-	action=<?php print $REL_SEO->make_link('langadmin','editor','1','a','gensave');?>
+	action=<?php print $REL_SEO->make_link('langadmin','editor','1','a','gensave');
+	?>
 	method="POST">
 <table width="100%">
 	<tr>
@@ -206,22 +212,19 @@ function ajaxdel(key,lang) {
 	</tr>
 	<?php
 	$count = get_row_count('languages',($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":''));
-	$limited=50;
-	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, array('langadmin','editor',1,'search',$search));
-	$res = sql_query("SELECT * FROM languages".($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":'')." ORDER BY lkey DESC $limit");
-	print '<tr><td colspan="4">'.$pagertop.'</td></tr>';
+
+	$res = sql_query("SELECT * FROM languages".($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":'')." ORDER BY lkey DESC LIMIT 50");
+	
 	while ($row = mysql_fetch_assoc($res)) {
 		print "<tr id=\"{$row['lkey']}-{$row['ltranslate']}\"><td><input type=\"text\" name=\"key[{$row['lkey']}][{$row['ltranslate']}]\" value=\"{$row['lkey']}\" maxlength=\"255\"/></td>".
 	"<td>{$row['ltranslate']}</td>".
 	"<td><textarea name=\"val[".addslashes($row['lkey'])."][{$row['ltranslate']}]\">{$row['lvalue']}</textarea></td><td><a onclick=\"return ajaxdel('".addslashes($row['lkey'])."','{$row['ltranslate']}');\" href=\"{$REL_SEO->make_link("langadmin",'del','','key',$row['lkey'],'language',$row['ltranslate'])}\">{$REL_LANG->_("Delete")}</a></td></tr>";
 	}
 	print '<tr><td colspan="4" align="right"><input type="submit" value="'.$REL_LANG->_("Save changes").'"/></td></tr>';
-	print '<tr><td colspan="4">'.$pagerbottom.'</td></tr>';
 	?>
 </table>
 </form>
 <?php
-
 }
 $REL_TPL->stdfoot();
 ?>

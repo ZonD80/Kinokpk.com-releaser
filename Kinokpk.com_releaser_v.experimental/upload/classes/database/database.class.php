@@ -2,14 +2,14 @@
 class REL_DB {
 	public $query, $conntection;
 	
-	function __construct($mysql_host, $mysql_user, $mysql_pass,$mysql_db,$mysql_charset) {
-		$this->connection = @mysql_connect($mysql_host, $mysql_user, $mysql_pass);
+	function __construct($db) {
+		$this->connection = @mysql_connect($db['host'], $db['user'], $db['pass']);
 		if (!$this->connection)
 	die("[" . mysql_errno() . "] dbconn: mysql_connect: " . mysql_error());
-		mysql_select_db($mysql_db)
+		mysql_select_db($db['db'])
 	or die("dbconn: mysql_select_db: " + mysql_error());
 
-	$this->my_set_charset($mysql_charset);
+	$this->my_set_charset($db['charset']);
 	$this->query = array();
 	register_shutdown_function("mysql_close");
 	//$this->query[0] = array("seconds" => 0, "query" => 'TOTAL');

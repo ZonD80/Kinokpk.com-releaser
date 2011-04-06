@@ -9,7 +9,7 @@
  */
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 
 
@@ -18,7 +18,7 @@ loggedinorreturn();
 
 if (is_array($_GET["delt"]))
 {
-	if (get_user_class() >= UC_MODERATOR) {
+	if (get_privilege('censored_admin',false)) {
 		if (empty($_GET["delt"]))
 		stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_fields_blank'));
 		sql_query("DELETE FROM censoredtorrents WHERE id IN (" . implode(", ", array_map("sqlesc", $_GET["delt"])) . ")");
@@ -38,7 +38,7 @@ if (is_array($_GET["delt"]))
 
 $REL_TPL->stdhead($REL_LANG->say_by_key('ban_releases'));
 
-if (get_user_class() >= UC_MODERATOR) $moder=1;
+if (get_privilege('censored_admin',false)) $moder=1;
 
 print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\" width=\"100%\" >");
 print("<tr><td class=\"colhead\" align=\"center\" colspan=\"15\">".$REL_LANG->say_by_key('banned_releases')."</td></tr>");

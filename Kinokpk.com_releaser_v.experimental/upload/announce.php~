@@ -58,7 +58,7 @@ $seeder = ($left == 0) ? 1: 0;
 
 checkclient($peer_id);
 
-dbconn();
+INIT();
 
 $ucls = mysql_query("SELECT id,enabled,passkey_ip FROM users WHERE passkey = " . sqlesc($passkey)) or sqlerr(__FILE__,__LINE__);
 if (mysql_affected_rows() == 0)

@@ -45,7 +45,7 @@ class REL_TPL extends Smarty {
 			$this->caching = true;
 			$this->cache_lifetime = $REL_CONFIG['cache_template_time'];
 		}
-		if ($REL_CONFIG['debug_template'] && get_user_class()>=UC_SYSOP) {
+		if ($REL_CONFIG['debug_template'] && get_privilege('debug_template',false)) {
 			$this->debugging = true;
 		}
 		$this->assignByRef('REL_LANG',$REL_LANG);
@@ -71,18 +71,18 @@ class REL_TPL extends Smarty {
 	function stdhead($title = "", $descradd = '', $keywordsadd = "", $headadd = '') {
 		global $REL_CONFIG, $CURUSER;
 
-		if (!$REL_CONFIG['siteonline'] && get_user_class()<UC_SYSOP) {
+		if (!$REL_CONFIG['siteonline'] && get_privilege('deny_disabled_site',false)) {
 		$this->display('offline.tpl');
 		die();
 	}
 	$offline = false;
-		if (get_user_class() == UC_SYSOP && !$REL_CONFIG['siteonline']) {
+		if (get_privilege('view_disabled_site_notice',false) && !$REL_CONFIG['siteonline']) {
 			$offline=true;
 		}
 		$this->assignByRef('OFFLINE',$offline);
 		$access_overrided=(isset($_COOKIE['override_class']) && $CURUSER);
 		$this->assignByRef('access_overrided',$access_overrided);
-		$this->assign('IS_MODERATOR',get_user_class() >= UC_MODERATOR);
+		$this->assign('IS_MODERATOR',get_privilege('is_moderator',false));
 		headers(REL_AJAX);
 		$this->assignByRef('title',$title);
 		$this->assignByRef('descradd',$descradd);

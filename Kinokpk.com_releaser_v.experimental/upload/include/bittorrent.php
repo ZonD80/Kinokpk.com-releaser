@@ -28,8 +28,6 @@ date_default_timezone_set('UTC');
  */
 define ('ROOT_PATH', str_replace("include","",dirname(__FILE__)));
 
-require_once(ROOT_PATH . 'include/classes.php');
-require_once(ROOT_PATH . 'include/functions.php');
 
 // Variables for Start Time
 /**
@@ -39,6 +37,12 @@ require_once(ROOT_PATH . 'include/functions.php');
 $tstart = microtime(true); // Start time
 
 require_once(ROOT_PATH . 'include/secrets.php');
+
+/* @var database object */
+require_once(ROOT_PATH . 'classes/database/database.class.php');
+$REL_DB = new REL_DB($db);
+unset($db);
+
 /* @var object general cache object */
 require_once(ROOT_PATH . 'classes/cache/cache.class.php');
 $REL_CACHE=new Cache();
@@ -50,6 +54,10 @@ elseif (REL_CACHEDRIVER=='memcached') {
 	require_once(ROOT_PATH .  'classes/cache/MemCacheDriver.class.php');
 	$REL_CACHE->addDriver(NULL, new MemCacheDriver());
 }
+
+require_once(ROOT_PATH . 'include/functions.php');
+require_once(ROOT_PATH . 'include/classes.php');
+
 // TinyMCE security
 require_once(ROOT_PATH . 'include/htmLawed.php');
 // Ban system

@@ -15,11 +15,11 @@ function bark($msg) {
 	stderr($REL_LANG->say_by_key('error'), $msg);
 }
 
-dbconn();
+INIT();
 loggedinorreturn();
+get_privilege('stampadmin');
 httpauth();
 
-if (get_user_class() < UC_SYSOP) bark("Access denied. You're not SYSOP.");
 if (!isset($_GET['action'])) {
 	$REL_TPL->stdhead("Админка штампов и печатей");
 	print("<div algin=\"center\"><h1>Админка штампов</h1></div>");

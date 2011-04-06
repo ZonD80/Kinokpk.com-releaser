@@ -16,7 +16,7 @@
  */
 function maketable($res) {
 	global $REL_LANG, $REL_CONFIG, $cats, $REL_SEO, $disallow_view;
-	if ($disallow_view&&get_user_class()>=UC_MODERATOR) $ret.="<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
+	if ($disallow_view&&get_privilege('view_private_user_profiles',false)) $ret.="<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
 	$ret .= "<table class=main border=1 cellspacing=0 cellpadding=5>" . "<tr><td class=colhead align=left>" . $REL_LANG->say_by_key('type') . "</td><td class=colhead>" . $REL_LANG->say_by_key('name') . "</td>" . ($REL_CONFIG ['use_ttl'] ? "<td class=colhead align=center>" . $REL_LANG->say_by_key('ttl') . "</td>" : "") . "<td class=colhead align=center>" . $REL_LANG->say_by_key('size') . "</td><td class=colhead align=right>" . $REL_LANG->say_by_key('details_seeding') . "</td><td class=colhead align=right>" . $REL_LANG->say_by_key('details_leeching') . "</td></tr>\n";
 	while ( $arr = mysql_fetch_assoc ( $res ) ) {
 		$rescatids = explode ( ',', $arr ['category'] );
@@ -45,7 +45,7 @@ function maketable($res) {
 function print_content($content) {
 	global $REL_LANG, $id, $user, $type, $REL_TPL, $disallow_view;
 	$REL_TPL->stdhead($REL_LANG->say_by_key('history_'.$type));
-	if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
+	if ($disallow_view&&get_privilege('view_private_user_profiles',false)) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('history_'.$type).sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 	print ($content);
 	$REL_TPL->end_frame();
@@ -55,7 +55,7 @@ function print_content($content) {
 
 require "include/bittorrent.php";
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
@@ -79,13 +79,13 @@ $user = mysql_fetch_assoc(sql_query("SELECT username,class,privacy FROM users WH
 
 $am_i_friend = ($id==$CURUSER['id']?true:@mysql_result(sql_query("SELECT 1 FROM friends WHERE (userid={$CURUSER['id']} AND friendid=$id) OR (friendid={$CURUSER['id']} AND userid=$id) AND confirmed=1"),0));
 $disallow_view = (($user['privacy']=='highest'||$user['privacy']=='strong')&&!$am_i_friend);
-if ($disallow_view&&get_user_class()<UC_MODERATOR) stderr($REL_LANG->_("Error"),$REL_LANG->_('This user uses privacy level, you need to <a href="%s">Become friend of %s</a> to view this page',$REL_SEO->make_link('friends','action','add','id',$id),get_user_class_color($user['class'],$user['username'])));
+if ($disallow_view&&!get_privilege('view_private_user_profiles',false)) stderr($REL_LANG->_("Error"),$REL_LANG->_('This user uses privacy level, you need to <a href="%s">Become friend of %s</a> to view this page',$REL_SEO->make_link('friends','action','add','id',$id),get_user_class_color($user['class'],$user['username'])));
 
 if (in_array($type,$allowed_types))
 {
 	if ($type=='uploaded') {
 		$cats = assoc_cats ();
-		$r = sql_query ( "SELECT torrents.id, torrents.name, torrents.seeders, torrents.added, torrents.leechers, torrents.category FROM torrents WHERE owner=$id GROUP BY torrents.id ORDER BY name" ) or sqlerr ( __FILE__, __LINE__ );
+		$r = sql_query ( "SELECT torrents.id, torrents.name, torrents.seeders, torrents.added, torrents.leechers, torrents.category FROM torrents WHERE owner=$id ORDER BY id DESC" ) or sqlerr ( __FILE__, __LINE__ );
 		if (mysql_num_rows ( $r )) {
 			$torrents = "<table class=main border=1 cellspacing=0 cellpadding=5>\n" . "<tr><td class=colhead>" . $REL_LANG->say_by_key('type') . "</td><td class=colhead>" . $REL_LANG->say_by_key('name') . "</td>" . ($REL_CONFIG ['use_ttl'] ? "<td class=colhead align=center>" . $REL_LANG->say_by_key('ttl') . "</td>" : "") . "<td class=colhead>" . $REL_LANG->say_by_key('tracker_seeders') . "</td><td class=colhead>" . $REL_LANG->say_by_key('tracker_leechers') . "</td></tr>\n";
 			while ( $a = mysql_fetch_assoc ( $r ) ) {
@@ -180,36 +180,36 @@ if (in_array($type,$allowed_types))
 	$count = $arr[0];
 	if (!$count) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
 
-	//------ Make page menu
-
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('userhistory','type',$type,'id',$id));
-
-	//------ Get user data
+	$limit = "LIMIT 50";
 
 	if ($type<>'friends'&&$type<>'presents'&&$type<>'nicknames') {
-		$REL_TPL->stdhead($REL_LANG->say_by_key('history_'.$type)." {$REL_LANG->_("From")} {$user['username']}");
-			if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
-		
+		if (!pagercheck()) {
+			$REL_TPL->stdhead($REL_LANG->say_by_key('history_'.$type)." {$REL_LANG->_("From")} {$user['username']}");
+			if ($disallow_view&&get_privilege('view_private_user_profiles',false)) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
+		}
 		$REL_TPL->begin_frame($REL_LANG->say_by_key('history_'.$type).sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
+
+
+		$limit = ajaxpager(25, $count, array('userhistory','id',$id,'name',$user['username'],'type',$type), 'comments-table > tbody:last');
 		$query = "SELECT comments.id, comments.toid, comments.type, comments.ip, comments.ratingsum, comments.text, comments.user, comments.added, comments.editedby, comments.editedat, users.avatar, users.warned, users.username, users.title, users.class, users.donor, users.enabled, users.ratingsum AS urating, users.gender, users.last_access, e.username AS editedbyname, $name[$type] FROM comments LEFT JOIN users ON comments.user = users.id LEFT JOIN users AS e ON comments.editedby = e.id{$leftjoin[$type]} WHERE $where ORDER BY $order $limit";
 		$res = sql_query($query) or sqlerr(__FILE__,__LINE__);
 		$commentsarray = prepare_for_commenttable($res);
-		print ( "<table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
-		print ( "<tr><td class=\"colhead\" align=\"center\" >" );
-		print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>" );
-		//print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id)."#comments\" class=\"altlink_white\">{$REL_LANG->say_by_key('add_comment')}</a></div>" );
-		print ( "</td></tr>" );
-
-		print ( "<tr><td>" );
-		print ( $pagertop );
-		print ( "</td></tr>" );
-		print ( "<tr><td>" );
-		commenttable($commentsarray);
-		print ( "</td></tr>" );
-		print ( "<tr><td>" );
-		print ( $pagerbottom );
-		print ( "</td></tr>" );
-		print ( "</table>" );
+		if (!pagercheck()) {
+			print ( "<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
+			print ( "<tr><td class=\"colhead\" align=\"center\" >" );
+			print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>" );
+			//print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id)."#comments\" class=\"altlink_white\">{$REL_LANG->say_by_key('add_comment')}</a></div>" );
+			print ( "</td></tr>" );
+			print ( "<tr><td>" );
+			commenttable($commentsarray);
+			print ( "</td></tr>" );
+			print ( "</table></div>" );
+		} else {
+			print ( "<tr><td>" );
+			commenttable($commentsarray);
+			print ( "</td></tr>" );
+			die();
+		}
 		$REL_TPL->end_frame();
 		$REL_TPL->stdfoot();
 
@@ -220,13 +220,13 @@ if (in_array($type,$allowed_types))
 			$presents[] = $prrow;
 		}
 		$REL_TPL->stdhead($REL_LANG->_("History of user presents"));
-			if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
-		
+		if ($disallow_view&&get_privilege('view_private_user_profiles',false)) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
+
 		$REL_TPL->begin_frame($REL_LANG->_("History of user presents").sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 		$switch_pr = array('torrent'=>'Release','ratingsum'=>"Amount of rating",'discount'=>"Amount of discount");
 
 		print ('<table width="100%"><tr>');
-		print "<td colspan=\"3\">$pagertop</td></tr><tr>";
+
 		$i=0;
 		foreach ($presents as $present) {
 			$i++;
@@ -235,7 +235,6 @@ if (in_array($type,$allowed_types))
 			if (($i%3)==0) print '</tr><tr>';
 		}
 		if ($i%3!=0) print '<td colspan="'.(3-$i%3).'">&nbsp;</td></tr>';
-		print "<tr><td colspan=\"3\">$pagerbottom</td></tr>";
 		print ('</table>');
 		$REL_TPL->end_frame();
 		$REL_TPL->stdfoot();
@@ -243,14 +242,13 @@ if (in_array($type,$allowed_types))
 	}
 	elseif ($type=='friends') {
 		$REL_TPL->stdhead($REL_LANG->say_by_key('history_friends').' '.$user['username']);
-			if ($disallow_view&&get_user_class()>=UC_MODERATOR) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
-		
+		if ($disallow_view&&get_privilege('view_private_user_profiles',false)) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
+
 		$REL_TPL->begin_frame($REL_LANG->say_by_key('history_friends').' '.$user['username'].sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 
 		$res = sql_query("SELECT IF (friends.userid={$id},friends.friendid,friends.userid) AS friend, (SELECT 1 FROM friends WHERE (userid=friend AND friendid={$CURUSER['id']}) OR (friendid=friend AND userid={$CURUSER['id']})) AS myfriend, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON IF (friends.userid={$id},u.id=friendid,u.id=userid) LEFT JOIN countries AS c ON c.id = u.country WHERE $where ORDER BY friends.id DESC $limit") or sqlerr(__FILE__, __LINE__);
 
 		print ('<div id="users-table">');
-		print ("<p>$pagertop</p>");
 		print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
 		print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td><td class=\"colhead\">Добавить в друзья</td></tr>\n");
 		while ($arr = mysql_fetch_assoc($res)) {
@@ -274,21 +272,20 @@ if (in_array($type,$allowed_types))
 			print ('</td></tr>');
 		}
 		print("</table>\n");
-		print ("<p>$pagerbottom</p>");
 		print('</div>');
 		$REL_TPL->end_frame();
 		$REL_TPL->stdfoot();
 		die();
 	}
-	
+
 	elseif ($type=='nicknames') {
 		$nicknames = $REL_DB->query_assoc("SELECT id,nick,date FROM nickhistory WHERE userid=$id");
 		if (!$nicknames) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('This user does not have any nickname changes yet. <a href="%s">Go back to user history</a>',$REL_SEO->make_link('userhistory','id',$id,'name',$user['username'])));
-		
+
 		$REL_TPL->stdhead($REL_LANG->_('History of nickname changes for %s',$user['username']));
 		$REL_TPL->begin_frame($REL_LANG->_('History of nickname changes for %s',$user['username']));
 		$REL_TPL->assignByRef('nick', $nicknames);
-		$REL_TPL->assign('IS_MODERATOR',get_user_class()>=UC_ADMINISTRATOR);
+		$REL_TPL->assign('IS_MODERATOR',get_privilege('is_moderator',false));
 		$REL_TPL->output('nicknames');
 		$REL_TPL->end_frame();
 		$REL_TPL->stdfoot();

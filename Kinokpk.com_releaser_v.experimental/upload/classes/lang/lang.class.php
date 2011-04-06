@@ -117,7 +117,7 @@ class REL_LANG {
 			while ($row = mysql_fetch_assoc($res))
 			$this->lang[$language][$row['lkey']] = $row['lvalue'];
 			if (!$this->lang[$language]) {
-				print ("ERROR: no language ($language). <a href=\"".$REL_SEO->make_link('setlang','l','en')."\">Switch to English (default)</a>.".(get_user_class()>=UC_SYSOP?" Or you can <a href=\"".$REL_SEO->make_link('langadmin','import')."\">Import a language file</a>":''));
+				print ("ERROR: no language ($language). <a href=\"".$REL_SEO->make_link('setlang','l','en')."\">Switch to English (default)</a>.".(get_privilege('is_owner',false)?" Or you can <a href=\"".$REL_SEO->make_link('langadmin','import')."\">Import a language file</a>":''));
 				$this->lang[$language] = array();
 			}
 			$REL_CACHE->set('languages',$language,$this->lang[$language]);

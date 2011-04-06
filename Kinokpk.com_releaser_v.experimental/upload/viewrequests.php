@@ -9,13 +9,13 @@
  */
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
 if ($_GET["delreq"])
 {
-	if (get_user_class() >= UC_MODERATOR) {
+	if (get_privilege('requests_operation',false)) {
 		if (empty($_GET["delreq"]))
 		stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_fileds_blank'));
 		sql_query("DELETE FROM requests WHERE id IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
@@ -118,17 +118,13 @@ if ($requestorid <> NULL) {
 
 		$perpage = 50;
 
-		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, (isset($_GET['category'])?array('viewrequests','category',$categ,'sort',$sort):array('viewrequests','sort',$sort)) );
-
-		print("<tr><td class=\"index\" colspan=\"15\">");
-		print($pagertop);
-		print("</td></tr>");
+		$limit = "LIMIT 50";
 
 		$res = sql_query("SELECT (SELECT username FROM users WHERE id = filledby) AS filledname, (SELECT class FROM users WHERE id = filledby) AS filledclass, users.class, users.ratingsum, users.username, requests.filled, requests.filledby, requests.id, requests.userid, requests.request, requests.added, requests.hits, requests.comments, categories.id AS cat_id FROM requests INNER JOIN categories ON requests.cat = categories.id INNER JOIN users ON requests.userid = users.id $query $filtersql $limit") or sqlerr(__FILE__, __LINE__);
 		$num = mysql_num_rows($res);
 
 		print("<form method=get OnSubmit=\"return confirm('Вы уверены?')\" action=\"".$REL_SEO->make_link('viewrequests')."\">\n");
-		print("<tr><td class=\"colhead\" align=\"center\">".$REL_LANG->say_by_key('type')."</td><td class=colhead align=left><a href=\"".$REL_SEO->make_link('viewrequests','category',$categ,'filter',$filter,'sort','request')."\" class=altlink_white>".$REL_LANG->say_by_key('request')."</a></td><td class=colhead align=center width=150><a href=\"".$REL_SEO->make_link('viewrequests','category',$categ,'filter',$filter,'sort','added')."\" class=altlink_white>".$REL_LANG->say_by_key('added')."</a></td><td class=colhead align=center>".$REL_LANG->say_by_key('requester')."</td><td class=colhead align=center>".$REL_LANG->say_by_key('filled')."</td><td class=colhead align=center>".$REL_LANG->say_by_key('filled_by')."</td><td class=colhead align=center><a href=" . $_SERVER[PHP_SELF] . "?category=" . $categ . "&filter=" . $filter . "&sort=votes class=altlink_white>".$REL_LANG->say_by_key('votes')."</a></td><td class=colhead align=center><a href=" . $_SERVER[PHP_SELF] . "?category=" . $categ . "&filter=" . $filter . "&sort=comm class=altlink_white>".$REL_LANG->say_by_key('comments')."</a></td>" . (get_user_class() >= UC_MODERATOR?"<td class=colhead align=center>".$REL_LANG->say_by_key('delete')."</td>": "") . "</tr>\n");
+		print("<tr><td class=\"colhead\" align=\"center\">".$REL_LANG->say_by_key('type')."</td><td class=colhead align=left><a href=\"".$REL_SEO->make_link('viewrequests','category',$categ,'filter',$filter,'sort','request')."\" class=altlink_white>".$REL_LANG->say_by_key('request')."</a></td><td class=colhead align=center width=150><a href=\"".$REL_SEO->make_link('viewrequests','category',$categ,'filter',$filter,'sort','added')."\" class=altlink_white>".$REL_LANG->say_by_key('added')."</a></td><td class=colhead align=center>".$REL_LANG->say_by_key('requester')."</td><td class=colhead align=center>".$REL_LANG->say_by_key('filled')."</td><td class=colhead align=center>".$REL_LANG->say_by_key('filled_by')."</td><td class=colhead align=center><a href=" . $_SERVER[PHP_SELF] . "?category=" . $categ . "&filter=" . $filter . "&sort=votes class=altlink_white>".$REL_LANG->say_by_key('votes')."</a></td><td class=colhead align=center><a href=" . $_SERVER[PHP_SELF] . "?category=" . $categ . "&filter=" . $filter . "&sort=comm class=altlink_white>".$REL_LANG->say_by_key('comments')."</a></td>" . (get_privilege('requests_operation',false)?"<td class=colhead align=center>".$REL_LANG->say_by_key('delete')."</td>": "") . "</tr>\n");
 		for ($i = 0; $i < $num; ++$i)
 		{
 
@@ -151,19 +147,15 @@ if ($requestorid <> NULL) {
 			$comment = "0";
 			else
 			$comment = "<a href=\"".$REL_SEO->make_link('requests','id',$arr['id'])."#startcomments\"><b>$arr[comments]</b></a>";
-			print("<tr><td style='padding: 0px'><small>".get_cur_position_str($tree,$arr['cat_id'],'viewrequests')."</small></td>\n<td align=left><a href=\"".$REL_SEO->make_link('requests','id',$arr['id'])."\"><b>$arr[request]</b></a>".(get_user_class() >= UC_MODERATOR ? "<a href=\"".$REL_SEO->make_link('requests','action','edit','id',$arr['id'])."\" class=\"sublink\"><img border=\"0\" src=\"pic/pen.gif\" alt=\"".$REL_LANG->say_by_key('edit')."\" title=\"".$REL_LANG->say_by_key('edit')."\" /></a>" : "")."</td>\n<td align=center>".mkprettytime($arr[added])."</td>$addedby<td align=center>$filled</td>\n<td align=center><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['filledby'],'username',translit($arr["filledname"]))."\"><b>".get_user_class_color($arr["filledclass"],$arr["filledname"])."</b></a></td>\n<td align=center><a href=\"".$REL_SEO->make_link('votesview','requestid',$arr['id'])."\"><b>$arr[hits]</b></a></td>\n<td align=center>$comment</td>" .  (get_user_class() >= UC_MODERATOR?"<td align=center><input type=\"checkbox\" name=\"delreq[]\" value=\"" . $arr[id] . "\" /></td>": "") . "</tr>\n");
+			print("<tr><td style='padding: 0px'><small>".get_cur_position_str($tree,$arr['cat_id'],'viewrequests')."</small></td>\n<td align=left><a href=\"".$REL_SEO->make_link('requests','id',$arr['id'])."\"><b>$arr[request]</b></a>".(get_privilege('requests_operation',false) ? "<a href=\"".$REL_SEO->make_link('requests','action','edit','id',$arr['id'])."\" class=\"sublink\"><img border=\"0\" src=\"pic/pen.gif\" alt=\"".$REL_LANG->say_by_key('edit')."\" title=\"".$REL_LANG->say_by_key('edit')."\" /></a>" : "")."</td>\n<td align=center>".mkprettytime($arr[added])."</td>$addedby<td align=center>$filled</td>\n<td align=center><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['filledby'],'username',translit($arr["filledname"]))."\"><b>".get_user_class_color($arr["filledclass"],$arr["filledname"])."</b></a></td>\n<td align=center><a href=\"".$REL_SEO->make_link('votesview','requestid',$arr['id'])."\"><b>$arr[hits]</b></a></td>\n<td align=center>$comment</td>" .  (get_privilege('requests_operation',false)?"<td align=center><input type=\"checkbox\" name=\"delreq[]\" value=\"" . $arr[id] . "\" /></td>": "") . "</tr>\n");
 		}
 
-		if (get_user_class() >= UC_MODERATOR) {
+		if (get_privilege('requests_operation',false)) {
 			print("<tr><td class=\"index\" align=\"right\" colspan=\"15\">");
 			print("<input type=submit value=\"".$REL_LANG->say_by_key('delete')."\">");
 			print("</form>");
 			print("</td></tr>");
 		}
-
-		print("<tr><td class=\"index\" colspan=\"12\">");
-		print($pagerbottom);
-		print("</td></tr>");
 
 	}
 

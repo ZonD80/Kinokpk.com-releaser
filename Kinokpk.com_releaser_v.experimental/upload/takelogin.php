@@ -13,7 +13,7 @@ require_once("include/bittorrent.php");
 if (!mkglobal("email:password"))
 die();
 
-dbconn();
+INIT();
 
 
 

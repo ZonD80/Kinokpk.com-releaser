@@ -9,7 +9,7 @@
  */
 
 require_once "include/bittorrent.php";
-dbconn();
+INIT();
 
 if (!$REL_CONFIG['forum_enabled']) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Sorry, but forum disabled for now'));
 
@@ -17,7 +17,7 @@ require_once (ROOT_PATH.'/include/functions_forum.php');
 
 $tree = make_forum_tree(get_user_class());
 $cats = assoc_full_forum_cats($tree,get_user_class());
-
+//print '<pre>'; print_r($cats);
 $curcat = (int)$_GET['cat'];
 if (!$curcat) $curcat=(int)$_POST['cat'];
 
@@ -32,7 +32,7 @@ function forum_routing($curcat) {
 	$REL_TPL->assignByRef('JUMP_TO', gen_select_area('cat',$tree,$curcat,true));
 	$REL_TPL->assignByRef('CAT_SELECTOR', gen_select_area('cat',$tree,$curcat));
 	$REL_TPL->assignByRef('curcat', $curcat);
-	$REL_TPL->assign('IS_MODERATOR',(get_user_class()>=UC_MODERATOR));
+	$REL_TPL->assign('IS_MODERATOR',get_privilege('edit_comments',false));
 
 	$route = $REL_LANG->_('<a href="%s">Forum home</a>',$REL_SEO->make_link('forum'));
 	//var_dump(in_array($curcat,array_keys($cats)));
@@ -61,17 +61,18 @@ function forum_routing($curcat) {
 }
 
 forum_routing($curcat);
-
+//var_dump($CAT);
 
 $action = (string)$_GET['a'];
 
 if (!$action) {
-	if ($CAT['class']>get_user_class()) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access denied'));
+	//var_dump($CAT['class']);
+	if ($CAT&&!in_array(get_user_class(),$CAT['class'])) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access denied'));
 	$REL_TPL->stdhead($REL_LANG->_('Site forum'));
 
 	if (!$view_topics) {
 		$tabledata = prepare_for_forumtable($cats,$CAT);
-		
+
 
 		$REL_TPL->assignByRef('CATEGORIES',$tabledata['categories']);
 		$REL_TPL->assignByRef('FORUMS',$tabledata['forums']);
@@ -81,15 +82,11 @@ if (!$action) {
 
 		$count = get_row_count('forum_topics',"WHERE category=$curcat");
 		if ($count) {
-			$limited = 25;
-			list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, array('forum','cat',$curcat,'name',translit($CAT['name'])));
-			$REL_TPL->assignByRef('pagertop', $pagertop);
-			$REL_TPL->assignByRef('pagerbottom', $pagerbottom);
-			$res = $REL_DB->query("SELECT forum_topics.*,(SELECT users.username FROM users WHERE users.id=forum_topics.author) AS aname,(SELECT users.class FROM users WHERE users.id=forum_topics.author) AS aclass, users.username,users.class,comments.added,comments.user FROM forum_topics LEFT JOIN comments ON forum_topics.lastposted_id=comments.id LEFT JOIN users ON comments.user=users.id WHERE category=$curcat AND comments.type='forum' ORDER BY started DESC $limit") or sqlerr(__FILE__,__LINE__);
+			$res = $REL_DB->query("SELECT forum_topics.*,(SELECT users.username FROM users WHERE users.id=forum_topics.author) AS aname,(SELECT users.class FROM users WHERE users.id=forum_topics.author) AS aclass, users.username,users.class,comments.added,comments.user FROM forum_topics LEFT JOIN comments ON forum_topics.lastposted_id=comments.id LEFT JOIN users ON comments.user=users.id WHERE category=$curcat AND comments.type='forum' ORDER BY started DESC") or sqlerr(__FILE__,__LINE__);
 			while ($row = mysql_fetch_assoc($res)) {
 				$tabledata[] = array('id'=>$row['id'],'subject'=>$row['subject'],'posts'=>$row['comments'],'started'=>mkprettytime($row['started']),'author'=>"<a href=\"{$REL_SEO->make_link('userdetails','id',$row['author'],'name',$row['aname'])}\">".get_user_class_color($row['aclass'],$row['aname'])."</a>",'lastposted_time'=>mkprettytime($row['added']),'lastposted_user'=>"<a href=\"{$REL_SEO->make_link('userdetails','id',$row['user'],'name',$row['username'])}\">".get_user_class_color($row['class'],$row['username'])."</a>", 'lastposted_id'=>$row['lastposted_id']);
 			}
-							
+				
 			$REL_TPL->assignByRef('TOPICS',$tabledata);
 			$REL_TPL->output('topicmode');
 		}
@@ -110,14 +107,14 @@ elseif ($action=='newtopic') {
 		$REL_TPL->stdfoot();
 	} else {
 		if (!$curcat) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No forum defined to post to, <a href="javascript.history.go(-1);">try again</a>'));
-		if ($CAT['class']>get_user_class()) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access denied'));
+		if (!in_array(get_user_class(),$CAT['class'])) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access denied'));
 
 		if ($CAT['nodes']) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('You can not post to categories. Only forums enabled. Please <a href="javascript.history.go(-1);">try again</a>'));
 		$topictitle = makesafe((string)$_POST['title']);
 		if (!$topictitle) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No topic title defined, <a href="javascript.history.go(-1);">try again</a>'));
 		$topiccontent = trim((string)$_POST['content']);
 		if (!$topiccontent) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No topic content defined, <a href="javascript.history.go(-1);">try again</a>'));
-		if (get_user_class()>=UC_MODERATOR) {
+		if (get_privilege('is_moderator')) {
 			$closedate = (int)strtotime((string)$_POST['closedate']);
 		} else $closedate = 0;
 		sql_query("INSERT INTO forum_topics (subject,comments,author,started,closedate,category) VALUES (".sqlesc($topictitle).", 1, {$CURUSER['id']}, ".time().", $closedate, $curcat)") or sqlerr(__FILE__,__LINE__);
@@ -137,38 +134,33 @@ elseif ($action=='viewtopic') {
 	$tname = htmlspecialchars(trim((string)$_GET['subject']));
 	$post = (int)$_GET['p'];
 	if (!$tid && !$tname) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No topic found'));
-
 	$res = $REL_DB->query("SELECT * FROM forum_topics WHERE ".($tid?"id = $tid":"subject = ".sqlesc($tname))." LIMIT 1") or sqlerr(__FILE__,__LINE__);
 	$topic = mysql_fetch_assoc($res);
 	if (!$topic) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No topic found'));
-	//var_dump($topic['category']);
-	$curcat = $topic['category'];
-	forum_routing($curcat);
-	//var_dump($CAT);
-	if (!$CAT || $CAT['class']>get_user_class()) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access denied'));
 
-	$REL_TPL->assignByRef('topic', $topic);
+	if (!pagercheck()) {
+		//var_dump($topic['category']);
+		$curcat = $topic['category'];
+		forum_routing($curcat);
+		//var_dump($CAT);
+		if (!$CAT || !in_array(get_user_class(),$CAT['class'])) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access denied'));
 
-	$res = $REL_DB->query("SELECT GROUP_CONCAT(id) AS posts FROM comments WHERE toid={$topic['id']} AND type='forum' ORDER BY id ASC") or sqlerr(__FILE__,__LINE__);
-	$postids = @mysql_result($res,0);
-	if (!$postids) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No posts found in this topic. Contact <a href="%s">Site administrators</a>',$REL_SEO->make_link('staff')));
+		$REL_TPL->assignByRef('topic', $topic);
 
-	$REL_TPL->stdhead($REL_LANG->_('Viewing topic: %s',$topic['subject']));
-	$limited = 25;
-	$postids = explode(',',$postids);
-	$count = count($postids);
-	if ($post) {
-		$postidspage = array_chunk($postids, $limited);
-		foreach ($postidspage as $page => $postspage) {
-			if (in_array($post, $postspage)) $_GET['page'] = $page+1;
-		}
+		$res = $REL_DB->query("SELECT GROUP_CONCAT(id) AS posts FROM comments WHERE toid={$topic['id']} AND type='forum' ORDER BY id ASC") or sqlerr(__FILE__,__LINE__);
+		$postids = @mysql_result($res,0);
+		if (!$postids) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No posts found in this topic. Contact <a href="%s">Site administrators</a>',$REL_SEO->make_link('staff')));
+
+		$REL_TPL->stdhead($REL_LANG->_('Viewing topic: %s',$topic['subject']));
+		$limited = 25;
+		$postids = explode(',',$postids);
+		$count = count($postids);
 	}
-	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, array('forum','a','viewtopic','id',$topic['id'],'subject',$topic['subject']));
-	$REL_TPL->assignByRef('pagertop', $pagertop);
-	$REL_TPL->assignByRef('pagerbottom', $pagerbottom);
-
-	$subres = sql_query ( "SELECT c.id, c.ip, c.ratingsum, c.text, c.type, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = {$topic['id']} AND c.type='forum' GROUP BY c.id ORDER BY c.id $limit" ) or sqlerr ( __FILE__, __LINE__ );
+	$limit = ajaxpager(25, $count, array('forum','a','viewtopic','id',$topic['id'],'subject',translit($topic['subject'])), "forumcomments");
+	$subres = sql_query ( "SELECT c.id, c.ip, c.ratingsum, c.text, c.type, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = {$topic['id']} AND c.type='forum' GROUP BY c.id ORDER BY c.id DESC $limit" ) or sqlerr ( __FILE__, __LINE__ );
 	$allrows = prepare_for_commenttable($subres,$topic['subject'],$REL_SEO->make_link('forum','a','viewtopic','id',$topic['id'],'subject',translit($topic['subject'])));
+
+	if (pagercheck()) { print commenttable($allrows,true,'modules/forum/commenttable.tpl'); die(); }
 
 	$REL_TPL->assignByRef('commenttable', commenttable($allrows,true,'modules/forum/commenttable.tpl'));
 	$REL_TPL->output($action);

@@ -10,13 +10,13 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 loggedinorreturn();
+
+get_privilege('edit_countries');
 httpauth();
-if (get_user_class() < UC_SYSOP) {
-	stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
-}
+
 $REL_TPL->stdhead($REL_LANG->say_by_key('country_admin'));
 
 print("<h1>{$REL_LANG->say_by_key('country_and_flags')}</h1>\n");
@@ -101,7 +101,6 @@ if(isset($_GET['add'])) {
 $res = sql_query("SELECT SUM(1) FROM countries") or die(mysql_error());
 $row = mysql_fetch_array($res);
 
-print($pagertop);
 print("<table width=\"100%\" class=main cellspacing=0 cellpadding=5>");
 print("<td>ID</td><td>{$REL_LANG->say_by_key('name')}</td><td>{$REL_LANG->say_by_key('flag')}</td><td>{$REL_LANG->say_by_key('edit')}</td><td>{$REL_LANG->say_by_key('delete')}</td>");
 $sql = sql_query("SELECT * FROM countries ORDER BY name ASC $limit");

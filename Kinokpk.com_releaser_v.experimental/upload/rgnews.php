@@ -10,12 +10,11 @@
 
 require "include/bittorrent.php";
 
-dbconn();
+INIT();
 loggedinorreturn();
 
 
-if (get_user_class() < UC_UPLOADER)
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
+get_privilege('edit_relgroups');
 
 $action = $_GET["action"];
 
@@ -26,12 +25,11 @@ $relgroup = sql_query("SELECT name,owners FROM relgroups WHERE id=$id") or sqler
 list($rgname,$owners) = mysql_fetch_array($relgroup);
 
 $to_group = " <a href=\"".$REL_SEO->make_link('relgroups','id',$id,'name',translit($rgname))."\">К релиз группе</a>";
-//if (!$owners && get_user_class()<UC_ADMINISTRATOR) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('error_no_onwers'));
 
 if ($owners) {
 	$owners = explode(',',$owners);
 
-	if (!@in_array($CURUSER['id'],$owners) && (get_user_class()<UC_ADMINISTRATOR)) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroup_owner'));
+	if (!@in_array($CURUSER['id'],$owners) && (!get_privilege('edit_relgroups',false))) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroup_owner'));
 }
 //   Delete rgnews Item    //////////////////////////////////////////////////////
 

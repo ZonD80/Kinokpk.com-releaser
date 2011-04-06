@@ -10,11 +10,10 @@
 
 require "include/bittorrent.php";
 
-dbconn();
+INIT();
 loggedinorreturn();
 
-if (get_user_class() < UC_MODERATOR)
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
+get_privilege('is_moderator');
 
 $REL_TPL->stdhead("Административный поиск");
 print "<h1>Административный поиск</h1>\n";
@@ -117,22 +116,7 @@ $highlight = " bgcolor=#BBAF9B";
 			<td <?=$_GET['ma']?$highlight:""?>><input name="ma" type="text"
 				value="<?=htmlspecialchars($_GET['ma'])?>" maxlength="17"></td>
 			<td valign="middle" class=rowhead>Класс:</td>
-			<td <?=((int)$_GET['c'] && (int)$_GET['c'] != 1)?$highlight:""?>><select
-				name="c">
-				<option value='1'>(Любой)</option>
-				<?
-
-				if (!is_valid_id($_GET['c']))
-				$class = '';
-				$class = (int) $_GET['c'];
-				for ($i = 2;;++$i) {
-					if ($c = get_user_class_name($i-2))
-					print("<option value=" . $i . ($class && $class == $i? " selected" : "") . ">$c</option>\n");
-					else
-	   	break;
-				}
-				?>
-			</select></td>
+			<td <?=((int)$_GET['c'] && (int)$_GET['c'] != 1)?$highlight:""?>><?php print make_classes_select('c',(int)$_GET['c']);?></td>
 		</tr>
 		<tr>
 
@@ -704,7 +688,7 @@ $highlight = " bgcolor=#BBAF9B";
 
 		$perpage = 30;
 
-		list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $q);
+		$limit = "LIMIT 50";
 
 		$query .= $limit;
 
@@ -714,8 +698,6 @@ $highlight = " bgcolor=#BBAF9B";
 		stdmsg("Внимание","Пользователь не был найден.");
 		else
 		{
-			if ($count > $perpage)
-			print $pagertop;
 			print "<table border=1 cellspacing=0 cellpadding=5>\n";
 			print "<tr><td class=colhead align=left>Пользователь</td>
     		<td class=colhead align=left>Рейтинг</td>
@@ -739,8 +721,6 @@ $highlight = " bgcolor=#BBAF9B";
 			</tr>\n";
 			}
 			print "</table>";
-			if ($count > $perpage)
-			print "$pagerbottom";
 
 			?> <br />
 	<br />

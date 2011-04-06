@@ -9,20 +9,24 @@
  */
 require_once "include/bittorrent.php";
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
-if (get_user_class() < UC_MODERATOR) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
+get_privilege('view_logs');
+
 // delete items older than a week
-if (isset($_GET['truncate']) && (get_user_class() >= UC_SYSOP)) {
+if (isset($_GET['truncate']) && get_privilege('truncate_logs',false)) {
 	sql_query("TRUNCATE TABLE sitelog") or sqlerr(__FILE__,__LINE__);
 	stderr($REL_LANG->say_by_key('success'),'Логи очищены <a href="'.$REL_SEO->make_link('log').'">К логам</a>','success');
 
 } elseif (isset($_GET['truncate'])) 	stderr($REL_LANG->say_by_key('error'),'Логи могут быть очищены только системным администратором');
-$REL_TPL->stdhead($REL_LANG->say_by_key('logs'));
 
 $type = htmlspecialchars(trim((string)$_GET["type"]));
+
+if (!pagercheck()) {
+$REL_TPL->stdhead($REL_LANG->say_by_key('logs'));
+
 if(!$type) {
 	print ('<h1><a href="'.$REL_SEO->make_link('log','truncate','').'">Очистить логи</a></h1>');
 	print("<p align=center>");
@@ -35,26 +39,26 @@ if(!$type) {
 	die();
 }
 
+}
 $count = @mysql_result(sql_query("SELECT SUM(1) FROM `sitelog` WHERE type = ".sqlesc($type)),0);
 
 if (!$count) print("<b>".$REL_LANG->say_by_key('log_file_empty')."</b>\n");
 else
 {
-	$limited = 50;
-	list ( $pagertop, $pagerbottom, $limit ) = pager ( $limited, $count, array('log','type',$type));
-
-	$res = sql_query("SELECT txt, added FROM `sitelog` WHERE type = ".sqlesc($type)." ORDER BY `added` DESC $limit") or sqlerr(__FILE__, __LINE__);
+	$limit = ajaxpager(25, $count, array('log','type',$type), 'logtable > tbody:last');
+	$res = sql_query("SELECT txt, added FROM `sitelog` WHERE type = ".sqlesc($type)." ORDER BY `added` DESC LIMIT 50") or sqlerr(__FILE__, __LINE__);
+	if (!pagercheck()) {
 	print("<h1>".$REL_LANG->say_by_key('logs')."| <a href=\"".$REL_SEO->make_link('log')."\">к типам логов</a></h1>\n");
-	print "<p>$pagertop</p>";
-	print("<table border=1 cellspacing=0 cellpadding=5>\n");
+	print("<div id=\"pager_scrollbox\"><table id=\"logtable\" border=1 cellspacing=0 cellpadding=5>\n");
 	print("<tr><td class=colhead align=left>".$REL_LANG->say_by_key('time')."</td><td class=colhead align=left>".$REL_LANG->say_by_key('event')."</td></tr>\n");
+	}
 	while ($arr = mysql_fetch_assoc($res))
 	{
 		$time = mkprettytime($arr['added']);
 		print("<tr><td>$time</td><td class=\"bigtextarea\">".format_comment($arr[txt])."</td></tr>\n");
 	}
-	print("</table>");
-	print "<p>$pagerbottom</p>";
+	if (pagercheck()) die();
+	print("</table></div>");
 }
 $REL_TPL->stdfoot();
 ?>

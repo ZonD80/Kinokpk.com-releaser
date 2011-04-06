@@ -1,7 +1,7 @@
 <?
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 
 $REL_TPL->stdhead();
 

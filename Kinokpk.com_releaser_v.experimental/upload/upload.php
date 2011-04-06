@@ -12,7 +12,7 @@
 require_once("include/bittorrent.php");
 
 
-dbconn();
+INIT();
 
 
 
@@ -78,7 +78,7 @@ function checkname() {
 	<?
 	//tr($REL_LANG->say_by_key('announce_url'), $announce_urls[0], 1);
 	tr($REL_LANG->say_by_key('torrent_file'), "<input  type=file name=tfile  size=80><br /><input type=\"checkbox\"  name=\"multi\" value=\"1\">&nbsp;{$REL_LANG->say_by_key('multitracker_torrent')}<br /><small>{$REL_LANG->say_by_key('multitracker_torrent_notice')}</small>\n", 1);
-	if (get_user_class()>=UC_UPLOADER && $REL_CONFIG['use_dc'])
+	if (get_privilege('edit_releases',false) && $REL_CONFIG['use_dc'])
 	tr($REL_LANG->say_by_key('tiger_hash'),"<input type=\"text\" size=\"60\" maxlength=\"38\" name=\"tiger_hash\" value=\"{$row['tiger_hash']}\"><br/>".$REL_LANG->say_by_key('tiger_hash_notice'),1);
 
 	tr($REL_LANG->say_by_key('torrent_name')."<font color=\"red\">*</font>", "<input type=\"text\" id=\"name\" name=\"name\" size=\"80\" value=\"Русский / Original (год или диапазон годов) [качество, примечание]\"/><br /><div id=\"namematch\">{$REL_LANG->_("Example")}: ".$REL_LANG->say_by_key('taken_from_torrent')."</div>\n", 1);
@@ -86,7 +86,7 @@ function checkname() {
 	$imagecontent = '<br />';
 
 	for ($i = 0; $i < $REL_CONFIG['max_images']; $i++) {
-		$imagecontent.="<b>".$REL_LANG->say_by_key('image')." ".($i+1)." (URL):</b>&nbsp&nbsp<input type=\"text\" size=\"63\" name=\"img$i\"><hr />";
+		$imagecontent.=$REL_LANG->say_by_key('image')." ".($i+1)." {$REL_LANG->_("File")}: <input type=\"file\" name=\"image$i\" size=\"80\"><br/>{$REL_LANG->_('or')} URL: <input type=\"text\" size=\"63\" name=\"img$i\"><hr />";
 	}
 
 	tr($REL_LANG->say_by_key('images'), $REL_LANG->say_by_key('max_file_size').": 500kb<br />".$REL_LANG->say_by_key('avialable_formats').": .jpg .png .gif$imagecontent\n", 1);
@@ -118,7 +118,7 @@ function checkname() {
 	tr ($REL_LANG->say_by_key('subcats'),$chsel,1);
 
 
-	if (get_user_class() >= UC_MODERATOR) {
+	if (get_privilege('edit_releases')) {
 		tr($REL_LANG->say_by_key('golden'), "<input type=checkbox name=free value=\"1\"> ".$REL_LANG->say_by_key('golden_descr'), 1);
 		tr("Важный", "<input type=\"checkbox\" name=\"sticky\" value=\"1\">Прикрепить этот торрент (всегда наверху)", 1);
 	}

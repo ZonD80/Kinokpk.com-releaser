@@ -10,7 +10,7 @@
 
 require "include/bittorrent.php";
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
@@ -24,12 +24,11 @@ function barf($text = "Пользователь удален") {
 	stderr($REL_LANG->say_by_key('success'), $text);
 }
 
-if (get_user_class() < UC_MODERATOR)
-puke($REL_LANG->say_by_key('access_denied'));
+get_privilege('edit_users');
 
 $action = (string)$_POST["action"];
 
-if (($action == 'ownsupport') && (get_user_class()>=UC_ADMINISTRATOR)) {
+if (($action == 'ownsupport') && get_privilege('ownsupport',false)) {
 	$supportfor = ($_POST["support"]?htmlspecialchars((string)$_POST["supportfor"]):'');
 	$updateset[] = "supportfor = " . sqlesc($supportfor);
 	sql_query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__, __LINE__);
@@ -37,7 +36,7 @@ if (($action == 'ownsupport') && (get_user_class()>=UC_ADMINISTRATOR)) {
 	stderr($REL_LANG->say_by_key('success'),'Вы успешно сменили себе статус поддержки','success');
 
 }
-elseif (($action == 'delnick') && (get_user_class()>=UC_ADMINISTRATOR)) {
+elseif (($action == 'delnick') && get_privilege('ownsupport',false)) {
 	$nid = (int)$_POST['id'];
 	$REL_DB->query("DELETE FROM nickhistory WHERE id=$nid");
 	$REL_TPL->stderr($REL_LANG->_('Success'),$REL_LANG->_('Nick deleted from history'));
@@ -45,7 +44,7 @@ elseif (($action == 'delnick') && (get_user_class()>=UC_ADMINISTRATOR)) {
 elseif ($action == "edituser") {
 	$userid = (int) $_POST["userid"];
 	$CLASS = @mysql_result(sql_query("SELECT class FROM users WHERE id = $userid"),0);
-	if ($CLASS >= get_user_class()) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
+	if (get_class_priority($CLASS) >= get_class_priority(get_user_class())) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 
 	$title = $_POST["title"];
 	$avatar = (int)$_POST["avatar"];
@@ -88,12 +87,12 @@ elseif ($action == "edituser") {
 	$curenabled = $arr["enabled"];
 	$curclass = $arr["class"];
 	$curwarned = $arr["warned"];
-	if (get_user_class() == UC_SYSOP)
+	if (get_privilege('add_comments_to_user',false))
 	$modcomment = (string)($_POST["modcomment"]);
 	else
 	$modcomment = $arr["modcomment"];
 	// User may not edit someone with same or higher class than himself!
-	if ($curclass >= get_user_class() || $class >= get_user_class())
+	if (get_class_priority($curclass) >= get_class_priority(get_user_class()) || get_class_priority($class) >= get_class_priority(get_user_class()))
 	puke("Так нельзя делать!");
 
 	if ($curclass != $class) {

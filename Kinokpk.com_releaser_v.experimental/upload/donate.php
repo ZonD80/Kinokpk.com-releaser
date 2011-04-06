@@ -3,10 +3,12 @@
 // paying system via sms
 require_once("include/bittorrent.php");
 define("IN_CONTACT",true);
-dbconn();
+INIT();
 $amount = (int)$_GET['amount'];
 if (!$amount) $amount = (int)$_POST['LMI_PAYMENT_AMOUNT'];
 
+			$classes = init_class_array();
+			
 switch ($amount) {
 	case 1: { $project_id = 28832; $discount=10;  break;}
 	case 3: { $project_id = 28833; $discount=30; break;}
@@ -42,7 +44,7 @@ if ($mode=='wm') {
 			sql_query("UPDATE users SET discount=discount+$discount, modcomment=CONCAT(".sqlesc(date("Y-m-d") . "Купил $discount откупа\n").",modcomment) WHERE id=".(int)$_POST['id']);
 
 		} else {
-			sql_query("UPDATE users SET class=".UC_VIP.", modcomment=CONCAT(".sqlesc(date("Y-m-d") . "Купил VIP\n").",modcomment) WHERE class<".UC_VIP." AND id=".(int)$_POST['id']);
+			sql_query("UPDATE users SET class=".$classes['vip'].", modcomment=CONCAT(".sqlesc(date("Y-m-d") . "Купил VIP\n").",modcomment) WHERE class<".$classes['vip']." AND id=".(int)$_POST['id']);
 			sql_query("UPDATE users SET dis_reason='', enabled=1 WHERE id = ".(int)$_POST['id']);
 
 		}
@@ -205,7 +207,7 @@ if (!$amount) {
 
 	<?php print ('
   <div class="info">* Внимание: Цены указаны для <img src="pic/flag/russia.gif" width="15" height="10" border="0" alt="Российская Федерация"> Российской Федерации. Если Вы находитесь вне пределов РФ, то услуга в Вашей стране может быть недоступна, либо конечная цена SMS сообщения будет зависеть от налоговой ставки в Вашей стране.</div>
-  <div class="info">* Attention: Prices for PayPal are a little bigger than another due high tax rates. Also, we are checking paypal payments manually, so you will receive your privelege in ONE day.</div>
+  <div class="info">* Attention: Prices for PayPal are a little bigger than another due high tax rates. Also, we are checking paypal payments manually, so you will receive your privilege in ONE day.</div>
 ');
 	?>
 <div class="sertificate">
@@ -291,7 +293,7 @@ if ($discount) {
 	safe_redirect($REL_SEO->make_link('myrating'),1);
 	stderr($REL_LANG->say_by_key('success'),'Спасибо, вам успешно прибавлено '.$discount.' единиц откупа, сейчас вы перейдете к странице "Мой рейтинг"','success');
 } else {
-	sql_query("UPDATE users SET class=".UC_VIP.", modcomment=".sqlesc(date("Y-m-d") . "Купил VIP\n").$CURUSER['modcomment']." WHERE class<".UC_VIP." AND id={$CURUSER['id']}");
+	sql_query("UPDATE users SET class=".$classes['vip'].", modcomment=".sqlesc(date("Y-m-d") . "Купил VIP\n").$CURUSER['modcomment']." WHERE class<".$classes['vip']." AND id={$CURUSER['id']}");
 	if ($CURUSER['dis_reason'] == 'Your rating was too low.') sql_query("UPDATE users SET dis_reason='', enabled=1 WHERE id = {$CURUSER['id']}");
 
 	safe_redirect($REL_SEO->make_link('myrating'),1);

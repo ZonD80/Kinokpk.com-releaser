@@ -9,7 +9,7 @@
  */
 
 require_once("include/bittorrent.php");
-dbconn();
+INIT();
 
 
 //echo "<body><META http-equiv=\"refresh\" content=\"3; URL=$REL_CONFIG['forumurl']/index.php?act=Reg&CODE=00\"></body>";

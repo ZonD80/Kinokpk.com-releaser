@@ -168,6 +168,7 @@ $REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster) SELE
 $REL_DB->query("UPDATE users SET warned=0, warneduntil = 0, modcomment = CONCAT($modcomment, modcomment) WHERE warned=1 AND warneduntil < ".time()." AND warneduntil <> 0") or sqlerr(__FILE__,__LINE__);
 
 // promote power users
+/* MODIFY TO CLASS SYSTEM & XBT
 if ($REL_CRON['rating_enabled']) {
 	$msg = sqlesc("Наши поздравления, вы были авто-повышены до ранга <b>Опытный пользовать</b>.");
 	$subject = sqlesc("Вы были повышены");

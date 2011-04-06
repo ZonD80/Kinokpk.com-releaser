@@ -10,25 +10,24 @@
 
 require_once "include/bittorrent.php";
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 httpauth();
 
-// The following line may need to be changed to UC_MODERATOR if you don't have Forum Moderators
-if (isset($_COOKIE['override_class']) || (get_user_class() < UC_ADMINISTRATOR))
+if (isset($_COOKIE['override_class']) || get_privilege('is_moderator',false))
 stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 
 if ($_GET['action'] == 'editclass') //Process the querystring - No security checks are done as a temporary class higher
 {                                   //than the actual class mean absoluetly nothing.
 $newclass = (int)$_GET['class'];
-if ($CURUSER['class'] < $newclass) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('class_override_denied'));
+if (get_class_priority($CURUSER['class']) < get_class_priority($newclass)) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('class_override_denied'));
 
 $returnto = makesafe($_GET['returnto']);
 
 setcookie('override_class', $newclass, 0x7fffffff, "/");
 
-safe_redirect(" ".$returnto);
+safe_redirect($returnto);
 die();
 }
 
@@ -44,14 +43,7 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('change_class'));
 <table width=150 border=2 cellspacing=5 cellpadding=5>
 	<tr>
 		<td><?=$REL_LANG->say_by_key('class')?></td>
-		<td align=left><select name=class>
-			<!-- Populate drop down box with all lower classes -->
-		<?
-		$maxclass = get_user_class() - 1;
-		for ($i = 0; $i <= $maxclass; ++$i)
-		print("<option value=$i" .">" . get_user_class_name($i) . "\n");
-		?>
-		</select></td>
+		<td align=left><?php print make_classes_select();?></td>
 	</tr>
 	</td>
 	</tr>
@@ -63,6 +55,6 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('change_class'));
 	</form>
 </table>
 <br />
-		<?
+		<?php
 		$REL_TPL->stdfoot();
 		?>

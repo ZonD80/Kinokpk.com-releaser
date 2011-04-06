@@ -12,11 +12,11 @@
 
 if(!defined('IN_TRACKER') && !defined('IN_ANNOUNCE')) die("Direct access to this page not allowed");
 
-$mysql_host = 'localhost';
-$mysql_user = '';
-$mysql_pass = '';
-$mysql_db = '';
-$mysql_charset = 'utf8';
+$db['host'] = 'localhost';
+$db['user'] = '';
+$db['pass'] = '';
+$db['db'] = '';
+$db['charset'] = 'utf8';
 
 define("COOKIE_SECRET",'');
 

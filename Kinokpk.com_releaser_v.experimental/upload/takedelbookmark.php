@@ -15,7 +15,7 @@ function bark($msg) {
 	$REL_TPL->stdfoot();
 	exit;
 }
-dbconn();
+INIT();
 
 loggedinorreturn();
 

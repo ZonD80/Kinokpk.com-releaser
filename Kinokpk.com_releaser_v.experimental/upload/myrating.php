@@ -10,7 +10,7 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
@@ -79,7 +79,7 @@ tr($REL_LANG->say_by_key('rating_title'),"<h1>{$REL_LANG->say_by_key('rating_tit
 // if ratings enabled
 if ($REL_CRON['rating_enabled']) {
 
-	if (get_user_class()==UC_VIP)
+	if (get_privilege('is_vip',false))
 	$goods = $REL_LANG->say_by_key('goods_vip');
 	elseif ((time()-$CURUSER['added'])<($REL_CRON['rating_freetime']*86400)) $goods = sprintf($REL_LANG->say_by_key('goods_new'),($REL_CRON['rating_freetime']-round((time()-$CURUSER['added'])/86400)));
 	else $goods = $REL_LANG->say_by_key('no_goods');

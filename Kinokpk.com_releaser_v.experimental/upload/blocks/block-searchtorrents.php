@@ -26,8 +26,10 @@ if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; }
 	$content = '<div id="releases-table">';
 
 	$perpage = 9;
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array(str_replace('.php','',$_SERVER['PHP_SELF'])) );
+	$limit = pager($perpage, $count, array(str_replace('.php','',$_SERVER['PHP_SELF'])) );
 
+	$content .=pagertop();
+	
 	$resarray = $REL_CACHE->get('block-indextorrents','page'.($page?$page:''));
 	if ($resarray===false) {
 		$resarray=array();
@@ -38,7 +40,6 @@ if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; }
 	$num = count($resarray);
 
 	$content .= "<table border=\"1\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"100%\">";
-	$content .=('<tr><td colspan="4">'.$pagertop.'</td></tr>');
 	$nc=1;
 
 	$REL_CONFIG['pron_cats'] = explode(',',$REL_CONFIG['pron_cats']);
@@ -63,7 +64,8 @@ if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; }
 		if ($nc == 4) { $nc=1; $content .= "</tr>"; }
 	}
 
-	$content .= "<tr><td colspan=\"5\">$pagerbottom</td></tr></table></div>";
+	$content .= "</table></div>";
+	$content.=$pagerbottom;
 
 }
 ?>

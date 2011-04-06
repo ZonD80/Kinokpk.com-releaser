@@ -18,7 +18,7 @@
 
 function make_forum_tree($class) {
 	global $CURUSER;
-	return make_tree('forum_categories',"WHERE class <= $class");
+	return make_tree('forum_categories',"WHERE FIND_IN_SET($class,class)");
 }
 
 /**
@@ -33,7 +33,7 @@ function assoc_full_forum_cats($tree,$class) {
 	global $CURUSER;
 	$return = assoc_full_cats('forum_categories');
 	foreach ($return as $id=>$cat) {
-		if ($cat['class']>$class) unset($return[$id]);
+		if (!in_array($class,$cat['class'])) unset($return[$id]);
 		else $return[$id]['route'] = get_cur_position_str($tree,$cat['id'],'forum');
 	}
 	return $return;

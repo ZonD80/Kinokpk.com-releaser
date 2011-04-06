@@ -32,8 +32,7 @@ function dltable($name, $arr, $torrent)
           "<td class=colhead align=right>".$REL_LANG->say_by_key('completed')."</td>".    
           "<td class=colhead align=right>".$REL_LANG->say_by_key('idle')."</td>" .
           "<td class=colhead align=left>".$REL_LANG->say_by_key('client')."</td></tr>\n";
-	$moderator = (isset($CURUSER) && get_user_class() >= UC_MODERATOR);
-	$mod = get_user_class() >= UC_MODERATOR;
+	$mod = get_privilege('is_moderator',false);
 	foreach ($arr as $e) {
 		// user/ip/port
 		// check if anyone has this ip
@@ -52,7 +51,7 @@ function dltable($name, $arr, $torrent)
 	return $s;
 }
 
-dbconn();
+INIT();
 
 
 
@@ -97,10 +96,10 @@ print("<div id=\"tabs\"><ul>
 	<li nowrap=\"\" class=\"tab1\"><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name))."\"><span>{$REL_LANG->say_by_key('torrent_info')}</span></a></li>
 	<li nowrap=\"\" class=\"tab2\"><a href=\"".$REL_SEO->make_link('exportrelease','id',$id,'name',translit($name))."\"><span>{$REL_LANG->say_by_key('exportrelease_mname')}</span></a></li>
 	</ul></div>\n <br />");
-print('<table width="100%" style="float:left"><tr><td class="colhead">'.$REL_LANG->say_by_key('tracker').'</td><td class="colhead">Сидов</td><td class="colhead">Личей</td><td class="colhead">Всего</td><td class="colhead">Время проверки</td><td class="colhead">'.$REL_LANG->say_by_key('status').'</td><td class="colhead">'.$REL_LANG->_('Method of check').'</td>'.((get_user_class()>=UC_ADMINISTRATOR)?'<td class="colhead">'.$REL_LANG->_('Method of request').'</td><td class="colhead">'.$REL_LANG->_('Amount of fails').'</td>':'').'</tr>');
+print('<table width="100%" style="float:left"><tr><td class="colhead">'.$REL_LANG->say_by_key('tracker').'</td><td class="colhead">Сидов</td><td class="colhead">Личей</td><td class="colhead">Всего</td><td class="colhead">Время проверки</td><td class="colhead">'.$REL_LANG->say_by_key('status').'</td><td class="colhead">'.$REL_LANG->_('Method of check').'</td>'.((get_privilege('is_administrator'))?'<td class="colhead">'.$REL_LANG->_('Method of request').'</td><td class="colhead">'.$REL_LANG->_('Amount of fails').'</td>':'').'</tr>');
 if ($data)
 foreach ($data as $tracker)
-print ("<tr><td>".$tracker['tracker']."</td><td>{$tracker['seeders']}</td><td>{$tracker['leechers']}</td><td>".($tracker['seeders']+$tracker['leechers'])."</td><td>{$tracker['lastchecked']}</td><td>".cleanhtml($tracker['state'])."</td><td>{$tracker['method']}</td>".((get_user_class()>=UC_ADMINISTRATOR)?"<td>{$tracker['remote_method']}</td><td>{$tracker['num_failed']}</td>":'')."</tr>");
+print ("<tr><td>".$tracker['tracker']."</td><td>{$tracker['seeders']}</td><td>{$tracker['leechers']}</td><td>".($tracker['seeders']+$tracker['leechers'])."</td><td>{$tracker['lastchecked']}</td><td>".cleanhtml($tracker['state'])."</td><td>{$tracker['method']}</td>".((get_privilege('is_administrator',false))?"<td>{$tracker['remote_method']}</td><td>{$tracker['num_failed']}</td>":'')."</tr>");
 //print('</table>');
 else print ('<tr><td colspan="6" align="center">'.$REL_LANG->_('This release is announce or releaser without torrent').'</td></tr>');
 print('</table>');

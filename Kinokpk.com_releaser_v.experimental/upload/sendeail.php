@@ -24,7 +24,7 @@
 
 require_once("include/bittorrent.php");
 define("IN_CONTACT",true);
-dbconn();
+INIT();
 
 if (!$CURUSER) {
 	require_once('include/recaptchalib.php');

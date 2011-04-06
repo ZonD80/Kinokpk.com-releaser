@@ -10,12 +10,10 @@
 
 
 require_once "include/bittorrent.php";
-dbconn();
+INIT();
 loggedinorreturn();
+get_privilege('mass_pm');
 httpauth();
-
-if (get_user_class() < UC_ADMINISTRATOR)
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
 $REL_TPL->stdhead("Общее сообщение", false);
 ?>
@@ -42,19 +40,11 @@ $REL_TPL->stdhead("Общее сообщение", false);
 				<td>Кому отправлять:<br />
 				<table style="border: 0" width="100%" cellpadding="0"
 					cellspacing="0">
-					<tr>
+					<tr><td>
 					<?php
-					for ($i=0;;$i++) {
-						$class++;
-						if ($s = get_user_class_name($i))
-						print("<td style=\"border: 0\" width=\"20\"><input type=\"checkbox\" name=\"clases[]\" value=\"$i\"></td><td style=\"border: 0\">$s</td>");
-						else
-						break;
-						if ($class % 4 == 0)
-						print("</tr><tr>");
-					}
+					print make_classes_checkbox('classes');
 					?>
-					</tr>
+					</td></tr>
 				</table>
 				</td>
 			</tr>

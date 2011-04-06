@@ -11,10 +11,10 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 loggedinorreturn();
 
-if (get_user_class() < UC_SYSOP) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
+get_privilege('edit_forum_settings');
 
 httpauth();
 
@@ -51,7 +51,7 @@ elseif (isset($_GET['edited'])) {
 	$category_id = sqlesc((int)$_GET['id']);
 	$category_parent = sqlesc((int)$_POST['category_parent']);
 	$category_pic = sqlesc(htmlspecialchars((string)$_POST['category_pic']));
-	$category_class = sqlesc((int)$_POST['category_class']);
+	$category_class = sqlesc(implode(',',(array)$_POST['category_class']));
 	$category_sort = sqlesc((int)$_POST['category_sort']);
 	$category_seo = sqlesc(htmlspecialchars((string)$_POST['category_seo']));
 	sql_query("UPDATE forum_categories SET
@@ -85,17 +85,8 @@ elseif (isset($_GET['editid'])) {
 	print("<tr><td>{$REL_LANG->say_by_key('sort')}</td><td align='left'><input type='text' size=60 name='category_sort' value='{$row['sort']}'></td></tr>");
 	print("<tr><td>{$REL_LANG->_("Access level")}</td>");
 	// class selection
-
-	$classsel = '<td><select name="category_class"><option value="-1">'.get_user_class_name(-1).'</option>';
-
-	for ($i=UC_SYSOP;$i--;$i<=0){
-
-		$classsel.= "<option value=\"$i\"".(($i==$row['class'])?" selected=\"1\"":'').">".get_user_class_name($i)."</option>\n";
-
-	}
-
-	$classsel .='</select></td></tr>';
-	print $classsel;
+	$classsel = '<td>'.make_classes_checkbox("category_class",$row['class']).'</td>';
+	print $classsel."</tr>";
 	// class selection end
 	print("<tr><td colspan=\"2\"><div align='center'><input type='submit' value='{$REL_LANG->say_by_key('edit')}'></div></td></tr>");
 	print("</table></form>");
@@ -108,7 +99,7 @@ if(isset($_GET['added'])) {
 	$category_name = sqlesc(htmlspecialchars((string)$_POST['category_name']));
 	$category_parent = sqlesc((int)$_POST['category_parent']);
 	$category_pic = sqlesc(htmlspecialchars((string)$_POST['category_pic']));
-	$category_class = sqlesc((int)$_POST['category_class']);
+	$category_class = sqlesc(implode(',',(array)$_POST['category_class']));
 	$category_sort = sqlesc((int)$_POST['category_sort']);
 	$category_seo = sqlesc(htmlspecialchars((string)$_POST['category_seo']));
 	sql_query("INSERT INTO forum_categories (name,image,parent_id,class,sort,seo_name) VALUES ($category_name,$category_pic,$category_parent,$category_class,$category_sort,$category_seo)") or sqlerr(__FILE__,__LINE__);
@@ -139,15 +130,7 @@ if(isset($_GET['add'])) {
 	print("<tr><td>{$REL_LANG->_("Access level")}</td>");
 	// class selection
 
-	$classsel = '<td><select name="category_class"><option value="-1">'.get_user_class_name(-1).'</option>';
-
-	for ($i=UC_SYSOP;$i--;$i<=0){
-
-		$classsel.= "<option value=\"$i\">".get_user_class_name($i)."</option>\n";
-
-	}
-
-	$classsel .='</select></td></tr>';
+	$classsel = '<tr><td>'.make_classes_checkbox('category_class').'</td></tr>';
 	print $classsel;
 	// class selection end
 	print("<tr><td colspan=\"2\"><div align='center'><input type='submit' value='{$REL_LANG->_("Add a new category")}'/></div></td></tr>");
@@ -169,10 +152,17 @@ while ($row = mysql_fetch_assoc($sql)) {
 	$parent = $row['parent_id'];
 	$forumid = $row['forum_id'];
 	$image = $row['image'];
-	$class = get_user_class_name($row['class']);
+	$row['class'] = explode(',', $row['class']);
+	//var_dump($row['class']);
+	foreach ($row['class'] AS $cl) {
+	$class[] = get_user_class_name($cl);
+	}
+	$class = @implode(',',$class);
+	
 	$sort = $row['sort'];
 
 	print("<tr><td><strong>$id</strong></td><td>$sort</td><td>$name</td><td>{$catseo}</td><td>".($image?'<img src="pic/cats/'.$image.'"/>':$REL_LANG->say_by_key('no'))."</td><td>".($cats[$parent]?$cats[$parent]:$REL_LANG->say_by_key('no'))."</td><td>$class</td><td><a href='forumadmin.php?editid=$id'><div align='center'><img src='pic/multipage.gif' border='0' class='special' /></a></div></td> <td><div align='center'><a onclick=\"return confirm('{$REL_LANG->say_by_key('confirmation_delete')}');\" href='forumadmin.php?delid=$id'><img src='pic/warned2.gif' border='0' class='special' align='center' /></a></div></td></tr>");
+	unset($class);
 }
 print("</table>");
 $REL_TPL->stdfoot();

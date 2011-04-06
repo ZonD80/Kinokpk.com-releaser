@@ -11,7 +11,7 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
@@ -32,13 +32,9 @@ if (!$count) {
 	$REL_TPL->begin_frame($REL_LANG->_('Release bookmarks'));
 	print('<div id="releases-table">');
 
-	$perpage = 25;
-
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('bookmarks'));
-
 	$tree = make_tree();
 
-	$res = sql_query("SELECT bookmarks.id AS bookmarkid, users.username, users.class, users.id AS owner, torrents.id, torrents.name, torrents.comments, leechers, seeders, torrents.images, torrents.numfiles, torrents.added, torrents.filename, torrents.size, torrents.views, torrents.visible, torrents.free, torrents.hits, torrents.category, IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']})) AS relgroup_allowed FROM bookmarks INNER JOIN torrents ON bookmarks.torrentid = torrents.id LEFT JOIN relgroups ON torrents.relgroup=relgroups.id LEFT JOIN users ON torrents.owner = users.id WHERE bookmarks.userid = ".sqlesc($CURUSER["id"])." GROUP BY torrents.id ORDER BY torrents.id DESC $limit") or sqlerr(__FILE__, __LINE__);
+	$res = sql_query("SELECT bookmarks.id AS bookmarkid, users.username, users.class, users.id AS owner, torrents.id, torrents.name, torrents.comments, leechers, seeders, torrents.images, torrents.numfiles, torrents.added, torrents.filename, torrents.size, torrents.views, torrents.visible, torrents.free, torrents.hits, torrents.category, IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']})) AS relgroup_allowed FROM bookmarks INNER JOIN torrents ON bookmarks.torrentid = torrents.id LEFT JOIN relgroups ON torrents.relgroup=relgroups.id LEFT JOIN users ON torrents.owner = users.id WHERE bookmarks.userid = ".sqlesc($CURUSER["id"])." ORDER BY torrents.id DESC") or sqlerr(__FILE__, __LINE__);
 
 	$resarray = prepare_for_torrenttable($res);
 	if (!$resarray) {
@@ -47,11 +43,7 @@ if (!$count) {
 		die();
 	}
 
-	print("<p>$pagertop</p>");
-
 	torrenttable($resarray, "bookmarks");
-
-	print("<p>$pagerbottom</p>");
 	print '</div>';
 	print("<div align=\"right\"><input type=\"submit\" OnClick=\"return confirm('Вы уверены?');\" value=\"".$REL_LANG->say_by_key('delete')."\"/></div></form>\n");
 	$REL_TPL->end_frame();

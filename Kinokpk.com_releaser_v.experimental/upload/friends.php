@@ -9,7 +9,7 @@
  */
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 loggedinorreturn();
 
 
@@ -109,6 +109,8 @@ elseif (isset($_GET['online'])) {
 	$q[] = 1;
 } else $query[] = 'friends.confirmed=1';
 
+$query_data = $querystr.' WHERE '.implode(' AND ',$query);
+
 $query['def'] = "(userid={$CURUSER['id']} OR friendid=$fid)";
 
 $querycount = $querystr.' WHERE '.implode(' AND ',$query);
@@ -130,28 +132,20 @@ print("<form method=\"get\" action=\"".$REL_SEO->make_link('friends')."\">\n");
 if ($state=='o') print '<input type="hidden" name="online" value="1">';
 if ($state=='p') print '<input type="hidden" name="pending" value="1">';
 print($REL_LANG->say_by_key('search')." <input type=\"text\" size=\"30\" name=\"search\" value=\"".$search."\">\n");
-print("<select name=\"class\">\n");
-print("<option value=\"-\">(Все уровни)</option>\n");
-for ($i = 0;;++$i) {
-	if ($c = get_user_class_name($i))
-	print("<option value=\"$i\"" . (is_valid_user_class($class) && $class == $i ? " selected" : "") . ">$c</option>\n");
-	else
-	break;
-}
-print("</select>\n");
+print make_classes_select('class',$class);
 print("<input class=\"button\" type=\"submit\" value=\"{$REL_LANG->say_by_key('go')}\" style=\"margin-top: -2px;\">\n");
 print("</form>\n");
 print("</div>\n");
 
 if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_friends'),'error'); $REL_TPL->stdfoot(); die(); }
-$perpage = 50;
-list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, $q);
 
 
 
-$res = sql_query("SELECT IF (friends.userid={$CURUSER['id']},friends.friendid,friends.userid) AS friend, IF (friends.userid={$CURUSER['id']},0,1) AS init, friends.id, u.username,u.class,u.country,u.added,u.last_access,u.gender,u.donor, u.warned, u.enabled, u.avatar, u.ratingsum, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON IF (friends.userid={$CURUSER['id']},u.id=friendid,u.id=userid) LEFT JOIN countries AS c ON c.id = u.country$query ORDER BY friends.id DESC $limit") or sqlerr(__FILE__, __LINE__);
+
+//$res = sql_query("SELECT IF (friends.userid={$CURUSER['id']},friends.friendid,friends.userid) AS friend, IF (friends.userid={$CURUSER['id']},0,1) AS init, friends.id, u.username,u.class,u.country,u.added,u.last_access,u.gender,u.donor, u.warned, u.enabled, u.avatar, u.ratingsum, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON IF (friends.userid={$CURUSER['id']},u.id=friendid,u.id=userid) LEFT JOIN countries AS c ON c.id = u.country$query ORDER BY friends.id DESC") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("(SELECT friends.friendid AS friend, 0 AS init, friends.id, u.username,u.class,u.country,u.added,u.last_access,u.gender,u.donor, u.warned, u.enabled, u.avatar, u.ratingsum, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON u.id=friendid LEFT JOIN countries AS c ON c.id = u.country$query_data AND userid={$CURUSER['id']}) UNION (SELECT friends.userid AS friend, 1 AS init, friends.id, u.username,u.class,u.country,u.added,u.last_access,u.gender,u.donor, u.warned, u.enabled, u.avatar, u.ratingsum, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON u.id=userid LEFT JOIN countries AS c ON c.id = u.country$query_data AND friendid={$CURUSER['id']})") or sqlerr(__FILE__, __LINE__);
+
 print ('<div id="users-table">');
-print ("<p>$pagertop</p><br />");
 print ("<br />");
 //print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
 //print("<tr><td class=\"colhead\">Аффка</td> <td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td><td class=\"colhead\">Подтвержден</td><td class=\"colhead\">Действия</td></tr>\n");
@@ -196,7 +190,7 @@ while ($arr = mysql_fetch_assoc($res)) {
 
 	print("<li><a href=\"".$REL_SEO->make_link('message','action','sendmessage','receiver',$arr['friend'])."\">Личное Сообщение</a></li>");
 	print ($arr['init']?"<li>{$REL_LANG->say_by_key('init')}</li>":'');
-	// <li>".((get_user_class() >= UC_ADMINISTRATOR)?"<a href=\"email-gateway.php?id=".$arr['friend']."\">email</a>":"</li>")."
+
 	print("<ul>
 			</div>
 		</div>
@@ -206,7 +200,6 @@ while ($arr = mysql_fetch_assoc($res)) {
 
 print("</div>\n");
 print("<div class=\"clear\"></div>");
-print ("<p>$pagerbottom</p>\n");
 print('</div></div>');
 
 $REL_TPL->stdfoot();

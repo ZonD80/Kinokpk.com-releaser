@@ -9,9 +9,9 @@
  */
 
 require_once("include/bittorrent.php");
-dbconn();
+INIT();
 loggedinorreturn();
-if (get_user_class() < UC_ADMINISTRATOR) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
+get_privilege('relgroups_admin');
 httpauth();
 
 
@@ -154,23 +154,19 @@ elseif ($a == 'deleteusers') {
 elseif ($a == 'users') {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('view_users'));
 	$count = get_row_count('rg_subscribes',"WHERE rgid=$id");
-	list($pagertop, $pagerbottom, $limit) = pager(30, $count, array('rgadmin','id',$id));
 
 	$res = sql_query("SELECT rg_subscribes.*, users.username, users.class FROM rg_subscribes LEFT JOIN users ON rg_subscribes.userid=users.id WHERE rgid = $id ORDER BY valid_until ASC $LIMIT") or sqlerr(__FILE__,__LINE__);
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('view_users'). ' '.@mysql_result(sql_query("SELECT name FROM relgroups WHERE id = $id"),0).$REL_LANG->say_by_key('to_rgadmin'));
 	begin_table();
 
 	print ('<tr><td class="colhead">'.$REL_LANG->say_by_key('signup_username').'</td><td class="colhead">'.$REL_LANG->say_by_key('subscribe_until').'</td><td class="colhead">'.$REL_LANG->say_by_key('actions').'</td></tr>');
-	print("<tr><td class=\"index\" colspan=\"4\">");
-	print($pagertop);
-	print("</td></tr>");
+
 	while ($row = mysql_fetch_assoc($res)) {
 		$has_users = true;
 		print ("<tr><td><a href=\"".$REL_SEO->make_link('userdetails','id',$row['userid'],'username',translit($row['username']))."\">".get_user_class_color($row['class'],$row['username'])."</a></td><td>".($row['valid_until']?mkprettytime($row['valid_until'])."{$REL_LANG->say_by_key('in_time')}".get_elapsed_time($row['valid_until']):$REL_LANG->say_by_key('never'))."</td><td><a href=\"".$REL_SEO->make_link('rgadmin','id',$id,'a','deleteuser','userid',$row['userid'])."\" onclick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}');\">D</a> / <a href=\"".$REL_SEO->make_link('rgadmin','id',$id,'a','deleteuser','userid',$row['userid'],'notify','')."\" onclick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}');\">{$REL_LANG->say_by_key('delete_with_notify')}</a></td></tr>");
 	}
 	if (!$has_users) print '<tr><td colspan="4" align="center">'.$REL_LANG->say_by_key('no_users').'</td></tr>';
 	print("<tr><td class=\"index\" colspan=\"4\">");
-	print($pagerbottom);
 	print("</td></tr>");
 	$REL_TPL->end_table();
 	$REL_TPL->end_frame();

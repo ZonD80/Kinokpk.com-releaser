@@ -21,7 +21,7 @@
  Do not remove above lines!
  */
 require_once("include/bittorrent.php");
-dbconn();
+INIT();
 
 if (!mkglobal("username:password"))
 die();

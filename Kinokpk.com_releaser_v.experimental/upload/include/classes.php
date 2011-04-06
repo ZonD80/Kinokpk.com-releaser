@@ -9,14 +9,57 @@
  */
 
 if (!defined("IN_TRACKER") && !defined("IN_ANNOUNCE")) die('Direct access to this file not allowed.');
-define ("UC_GUEST", -1);
-define ("UC_USER", 0);
-define ("UC_POWER_USER", 1);
-define ("UC_VIP", 2);
-define ("UC_UPLOADER", 3);
-define ("UC_MODERATOR", 4);
-define ("UC_ADMINISTRATOR", 5);
-define ("UC_SYSOP", 6);
+
+/**
+ * Initializes class array
+ * @return array Class array
+ */
+function init_class_array() {
+	global $REL_CACHE,$REL_DB;
+	$classes = $REL_CACHE->get('system', 'classes');
+	if ($classes===false) {
+		$classes = $REL_DB->query_assoc("SELECT * FROM classes");
+		foreach ($classes AS $class) {
+			$to_cache[$class['id']] = array('name'=>$class['name'],'priority'=>$class['prior'],'style'=>$class['style']);
+			if ($class['remark']) {
+				$to_cache[$class['remark']] = $class['id'];
+			}
+		}
+		
+		$REL_CACHE->set('system','classes',$to_cache);
+		$classes = $to_cache;
+	}
+	return $classes;
+}
+
+/**
+ * Returns user class priority
+ * @param int $class User class or nothing to return current user class priority
+ * @return int User class priority
+ */
+function get_class_priority($class=false) {
+	global $CURUSER;
+	if (!$class && $CURUSER) {
+		return get_class_priority($CURUSER['class']);
+	}
+	elseif (!$class && !$CURUSER) return -1;
+	else {
+			$classes = init_class_array();
+		return (int)$classes[$class]['priority'];
+	}
+}
+
+/**
+ * Returns user class
+ * @return int User class id
+ */
+function get_user_class() {
+	global $CURUSER;
+	$classes = init_class_array();
+	if ($CURUSER && $classes[$CURUSER['class']]) return $CURUSER['class'];
+	else return $classes['guest'];
+}
+
 
 /**
  * Returns username with a color by user class
@@ -27,70 +70,113 @@ define ("UC_SYSOP", 6);
 function get_user_class_color($class, $username)
 {
 	global $REL_LANG;
-	switch ($class)
-	{
-		case UC_SYSOP:
-			return "<span  title=\"".$REL_LANG->_('Owner')."\">" . $username . "</span>";/*style=\"color:#0F6CEE\"*/
-			break;
-		case UC_ADMINISTRATOR:
-			return "<span  title=\"".$REL_LANG->_('Administrator')."\">" . $username . "</span>";/*style=\"color:green\"*/
-			break;
-		case UC_MODERATOR:
-			return "<span  title=\"".$REL_LANG->_('Moderator')."\">" . $username . "</span>";/*style=\"color:#00cccc\"*/
-			break;
-		case UC_UPLOADER:
-			return "<span  title=\"".$REL_LANG->_('Releaser')."\">" . $username . "</span>"; /*style=\"color:orange\"*/
-			break;
-		case UC_VIP:
-			return "<span style=\"color:#9C2FE0\" title=\"".$REL_LANG->_('VIP')."\">" . $username . "</span>";
-			break;
-		case UC_POWER_USER:
-			return "<span  title=\"".$REL_LANG->_('Power user')."\">" . $username . "</span>"; /*style=\"color:#D21E36\"*/
-			break;
-		case UC_USER:
-			return "<span title=\"".$REL_LANG->_('User')."\">" . $username . "</span>";
-			break;
-		case UC_GUEST:
-			return "<i>{$REL_LANG->_('Guest')}</i>";
-			break;
-				
+	$classes = init_class_array();
+	$cl = $classes[$class];
+	if ($cl['style']) {
+		$return = str_replace("{clname}", $REL_LANG->_($cl['name']), $cl['style']);
+		$return = str_replace("{uname}", $username, $return);
+	} else {
+		$return = $username;
 	}
-	return "$username";
+	return $return;
 }
 
 /**
- * Returns user class name
+ * Generates class input HTML checkboxes
+ * @param string $name Name of generated input
+ * @param string $selected Id of selected classses separated by comma.
+ * @return string HTML for form
+ */
+function make_classes_checkbox($name,$selected='') {
+	global $REL_LANG;
+	$selected = explode(',',$selected);
+	$classes = init_class_array();
+	foreach ($classes AS $id=>$class) {
+		if (is_int($id))
+		$return.="<input type=\"checkbox\" name=\"{$name}[]\" value=\"{$id}\"".(in_array($id, $selected)?' checked':'')."> {$REL_LANG->_($class['name'])}<br/>";
+	}
+	return $return;
+}
+
+/**
+ * Generates class select HTML
+ * @param string $name Name of select
+ * @param id $selected ID of selected class
+ * @return string HTML for select
+ */
+function make_classes_select($name='class',$selected=NULL) {
+	global $REL_LANG;
+	$return .=("<select name=\"class\">\n");
+$return .=("<option value=\"-\">({$REL_LANG->_('All levels')})</option>\n");
+	$classes = init_class_array();
+	foreach ($classes AS $id=>$class) {
+		if (is_int($id))
+		$return.="<option value=\"{$id}\"".($selected==$id?' selected':'').">{$REL_LANG->_($class['name'])}</option>";
+	}
+$return .=("</select>\n");
+return $return;
+}
+/**
+ * Returns user class name form lang array
  * @param int $class class id
  * @return string class name
  */
 function get_user_class_name($class) {
 	global $REL_LANG;
-	switch ($class) {
-		case UC_USER: return $REL_LANG->_('User');
-
-		case UC_POWER_USER: return $REL_LANG->_('Power user');
-
-		case UC_VIP: return $REL_LANG->_('VIP');
-
-		case UC_UPLOADER: return $REL_LANG->_('Releaser');
-
-		case UC_MODERATOR: return $REL_LANG->_('Moderator');
-
-		case UC_ADMINISTRATOR: return $REL_LANG->_('Administrator');
-
-		case UC_SYSOP: return $REL_LANG->_('Owner');
-
-		case UC_GUEST: return $REL_LANG->_('Guest');
-	}
-	return "";
+		$classes = init_class_array();
+	$cl = $classes[$class];
+	if (!$cl) return $REL_LANG->_('ERROR:No class with id %s',$class);
+	return $REL_LANG->_($cl['name']);
 }
 
 /**
- * Checks that id of user class is valid
- * @param int $class id of class
- * @return boolean
+ * Checks that class id is valid
+ * @param int $class ID of a class to verify
+ * @return boolean True or False
  */
 function is_valid_user_class($class) {
-	return (is_numeric($class) && floor($class) == $class && $class >= UC_USER && $class <= UC_SYSOP) || $class==-1;
+	$class = (int)$class;
+			$classes = init_class_array();
+			if (!$classes[$class]) return false; else return true;
+}
+/**
+ * Returns true or false, or dies. Function used to get privileges on privilege given by name
+ * @param string $name privilege name
+ * @param boolean $die Die or not on false, default true
+ * @return boolean True or false on $die=false or generating template stderr/stdmsg event.
+ */
+function get_privilege($name,$die=true) {
+	global $REL_LANG,$REL_CACHE, $REL_DB, $REL_TPL, $CURUSER;
+	
+	$privs = $REL_CACHE->get('system', 'privileges');
+	if ($privs===false) {
+		$privs = $REL_DB->query_assoc("SELECT * FROM privileges");
+		foreach ($privs AS $priv) {
+			$to_cache[$priv['name']] = array('classes'=>explode(',', $priv['classes_allowed']),'descr'=>$priv['description']);
+		}
+		$REL_CACHE->set('system','privileges',$to_cache);
+		$privs = $to_cache;
+	}
+	if (!$CURUSER&&$name=='is_guest') {
+		if (!$die) return true; else {
+			if (ob_get_length()) {
+				$REL_TPL->stdmsg($REL_LANG->_('Access denied, you must to have permission to:'),$REL_LANG->_($privs['is_guest']['descr']));
+				$REL_TPL->stdfoot();
+				die();
+			} else $REL_TPL->stderr($REL_LANG->_('Access denied, you must to have permission to:'),$REL_LANG->_($privs['is_guest']['descr']));
+		}
+	}
+	if (!$privs[$name]['classes']) die("No classes defined for privilege $name");
+	if (in_array($CURUSER['class'], $privs[$name]['classes'])) {
+		return true;
+	} else {
+			if (!$die) return false; else {
+			if (ob_get_length()) {
+				$REL_TPL->stdmsg($REL_LANG->_('Access denied, you must to have permission to:'),$REL_LANG->_($privs[$name]['descr']));
+				$REL_TPL->stdfoot();
+				die();
+			} else $REL_TPL->stderr($REL_LANG->_('Access denied, you must to have permission to:'),$REL_LANG->_($privs[$name]['descr']));
+		}
+	}
 }
 ?>

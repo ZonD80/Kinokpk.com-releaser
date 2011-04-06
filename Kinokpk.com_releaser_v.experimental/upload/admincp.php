@@ -9,16 +9,18 @@
  */
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 loggedinorreturn();
 
-httpauth();
 
+get_privilege('access_to_admincp');
+
+httpauth();
 $REL_TPL->stdhead($REL_LANG->_('Administrator control panel'));
 $REL_TPL->begin_main_frame();
 
 
-if (get_user_class() >= UC_SYSOP) {
+if (get_privilege('is_owner',false)) {
 	$REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For owners")); ?>
 <table width=100% cellspacing=10 align=center>
 	<tr>
@@ -47,7 +49,7 @@ if (get_user_class() >= UC_SYSOP) {
 	<? $REL_TPL->end_frame();
 }
 
-if (get_user_class() >= UC_ADMINISTRATOR) { ?>
+if (get_privilege('is_administrator',false)) { ?>
 <? $REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For administrators")); ?>
 <table width=100% cellspacing=10 align=center>
 	<tr>
@@ -79,7 +81,7 @@ if (get_user_class() >= UC_ADMINISTRATOR) { ?>
 <? $REL_TPL->end_frame();
 }
 
-if (get_user_class() >= UC_MODERATOR) { ?>
+if (get_privilege('is_moderator',false)) { ?>
 <? $REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For moderators")); ?>
 
 
@@ -113,12 +115,9 @@ if (get_user_class() >= UC_MODERATOR) { ?>
 		<input type=text size=30 name=search> <select name=class>
 			<option value='-'><?=$REL_LANG->_("Select");?></option>
 			<?php
-			for ($i=0;;$i++) {
-				if ($s=get_user_class_name($i))
-				print("<option value=\"$i\">$s</option>");
-				else
-				break;
-			}
+			$classes = init_class_array();
+			foreach ($classes AS $cid=>$cl)
+				print("<option value=\"$cid\">{$REL_LANG->_($cl['name'])}</option>");
 			?>
 		</select> <input type=submit value='<?=$REL_LANG->_("Search");?>'></form>
 		</td>

@@ -11,7 +11,7 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 loggedinorreturn();
 
 setcookie('override_class', '', 0x7fffffff, "/");

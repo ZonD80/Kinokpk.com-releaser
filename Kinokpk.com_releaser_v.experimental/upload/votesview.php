@@ -11,7 +11,7 @@
 
 require "include/bittorrent.php";
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
@@ -22,7 +22,7 @@ if ($_GET[requestid])
 	$row = mysql_fetch_array($res2);
 	$count = $row[0];
 	$perpage = 50;
-	list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('votesview') );
+	$limit = pager($perpage, $count, array('votesview') );
 	$res = sql_query("SELECT users.id as userid,users.username, users.ratingsum, users.class, requests.id as requestid, requests.request FROM addedrequests INNER JOIN users ON addedrequests.userid = users.id INNER JOIN requests ON addedrequests.requestid = requests.id WHERE addedrequests.requestid =$requestid $limit") or sqlerr(__FILE__, __LINE__);
 	$REL_TPL->stdhead("Голосовавшие");
 	$res2 = sql_query("SELECT request FROM requests WHERE id=$requestid");
@@ -30,8 +30,6 @@ if ($_GET[requestid])
 
 	print("<h1>Голосовавшие для <a href=\"".$REL_SEO->make_link('requests','id',$requestid)."\"><b>$arr2[request]</b></a></h1>");
 	print("<p>Голосовать за этот <a href=\"".$REL_SEO->make_link('requests','action','vote','voteid',$requestid)."\"><b>запрос</b></a></p>");
-
-	echo $pagertop;
 
 	if (mysql_num_rows($res) == 0)
 	print("<p align=center><b>Ничего не найдено</b></p>\n");

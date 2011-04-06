@@ -1,6 +1,6 @@
 <?
 require "include/bittorrent.php";
-dbconn();
+INIT();
 loggedinorreturn();
 
 stderr('Извините','Данная опция временно отключена');

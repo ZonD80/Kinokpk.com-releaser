@@ -8,7 +8,7 @@
  * @link http://dev.kinokpk.com
  */
 require_once ("include/bittorrent.php");
-dbconn ();
+INIT();
 loggedinorreturn ();
 
 $id = ( int ) $_GET ['id'];

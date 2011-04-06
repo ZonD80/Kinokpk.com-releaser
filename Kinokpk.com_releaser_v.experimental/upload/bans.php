@@ -10,12 +10,13 @@
 
 require_once ("include/bittorrent.php");
 
-dbconn();
+INIT();
 loggedinorreturn();
+
+get_privilege('bans_admin');
+
 httpauth();
 
-if (get_user_class() < UC_ADMINISTRATOR)
-stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 
 
 if (is_valid_id($_GET['remove']))

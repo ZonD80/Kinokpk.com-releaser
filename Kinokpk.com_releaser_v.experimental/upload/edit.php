@@ -10,7 +10,7 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 
 loggedinorreturn();
@@ -40,9 +40,7 @@ function openwindow()
 </script>
 <?php
 
-if (($row["filename"] == 'nofile') || (get_user_class() == UC_UPLOADER)) $tedit = 1; else $tedit = 0;
-
-if (($CURUSER["id"] != $row["owner"]) && (get_user_class() < UC_MODERATOR) && !$tedit) {
+if (($CURUSER["id"] != $row["owner"]) && !get_privilege('edit_releases',false)) {
 	stdmsg($REL_LANG->say_by_key('error'),"Вы не можете редактировать этот торрент.");
 } else {
 	print("<form name=\"edit\" method=post action=\"".$REL_SEO->make_link('takeedit')."\" enctype=multipart/form-data>\n");
@@ -51,23 +49,23 @@ if (($CURUSER["id"] != $row["owner"]) && (get_user_class() < UC_MODERATOR) && !$
 	print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_GET["returnto"]) . "\" />\n");
 	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
 	print("<tr><td class=\"colhead\" colspan=\"2\">Редактировать торрент</td></tr>");
-	if ((get_user_class() >= UC_MODERATOR) || $tedit) tr($REL_LANG->say_by_key('check'),"<input type=\"checkbox\" name=\"approve\" value=\"1\"".($row['moderatedby']?' checked':'')."> {$REL_LANG->say_by_key('approve')}",1);
+	if (get_privilege('edit_releases',false)) tr($REL_LANG->say_by_key('check'),"<input type=\"checkbox\" name=\"approve\" value=\"1\"".($row['moderatedby']?' checked':'')."> {$REL_LANG->say_by_key('approve')}",1);
 	tr($REL_LANG->say_by_key('torrent_file'), "<input type=file name=tfile size=80><br /><input type=\"checkbox\" name=\"multi\" value=\"1\">&nbsp;{$REL_LANG->say_by_key('multitracker_torrent')}<br /><small>{$REL_LANG->say_by_key('multitracker_torrent_notice')}</small>\n", 1);
-	if (get_user_class()>=UC_UPLOADER && $REL_CONFIG['use_dc'])
+	if (get_privilege('is_releaser',false) && $REL_CONFIG['use_dc'])
 	tr($REL_LANG->say_by_key('tiger_hash'),"<input type=\"text\" size=\"60\" maxlength=\"38\" name=\"tiger_hash\" value=\"{$row['tiger_hash']}\"><br/>".$REL_LANG->say_by_key('tiger_hash_notice'),1);
 
-	if (get_user_class() >= UC_UPLOADER)
+	if (get_privilege('is_releaser',false))
 	tr($REL_LANG->say_by_key('announce_urls'),"<textarea name=\"trackers\" rows=\"6\" cols=\"60\" wrap=\"off\">$trackers</textarea><br/><input type=\"submit\" name=\"add_trackers\" value=\"{$REL_LANG->say_by_key('add_announce_urls')}\"><br/>{$REL_LANG->say_by_key('announce_urls_notice')}",1);
 	tr($REL_LANG->say_by_key('torrent_name')."<font color=\"red\">*</font>", "<input type=\"text\" name=\"name\" value=\"" . strip_tags($row["name"]) . "\" size=\"80\" />", 1);
 
 	$row['images'] = explode(',',$row['images']);
-	$imgcontent = '';
+	$imagecontent = '';
 	// die(var_dump($images));
 
 	for ($i = 0; $i < $REL_CONFIG['max_images']; $i++) {
-		$imgcontent .= "<b>Картинка №".($i+1).":&nbsp&nbsp<input type=\"text\" size=\"61\" name=\"img$i\" value=\"{$row['images'][$i]}\"><hr />";
+		$imagecontent.=$REL_LANG->say_by_key('image')." ".($i+1)." {$REL_LANG->_("File")}: <input type=\"file\" name=\"image$i\" size=\"80\"><br/>{$REL_LANG->_('or')} URL: <input type=\"text\" size=\"63\" name=\"img$i\" value=\"{$row['images'][$i]}\"><hr />";
 	}
-	tr($REL_LANG->say_by_key('images'), $REL_LANG->say_by_key('max_file_size').": 500kb<br />".$REL_LANG->say_by_key('avialable_formats').": .jpg .png .gif<br />$imgcontent", 1);
+	tr($REL_LANG->say_by_key('images'), $REL_LANG->say_by_key('max_file_size').": 500kb<br />".$REL_LANG->say_by_key('avialable_formats').": .jpg .png .gif<br />$imagecontent", 1);
 
 	print '<tr><td align="left"><b>'.$REL_LANG->say_by_key('description').'</b></td><td>'.textbbcode('descr',$row['descr'],1).'</td></tr>';
 
@@ -101,14 +99,13 @@ if (($CURUSER["id"] != $row["owner"]) && (get_user_class() < UC_MODERATOR) && !$
 	tr ($REL_LANG->say_by_key('subcats'),$chsel,1);
 
 	tr($REL_LANG->_("Viewing"), "<input type=\"checkbox\" name=\"visible\"" . (($row["visible"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Видимый на главной<br /><table border=0 cellspacing=0 cellpadding=0 width=420><tr><td class=embedded>Обратите внимание, что торрент автоматически станет видмым когда появиться раздающий и автоматически перестанет быть видимым (станет мертвяком) когда не будет раздающего некоторое время. Используйте этот переключатель для ускорения процеса. Также учтите что невидимые торренты (мертвяки) все-равно могут быть просмотрены и найдены, это просто не по-умолчанию.</td></tr></table>", 1);
-	if((get_user_class() >= UC_MODERATOR) || $tedit)
+	if(get_privilege('edit_releases',false)) {
 	tr($REL_LANG->_("Updated"), "<input type=\"checkbox\" name=\"upd\" value=\"1\" />Сделать первым на главной", 1);
-	if(get_user_class() >= UC_MODERATOR)
 	tr($REL_LANG->_("Banned"), "<input type=\"checkbox\" name=\"banned\"" . (($row["banned"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" />", 1);
+	}
 
-	if((get_user_class() >= UC_MODERATOR) || $tedit)
+	if(get_privilege('edit_releases',false)) {
 	tr("Золотая раздача", "<input type=\"checkbox\" name=\"free\"" . (($row["free"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Золотая раздача (считается только раздача, скачка не учитывается)", 1);
-	if(get_user_class() >= UC_MODERATOR)   {
 		tr("Важный", "<input type=\"checkbox\" name=\"sticky\"" . (($row["sticky"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Прикрепить этот торрент (всегда наверху)", 1);
 		tr("Комментарии модераторов<br /><small>Подписываться не надо</small></td>","<textarea cols=60 rows=6 name=modcomm" . ">".htmlspecialchars($row['modcomm'])."</textarea>\n",1);
 
@@ -117,13 +114,13 @@ if (($CURUSER["id"] != $row["owner"]) && (get_user_class() < UC_MODERATOR) && !$
 	$nofsize = $row['size'] / 1024 / 1024;
 	tr("Релиз без торрента", "<input type=\"checkbox\" name=\"nofile\" ".$word." value=\"1\">Релиз без торрента ; Размер (МБ) <input type=\"text\" name=\"nofilesize\" value=\"" . $nofsize . "\" size=\"20\" />", 1);
 
-	if (get_user_class() >= UC_UPLOADER)
+	if (get_privilege('edit_releases',false))
 	tr("Защита от правообладателей","<a href=\"javascript:openwindow()\">Анонимизировать / восстановить обладателя релиза</a> (откроется новое окошко)",1,1);
 
 	print("<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"{$REL_LANG->say_by_key('edit')}\" style=\"height: 25px; width: 100px\"> <input type=reset value=\"Обратить изменения\" style=\"height: 25px; width: 100px\"></td></tr>\n");
 	print("</table>\n");
 	print("</form>\n");
-	if(get_user_class() >= UC_MODERATOR) {
+	if(get_privilege('edit_releases',false)) {
 		print("<p>\n");
 		print("<form method=\"post\" action=\"".$REL_SEO->make_link('delete')."\">\n");
 		print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");

@@ -144,6 +144,8 @@ function send_comment(type,to_id) {
 		 tinyMCE.activeEditor.setContent('');
 	} else $("input[name=text]").val('');
 	$("#submit_button").removeAttr('disabled');
+	if ($('#pager_scrollbox'))
+	$('#pager_scrollbox').scrollTo($('#newcomment_placeholder'),800);
 	return false;
 }
 var REL_LANG_NO_TEXT_SELECTED = 'Не выбран текст!';

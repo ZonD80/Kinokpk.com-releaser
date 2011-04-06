@@ -10,7 +10,7 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 $time = time();
 
@@ -121,9 +121,11 @@ $status = 1;
 else
 $status = 0;
 
+$classes = init_class_array();
+
 $ret = sql_query("INSERT INTO users (username, passhash, secret, editsecret, notifs, emailnotifs, email, confirmed, ". (!$users?"class, ":"") ."added, last_login, last_access, language, timezone, invitedby, invitedroot) VALUES (" .
 implode(",", array_map("sqlesc", array($wantusername, $wantpasshash, $secret, $editsecret, $REL_CONFIG['default_notifs'], $REL_CONFIG['default_emailnotifs'], strtolower($email), $status))).
-		", ". (!$users?UC_SYSOP.", ":"").$time.",".$time.",".$time.", '{$REL_CONFIG['default_language']}', {$REL_CONFIG['register_timezone']} , ".(int)$inviter.", ".(int)$invitedroot.")");// or sqlerr(__FILE__, __LINE__);
+		", ". (!$users?$classes['sysop'].", ":"").$time.",".$time.",".$time.", '{$REL_CONFIG['default_language']}', {$REL_CONFIG['register_timezone']} , ".(int)$inviter.", ".(int)$invitedroot.")");// or sqlerr(__FILE__, __LINE__);
 
 if (!$ret) {
 	if (mysql_errno() == 1062)
@@ -144,7 +146,7 @@ write_sys_msg($id,$msg,$REL_LANG->_("Welcome"));
 if ($inviter) {
 	sql_query("UPDATE invites SET inviteid=$id WHERE inviter=$inviter AND id=$invid") or sqlerr(__FILE__,__LINE__);
 	write_sys_msg($id,sprintf($REL_LANG->say_by_key_to($id,'invite_notice'),"<a href=\"".$REL_SEO->make_link('userdetails','id',$inviter,'username',translit($invname))."\">".get_user_class_color($invclass,$invname)."</a>"),$REL_LANG->say_by_key_to($id,'welcome_back').strip_tags($wantusername));
-	write_sys_msg($inviter,sprintf($REL_LANG->say_by_key_to($inviter,'invite_notice_reg'),"<a href=\"".$REL_SEO->make_link('userdetails','id',$id,'username',translit(strip_tags($wantusername)))."\">".get_user_class_color(UC_USER,strip_tags($wantusername))."</a>"),$REL_LANG->say_by_key_to($inviter,'invite_system'));
+	write_sys_msg($inviter,sprintf($REL_LANG->say_by_key_to($inviter,'invite_notice_reg'),"<a href=\"".$REL_SEO->make_link('userdetails','id',$id,'username',translit(strip_tags($wantusername)))."\">".get_user_class_color($classes['reg'],strip_tags($wantusername))."</a>"),$REL_LANG->say_by_key_to($inviter,'invite_system'));
 }
 
 write_log($REL_LANG->_("New user registered (%s)",$wantusername),"tracker");

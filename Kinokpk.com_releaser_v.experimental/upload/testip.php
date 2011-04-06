@@ -10,10 +10,10 @@
 
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 
 loggedinorreturn();
-if (get_user_class() < UC_MODERATOR) stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('permission_denied'));
+get_privilege('bans_admin');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST")
 $ip = htmlspecialchars(trim((string)$_POST["ip"]));

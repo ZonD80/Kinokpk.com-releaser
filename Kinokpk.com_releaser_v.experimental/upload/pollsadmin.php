@@ -10,11 +10,10 @@
  */
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 loggedinorreturn();
+get_privilege('polls_operation');
 httpauth();
-
-if (get_user_class() < UC_ADMINISTRATOR) stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
 
 if (!isset($_GET['action']))  {
@@ -42,7 +41,7 @@ elseif ($_GET['action'] == 'add') {
 	$REL_TPL->stdfoot();
 }
 elseif ($_GET['action'] == 'add2') {
-	if (get_user_class() < UC_ADMINISTRATOR) stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
+	get_privilege('polls_operation');
 
 	if (!isset($_POST['howq'])) stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	$howq = intval($_POST['howq']);

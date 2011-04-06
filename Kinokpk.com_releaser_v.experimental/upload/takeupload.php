@@ -18,7 +18,7 @@ function bark($msg) {
 	stderr($REL_LANG->say_by_key('error'), $msg." <a href=\"javascript:history.go(-1);\">{$REL_LANG->say_by_key('ago')}</a>");
 }
 
-dbconn();
+INIT();
 
 
 loggedinorreturn();
@@ -84,13 +84,13 @@ if ($_POST['nofile']) {} else {
 	bark("Что за хрень ты загружаешь? Это не бинарно-кодированый файл!");
 }
 
-if ($_POST['free'] AND get_user_class() >= UC_MODERATOR) {
+if ($_POST['free'] AND get_privilege('edit_releases',false)) {
 	$free = 1;
 } else {
 	$free = 0;
 };
 
-if ($_POST['sticky'] AND get_user_class() >= UC_MODERATOR)
+if ($_POST['sticky'] AND get_privilege('edit_releases',false))
 $sticky = 1;
 else
 $sticky = 0;
@@ -169,9 +169,32 @@ if ($_POST['nofile']) {} else {
 //////////////Take Image Uploads//////////////
 
 $maxfilesize = 512000; // 500kb
+$allowed_types = array(
+"image/gif" => "gif",
+"image/jpeg" => "jpg",
+"image/jpg" => "jpg",
+"image/png" => "png"
+// Add more types here if you like
+);
+    // Where to upload?
+    // Update for your own server. Make sure the folder has chmod write permissions. Remember this director
+    $uploaddir = "torrents/images/";
 
+    		 
+		 $ret = $REL_DB->query("SHOW TABLE STATUS LIKE 'torrents'");
+		$row = mysql_fetch_array($ret);
+		$next_id = $row['Auto_increment'];
+		
 for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
 	$y=$x+1;
+	
+	if ($_FILES[image.$x]['name'] != "") {
+	$_FILES[image.$x]['type'] = strtolower($_FILES[image.$x]['type']);
+    $_FILES[image.$x]['name'] = strtolower($_FILES[image.$x]['name']);
+    $_POST['img'.$x] = $uploaddir.$next_id."-$x.".$allowed_types[$_FILES[image.$x]['type']];
+    $image_upload[$x] = true;
+	} else $image_upload[$x] = false;
+	
 	if (!empty($_POST['img'.$x])) {
 		$img=trim(htmlspecialchars((string)$_POST['img'.$x]));
 		if (strpos($img,',') || strpos($img,'?')) stderr($REL_LANG->say_by_key('error'),'Динамические изображения запрещены');
@@ -179,11 +202,23 @@ for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
 		if (!preg_match('/^(.+)\.(gif|png|jpeg|jpg)$/si', $img))
 		stderr($REL_LANG->say_by_key('error'),'Загружаемая картинка '.($x+1).' - не картинка');
 
-		/*  $check = remote_fsize($img);
-		 if (!$check) stderr($REL_LANG->say_by_key('error'),'Не удалось определить размер картинки '.$y);
-		 if ($check>$maxfilesize) stderr($REL_LANG->say_by_key('error'),'Максимальный размер картинки 512kb. Ошибка при загрузке картинки '.$y);
-		 */ $inames[]=$img;
+		 //$check = remote_fsize($img);
+		 if ($image_upload[$x]) {
+		 $check = $_FILES[image.$x]['size'];
+		 
+		 if (!$check) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unable to check size of image %s',$y));
+		 if ($check>$maxfilesize) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Image size is greather then %s. Please select smaller image and try again.',$maxfilesize));
+		
+		    // Upload the file
+    		$copy = move_uploaded_file($_FILES[image.$x]['tmp_name'], ROOT_PATH.$img);
+    		
+    		if (!$copy) $REL_TPL->stderr($REL_LANG->_("Error"),$REL_LANG->_("Unable to save image, contact site administration"));
+		 }
+		 $inames[]=$img;
 	}
+	
+	
+	
 }
 
 
@@ -192,6 +227,8 @@ $image = $inames;
 $images = @implode(',',$inames);
 
 $image = @array_shift($image);
+
+if ($image_upload[0]) $image = $REL_CONFIG['defaultbaseurl'].'/'.$image;
 
 // FORUMDESC will be used in email notifs
 if (!$image) $forumdesc = "<div align=\"center\"><img src=\"{$REL_CONFIG['defaultbaseurl']}/pic/noimage.gif\" border=\"0\" class=\"linked-image\" /></div><br />";
@@ -239,12 +276,12 @@ if ($_POST['nofile']) {
 
 		$totallen = (float)($nofilesize*1024*1024);
 
-		$ret = sql_query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, tiger_hash, name, descr, size, free, images, category, online, added, last_action, relgroup".((get_user_class() >= UC_UPLOADER)?', moderatedby, moderated':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], 1, $sticky, $infohash, $tiger_hash, $torrent, $descr, $totallen, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_user_class() >= UC_UPLOADER)?', '.$CURUSER['id'].', 1':'').")");
+		$ret = sql_query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, tiger_hash, name, descr, size, free, images, category, online, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby, moderated':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], 1, $sticky, $infohash, $tiger_hash, $torrent, $descr, $totallen, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('is_releaser',false))?', '.$CURUSER['id'].', 1':'').")");
 	} else {
 
 		$torrent = htmlspecialchars(str_replace("_", " ", $torrent));
 
-		$ret = sql_query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, name, descr, size, numfiles, ismulti, free, images, category, online, added, last_action, relgroup".((get_user_class() >= UC_UPLOADER)?', moderatedby, moderated':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], 1, $sticky, $infohash, $torrent, $descr, $totallen, count($filelist), $type, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_user_class() >= UC_UPLOADER)?', '.$CURUSER['id'].', 1':'').")");
+		$ret = sql_query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, name, descr, size, numfiles, ismulti, free, images, category, online, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby, moderated':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], 1, $sticky, $infohash, $torrent, $descr, $totallen, count($filelist), $type, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('is_releaser',false))?', '.$CURUSER['id'].', 1':'').")");
 	}
 	if (!$ret) {
 		if (mysql_errno() == 1062)
@@ -321,7 +358,7 @@ EOD;
 	$descr .= nl2br($bfooter);
 
 
-	if (get_user_class() < UC_UPLOADER) {
+	if (!get_privilege('post_releases_approved',false)) {
 		write_sys_msg($CURUSER['id'],sprintf($REL_LANG->say_by_key('uploaded_body'),"<a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($torrent))."\">$torrent</a>"),$REL_LANG->say_by_key('uploaded'));
 		send_notifs('unchecked',nl2br($body));
 	} else {

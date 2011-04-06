@@ -9,7 +9,7 @@
  */
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 loggedinorreturn();
 
 if (!is_valid_id($_GET["id"]))
@@ -20,8 +20,6 @@ $id = (int) $_GET["id"];
 $res = sql_query("SELECT username, class, email FROM users WHERE id=$id");
 $arr = mysql_fetch_assoc($res) or stderr($REL_LANG->say_by_key('error'), "Нет такого пользователя.");
 $username = $arr["username"];
-if ($arr["class"] < UC_MODERATOR)
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('access_denied'));
 
 if ($_SERVER["REQUEST_METHOD"] == "POST")
 {

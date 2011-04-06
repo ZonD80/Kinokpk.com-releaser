@@ -1,7 +1,7 @@
 <?php
 $path = str_replace("js/tiny_mce/plugins/graffiti",'',dirname(__FILE__));
 require_once ($path."include/bittorrent.php");
-dbconn();
+INIT();
 if (!$CURUSER) die('Only users enabled');
 if(isset($_FILES['Filedata']))
 {

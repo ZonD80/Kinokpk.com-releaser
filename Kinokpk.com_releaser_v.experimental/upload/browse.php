@@ -10,7 +10,7 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 
 //loggedinorreturn();
@@ -73,7 +73,7 @@ if ($relgroup) {
 	$addparam[] = $relgroup;
 }
 
-if ((get_user_class()>=UC_MODERATOR)) { $modview=true; }
+if (get_privilege('is_moderator',false)) { $modview=true; }
 
 if ($unchecked && !$modview) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('unchecked_only_moders'));
 
@@ -97,39 +97,37 @@ $res = sql_query("SELECT SUM(1) FROM torrents".($where?" WHERE $where":'')) or s
 $row = mysql_fetch_array($res);
 $count = $row[0];
 
-
-list($pagertop, $pagerbottom, $limit) = pager($REL_CONFIG['torrentsperpage'], $count, $addparam);
+$limit = ajaxpager($REL_CONFIG['torrentsperpage'], $count, $addparam, "torrenttable > tbody:last");
 
 $query = "SELECT torrents.id, torrents.comments, torrents.seeders, torrents.leechers, torrents.freefor,".($modview?" torrents.moderated, torrents.moderatedby, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, torrents.visible, torrents.banned,":'')." torrents.category, torrents.images, torrents.free, torrents.name, torrents.times_completed, torrents.size, torrents.added, torrents.numfiles, torrents.filename, torrents.sticky, torrents.owner, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed, " .
-        "users.username, users.class FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id LEFT JOIN users ON torrents.owner = users.id".($where?" WHERE $where":'')." GROUP BY torrents.id ORDER BY torrents.sticky DESC, torrents.added DESC $limit";
+        "users.username, users.class FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id LEFT JOIN users ON torrents.owner = users.id".($where?" WHERE $where":'')." ORDER BY torrents.sticky DESC, torrents.added DESC $limit";
 $res = sql_query($query) or sqlerr(__FILE__,__LINE__);
 
 
-	$resarray = prepare_for_torrenttable($res);
+$resarray = prepare_for_torrenttable($res);
 
 if (!$resarray) stderr($REL_LANG->say_by_key('error'),"Ничего не найдено. <a href=\"javascript: history.go(-1)\">Назад</a>");
 
-$REL_TPL->stdhead($REL_LANG->say_by_key('browse'));
+if (!pagercheck()) {
+	$REL_TPL->stdhead($REL_LANG->say_by_key('browse'));
 
-$REL_TPL->begin_frame('Список релизов '.($modview?'[<a href="'.$REL_SEO->make_link('browse','unchecked','').'">Показать непроверенные релизы отдельно</a>]':''));
-
-
-
-
-$rgarrayres = sql_query("SELECT id,name FROM relgroups ORDER BY added DESC");
-while($rgarrayrow = mysql_fetch_assoc($rgarrayres)) {
-	$rgarray[$rgarrayrow['id']] = $rgarrayrow['name'];
-}
-
-if ($rgarray) {
-	$rgselect = '<span class="browse_relgroup">'.$REL_LANG->say_by_key('relgroup').':</span> <select style="width: 120px;" name="relgroup"><option value="0">'.$REL_LANG->say_by_key('choose').'</option>';
-	foreach ($rgarray as $rgid=>$rgname) $rgselect.='<option   value="'.$rgid.'"'.(($relgroup==$rgid)?" selected=\"1\"":'').'>'.$rgname."</option>\n";
-	$rgselect.='</select>';
-}
+	$REL_TPL->begin_frame('Список релизов '.($modview?'[<a href="'.$REL_SEO->make_link('browse','unchecked','').'">Показать непроверенные релизы отдельно</a>]':''));
 
 
+	$rgarrayres = sql_query("SELECT id,name FROM relgroups ORDER BY added DESC");
+	while($rgarrayrow = mysql_fetch_assoc($rgarrayres)) {
+		$rgarray[$rgarrayrow['id']] = $rgarrayrow['name'];
+	}
 
-print("<div class=\"friends_search\">
+	if ($rgarray) {
+		$rgselect = '<span class="browse_relgroup">'.$REL_LANG->say_by_key('relgroup').':</span> <select style="width: 120px;" name="relgroup"><option value="0">'.$REL_LANG->say_by_key('choose').'</option>';
+		foreach ($rgarray as $rgid=>$rgname) $rgselect.='<option   value="'.$rgid.'"'.(($relgroup==$rgid)?" selected=\"1\"":'').'>'.$rgname."</option>\n";
+		$rgselect.='</select>';
+	}
+
+
+
+	print("<div class=\"friends_search\">
 <form class='formbr' action=\"".$REL_SEO->make_link('browse')."\" method=\"get\">".'
 <input type="text" class="browse_search" name="search" size="30" style="margin-right: 10px;"/>
 '.gen_select_area('cat',$tree,$cat, true).'<br />
@@ -150,45 +148,35 @@ print("<div class=\"friends_search\">
 <!-- Google Search -->
 </div>
 ');
-$REL_TPL->end_frame();
+	$REL_TPL->end_frame();
 
-if (isset($cleansearchstr)){
-	$REL_TPL->begin_frame($REL_LANG->say_by_key('search_results_for')." \"" . $cleansearchstr . "\"\n");
-}else{
-	$REL_TPL->begin_frame('Релизы');
-}
-
-print("<div id=\"releases-table\">");
+	if (isset($cleansearchstr)){
+		$REL_TPL->begin_frame($REL_LANG->say_by_key('search_results_for')." \"" . $cleansearchstr . "\". {$REL_LANG->_('Found %s releases',$count)}\n");
+	}else{
+		$REL_TPL->begin_frame('Релизы');
+	}
 
 
-/* print("<table cellspacing=\"0\" cellpadding=\"0\" class=\"tabs\"><tbody><tr>
- <td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"friends.php\">Общее</a></td>
- <td class=\"tab\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"user_friends_requests.php\">Наше</a></td>
- <td class=\"tab\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"user_friends_requests.php\">Мультитрекер</a></td>
- <td class=\"tab3\"> </td></tr></tbody></table>\n");*/
+	if ($count) {
 
-
-
-if ($count) {
-	print("<p>$pagertop</p>");
-	$returnto = urlencode(basename($_SERVER["REQUEST_URI"]));
-	torrenttable($resarray, "index", $returnto);
-	print("<p>$pagerbottom</p>");
-}
-else {
-	if (isset($cleansearchstr)) {
-		print("<tr><td class=\"index\" colspan=\"12\">".$REL_LANG->say_by_key('nothing_found')."</td></tr>\n");
-		//print("<p>Попробуйте изменить запрос поиска.</p>\n");
+		$returnto = urlencode(basename($_SERVER["REQUEST_URI"]));
+		torrenttable($resarray, "index", $returnto);
 	}
 	else {
-		print("<tr><td class=\"index\" colspan=\"12\">".$REL_LANG->say_by_key('nothing_found')."</td></tr>\n");
-		//print("<p>Извините, данная категория пустая.</p>\n");
+		if (isset($cleansearchstr)) {
+			print("<tr><td class=\"index\" colspan=\"12\">".$REL_LANG->say_by_key('nothing_found')."</td></tr>\n");
+			//print("<p>Попробуйте изменить запрос поиска.</p>\n");
+		}
+		else {
+			print("<tr><td class=\"index\" colspan=\"12\">".$REL_LANG->say_by_key('nothing_found')."</td></tr>\n");
+			//print("<p>Извините, данная категория пустая.</p>\n");
+		}
 	}
+
+	$REL_TPL->end_frame();
+	$REL_TPL->stdfoot();
+} else {
+	$returnto = urlencode(basename($_SERVER["REQUEST_URI"]));
+	torrenttable($resarray, "index", $returnto);
 }
-
-print ('</div>');
-
-$REL_TPL->end_frame();
-$REL_TPL->stdfoot();
-
 ?>

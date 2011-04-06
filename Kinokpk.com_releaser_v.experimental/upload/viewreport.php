@@ -1,11 +1,17 @@
-<?
+<?php
+/**
+ * Reports viewer & processor
+ * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
+ * @package Kinokpk.com releaser
+ * @author ZonD80 <admin@kinokpk.com>
+ * @copyright (C) 2008-now, ZonD80, Germany, TorrentsBook.com
+ * @link http://dev.kinokpk.com
+ */
 require_once("include/bittorrent.php");
-dbconn();
+INIT();
 loggedinorreturn();
 
-if (get_user_class() < UC_MODERATOR){
-	stderr("Ошибка", "У Вас нет прав для просмотра этой страницы.");
-}
+get_privilege('is_moderator');
 
 
 //Удалить все жалобы

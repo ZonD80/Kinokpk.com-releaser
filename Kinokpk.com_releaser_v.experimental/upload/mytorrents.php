@@ -11,7 +11,7 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
@@ -30,7 +30,6 @@ if (!$count) {
 }
 else {
 
-	list($pagertop, $pagerbottom, $limit) = pager(20, $count, array('mytorrents'));
 	$tree = make_tree();
 	$res = sql_query("SELECT torrents.images, torrents.comments, torrents.leechers, torrents.seeders, torrents.id, torrents.name, filename, numfiles, added, size, views, visible, free, hits, times_completed, category FROM torrents $where GROUP BY id ORDER BY id DESC $limit");
 	$resarray = prepare_for_torrenttable($res);
@@ -40,11 +39,7 @@ else {
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('my_releases'));
 	print('<div id="releases-table">');
 
-	print("<p>$pagertop</p>");
-
 	torrenttable($resarray, "mytorrents");
-
-	print("<p>$pagerbottom</p>");
 	print '</div>';
 	$REL_TPL->end_frame();
 }

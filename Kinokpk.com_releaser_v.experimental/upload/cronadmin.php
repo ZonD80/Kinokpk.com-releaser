@@ -9,9 +9,9 @@
  */
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 loggedinorreturn();
-if (get_user_class() < UC_SYSOP) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
+get_privilege('cronadmin');
 httpauth();
 
 $REL_TPL->stdhead('Настройка cron-функций');

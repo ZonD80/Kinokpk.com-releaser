@@ -10,12 +10,12 @@
 
 require_once "include/bittorrent.php";
 
-dbconn();
+INIT();
 
 loggedinorreturn();
+get_privilege('edit_dchubs');
 httpauth();
 
-if (get_user_class() < UC_SYSOP) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access denied'));
 if (!isset($_GET['action'])) {
 	$REL_TPL->stdhead($REL_LANG->_('Direct Connect Hubs admincp'));
 	print("<div algin=\"center\"><h1>{$REL_LANG->_('Direct Connect Hubs admincp')}</h1></div>");

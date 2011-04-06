@@ -22,7 +22,7 @@
  */
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 
 loggedinorreturn();
 $max_image_width = $REL_CONFIG['avatar_max_width'];

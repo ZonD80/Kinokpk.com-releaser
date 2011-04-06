@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * @todo NEED TO BE REWRITED
  Project: Kinokpk.com releaser
  This file is part of Kinokpk.com releaser.
  Kinokpk.com releaser is based on TBDev,
@@ -20,10 +21,10 @@
  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
  MA  02111-1307  USA
  Do not remove above lines!
- */
+
 
 require_once("include/bittorrent.php");
-dbconn();
+INIT();
 loggedinorreturn();
 
 $condition = '';
@@ -41,13 +42,12 @@ if (!$count) stderr($REL_LANG->say_by_key('error'), "Нет статистики
 $torrentsperpage = $REL_CONFIG['torrentsperpage'];
 
 
-list($pagertop, $pagerbottom, $limit) = pager($torrentsperpage, $count, array('peers','view',$view));
+$limit = "LIMIT 50";
 
 
 $cheaters = sql_query("SELECT p.torrent AS tid, t.name AS tname, p.ip, p.port, p.seeder, p.peer_id, p.userid, u.username, u.class, u.enabled, u.warned, u.donor, u.ratingsum FROM peers AS p INNER JOIN users AS u ON u.id = p.userid INNER JOIN torrents AS t ON t.id = p.torrent WHERE u.enabled = 1 ".$condition." ORDER BY p.last_action DESC $limit") or sqlerr(__FILE__,__LINE__);
 
 $REL_TPL->stdhead("Статистика пиров");
-print($pagertop);
 
 print("<table cellpadding=\"3\" cellspacing=\"0\" width=\"100%\">");
 if (get_user_class() >= UC_MODERATOR)
@@ -71,8 +71,6 @@ while ($cheater = mysql_fetch_array($cheaters)) {
 }
 print("</table>");
 
-print($pagerbottom);
-
 $REL_TPL->stdfoot();
-
+ */
 ?>

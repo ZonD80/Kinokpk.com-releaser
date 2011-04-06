@@ -9,14 +9,13 @@
  */
 
 require_once("include/bittorrent.php");
-dbconn();
+INIT();
 loggedinorreturn();
 
 $REL_TPL->stdhead("Архив новостей");
 $count = get_row_count("news");
-$perpage = 20; //Сколько новостей на страницу
 
-list($pagertop, $pagerbottom, $limit) = pager($perpage, $count, array('newsarchive'));
+$limit = "LIMIT 50";
 $resource = sql_query("SELECT news.* , SUM(1) FROM news LEFT JOIN comments ON comments.toid = news.id WHERE comments.type='news' GROUP BY news.id ORDER BY news.added DESC $limit");
 
 print("<div id='news-table'>");
@@ -25,7 +24,6 @@ print ("<table border='0' cellspacing='0' width='100%' cellpadding='5'>
 
 if ($count)
 {
-	print("<tr><td>".$pagertop."</td></tr>");
 
 	while(list($id, $userid, $added, $body, $subject,$comments) = mysql_fetch_array($resource))
 	{
@@ -39,7 +37,7 @@ if ($count)
 
             <div style='float:left;'><b>Размещено</b>: ".mkprettytime($added)." <b>Комментариев:</b> ".$comments." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$id)."#comments\">Комментировать</a>]</div>");
 
-		if (get_user_class() >= UC_ADMINISTRATOR)
+		if (get_privilege('news_operation',false))
 		{
 			print("<div style='float:right;'>
             <font class=\"small\">
@@ -50,7 +48,6 @@ if ($count)
 		print("</td></tr></table>");
 
 	}
-	print ("<tr><td>".$pagerbottom."</td></tr>");
 }
 else
 {
@@ -58,7 +55,6 @@ else
 }
 
 print("</table>");
-
 print("</div>");
 
 $REL_TPL->stdfoot();

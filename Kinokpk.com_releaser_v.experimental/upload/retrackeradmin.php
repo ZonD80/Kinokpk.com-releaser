@@ -14,12 +14,12 @@ function bark($msg) {
 	stderr($REL_LANG->say_by_key('error'), $msg);
 }
 
-dbconn();
+INIT();
 
 loggedinorreturn();
+get_privilege('edit_retrackers');
 httpauth();
 
-if (get_user_class() < UC_SYSOP) bark("Access denied. You're not SYSOP.");
 if (!isset($_GET['action'])) {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('panel_name'));
 	print("<div algin=\"center\"><h1>{$REL_LANG->say_by_key('panel_name')}</h1></div>");

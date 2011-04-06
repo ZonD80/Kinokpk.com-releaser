@@ -17,7 +17,7 @@
 <?php
 $path = str_replace("js/tiny_mce/plugins/reltemplates",'',dirname(__FILE__));
 require_once ($path."include/bittorrent.php");
-dbconn();
+INIT();
 if (!$CURUSER) die('Only users enabled');
 $reltemplatearray = sql_query("SELECT id,name,content FROM reltemplates");
 while ($reltemplate = mysql_fetch_assoc($reltemplatearray)) {

@@ -10,7 +10,7 @@
 
 require_once("include/bittorrent.php");
 
-dbconn();
+INIT();
 
 loggedinorreturn();
 
@@ -89,9 +89,9 @@ foreach ( $lang as $l=>$ldesc ) {
 }
 $lang_select .= '</select>';
 /*основное*/
-if (get_user_class() >= UC_ADMINISTRATOR) {
+if (get_privilege('ownsupport',false)) {
 	print('<div class="sp-wrap"><div class="sp-head folded clickable">');
-	print('<div class="clickable">Добавить себя в поддержку (для администраторов и выше)</div></div><div class="sp-body" style="background: none;">');
+	print('<div class="clickable">Добавить себя в поддержку</div></div><div class="sp-body" style="background: none;">');
 	//print('<div class="clickable">Добавить себя в поддержку (для администраторов и выше)</div>');
 	print('<div width="100%" id="category" style="margin:10px 0px;">');
 

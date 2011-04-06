@@ -10,7 +10,7 @@
 
 require_once "include/bittorrent.php";
 
-dbconn();
+INIT();
 
 
 loggedinorreturn();
@@ -57,7 +57,7 @@ if ($type == 'new') {
 	} else
 	stdmsg("Ошибка", "Вам не разрешено удалять приглашения.");
 } else {
-	if (get_user_class() <= UC_UPLOADER && !($id == $CURUSER["id"])) {
+	if (!get_privilege('is_moderator') && !($id == $CURUSER["id"])) {
 		bark("У вас нет права видеть приглашения этого пользователя.");
 	}
 
@@ -71,7 +71,7 @@ if ($type == 'new') {
 		print("<tr class=tableb><td colspan=7>Еще никто вами не приглашен.</tr>");
 	} else {
 		print("<tr class=tableb><td><b>Пользователь</b></td><td><b>Email</b></td><td><b>Рейтинг</b></td><td><b>Статус</b></td>");
-		if ($CURUSER[id] == $id || get_user_class() >= UC_MODERATOR)
+		if ($CURUSER[id] == $id || get_privilege('approve_invites',false))
 		print("<td align=center><b>Подтвердить</b></td>");
 		print("</tr>");
 		for ($i = 0; $i < $num; ++$i) {
@@ -90,7 +90,7 @@ if ($type == 'new') {
 
 			print("<tr class=tableb>$user<td>$arr[email]</td><td>$ratio</td><td>$status</td>");
 
-			if ($CURUSER[id] == $id || get_user_class() >= UC_SYSOP) {
+			if ($CURUSER[id] == $id || get_privilege('approve_invites',false)) {
 				print("<td align=center>");
 				if (!$arr[confirmed])
 				print("<input type=\"checkbox\" name=\"conusr[]\" value=\"" . $arr[id] . "\" />");
@@ -99,7 +99,7 @@ if ($type == 'new') {
 			print("</tr>");
 		}
 	}
-	if ($CURUSER[id] == $id || get_user_class() >= UC_SYSOP) {
+	if ($CURUSER[id] == $id || get_privilege('approve_invites',false)) {
 		print("<input type=hidden name=email value=$arr[email]>");
 		print("<tr class=tableb><td colspan=7 align=right><input type=submit value=\"Подтвердить пользователей, получить рейтинг и добавить их в друзья!\"></form></td></tr>");
 	}

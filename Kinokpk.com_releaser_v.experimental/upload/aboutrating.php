@@ -8,7 +8,7 @@
  * @link http://dev.kinokpk.com
  */
 require_once('include/bittorrent.php');
-dbconn();
+INIT();
 $REL_TPL->stdhead($REL_LANG->_('Rating system manual'));
 print format_comment('С сентября 2009 года на torrentsbook.com действует революционная система рейтинга, ниже представлено ее подробное описание:<br /><br />
 <ul>

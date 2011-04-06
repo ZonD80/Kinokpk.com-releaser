@@ -10,15 +10,19 @@
 
 
 require "include/bittorrent.php";
-dbconn();
+INIT();
 loggedinorreturn();
 $REL_TPL->stdhead("Администрация");
 $REL_TPL->begin_main_frame();
 
 // Get current datetime
 $dt = time() - 300;
-
-$res = sql_query("SELECT id,username,class, (SELECT SUM(1) FROM sessions WHERE uid=users.id AND time>$dt) AS online FROM users WHERE class>=".UC_UPLOADER." AND confirmed=1 GROUP BY users.id ORDER BY class DESC, username ASC" ) or sqlerr(__FILE__, __LINE__);
+$classes = init_class_array();
+$level = get_class_priority($classes['uploader']);
+foreach ($classes as $cid=>$class) {
+	if (is_int($cid)&&$class['priority']&&$class['priority']>=$level) $to_select[] = $cid;
+}
+$res = sql_query("SELECT id,username,class, (SELECT SUM(1) FROM sessions WHERE uid=users.id AND time>$dt) AS online FROM users WHERE class IN (".implode(',',$to_select).") AND confirmed=1 GROUP BY users.id ORDER BY class DESC, username ASC" ) or sqlerr(__FILE__, __LINE__);
 
 while ($arr = mysql_fetch_assoc($res))
 {

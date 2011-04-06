@@ -10,17 +10,19 @@
 
 
 require_once "include/bittorrent.php";
-dbconn();
+INIT();
 
 $REL_TPL->stdhead("Аплоадеры");
 
 loggedinorreturn();
+get_privilege('is_moderator');
 
-if ($CURUSER['class'] >= UC_MODERATOR)
-
-{
-
-	$query = "SELECT id, username, added, ratingsum, donor, warned, enabled, (SELECT MAX(added) FROM torrents WHERE owner=users.id) AS last_added, (SELECT SUM(1) FROM torrents WHERE owner=users.id) AS num_added FROM users WHERE class = ".UC_UPLOADER;
+$classes = init_class_array();
+$level = get_class_priority($classes['uploader']);
+foreach ($classes as $cid=>$class) {
+	if ($class['priority']>=$level) $to_select[] = $cid;
+}
+	$query = "SELECT id, username, added, ratingsum, donor, warned, enabled, (SELECT MAX(added) FROM torrents WHERE owner=users.id) AS last_added, (SELECT SUM(1) FROM torrents WHERE owner=users.id) AS num_added FROM users WHERE class IN (".$to_select.")";
 	$result = sql_query($query);
 	$num = mysql_num_rows($result); // how many uploaders
 	print "<h2>Информация о аплоадерах</h2>";
@@ -34,7 +36,7 @@ if ($CURUSER['class'] >= UC_MODERATOR)
 		print "<tr>";
 		print "<td class=colhead>Пользователь</td>";
 		print "<td class=colhead>Рейтинг</td>";
-		print "<td class=colhead>Залил&nbsp;торрентов</td>";
+		print "<td class=colhead>Залил&nbsp;релизов</td>";
 		print "<td class=colhead>Последняя&nbsp;заливка</td>";
 		print "<td class=colhead>Отправить ЛС</td>";
 		print "</tr>";
@@ -64,10 +66,6 @@ if ($CURUSER['class'] >= UC_MODERATOR)
 		print "</table>";
 	}
 
-}
-
-else
-stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 
 $REL_TPL->stdfoot();
 
