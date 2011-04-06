@@ -15,7 +15,7 @@ INIT();
 loggedinorreturn();
 httpauth();
 
-if (isset($_COOKIE['override_class']) || get_privilege('is_moderator',false))
+if (isset($_COOKIE['override_class']) || !get_privilege('is_moderator',false))
 stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 
 if ($_GET['action'] == 'editclass') //Process the querystring - No security checks are done as a temporary class higher
@@ -55,6 +55,6 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('change_class'));
 	</form>
 </table>
 <br />
-		<?php
-		$REL_TPL->stdfoot();
-		?>
+<?php
+$REL_TPL->stdfoot();
+?>

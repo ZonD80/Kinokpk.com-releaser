@@ -18,9 +18,10 @@ define ("IN_ANNOUNCE",true);
 define ("ROOT_PATH",dirname(__FILE__).'/');
 require_once(ROOT_PATH.'include/secrets.php');
 // connection closed
-	/* @var database object */
-	require_once(ROOT_PATH . 'classes/database/database.class.php');
-	$REL_DB = new REL_DB($mysql_host, $mysql_user, $mysql_pass, $mysql_db, $mysql_charset);
+/* @var database object */
+require_once(ROOT_PATH . 'classes/database/database.class.php');
+$REL_DB = new REL_DB($db);
+unset($db);
 
 require_once(ROOT_PATH."include/benc.php");
 
