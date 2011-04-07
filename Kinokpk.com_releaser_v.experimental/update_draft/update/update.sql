@@ -77,7 +77,7 @@ ALTER TABLE `forum_categories`
 	ADD COLUMN `seo_name` varchar(255)  COLLATE utf8_general_ci NULL after `name`, 
 	CHANGE `image` `image` varchar(255)  COLLATE utf8_general_ci NOT NULL after `seo_name`, 
 	CHANGE `parent_id` `parent_id` int(10)   NOT NULL DEFAULT '0' after `image`, 
-	CHANGE `class` `class` int(2)   NOT NULL DEFAULT '0' after `parent_id`, 
+	CHANGE `class` `class` varchar(255)  NOT NULL DEFAULT '' after `parent_id`, 
 	DROP COLUMN `class_edit`, ENGINE=MyISAM; 
 
 /* Create table in target */

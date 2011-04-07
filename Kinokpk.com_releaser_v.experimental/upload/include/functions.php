@@ -1843,7 +1843,7 @@ function prepare_for_torrenttable($res) {
 
 		if ($resvalue['rgid']) $rgcontent = ($resvalue['rgimage']?"<img style=\"border:none;\" title=\"{$REL_LANG->_("Release of group")} {$resvalue['rgname']}\" src=\"{$resvalue['rgimage']}\"/>":$resvalue['rgname']);
 
-		if ((!get_privilege('access_to_private_relgroups')) && !$resvalue['relgroup_allowed'] && $resvalue['rgid']) {
+		if ((!get_privilege('access_to_private_relgroups',false)) && !$resvalue['relgroup_allowed'] && $resvalue['rgid']) {
 			$resvalue['relgroup'] = '<br/>'.$REL_LANG->say_by_key('relgroup_release').'&nbsp;'.$rgcontent;
 			$resvalue['images'] = 'pic/privaterg.gif';
 		}

@@ -470,7 +470,7 @@ CREATE TABLE IF NOT EXISTS `forum_categories` (
   `seo_name` varchar(255) DEFAULT NULL,
   `image` varchar(255) NOT NULL,
   `parent_id` int(10) NOT NULL DEFAULT '0',
-  `class` int(2) NOT NULL DEFAULT '0',
+  `class` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=myisam DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT AUTO_INCREMENT=1 ;
 
@@ -1361,3 +1361,5 @@ INSERT INTO `privileges` (`id`, `name`, `classes_allowed`, `description`) VALUES
 (56, 'edit_site_templates', '1', 'Access to site templates administration panel'),
 (57, 'view_private_user_profiles', '1,2,3', 'Ability to view private user profiles'),
 (58, 'censored_admin', '1,2,3', 'Ability to administrate censored releases');
+
+INSERT INTO `snt_tracker`.`privileges` (`id`, `name`, `classes_allowed`, `description`) VALUES (NULL, 'post_releases_approved', '1,2,3,4,5', 'Ability to post automatically approved releases');
