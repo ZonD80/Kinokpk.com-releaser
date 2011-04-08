@@ -86,7 +86,7 @@ if (!$action) {
 			while ($row = mysql_fetch_assoc($res)) {
 				$tabledata[] = array('id'=>$row['id'],'subject'=>$row['subject'],'posts'=>$row['comments'],'started'=>mkprettytime($row['started']),'author'=>"<a href=\"{$REL_SEO->make_link('userdetails','id',$row['author'],'name',$row['aname'])}\">".get_user_class_color($row['aclass'],$row['aname'])."</a>",'lastposted_time'=>mkprettytime($row['added']),'lastposted_user'=>"<a href=\"{$REL_SEO->make_link('userdetails','id',$row['user'],'name',$row['username'])}\">".get_user_class_color($row['class'],$row['username'])."</a>", 'lastposted_id'=>$row['lastposted_id']);
 			}
-				
+
 			$REL_TPL->assignByRef('TOPICS',$tabledata);
 			$REL_TPL->output('topicmode');
 		}
@@ -161,10 +161,6 @@ elseif ($action=='viewtopic') {
 	$allrows = prepare_for_commenttable($subres,$topic['subject'],$REL_SEO->make_link('forum','a','viewtopic','id',$topic['id'],'subject',translit($topic['subject'])));
 
 	if (pagercheck()) { print commenttable($allrows,true,'modules/forum/commenttable.tpl'); die(); }
-
-	$REL_TPL->assignByRef('commenttable', commenttable($allrows,true,'modules/forum/commenttable.tpl'));
-	$REL_TPL->output($action);
-
 	if ($CURUSER) {
 		$REL_TPL->assignByRef('to_id',$topic['id']);
 		$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $topic['id'], 'forumcomments' ));
@@ -176,6 +172,9 @@ elseif ($action=='viewtopic') {
 		//print '<pre>';
 		//print_r($_SESSION);
 	}
+	$REL_TPL->assignByRef('commenttable', commenttable($allrows,true,'modules/forum/commenttable.tpl'));
+	$REL_TPL->output($action);
+
 	$REL_TPL->stdfoot();
 }
 else $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unknown action'));

@@ -127,6 +127,14 @@ print("<div class='newsbody'><p>".format_comment($rgnews['body'])."</p><small>".
 }
 
 
+$REL_TPL->assignByRef('to_id',$rgnewsid);
+$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $rgnewsid, 'rgnewscomments' ));
+$REL_TPL->assign('textbbcode',textbbcode('text'));
+$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release group news'));
+$FORM_TYPE = 'rgnews';
+$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+$REL_TPL->display('commenttable_form.tpl');
+
 $subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = ".$rgnewsid." AND type='rgnews'");
 $subrow = mysql_fetch_array($subres);
 $count = $subrow[0];
@@ -166,20 +174,11 @@ else {
 	print ( "</td></tr>" ); die(); }
 }
 
-
-
-$REL_TPL->assignByRef('to_id',$rgnewsid);
-$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $rgnewsid, 'rgnewscomments' ));
-$REL_TPL->assign('textbbcode',textbbcode('text'));
-$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release group news'));
-$FORM_TYPE = 'rgnews';
-$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-$REL_TPL->display('commenttable_form.tpl');
 ?></div>
 </div>
 </div>
 <div class="clear"></div>
-<?
+<?php
 
 $REL_TPL->stdfoot();
 ?>

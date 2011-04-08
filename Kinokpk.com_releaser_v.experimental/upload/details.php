@@ -63,7 +63,7 @@ else {
 		//present end
 		if ($owned) {
 			$s = "<br />";
-				$s .= "<$editlink>[" . $REL_LANG->say_by_key('edit') . "]</a>";
+			$s .= "<$editlink>[" . $REL_LANG->say_by_key('edit') . "]</a>";
 		}
 		tr ($rgcontent."<br/>".$REL_LANG->say_by_key('name') . '<br /><b>' . $REL_LANG->say_by_key('download') . '</b><br/>'.($CURUSER?reportarea ( $id, 'torrents' ):'') . $s, "<h1>$thisispresent" . (($row ['free']) ? "<img src=\"pic/freedownload.gif\" title=\"" . $REL_LANG->say_by_key('golden') . "\" alt=\"" . $REL_LANG->say_by_key('golden') . "\"/>&nbsp;" : '') . "<a class=\"index\" href=\"".$REL_SEO->make_link("download","id",$id,"name",translit($row['name']))."\" onclick=\"javascript:$.facebox({ajax:'".$REL_SEO->make_link("download","id",$id,"name",translit($row['name']))."'}); return false;\">{$REL_LANG->_("Download")} " . $row ["name"] . "</a>&nbsp;<a href=\"".$REL_SEO->make_link("bookmark","torrent",$row['id'],"name",translit($row['name']))."\"><img border=\"0\" src=\"pic/bookmark.gif\" alt=\"".$REL_LANG->say_by_key('bookmark_this')."\" title=\"".$REL_LANG->say_by_key('bookmark_this')."\" /></a></h1>
 <div style=\"text-align:right;\"><!-- AddThis Button BEGIN -->
@@ -117,7 +117,7 @@ else {
 
 		if ($row ['images']) {
 			$images = explode ( ',', $row ['images'] );
-				
+
 			$k = 0;
 			foreach ( $images as $img ) {
 				$k ++;
@@ -207,7 +207,14 @@ return no_ajax;
 <a href=\"".$REL_SEO->make_link('browse','cat',$row['category'])."\">Все релизы этой категории</a></div>" );
 
 	}
-
+	$REL_TPL->assignByRef('to_id',$id);
+	$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'relcomments' ));
+	$REL_TPL->assign('textbbcode',textbbcode('text'));
+	$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release'));
+	$FORM_TYPE = 'rel';
+	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+	$REL_TPL->display('commenttable_form.tpl');
+	
 	$subres = sql_query ( "SELECT SUM(1) FROM comments WHERE toid = $id AND type='rel'" );
 	$subrow = mysql_fetch_array ( $subres );
 	$count = $subrow [0];
@@ -246,17 +253,8 @@ return no_ajax;
 		}
 	}
 
-
-	$REL_TPL->assignByRef('to_id',$id);
-	$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'relcomments' ));
-	$REL_TPL->assign('textbbcode',textbbcode('text'));
-	$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release'));
-	$FORM_TYPE = 'rel';
-	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-	$REL_TPL->display('commenttable_form.tpl');
-
 	sql_query ( "UPDATE torrents SET views = views + 1 WHERE id = $id" );
-set_visited('torrents',$id);
-$REL_TPL->stdfoot();
+	set_visited('torrents',$id);
+	$REL_TPL->stdfoot();
 }
 ?>

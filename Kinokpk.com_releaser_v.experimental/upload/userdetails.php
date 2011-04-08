@@ -92,7 +92,7 @@ if (!pagercheck()) {
 		}
 		if (!$noq) {
 			$string = (($type!='friends')?"user = $id AND type='".preg_replace('/comments/','',$type)."'":'').$addition;
-				
+
 			$sql_query[]="(SELECT SUM(1) FROM ".(preg_match('/comments/',$type)?'comments':$type)." WHERE $string) AS $type";
 		}
 		unset($addition);
@@ -313,6 +313,16 @@ if (!pagercheck()) {
 	}
 
 }
+
+
+$REL_TPL->assignByRef('to_id',$id);
+$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'usercomments' ));
+$REL_TPL->assign('textbbcode',textbbcode('text'));
+$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('User'));
+$FORM_TYPE = 'user';
+$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+$REL_TPL->display('commenttable_form.tpl');
+
 $subres = sql_query ( "SELECT SUM(1) FROM comments WHERE toid = $id AND type='user'" );
 $subrow = mysql_fetch_array ( $subres );
 $count = $subrow [0];
@@ -349,14 +359,6 @@ if (! $count) {
 	print ( "</td></tr>" ); die(); }
 }
 
-
-$REL_TPL->assignByRef('to_id',$id);
-$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'usercomments' ));
-$REL_TPL->assign('textbbcode',textbbcode('text'));
-$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('User'));
-$FORM_TYPE = 'user';
-$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-$REL_TPL->display('commenttable_form.tpl');
 print '</table>';
 $REL_TPL->end_frame ();
 
@@ -380,7 +382,7 @@ if (get_privilege('edit_users',false) && get_class_priority($user ["class"]) < g
 	print ( "<input type=\"hidden\" name=\"class\" value=\"$user[class]\">\n" );
 	else {
 
-		print ( "<tr><td class=\"rowhead\">Класс</td><td colspan=\"2\" align=\"left\">".make_classes_select('class',$user['class'])."</td></tr>\n" );
+		print ( "<tr><td class=\"rowhead\">Класс</td><td colspan=\"2\" align=\"left\">".make_classes_select('class',$user['class'],get_user_class())."</td></tr>\n" );
 	}
 	print ( "<tr><td class=\"rowhead\">Сбросить день рождения</td><td colspan=\"2\" align=\"left\"><input type=\"radio\" name=\"resetb\" value=\"1\">Да<input type=\"radio\" name=\"resetb\" value=\"0\" checked>Нет</td></tr>\n" );
 	$modcomment = makesafe ( $user ["modcomment"] );
@@ -441,7 +443,7 @@ function togglepic(bu, picid, formid)
 		print ( "<tr><td class=\"rowhead\">Изменить рейтинг</td><td align=\"left\"><img src=\"pic/plus.gif\" id=\"ratingpic\" onClick=\"togglepic('{$REL_CONFIG['defaultbaseurl']}','ratingpic','ratingchange')\" style=\"cursor: pointer;\">&nbsp;<input type=\"text\" name=\"amountrating\" size=\"10\" /><td>Сейчас рейтинга у пользователя: {$user['ratingsum']}</td></tr>" );
 		print ( "<tr><td class=\"rowhead\">Изменить откуп</td><td align=\"left\"><img src=\"pic/plus.gif\" id=\"discountpic\" onClick=\"togglepic('{$REL_CONFIG['defaultbaseurl']}','discountpic','discountchange')\" style=\"cursor: pointer;\">&nbsp;<input type=\"text\" name=\"amountdiscount\" size=\"10\" /><td>Сейчас откупа у пользователя: {$user['discount']}</td></tr>" );
 		print ( "<tr><td class=\"rowhead\">Сбросить passkey</td><td colspan=\"2\" align=\"left\"><input name=\"resetkey\" value=\"1\" type=\"checkbox\"></td></tr>\n" );
-		if (get_privilege('delete_site_users',false))
+		if (!get_privilege('delete_site_users',false))
 		print ( "<input type=\"hidden\" name=\"deluser\">" );
 		else
 		print ( "<tr><td class=\"rowhead\">Удалить</td><td colspan=\"2\" align=\"left\"><input type=\"checkbox\" name=\"deluser\"></td></tr>" );

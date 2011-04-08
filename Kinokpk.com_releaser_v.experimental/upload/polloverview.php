@@ -180,6 +180,14 @@ if (!pagercheck()) {
 
 // POLLCOMMENTS START
 
+$REL_TPL->assignByRef('to_id',$pid);
+$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $pid, 'pollcomments' ));
+$REL_TPL->assign('textbbcode',textbbcode('text'));
+$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Poll'));
+$FORM_TYPE = 'poll';
+$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+$REL_TPL->display('commenttable_form.tpl');
+
 $subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = ".$pid." AND type='poll'");
 $subrow = mysql_fetch_array($subres);
 $count = $subrow[0];
@@ -196,6 +204,7 @@ if (!$count) {
 
 }
 else {
+	
 	$limit = ajaxpager(25, $count, array('polloverview','id',$pid), 'comments-table > tbody:last');
 	$subres = sql_query("SELECT pc.type, pc.id, pc.ip, pc.ratingsum, pc.text, pc.user, pc.added, pc.editedby, pc.editedat, u.avatar, u.warned, ".
                   "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS pc LEFT JOIN users AS u ON pc.user = u.id LEFT JOIN sessions ON pc.user=sessions.uid LEFT JOIN users AS e ON pc.editedby = e.id WHERE pc.toid = " .
@@ -220,13 +229,6 @@ else {
 	}
 }
 
-$REL_TPL->assignByRef('to_id',$pid);
-$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $pid, 'pollcomments' ));
-$REL_TPL->assign('textbbcode',textbbcode('text'));
-$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Poll'));
-$FORM_TYPE = 'poll';
-$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-$REL_TPL->display('commenttable_form.tpl');
 $REL_TPL->stdfoot();
 
 ?>

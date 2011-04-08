@@ -130,8 +130,8 @@ else {
 	if (!$row['relgroup_allowed'] && $row['private'] && (!get_privilege('access_to_private_relgroups',false))) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_access_priv_rg'));
 
 
-		if(!$action) {
-				if (!pagercheck()) {
+	if(!$action) {
+		if (!pagercheck()) {
 			$REL_TPL->stdhead(sprintf($REL_LANG->say_by_key('relgroup_title'),$row['name'],$row['spec']));
 
 			if ($row['owners']||$row['members']) {
@@ -315,6 +315,15 @@ else {
 	$REL_TPL->begin_frame();
 
 		}
+		
+		$REL_TPL->assignByRef('to_id',$id);
+		$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'rgcomments' ));
+		$REL_TPL->assign('textbbcode',textbbcode('text'));
+		$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release group'));
+		$FORM_TYPE = 'rg';
+		$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+		$REL_TPL->display('commenttable_form.tpl');
+		
 		$count = get_row_count("comments","WHERE toid=$id AND type='rg'");
 
 		if (!$count) {
@@ -354,14 +363,6 @@ else {
 				die();
 			}
 		}
-
-		$REL_TPL->assignByRef('to_id',$id);
-		$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'rgcomments' ));
-		$REL_TPL->assign('textbbcode',textbbcode('text'));
-		$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release group'));
-		$FORM_TYPE = 'rg';
-		$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-		$REL_TPL->display('commenttable_form.tpl');
 
 
 		?></div>

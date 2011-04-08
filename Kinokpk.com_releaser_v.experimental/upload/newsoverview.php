@@ -34,6 +34,17 @@ if (isset($_GET['id'])) {
 
 		print("</table><br />\n");
 	}
+		
+
+
+	$REL_TPL->assignByRef('to_id',$newsid);
+	$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $newsid, 'newscomments' ));
+	$REL_TPL->assign('textbbcode',textbbcode('text'));
+	$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('News'));
+	$FORM_TYPE = 'news';
+	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+	$REL_TPL->display('commenttable_form.tpl');
+	
 	$subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = ".$newsid." AND type='news'");
 	$subrow = mysql_fetch_array($subres);
 	$count = $subrow[0];
@@ -50,6 +61,8 @@ if (isset($_GET['id'])) {
 
 	}
 	else {
+		
+
 		$limit = ajaxpager(25, $count, array('newsoverview','id',$newsid), 'comments-table > tbody:last');
 
 		$subres = sql_query("SELECT nc.type, nc.id, nc.ip, nc.text, nc.ratingsum, nc.user, nc.added, nc.editedby, nc.editedat, u.avatar, u.warned, ".
@@ -75,16 +88,6 @@ if (isset($_GET['id'])) {
 			die();
 		}
 	}
-
-
-
-	$REL_TPL->assignByRef('to_id',$newsid);
-	$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $newsid, 'newscomments' ));
-	$REL_TPL->assign('textbbcode',textbbcode('text'));
-	$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('News'));
-	$FORM_TYPE = 'news';
-	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-	$REL_TPL->display('commenttable_form.tpl');
 
 }
 

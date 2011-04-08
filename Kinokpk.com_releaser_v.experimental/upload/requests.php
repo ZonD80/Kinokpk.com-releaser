@@ -245,6 +245,14 @@ if (!pagercheck()) {
 	print("<p><a name=\"startcomments\"></a></p>\n");
 }
 
+$REL_TPL->assignByRef('to_id',$id);
+$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'reqcomments' ));
+$REL_TPL->assign('textbbcode',textbbcode('text'));
+$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Request'));
+$FORM_TYPE = 'req';
+$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+$REL_TPL->display('commenttable_form.tpl');
+
 $subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = $id AND type='req'");
 $subrow = mysql_fetch_array($subres);
 $count = $subrow[0];
@@ -284,16 +292,8 @@ if (!$count) {
 		die();
 	}
 }
-$REL_TPL->assignByRef('to_id',$id);
-$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'reqcomments' ));
-$REL_TPL->assign('textbbcode',textbbcode('text'));
-$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Request'));
-$FORM_TYPE = 'req';
-$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-$REL_TPL->display('commenttable_form.tpl');
 
 //print($commentbar);
 $REL_TPL->stdfoot();
-die;
 
 ?>

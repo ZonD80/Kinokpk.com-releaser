@@ -75,13 +75,13 @@ while (list($tracker,$lastchecked,$state,$method,$remote_method,$seeders,$leeche
 		$data[$i]['remote_method'] = 'N/A';
 		$data[$i]['num_failed'] = 'N/A';
 	}
-	else { 
-	$data[$i]['tracker']=$tracker;   
-	$data[$i]['state'] = $state;
-	$data[$i]['method'] = $method;
-	$data[$i]['remote_method'] = $remote_method;
-	$data[$i]['num_failed'] = $num_failed;
-	 }
+	else {
+		$data[$i]['tracker']=$tracker;
+		$data[$i]['state'] = $state;
+		$data[$i]['method'] = $method;
+		$data[$i]['remote_method'] = $remote_method;
+		$data[$i]['num_failed'] = $num_failed;
+	}
 
 	$data[$i]['lastchecked'] = get_elapsed_time($lastchecked)." {$REL_LANG->say_by_key('ago')}";
 	$data[$i]['seeders'] = $seeders;
@@ -96,7 +96,7 @@ print("<div id=\"tabs\"><ul>
 	<li nowrap=\"\" class=\"tab1\"><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name))."\"><span>{$REL_LANG->say_by_key('torrent_info')}</span></a></li>
 	<li nowrap=\"\" class=\"tab2\"><a href=\"".$REL_SEO->make_link('exportrelease','id',$id,'name',translit($name))."\"><span>{$REL_LANG->say_by_key('exportrelease_mname')}</span></a></li>
 	</ul></div>\n <br />");
-print('<table width="100%" style="float:left"><tr><td class="colhead">'.$REL_LANG->say_by_key('tracker').'</td><td class="colhead">Сидов</td><td class="colhead">Личей</td><td class="colhead">Всего</td><td class="colhead">Время проверки</td><td class="colhead">'.$REL_LANG->say_by_key('status').'</td><td class="colhead">'.$REL_LANG->_('Method of check').'</td>'.((get_privilege('is_administrator'))?'<td class="colhead">'.$REL_LANG->_('Method of request').'</td><td class="colhead">'.$REL_LANG->_('Amount of fails').'</td>':'').'</tr>');
+print('<table width="100%" style="float:left"><tr><td class="colhead">'.$REL_LANG->say_by_key('tracker').'</td><td class="colhead">Сидов</td><td class="colhead">Личей</td><td class="colhead">Всего</td><td class="colhead">Время проверки</td><td class="colhead">'.$REL_LANG->say_by_key('status').'</td><td class="colhead">'.$REL_LANG->_('Method of check').'</td>'.((get_privilege('is_administrator',false))?'<td class="colhead">'.$REL_LANG->_('Method of request').'</td><td class="colhead">'.$REL_LANG->_('Amount of fails').'</td>':'').'</tr>');
 if ($data)
 foreach ($data as $tracker)
 print ("<tr><td>".$tracker['tracker']."</td><td>{$tracker['seeders']}</td><td>{$tracker['leechers']}</td><td>".($tracker['seeders']+$tracker['leechers'])."</td><td>{$tracker['lastchecked']}</td><td>".cleanhtml($tracker['state'])."</td><td>{$tracker['method']}</td>".((get_privilege('is_administrator',false))?"<td>{$tracker['remote_method']}</td><td>{$tracker['num_failed']}</td>":'')."</tr>");
@@ -245,14 +245,14 @@ li span.title {
 
 		<?php
 
-		
+
 		$info = bdec_file($fn, (1024*1024));
 
 		// Start table
 		/*print("<table cellspacing=\"0\" cellpadding=\"0\" class=\"tabs\"><tbody><tr>
-		 <td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"details.php?id=$id\">Описание</a></td>
-		 <td class=\"tab\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"torrent_info.php?id=$id\">Данные о торренте</a></td>
-		 <td class=\"tab3\"> </td></tr></tbody></table>\n");*/
+		<td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"details.php?id=$id\">Описание</a></td>
+		<td class=\"tab\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"torrent_info.php?id=$id\">Данные о торренте</a></td>
+		<td class=\"tab3\"> </td></tr></tbody></table>\n");*/
 		print("<table width=100% border=1 cellspacing=0 cellpadding=5>");
 
 		print("<td>");
@@ -342,7 +342,7 @@ compactMenu('colapse',false,'');
 
 		<?
 		// Standard html footers
-	
+
 }
 elseif (isset($_GET['dllist'])) {
 	$downloaders = array();

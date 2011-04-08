@@ -451,6 +451,7 @@ elseif ($action == 'takemessage') {
 				sql_query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
 				$modcomment .= "\n" . time () . " - Maybe spammer";
 				sql_query ( "UPDATE users SET modcomment = " . sqlesc ( $modcomment ) . " WHERE id =" . $CURUSER ['id'] );
+				stderr ( $REL_LANG->say_by_key('error'), "На нашем сайте стоит защита от спама, ваши 5 последних сообщений совпадают. В отсылке личного сообщения отказано. <b><u>ВНИМАНИЕ! ЕСЛИ ВЫ ЕЩЕ РАЗ ПОПЫТАЕТЕСЬ ОТПРАВИТЬ ИДЕНТИЧНОЕ СООБЩЕНИЕ, ВЫ БУДЕТЕ АВТОМАТИЧЕСКИ ЗАБЛОКИРОВАНЫ СИСТЕМОЙ!!!</u></b> <a href=\"javascript: history.go(-1)\">Назад</a>" );
 					
 			} else {
 				sql_query ( "UPDATE users SET enabled=0, dis_reason='Spam' WHERE id=" . $CURUSER ['id'] );
@@ -460,8 +461,7 @@ elseif ($action == 'takemessage') {
 				stderr ( "Поздравляем!", "Вы успешно забанены системой за спам в Личных Сообщениях! Если вы не согласны с решением системы, <a href=\"".$REL_SEO->make_link('contact')."\">подайте жалобу админам</a>." );
 			}
 		}
-		stderr ( $REL_LANG->say_by_key('error'), "На нашем сайте стоит защита от спама, ваши 5 последних сообщений совпадают. В отсылке личного сообщения отказано. <b><u>ВНИМАНИЕ! ЕСЛИ ВЫ ЕЩЕ РАЗ ПОПЫТАЕТЕСЬ ОТПРАВИТЬ ИДЕНТИЧНОЕ СООБЩЕНИЕ, ВЫ БУДЕТЕ АВТОМАТИЧЕСКИ ЗАБЛОКИРОВАНЫ СИСТЕМОЙ!!!</u></b> <a href=\"javascript: history.go(-1)\">Назад</a>" );
-
+		
 	}
 	// ANTISPAM SYSTEM END
 	$pms = sql_query ( "SELECT SUM(1) FROM messages WHERE (receiver = $receiver AND location=1) OR (sender = $receiver AND saved = 1)" );
@@ -486,7 +486,7 @@ elseif ($action == 'takemessage') {
 	stderr ( $REL_LANG->say_by_key('error'), "Нет пользователя с таким ID $receiver." );
 	//Make sure recipient wants this message
 
-	if (!get_privilege('is_moderator')) {
+	if (!get_privilege('is_moderator',false)) {
 		if ($user ["acceptpms"] == "friends") {
 			$res2 = sql_query ( "SELECT * FROM friends WHERE userid=$receiver AND friendid=" . $CURUSER ["id"] ) or sqlerr ( __FILE__, __LINE__ );
 			if (mysql_num_rows ( $res2 ) != 1)
