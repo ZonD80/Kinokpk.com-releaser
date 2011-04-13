@@ -179,7 +179,8 @@ if (!pagercheck()) {
 
 
 // POLLCOMMENTS START
-
+//где то потерял начало таблицы
+print ('<table width="100%">');
 $REL_TPL->assignByRef('to_id',$pid);
 $REL_TPL->assignByRef('is_i_notified',is_i_notified ( $pid, 'pollcomments' ));
 $REL_TPL->assign('textbbcode',textbbcode('text'));
@@ -187,7 +188,6 @@ $REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Poll'));
 $FORM_TYPE = 'poll';
 $REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 $REL_TPL->display('commenttable_form.tpl');
-
 $subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = ".$pid." AND type='poll'");
 $subrow = mysql_fetch_array($subres);
 $count = $subrow[0];

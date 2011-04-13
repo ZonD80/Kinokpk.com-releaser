@@ -28,8 +28,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$secret = mksecret();
 	$passhash = sqlesc(md5($secret . $password . $secret));
 	$secret = sqlesc($secret);
-
-	sql_query("INSERT INTO users (added, last_access, secret, username, passhash, notifs, emailnotifs, confirmed, email) VALUES(".time().", ".time().", $secret, $username, $passhash, '{$REL_CONFIG['default_notifs']}', '{$REL_CONFIG['default_emailnotifs']}', 1, $email)");
+	$classes = init_class_array();
+	sql_query("INSERT INTO users (class, added, last_access, secret, username, passhash, notifs, emailnotifs, confirmed, email) VALUES({$classes['reg']},".time().", ".time().", $secret, $username, $passhash, '{$REL_CONFIG['default_notifs']}', '{$REL_CONFIG['default_emailnotifs']}', 1, $email)");
 	if (mysql_errno()==1062)
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('unable_to_create_account'));
 	$id = mysql_insert_id();
@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 $REL_TPL->stdhead($REL_LANG->say_by_key('add_user'));
 ?>
 <h1><?php print $REL_LANG->say_by_key('add_user');?></h1>
-<form method=post action="<?php print $REL_SEO->make_link('adduser')?>">
+<form method=post action="<?php print $REL_SEO->make_link('adduser');?>">
 <table border=1 cellspacing=0 cellpadding=5>
 	<tr>
 		<td class=rowhead><?php print $REL_LANG->say_by_key('username');?></td>

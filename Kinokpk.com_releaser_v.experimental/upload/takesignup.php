@@ -123,9 +123,9 @@ $status = 0;
 
 $classes = init_class_array();
 
-$ret = sql_query("INSERT INTO users (username, passhash, secret, editsecret, notifs, emailnotifs, email, confirmed, ". (!$users?"class, ":"") ."added, last_login, last_access, language, timezone, invitedby, invitedroot) VALUES (" .
+$ret = sql_query("INSERT INTO users (username, passhash, secret, editsecret, notifs, emailnotifs, email, confirmed, class, added, last_login, last_access, language, timezone, invitedby, invitedroot) VALUES (" .
 implode(",", array_map("sqlesc", array($wantusername, $wantpasshash, $secret, $editsecret, $REL_CONFIG['default_notifs'], $REL_CONFIG['default_emailnotifs'], strtolower($email), $status))).
-		", ". (!$users?$classes['sysop'].", ":"").$time.",".$time.",".$time.", '{$REL_CONFIG['default_language']}', {$REL_CONFIG['register_timezone']} , ".(int)$inviter.", ".(int)$invitedroot.")");// or sqlerr(__FILE__, __LINE__);
+		", ". (!$users?$classes['sysop']:$classes['reg']).",".$time.",".$time.",".$time.", '{$REL_CONFIG['default_language']}', {$REL_CONFIG['register_timezone']} , ".(int)$inviter.", ".(int)$invitedroot.")");// or sqlerr(__FILE__, __LINE__);
 
 if (!$ret) {
 	if (mysql_errno() == 1062)
