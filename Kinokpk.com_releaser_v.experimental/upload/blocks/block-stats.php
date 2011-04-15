@@ -6,7 +6,7 @@ if (!defined('BLOCK_FILE')) {
 }
 
 $block_online=$REL_CACHE->get('block-stats', 'queries',300);
-
+$classes =init_class_array();
 // UPDATE CACHES:
 if ($block_online===false) {
 	$res=sql_query("(SELECT SUM(1) FROM users) UNION ALL
@@ -18,8 +18,7 @@ if ($block_online===false) {
           (SELECT SUM(1) FROM torrents WHERE visible=0) UNION ALL
            (SELECT SUM(1) FROM users WHERE warned = 1) UNION ALL
             (SELECT SUM(1) FROM users WHERE enabled = 0) UNION ALL
-             (SELECT SUM(1) FROM users WHERE class = ".UC_UPLOADER.") UNION ALL
-              (SELECT SUM(1) FROM users WHERE class = ".UC_VIP.") UNION ALL
+             (SELECT SUM(1) FROM users WHERE class = ".$classes['vip'].") UNION ALL
                (SELECT SUM(size) FROM torrents) UNION ALL
                  (SELECT SUM(seeders) FROM trackers WHERE tracker<>'localhost') UNION ALL
                  (SELECT SUM(leechers) FROM trackers WHERE tracker<>'localhost')");
@@ -34,7 +33,6 @@ if ($block_online===false) {
 'torrents_dead',
 'users_warned',
 'users_disabled',
-'uploaders',
 'vips',
 'size',
 'seeders',
@@ -87,7 +85,6 @@ $content .= "<table width=\"100%\" class=\"main\" border=\"0\" cellspacing=\"0\"
 <tr><td class=\"rowhead\">".$REL_LANG->say_by_key('users_unconfirmed')."</td><td align=\"right\">".($unverified?$unverified:$REL_LANG->say_by_key('no'))."</td></tr>
 <tr><td class=\"rowhead\">".$REL_LANG->say_by_key('users_warned')."&nbsp;<img src=\"pic/warned.gif\" alt=\"{$REL_LANG->say_by_key('users_warned')}\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".($warned_users?number_format($warned_users):$REL_LANG->say_by_key('no'))."</td></tr>
 <tr><td class=\"rowhead\">".$REL_LANG->say_by_key('users_disabled')."&nbsp;<img src=\"pic/disabled.gif\" alt=\"{$REL_LANG->say_by_key('users_disabled')}\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".($disabled?number_format($disabled):$REL_LANG->say_by_key('no'))."</td></tr>
-<tr><td class=\"rowhead\"><font color=\"orange\">".$REL_LANG->say_by_key('users_uploaders')."</font></td><td align=\"right\">".($uploaders?number_format($uploaders):$REL_LANG->say_by_key('no'))."</td></tr>
 <tr><td class=\"rowhead\"><font color=\"#9C2FE0\">".$REL_LANG->say_by_key('users_vips')."</font></td><td align=\"right\">".($vip?number_format($vip):$REL_LANG->say_by_key('no'))."</td></tr>
 
 </table></td>

@@ -16,7 +16,7 @@ if (!defined('BLOCK_FILE')) {
 }
 
 
-$blocktitle = "<span>Релизы</span>".(get_user_class() >= UC_USER ? "<font class=\"small\"> - [<a class=\"altlink\" href=\"".$REL_SEO->make_link('upload')."\"><b>Залить</b></a>]  </font>" : "<font class=\"small\"> - (новые поступления)</font>");
+$blocktitle = "<span>Релизы</span>".(get_privilege('upload_releases',false) ? "<font class=\"small\"> - [<a class=\"altlink\" href=\"".$REL_SEO->make_link('upload')."\"><b>Залить</b></a>]  </font>" : "<font class=\"small\"> - (новые поступления)</font>");
 
 
 }
@@ -55,7 +55,6 @@ if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; }
 		$content .= "<td  valign=\"top\">";
 		if ($row['category'] && $REL_CONFIG['pron_cats'] && !$CURUSER['pron']) {
 			$categories = explode(',',$row['category']);
-			// if (get_user_class()==UC_SYSOP) { print ('<pre>'); print_r($REL_CONFIG['pron_cats']); }
 			foreach ($categories as $category)
 			if (in_array($category,$REL_CONFIG['pron_cats'])) { $pron=true; break; }
 		}

@@ -13,6 +13,7 @@ $title_who = array();
 $gues = array();
 $dt = sqlesc(time() - 300);
 $result = sql_query("SELECT DISTINCT s.uid, s.username, s.class, s.ip FROM sessions AS s WHERE s.time > $dt ORDER BY s.class DESC");
+$classes = init_class_array();
 while ($row = mysql_fetch_array($result)) {
 	$uid = $row["uid"];
 	$uname = $row["username"];
@@ -22,7 +23,7 @@ while ($row = mysql_fetch_array($result)) {
 	if (!empty($uname) && ($uname_new != $uname_old)) {
 		$title_who[] = "<a href='".$REL_SEO->make_link('userdetails','id',$uid,'username',$uname)."' class='online'>".get_user_class_color($class, $uname)."</a>";
 	}
-	if (($uname_new != $uname_old) && ($class >= UC_MODERATOR)) {
+	if (($uname_new != $uname_old) && ($class >= $classes['staffbegin'])) {
 		$staff++;
 	} elseif((!empty($uname) and $uname_new != $uname_old)) {
 		$users++;
@@ -72,7 +73,7 @@ if (count($title_who)) {
 $content .= "<tr valign='middle'>
             <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>
             <b>В сети: </b><br />";
-$content .= "<img src='pic/info/admin.gif' alt='Администраторы' align='middle' width='16' height='16' />&nbsp;<font color='red'>Админы: $staff</font>&nbsp;";
+$content .= "<img src='pic/info/admin.gif' alt='Администраторы' align='middle' width='16' height='16' />&nbsp;<font color='red'>Администрация: $staff</font>&nbsp;";
 $content .= "<img src='pic/info/member.gif' alt='Пользователи' align='middle' width='16' height='16' />&nbsp;Пользователи: $users&nbsp;<br />";
 $content .= "<img src='pic/info/guest.gif' alt='Гости' align='middle' width='16' height='16' />&nbsp;Гости: $guests&nbsp;";
 $content .= "<img src='pic/info/group.gif' alt='Всего' align='middle' width='16' height='16' />&nbsp;Всего: $total</td></tr>";

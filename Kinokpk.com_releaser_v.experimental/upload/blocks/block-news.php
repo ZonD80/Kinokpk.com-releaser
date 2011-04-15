@@ -5,7 +5,7 @@ if (!defined('BLOCK_FILE')) {
 	exit;
 }
 
-$blocktitle = $REL_LANG->say_by_key('news').(get_user_class() >= UC_ADMINISTRATOR ? "<font class=\"small\"> - [<a class=\"altlink\" href=\"".$REL_SEO->make_link('news')."\"><b>".$REL_LANG->say_by_key('create')."</b></a>]</font>" : "");
+$blocktitle = $REL_LANG->say_by_key('news').(get_privilege('news_operation',false) ? "<font class=\"small\"> - [<a class=\"altlink\" href=\"".$REL_SEO->make_link('news')."\"><b>".$REL_LANG->say_by_key('create')."</b></a>]</font>" : "");
 
 $resource = $REL_CACHE->get('block-news', 'query');
 
@@ -26,7 +26,7 @@ if ($resource) {
 			$content .=
       "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable unfolded\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"bottom\" width=\"50%\"><i>".mkprettytime($array['added'])."</i> - <b>".$array['subject']."</b></td></tr></table></div><div style=\"display: block;\" class=\"sp-body\">".format_comment($array['body']);
 			$content .="<hr/><div align=\"right\">";
-			if (get_user_class() >= UC_ADMINISTRATOR) {
+			if (get_privilege('news_operation',false)) {
 				$content .= "[<a href=\"".$REL_SEO->make_link('news','action','edit','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>E</b></a>]";
 				$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
 			}
@@ -37,7 +37,7 @@ if ($resource) {
 			$content .=
       "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"bottom\" width=\"50%\"><i>".mkprettytime($array['added'])."</i> - <b>".$array['subject']."</b></td></tr></table></div><div class=\"sp-body\">".format_comment($array['body']);
 			$content .="<hr/><div align=\"right\">";
-			if (get_user_class() >= UC_ADMINISTRATOR) {
+			if (get_privilege('news_operation',false)) {
 				$content .= "[<a href=\"".$REL_SEO->make_link('news','action','edit','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>E</b></a>]";
 				$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
 			}

@@ -17,7 +17,7 @@ if ($CURUSER) {
 
 	}
 
-	if (!$id) {$content .="<h1>Нет опросов!</h1>".((get_user_class() >= UC_ADMINISTARTOR)?"[<a href=\"".$REL_SEO->make_link('pollsadmin','action','add')."\">Создать новый</a>]":""); } else {
+	if (!$id) {$content .="<h1>Нет опросов!</h1>".((get_privilege('polls_operation',false))?"[<a href=\"".$REL_SEO->make_link('pollsadmin','action','add')."\">Создать новый</a>]":""); } else {
 
 		$pquestion = array();
 		$pstart = array();
@@ -76,7 +76,7 @@ if ($CURUSER) {
 			<li style="margin:0px;"><h4 style="margin:0px; text-align: center;">Опрос № '.$id.'	</h4>&nbsp;&nbsp;&nbsp;&nbsp;Открыт: '.mkprettytime($pstart).(!is_null($pexp)?(($pexp > time())?", заканчивается: ".mkprettytime($pexp):", <font color=\"red\">закончен</font>: ".mkprettytime($pexp)):'').'</li>
 		</ul>
 		<ul class="polls_title_q">
-			<li class="colheadli"><h3 style="margin-top: 7px;margin-bottom:0;">'.$pquestion.'</h3>'.((get_user_class() >= UC_ADMINISTRATOR)?" <span style=\"margin-left: 335px;\">[<a href=\"".$REL_SEO->make_link('pollsadmin','action','add')."\">Создать новый</a>] [<a href=\"".$REL_SEO->make_link('pollsadmin','action','edit','id',$id)."\">Редактировать</a>] [<a href=\"".$REL_SEO->make_link('pollsadmin','action','delete','id',$id)."\" onClick=\"return confirm('Вы уверены?');\">Удалить</a>]":"").'</span></li>
+			<li class="colheadli"><h3 style="margin-top: 7px;margin-bottom:0;">'.$pquestion.'</h3>'.((get_privilege('polls_operation',false))?" <span style=\"margin-left: 335px;\">[<a href=\"".$REL_SEO->make_link('pollsadmin','action','add')."\">Создать новый</a>] [<a href=\"".$REL_SEO->make_link('pollsadmin','action','edit','id',$id)."\">Редактировать</a>] [<a href=\"".$REL_SEO->make_link('pollsadmin','action','delete','id',$id)."\" onClick=\"return confirm('Вы уверены?');\">Удалить</a>]":"").'</span></li>
 		</ul>';
 
 		foreach ($sids as $sid)
@@ -110,8 +110,8 @@ if ($CURUSER) {
 				if ($vote['userid'] == $CURUSER['id']) $voted = $votedrow;
 				if (!is_null($vid)) $votecount[$votedrow]++;
 
-				if ((($public) || (get_user_class() >= UC_MODERATOR)) && !is_null($vid))
-				$usercode[$votedrow] .= "<a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',$user['username'])."\">".get_user_class_color($user['class'],$user['username'])."</a>".((get_user_class() >= UC_MODERATOR)?" [<a onClick=\"return confirm('Удалить этот голос?')\" href=\"".$REL_SEO->make_link('polloverview','deletevote','','vid',$vid)."\">D</a>] ":" ");
+				if ((($public) || (get_privilege('polls_operation',false))) && !is_null($vid))
+				$usercode[$votedrow] .= "<a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',$user['username'])."\">".get_user_class_color($user['class'],$user['username'])."</a>".((get_privilege('polls_operation',false))?" [<a onClick=\"return confirm('Удалить этот голос?')\" href=\"".$REL_SEO->make_link('polloverview','deletevote','','vid',$vid)."\">D</a>] ":" ");
 
 				if (($votecount[$votedrow]) >= $maxvotes) $maxvotes = $votecount[$votedrow];
 
