@@ -14,10 +14,8 @@ require_once("include/bittorrent.php");
 
 INIT();
 
-
-
 loggedinorreturn();
-
+get_privilege('upload_releases');
 
 //stderr('Загрузка релизов временно отключена','Загрузка новых релизов временно отключена администрацией');
 $REL_TPL->stdhead($REL_LANG->say_by_key('upload_torrent'));
@@ -69,7 +67,8 @@ function checkname() {
 //-->
 </script>
 <form name="upload" enctype="multipart/form-data"
-	action="<?=$REL_SEO->make_link('takeupload');?>" method="post" onsubmit="return checkname();">
+	action="<?=$REL_SEO->make_link('takeupload');?>" method="post"
+	onsubmit="return checkname();">
 <table border="1" cellspacing="0" cellpadding="5">
 	<input type="hidden" name="type[]" value="<?=$type?>" />
 	<tr>

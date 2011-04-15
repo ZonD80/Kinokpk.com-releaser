@@ -20,9 +20,8 @@ function bark($msg) {
 
 INIT();
 
-
 loggedinorreturn();
-
+get_privilege('upload_releases');
 
 foreach(explode(":","type:name") as $v) {
 	if (!isset($_POST[$v]))
@@ -176,25 +175,25 @@ $allowed_types = array(
 "image/png" => "png"
 // Add more types here if you like
 );
-    // Where to upload?
-    // Update for your own server. Make sure the folder has chmod write permissions. Remember this director
-    $uploaddir = "torrents/images/";
+// Where to upload?
+// Update for your own server. Make sure the folder has chmod write permissions. Remember this director
+$uploaddir = "torrents/images/";
 
-    		 
-		 $ret = $REL_DB->query("SHOW TABLE STATUS LIKE 'torrents'");
-		$row = mysql_fetch_array($ret);
-		$next_id = $row['Auto_increment'];
-		
+ 
+$ret = $REL_DB->query("SHOW TABLE STATUS LIKE 'torrents'");
+$row = mysql_fetch_array($ret);
+$next_id = $row['Auto_increment'];
+
 for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
 	$y=$x+1;
-	
+
 	if ($_FILES[image.$x]['name'] != "") {
-	$_FILES[image.$x]['type'] = strtolower($_FILES[image.$x]['type']);
-    $_FILES[image.$x]['name'] = strtolower($_FILES[image.$x]['name']);
-    $_POST['img'.$x] = $uploaddir.$next_id."-$x.".$allowed_types[$_FILES[image.$x]['type']];
-    $image_upload[$x] = true;
+		$_FILES[image.$x]['type'] = strtolower($_FILES[image.$x]['type']);
+		$_FILES[image.$x]['name'] = strtolower($_FILES[image.$x]['name']);
+		$_POST['img'.$x] = $uploaddir.$next_id."-$x.".$allowed_types[$_FILES[image.$x]['type']];
+		$image_upload[$x] = true;
 	} else $image_upload[$x] = false;
-	
+
 	if (!empty($_POST['img'.$x])) {
 		$img=trim(htmlspecialchars((string)$_POST['img'.$x]));
 		if (strpos($img,',') || strpos($img,'?')) stderr($REL_LANG->say_by_key('error'),'Динамические изображения запрещены');
@@ -202,23 +201,23 @@ for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
 		if (!preg_match('/^(.+)\.(gif|png|jpeg|jpg)$/si', $img))
 		stderr($REL_LANG->say_by_key('error'),'Загружаемая картинка '.($x+1).' - не картинка');
 
-		 //$check = remote_fsize($img);
-		 if ($image_upload[$x]) {
+		//$check = remote_fsize($img);
+		if ($image_upload[$x]) {
 		 $check = $_FILES[image.$x]['size'];
-		 
+		 	
 		 if (!$check) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unable to check size of image %s',$y));
 		 if ($check>$maxfilesize) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Image size is greather then %s. Please select smaller image and try again.',$maxfilesize));
-		
-		    // Upload the file
-    		$copy = move_uploaded_file($_FILES[image.$x]['tmp_name'], ROOT_PATH.$img);
-    		
-    		if (!$copy) $REL_TPL->stderr($REL_LANG->_("Error"),$REL_LANG->_("Unable to save image, contact site administration"));
-		 }
-		 $inames[]=$img;
+
+		 // Upload the file
+		 $copy = move_uploaded_file($_FILES[image.$x]['tmp_name'], ROOT_PATH.$img);
+
+		 if (!$copy) $REL_TPL->stderr($REL_LANG->_("Error"),$REL_LANG->_("Unable to save image, contact site administration"));
+		}
+		$inames[]=$img;
 	}
-	
-	
-	
+
+
+
 }
 
 
@@ -289,7 +288,7 @@ if ($_POST['nofile']) {
 		bark("mysql puked: ".mysql_error());
 	}
 	$id = mysql_insert_id();
-	
+
 	$REL_DB->query("INSERT INTO xbt_files (fid,info_hash) VALUES ($id,'".pack('H*', $infohash)."')");
 
 	//insert localhost tracker
@@ -343,45 +342,45 @@ if ($_POST['nofile']) {
 
 Информация о Релизе:
 -------------------------------------------------------------------------------
-	$forumdesc
+$forumdesc
 -------------------------------------------------------------------------------
 EOD;
 
-	$bfooter = <<<EOD
+$bfooter = <<<EOD
 Чтобы посмотреть релиз, перейдите по этой ссылке:
 
-	{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}
+{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}
 
 EOD;
 
-	$body .= $bfooter;
-	$descr .= nl2br($bfooter);
+$body .= $bfooter;
+$descr .= nl2br($bfooter);
 
 
-	if (!get_privilege('post_releases_approved',false)) {
-		write_sys_msg($CURUSER['id'],sprintf($REL_LANG->say_by_key('uploaded_body'),"<a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($torrent))."\">$torrent</a>"),$REL_LANG->say_by_key('uploaded'));
-		send_notifs('unchecked',nl2br($body));
-	} else {
-		send_notifs('torrents',format_comment($descr));
-	}
+if (!get_privilege('post_releases_approved',false)) {
+	write_sys_msg($CURUSER['id'],sprintf($REL_LANG->say_by_key('uploaded_body'),"<a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($torrent))."\">$torrent</a>"),$REL_LANG->say_by_key('uploaded'));
+	send_notifs('unchecked',nl2br($body));
+} else {
+	send_notifs('torrents',format_comment($descr));
+}
 
 
-	$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/".$REL_SEO->make_link('announce','passkey',$CURUSER['passkey']);
-	$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
-	while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
+$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/".$REL_SEO->make_link('announce','passkey',$CURUSER['passkey']);
+$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
+while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
 
-	$retrackers = get_retrackers();
-	//var_dump($retrackers);
-	if ($retrackers) foreach ($retrackers as $announce)
-	if (!in_array($announce,$announce_urls_list)) $announce_urls_list[] = $announce;
+$retrackers = get_retrackers();
+//var_dump($retrackers);
+if ($retrackers) foreach ($retrackers as $announce)
+if (!in_array($announce,$announce_urls_list)) $announce_urls_list[] = $announce;
 
-	$link = make_magnet($infohash,makesafe($torrent),$announce_urls_list);
+$link = make_magnet($infohash,makesafe($torrent),$announce_urls_list);
 
-	if ($REL_CRON['rating_enabled']) { $msg = sprintf($REL_LANG->say_by_key('upload_notice'),$REL_CRON['rating_perrelease'],$id,$link); }
-	else $msg = sprintf($REL_LANG->say_by_key('upload_notice_norating'),$id,$link);
+if ($REL_CRON['rating_enabled']) { $msg = sprintf($REL_LANG->say_by_key('upload_notice'),$REL_CRON['rating_perrelease'],$id,$link); }
+else $msg = sprintf($REL_LANG->say_by_key('upload_notice_norating'),$id,$link);
 
 
-	safe_redirect($REL_SEO->make_link('details','id',$id,'name',$torrent),3);
-	stderr($REL_LANG->say_by_key('uploaded'),$msg.($anarray?"<img src=\"".$REL_SEO->make_link('remote_check','id',$id)."\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
+safe_redirect($REL_SEO->make_link('details','id',$id,'name',$torrent),3);
+stderr($REL_LANG->say_by_key('uploaded'),$msg.($anarray?"<img src=\"".$REL_SEO->make_link('remote_check','id',$id)."\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
 
-	?>
+?>

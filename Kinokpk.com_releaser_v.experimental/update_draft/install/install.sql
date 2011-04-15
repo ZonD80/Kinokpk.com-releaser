@@ -1360,6 +1360,8 @@ INSERT INTO `privileges` (`id`, `name`, `classes_allowed`, `description`) VALUES
 (55, 'view_general_statistics', '1', 'Ability to view general site statistics'),
 (56, 'edit_site_templates', '1', 'Access to site templates administration panel'),
 (57, 'view_private_user_profiles', '1,2,3', 'Ability to view private user profiles'),
-(58, 'censored_admin', '1,2,3', 'Ability to administrate censored releases');
+(58, 'censored_admin', '1,2,3', 'Ability to administrate censored releases'),
+(59, 'post_releases_approved', '1,2,3,4', 'Ability to post automatically approved releases'),
+(60, 'upload_releases', '1,2,3,4,5,6,7', 'Ability to upload new releases to site');
 
 INSERT INTO `snt_tracker`.`privileges` (`id`, `name`, `classes_allowed`, `description`) VALUES (NULL, 'post_releases_approved', '1,2,3,4,5', 'Ability to post automatically approved releases');
