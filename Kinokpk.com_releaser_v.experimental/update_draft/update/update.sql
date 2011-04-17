@@ -483,3 +483,11 @@ INSERT INTO `privileges` (`id`, `name`, `classes_allowed`, `description`) VALUES
 (56, 'edit_site_templates', '1', 'Access to site templates administration panel'),
 (57, 'view_private_user_profiles', '1,2,3', 'Ability to view private user profiles'),
 (58, 'censored_admin', '1,2,3', 'Ability to administrate censored releases');
+
+CREATE TABLE IF NOT EXISTS `nickhistory` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(10) unsigned NOT NULL,
+  `nick` varchar(255) NOT NULL,
+  `date` int(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;

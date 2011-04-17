@@ -160,7 +160,7 @@ class REL_LANG {
 		while ($row = mysql_fetch_assoc($res))
 		$check[$row['lkey']] = $row['lvalue'];
 		foreach ($parse as $string) {
-			$string = iconv('cp1251','utf-8',$string);
+			//$string = iconv('cp1251','utf-8',$string);
 			$cut = strpos($string,'=');
 			if (!$cut) continue;
 			$key = strtolower(trim(substr($string,0,$cut)));

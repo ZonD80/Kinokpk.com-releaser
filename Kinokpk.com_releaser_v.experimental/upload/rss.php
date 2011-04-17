@@ -9,7 +9,7 @@
  */
 
 require "include/bittorrent.php";
-dbconn(false);
+INIT(false);
 
 include(ROOT_PATH.'classes/rssatom/rssatom.php');
 $feeds=new FeedGenerator;

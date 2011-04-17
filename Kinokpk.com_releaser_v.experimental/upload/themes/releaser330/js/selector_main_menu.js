@@ -24,24 +24,24 @@ function creatingMenu(selector) {
 		
 		
 				
-	// кладем 1 div под 	
+	// РєР»Р°РґРµРј 1 div РїРѕРґ 	
 	// selector1.parent().append('<ul id="selector_menu_js"></ul>');
 	
 		page_body.append('<ul class="selector_menu" id="selector_menu_js'+formNum+'"></ul>');		
-	// получаем объект из div
+	// РїРѕР»СѓС‡Р°РµРј РѕР±СЉРµРєС‚ РёР· div
 	var selector_menu_js = $("#selector_menu_js"+formNum);
 		selector_menu_js.css('top', top).css('left', left);
 		select_header1.addClass("selector_menu_js"+formNum);
 	
-	// создадим массив в котороый положим все значения
+	// СЃРѕР·РґР°РґРёРј РјР°СЃСЃРёРІ РІ РєРѕС‚РѕСЂРѕС‹Р№ РїРѕР»РѕР¶РёРј РІСЃРµ Р·РЅР°С‡РµРЅРёСЏ
 	var oLinks1 = [];
 	
 	
-	// пробегаемся по всем option
+	// РїСЂРѕР±РµРіР°РµРјСЃСЏ РїРѕ РІСЃРµРј option
 	selector1_li.each(function(i){
-		// собираю отдельно все внутрнности каждого Option
+		// СЃРѕР±РёСЂР°СЋ РѕС‚РґРµР»СЊРЅРѕ РІСЃРµ РІРЅСѓС‚СЂРЅРЅРѕСЃС‚Рё РєР°Р¶РґРѕРіРѕ Option
 		var text = $(this).html();		
-		// собираю отдельно все ссылки Option
+		// СЃРѕР±РёСЂР°СЋ РѕС‚РґРµР»СЊРЅРѕ РІСЃРµ СЃСЃС‹Р»РєРё Option
 		var href = $(this).attr('value');
 		
 		var dataUl = '';
@@ -52,7 +52,7 @@ function creatingMenu(selector) {
 			//dataUl += "<li style='width:"+width+"px';' class='open_form_js'><span>"+select_header1_text+"</span></li>";
 		}
 		selector_menu_js.append(dataUl);		
-		//организовываем в массиве объектное хранение данных
+		//РѕСЂРіР°РЅРёР·РѕРІС‹РІР°РµРј РІ РјР°СЃСЃРёРІРµ РѕР±СЉРµРєС‚РЅРѕРµ С…СЂР°РЅРµРЅРёРµ РґР°РЅРЅС‹С…
 		//oLinks1[i] = { text: text, href: href };	
 	});
 		

@@ -1364,4 +1364,10 @@ INSERT INTO `privileges` (`id`, `name`, `classes_allowed`, `description`) VALUES
 (59, 'post_releases_approved', '1,2,3,4', 'Ability to post automatically approved releases'),
 (60, 'upload_releases', '1,2,3,4,5,6,7', 'Ability to upload new releases to site');
 
-INSERT INTO `snt_tracker`.`privileges` (`id`, `name`, `classes_allowed`, `description`) VALUES (NULL, 'post_releases_approved', '1,2,3,4,5', 'Ability to post automatically approved releases');
+CREATE TABLE IF NOT EXISTS `nickhistory` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(10) unsigned NOT NULL,
+  `nick` varchar(255) NOT NULL,
+  `date` int(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;

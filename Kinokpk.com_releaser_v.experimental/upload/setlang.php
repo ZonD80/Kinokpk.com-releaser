@@ -8,7 +8,7 @@
  * @link http://dev.kinokpk.com
  */
 require_once('include/bittorrent.php');
-dbconn(true);
+INIT(true);
 $lang = trim((string)$_GET['l']);
 $lang = substr($lang,0,2);
 setcookie("lang", $lang, 0x7fffffff);

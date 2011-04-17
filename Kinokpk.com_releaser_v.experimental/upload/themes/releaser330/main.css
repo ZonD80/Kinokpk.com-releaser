@@ -11,7 +11,7 @@ height: auto;}
 .bg {background:url(images/bg2_02.png) repeat-x #736d5f;height: 100% !important;}
 a { color: #2084ff; text-decoration:none; outline: none;}
 a:hover { text-decoration: underline; }
-/*Íàñòğîéêà çàãîëîâêîâ*/
+/*ĞĞ°ÑÑ‚Ñ€Ğ¾Ğ¹ĞºĞ° Ğ·Ğ°Ğ³Ğ¾Ğ»Ğ¾Ğ²ĞºĞ¾Ğ²*/
 h1 { font-size: 1.5em; line-height: 150%;}
 h2 { font-size: 1.2em; font-weight: bold; line-height: 140%; color: #2084ff;}
 h3 { font-size: 1.1em; font-weight: bold; line-height: 140%; }
@@ -1278,7 +1278,7 @@ cursor:pointer;
 blockquote {
 /*
 margin-top:0;
-font:Georgia, “Times New Roman”, Times, serif;
+font:Georgia, â€œTimes New Romanâ€, Times, serif;
 background:#f7f7f7;
 border:1px solid #D8DFEA;
 text-indent:-18px;
@@ -1308,7 +1308,7 @@ blockquote cite:before {
 /*
 blockquote {
 margin-top:0;
-font:1.2em/1.6em Georgia, “Times New Roman”, Times, serif;
+font:1.2em/1.6em Georgia, â€œTimes New Romanâ€, Times, serif;
 background:#f7f7f7;
 border:1px solid #D8DFEA;
 text-indent:-18px;

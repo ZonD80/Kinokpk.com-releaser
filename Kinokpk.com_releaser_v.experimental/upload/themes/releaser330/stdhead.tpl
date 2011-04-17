@@ -5,7 +5,7 @@
 <meta name="Description" content="{$REL_CONFIG.description}{$descradd}" />
 <meta name="Keywords" content="{$keywordsadd}{$REL_CONFIG.keywords}" />
 <base href="{$REL_CONFIG.defaultbaseurl}/" />
-<!--Тоже любишь смотреть исходники HTML? Знаешь еще и PHP/MySQL? обратись к админам, наверняка для тебя есть местечко в нашей команде http://www.kinokpk.com/staff.php -->
+<!--РўРѕР¶Рµ Р»СЋР±РёС€СЊ СЃРјРѕС‚СЂРµС‚СЊ РёСЃС…РѕРґРЅРёРєРё HTML? Р—РЅР°РµС€СЊ РµС‰Рµ Рё PHP/MySQL? РѕР±СЂР°С‚РёСЃСЊ Рє Р°РґРјРёРЅР°Рј, РЅР°РІРµСЂРЅСЏРєР° РґР»СЏ С‚РµР±СЏ РµСЃС‚СЊ РјРµСЃС‚РµС‡РєРѕ РІ РЅР°С€РµР№ РєРѕРјР°РЅРґРµ http://www.kinokpk.com/staff.php -->
 <title>{$title}</title>
 <link rel="stylesheet" href="themes/{$REL_CONFIG.ss_uri}/main.css" type="text/css"/>
 <link rel="stylesheet" href="css/features.css" type="text/css"/>
@@ -23,7 +23,7 @@
 <!--<script language="javascript" type="text/javascript" src="js/snow.js"></script>-->
 {/if}
 <script language="javascript" type="text/javascript" src="js/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.history.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.scrollTo-min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.cookie.js"></script>
 <script language="javascript" type="text/javascript" src="js/facebox.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.jgrowl_minimized.js"></script>
@@ -33,11 +33,11 @@
 <script language="javascript" type="text/javascript" src="js/jquery.paginator3000.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.utils.js"></script>
 <script language="javascript" type="text/javascript" src="js/blocks.js"></script>
-<!--Выпадающее меню-->
+<!--Р’С‹РїР°РґР°СЋС‰РµРµ РјРµРЅСЋ-->
 <script language="javascript" type="text/javascript" src="themes/{$REL_CONFIG.ss_uri}/js/topmenu.js"></script>
 {$headadd}
 <!--[if lte IE 7]>
-<font color="red" size="5">Тебя приветствуют твои предки, %username%! Похоже, ты используешь Internet Explorer, над которым мы смеялись еще в лохматые годы. Мы, твои предки, %username%, предлагаем тебе <a href="http://ie.yandex.ru/">обновиться до самой свежей версии</a>, дабы получать вселенское удовольствие от использования этого прекрасного и милого сайта. Спасибо!</font>
+<font color="red" size="5">РўРµР±СЏ РїСЂРёРІРµС‚СЃС‚РІСѓСЋС‚ С‚РІРѕРё РїСЂРµРґРєРё, %username%! РџРѕС…РѕР¶Рµ, С‚С‹ РёСЃРїРѕР»СЊР·СѓРµС€СЊ Internet Explorer, РЅР°Рґ РєРѕС‚РѕСЂС‹Рј РјС‹ СЃРјРµСЏР»РёСЃСЊ РµС‰Рµ РІ Р»РѕС…РјР°С‚С‹Рµ РіРѕРґС‹. РњС‹, С‚РІРѕРё РїСЂРµРґРєРё, %username%, РїСЂРµРґР»Р°РіР°РµРј С‚РµР±Рµ <a href="http://ie.yandex.ru/">РѕР±РЅРѕРІРёС‚СЊСЃСЏ РґРѕ СЃР°РјРѕР№ СЃРІРµР¶РµР№ РІРµСЂСЃРёРё</a>, РґР°Р±С‹ РїРѕР»СѓС‡Р°С‚СЊ РІСЃРµР»РµРЅСЃРєРѕРµ СѓРґРѕРІРѕР»СЊСЃС‚РІРёРµ РѕС‚ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ СЌС‚РѕРіРѕ РїСЂРµРєСЂР°СЃРЅРѕРіРѕ Рё РјРёР»РѕРіРѕ СЃР°Р№С‚Р°. РЎРїР°СЃРёР±Рѕ!</font>
 <![endif]-->
 <!-- Theme as it is -->
 </head>
@@ -54,16 +54,16 @@
         <div class="header2">
           <div class="logo"><a href="{$REL_CONFIG.defaultbaseurl}"><img src="themes/{$REL_CONFIG.ss_uri}/images/spacer.gif" height="60" width="217" border="0" alt="{$REL_LANG->_('Go to home page')}" title="{$REL_LANG->_('Go to home page')}" /></a></div>
           <div class="cp"></div>
-          <div class="banner"><a href="contact.php"><img src="http://dev.kinokpk.com/images/b468_dev.jpg" border="0" alt="ТБ" /></a></div>
+          <div class="banner"><a href="contact.php"><img src="http://dev.kinokpk.com/images/b468_dev.jpg" border="0" alt="РўР‘" /></a></div>
         </div>
       </div>
     </div>
-    <!--Меню-->
+    <!--РњРµРЅСЋ-->
     <div class="tmenur">
       <ul class="topmenu" id="topmenu">
         <li><a href="{$REL_CONFIG.defaultbaseurl}/">{$REL_LANG->_('Main')}</a></li>
         <li><a rel="tmlnk3" href="{$REL_SEO->make_link('browse')}">{$REL_LANG->_('Releasers')}</a></li>
-        <li><a rel="tmlnk4" href="#">Меню</a></li>
+        <li><a rel="tmlnk4" href="#">РњРµРЅСЋ</a></li>
         {if $CURUSER}
         <li><a rel="tmlnk5"  href="{$REL_SEO->make_link('mynotifs')}">{$REL_LANG->_("Notifications")}{if $REL_NOTIFS.total} ({$REL_NOTIFS.total}){/if}</a></li> 
         <li><a rel="tmlnk1" href="{$REL_SEO->make_link('my')}">{$REL_LANG->_('Personal menu')}</a></li>
@@ -120,12 +120,12 @@
       </ul>
     </div>
     <script type="text/javascript">cssdropdown.startchrome("topmenu")</script>
-    <!--/Меню-->
+    <!--/РњРµРЅСЋ-->
     <div class="search" align="right">
       <form action="browse.php" method="get" name="search">
-        <input class="search_input" type="text" value="&nbsp;Поиск..." size="15" alt="Поиск" maxlength="40" name="search" />
+        <input class="search_input" type="text" value="&nbsp;РџРѕРёСЃРє..." size="15" alt="РџРѕРёСЃРє" maxlength="40" name="search" />
         <div class="search_bottom">
-          <input value="Поиск" type="image" src="themes/{$REL_CONFIG.ss_uri}/images/spacer.gif" style="height:25px; width:30px; border:0px;" />
+          <input value="РџРѕРёСЃРє" type="image" src="themes/{$REL_CONFIG.ss_uri}/images/spacer.gif" style="height:25px; width:30px; border:0px;" />
         </div>
       </form>
     </div>

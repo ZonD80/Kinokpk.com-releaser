@@ -1,4 +1,4 @@
-var cssdropdown={
+﻿var cssdropdown={
 disappeardelay: 250, //set delay in miliseconds before menu disappears onmouseout
 dropdownindicator: '', //specify full HTML to add to end of each menu item with a drop down menu
 enablereveal: [true, 4], //enable swipe effect? [true/false, steps (Number of animation steps. Integer between 1-20. Smaller=faster)]
