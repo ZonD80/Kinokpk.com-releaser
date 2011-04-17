@@ -84,7 +84,7 @@ if (! $count) {
 		$res = sql_query ( "SELECT reports.*,users.username,users.class FROM reports LEFT JOIN users ON reports.userid=users.id ORDER BY added DESC" ) or sqlerr ( __FILE__, __LINE__ );
 		$allowed_types = array ('messages' => $REL_SEO->make_link('message','action','viewmessage','id',''), 'torrents' => $REL_SEO->make_link('details','id',''), 'users' => $REL_SEO->make_link('userdetails','id',''), 'rel' => $REL_SEO->make_link('comments','action','edit','cid',''), 'poll' => $REL_SEO->make_link('comments','action','edit','cid',''), 'news' => $REL_SEO->make_link('comments','action','edit','cid',''), 'user' => $REL_SEO->make_link('comments','action','edit','cid', ''), 'req' => $REL_SEO->make_link('comments','action','edit','cid',''), 'relgroups' => $REL_SEO->make_link('relgroups','id',''), 'rg' => $REL_SEO->make_link('comments','action','edit','cid',''), 'forum' => $REL_SEO->make_link('comments','action','edit','cid',''));
 		$display_types = array ('messages' => $REL_LANG->_('PM'), 'torrents' => $REL_LANG->_('Release'), 'users' => $REL_LANG->_('Users'), 'rel' => $REL_LANG->_('Comments'), 'poll' => $REL_LANG->_('Pollcomments'), 'news' => $REL_LANG->_('Newscomments'), 'user' => $REL_LANG->_('Usercomments'), 'req' => $REL_LANG->_('Reqcomments'), 'relgroups' => $REL_LANG->_('Release Groups'), 'rg' => $REL_LANG->_('Rgcomments'), 'forum' => $REL_LANG->_('Forumcomments'));
-		
+
 		while ( $row = mysql_fetch_array ( $res ) ) {
 
 			$reportid = $row ["id"];

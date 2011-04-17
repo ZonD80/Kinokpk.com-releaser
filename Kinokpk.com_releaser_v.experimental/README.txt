@@ -115,7 +115,7 @@ Execute this PHP script ONCE!!!:
 <?php
 
 require_once('include/bittorrent.php');
-dbconn();
+INIT();
 
 $res = $REL_DB->query("SELECT id, info_hash FROM torrents ORDER BY id ASC");
 while ($row=mysql_fetch_assoc($res)) {

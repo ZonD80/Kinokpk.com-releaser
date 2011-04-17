@@ -74,7 +74,7 @@ if (get_privilege('is_administrator',false)) { ?>
 		<td><a href="<?=$REL_SEO->make_link('news');?>"><?=$REL_LANG->_("Add a news");?></a>
 		| <a href="<?=$REL_SEO->make_link('newsarchive');?>"><?=$REL_LANG->_("View all news");?></a></td>
 		<td colspan="3"><a href="<?=$REL_SEO->make_link('recountadmin');?>"><?=$REL_LANG->_("Recount/sync database values");?></a></td>
-		
+
 
 	</tr>
 </table>
@@ -117,7 +117,7 @@ if (get_privilege('is_moderator',false)) { ?>
 			<?php
 			$classes = init_class_array();
 			foreach ($classes AS $cid=>$cl)
-				print("<option value=\"$cid\">{$REL_LANG->_($cl['name'])}</option>");
+			print("<option value=\"$cid\">{$REL_LANG->_($cl['name'])}</option>");
 			?>
 		</select> <input type=submit value='<?=$REL_LANG->_("Search");?>'></form>
 		</td>

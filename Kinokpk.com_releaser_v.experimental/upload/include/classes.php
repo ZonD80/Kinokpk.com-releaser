@@ -18,14 +18,16 @@ function init_class_array() {
 	global $REL_CACHE,$REL_DB;
 	$classes = $REL_CACHE->get('system', 'classes');
 	if ($classes===false) {
-		$classes = $REL_DB->query_assoc("SELECT * FROM classes");
+		$classes = $REL_DB->query_assoc("SELECT * FROM classes ORDER BY prior DESC");
 		foreach ($classes AS $class) {
 			$to_cache[$class['id']] = array('name'=>$class['name'],'priority'=>$class['prior'],'style'=>$class['style']);
 			if ($class['remark']) {
-				$to_cache[$class['remark']] = $class['id'];
+				$remark = explode(',', $class['remark']);
+				foreach ($remark as $r)
+				$to_cache[$r] = $class['id'];
 			}
 		}
-		
+
 		$REL_CACHE->set('system','classes',$to_cache);
 		$classes = $to_cache;
 	}
@@ -44,7 +46,7 @@ function get_class_priority($class=false) {
 	}
 	elseif (!$class && !$CURUSER) return -1;
 	else {
-			$classes = init_class_array();
+		$classes = init_class_array();
 		return (int)$classes[$class]['priority'];
 	}
 }
@@ -85,14 +87,17 @@ function get_user_class_color($class, $username)
  * Generates class input HTML checkboxes
  * @param string $name Name of generated input
  * @param string $selected Id of selected classses separated by comma.
+ * @param boolean $max Maximize select by current user class
  * @return string HTML for form
  */
-function make_classes_checkbox($name,$selected='') {
+function make_classes_checkbox($name,$selected='',$max=false) {
 	global $REL_LANG;
+	if ($max) $max = get_class_priority($max);
 	$selected = explode(',',$selected);
 	$classes = init_class_array();
 	foreach ($classes AS $id=>$class) {
-		if (is_int($id))
+		if ($max&&$class['priority']>=$max) continue;
+		if (is_int($id)) 
 		$return.="<input type=\"checkbox\" name=\"{$name}[]\" value=\"{$id}\"".(in_array($id, $selected)?' checked':'')."> {$REL_LANG->_($class['name'])}<br/>";
 	}
 	return $return;
@@ -104,17 +109,19 @@ function make_classes_checkbox($name,$selected='') {
  * @param id $selected ID of selected class
  * @return string HTML for select
  */
-function make_classes_select($name='class',$selected=NULL) {
+function make_classes_select($name='class',$selected=NULL,$max=false) {
 	global $REL_LANG;
+	if ($max)  $max = get_class_priority($max);
 	$return .=("<select name=\"class\">\n");
-$return .=("<option value=\"-\">({$REL_LANG->_('All levels')})</option>\n");
+	$return .=("<option value=\"-\">({$REL_LANG->_('All levels')})</option>\n");
 	$classes = init_class_array();
 	foreach ($classes AS $id=>$class) {
+		if ($max&&$class['priority']>=$max) continue;
 		if (is_int($id))
 		$return.="<option value=\"{$id}\"".($selected==$id?' selected':'').">{$REL_LANG->_($class['name'])}</option>";
 	}
-$return .=("</select>\n");
-return $return;
+	$return .=("</select>\n");
+	return $return;
 }
 /**
  * Returns user class name form lang array
@@ -123,7 +130,7 @@ return $return;
  */
 function get_user_class_name($class) {
 	global $REL_LANG;
-		$classes = init_class_array();
+	$classes = init_class_array();
 	$cl = $classes[$class];
 	if (!$cl) return $REL_LANG->_('ERROR:No class with id %s',$class);
 	return $REL_LANG->_($cl['name']);
@@ -136,8 +143,8 @@ function get_user_class_name($class) {
  */
 function is_valid_user_class($class) {
 	$class = (int)$class;
-			$classes = init_class_array();
-			if (!$classes[$class]) return false; else return true;
+	$classes = init_class_array();
+	if (!$classes[$class]) return false; else return true;
 }
 /**
  * Returns true or false, or dies. Function used to get privileges on privilege given by name
@@ -147,7 +154,7 @@ function is_valid_user_class($class) {
  */
 function get_privilege($name,$die=true) {
 	global $REL_LANG,$REL_CACHE, $REL_DB, $REL_TPL, $CURUSER;
-	
+
 	$privs = $REL_CACHE->get('system', 'privileges');
 	if ($privs===false) {
 		$privs = $REL_DB->query_assoc("SELECT * FROM privileges");
@@ -170,7 +177,7 @@ function get_privilege($name,$die=true) {
 	if (in_array($CURUSER['class'], $privs[$name]['classes'])) {
 		return true;
 	} else {
-			if (!$die) return false; else {
+		if (!$die) return false; else {
 			if (ob_get_length()) {
 				$REL_TPL->stdmsg($REL_LANG->_('Access denied, you must to have permission to:'),$REL_LANG->_($privs[$name]['descr']));
 				$REL_TPL->stdfoot();

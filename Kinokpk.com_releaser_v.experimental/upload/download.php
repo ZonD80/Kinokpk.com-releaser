@@ -24,7 +24,7 @@ if ($action=='my') {
 	$fileDir = './';
 
 	require_once(ROOT_PATH."classes/zip/Zip.php");
-	if (mb_strlen($CURUSER['passkey']) != 32) {
+	if (strlen($CURUSER['passkey']) != 32) {
 		$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
 		$REL_DB->query("UPDATE xbt_users SET torrent_pass=".sqlesc($CURUSER[passkey])." WHERE uid=".sqlesc($CURUSER[id]));
 	}

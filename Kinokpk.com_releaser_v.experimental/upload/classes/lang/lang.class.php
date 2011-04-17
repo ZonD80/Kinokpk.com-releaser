@@ -81,7 +81,7 @@ class REL_LANG {
 		return $return.$this->lang[$language][$value];
 
 	}
-	
+
 	/**
 	 * Say something by key to specific user with him language-specific settings
 	 * @param int $id User id to say to
@@ -160,11 +160,12 @@ class REL_LANG {
 		while ($row = mysql_fetch_assoc($res))
 		$check[$row['lkey']] = $row['lvalue'];
 		foreach ($parse as $string) {
+			$string = iconv('cp1251','utf-8',$string);
 			$cut = strpos($string,'=');
 			if (!$cut) continue;
 			$key = strtolower(trim(substr($string,0,$cut)));
-			$value = trim(substr($string,$cut+1,mb_strlen($string)));
-			if ($to_database[$key]||$check[$key]) { $return['errors'][] = 'REDECLARATED KEY:"'.$key.'"';}
+			$value = trim(substr($string,$cut+1,strlen($string)));
+			if ($to_database[$key]||$check[$key]&&!$override) { $return['errors'][] = 'REDECLARATED KEY:"'.$key.'"';}
 			$to_database[$key] = $value;
 		}
 		//if ($return['errors']) return $return;
@@ -216,7 +217,7 @@ class REL_LANG {
 		else return $return.$text;
 
 	}
-	
+
 	/**
 	 * Formates string to output, like print or spritnf. Many argumets allowed. FIRST is a language, next is as $this->_
 	 * @return string|string Formatted string

@@ -31,6 +31,28 @@ function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
 
 	if (!$page) {
 	$REL_TPL->assign("AJAXPAGER", "
+	<script type=\"text/javascript\">
+	var CURR_PAGE = 0;
+	var MAX_PAGE = $maxpage;
+	var PAGER_HREF = \"$href\";
+	$('document').ready(function(){
+	$('#pager_scrollbox').after('<div align=\"center\"><input type=\"button\" id=\"pager_button\" value=\"{$REL_LANG->_('Show more')}\" onclick=\"javascript:do_pager();\"/></div>');
+});
+	function do_pager() {
+	if (CURR_PAGE>=MAX_PAGE) { $('#pager_button').val('{$REL_LANG->_('This is an end')}'); $('#pager_button').attr('disabled','disabled'); return false; }
+		$('#pager_button').val('{$REL_LANG->_('Loading')}...');
+		$('#pager_button').attr('disabled','disabled');
+		CURR_PAGE=CURR_PAGE+1;
+		page = PAGER_HREF.replace(/%number%/i,CURR_PAGE);
+
+		$.get(page, '', function(newitems){
+			$('#$el_id').append(newitems);
+			$('#pager_button').removeAttr('disabled');
+			$('#pager_button').val('{$REL_LANG->_('Show more')}');
+		});
+	}
+</script>");
+/*	$REL_TPL->assign("AJAXPAGER", "
 	<style type=\"text/css\">
 	#pager_scrollbox{ width:100%; height:500px;  overflow:auto; overflow-x:hidden; border:1px solid #f2f2f2; }
 	</style>
@@ -65,7 +87,7 @@ function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
 	}
 	setTimeout('scrollalert();', $timeout);
 }
-</script>");
+</script>");*/
 	
 	return "LIMIT $perpage";
 	} else {

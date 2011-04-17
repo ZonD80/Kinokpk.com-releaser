@@ -127,10 +127,9 @@ else {
 	if (!$row) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 
-	if (!$row['relgroup_allowed'] && $row['private'] && (!get_privilege('access_to_private_relgroups',false))) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_access_priv_rg'));
-
-
 	if(!$action) {
+	if (!$row['relgroup_allowed'] && $row['private'] && (!get_privilege('access_to_private_relgroups',false))) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_access_priv_rg'));
+		
 		if (!pagercheck()) {
 			$REL_TPL->stdhead(sprintf($REL_LANG->say_by_key('relgroup_title'),$row['name'],$row['spec']));
 

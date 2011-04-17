@@ -27,8 +27,8 @@ stderr($REL_LANG->say_by_key("error"),$REL_LANG->say_by_key("invalid_id"));
 
 if (isset($_GET['checkonly'])) {
 
-		get_privilege('edit_releases');
-		
+	get_privilege('edit_releases');
+
 	headers(true);
 
 
@@ -48,17 +48,17 @@ if (isset($_GET['checkonly'])) {
 			$bfooter = <<<EOD
 Чтобы посмотреть релиз, перейдите по этой ссылке:
 
-{$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
+			{$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
 
 EOD;
-$descr = format_comment($row['descr']).nl2br($bfooter);
-send_notifs('torrents',format_comment($descr));
+			$descr = format_comment($row['descr']).nl2br($bfooter);
+			send_notifs('torrents',format_comment($descr));
 		}
 
 		die($REL_LANG->say_by_key('checked_by').'<a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username'])).'">'.get_user_class_color(get_user_class(),$CURUSER['username']).'</a> <a onclick="return ajaxcheck();" href="'.$REL_SEO->make_link('takeedit','checkonly','','id',$id).'">'.$REL_LANG->say_by_key('uncheck').'</a>'.$return);
 	}
 } elseif(isset($_POST['add_trackers'])) {
-		get_privilege('edit_releases');
+	get_privilege('edit_releases');
 
 	if (!isset($_POST['trackers'])) stderr($REL_LANG->say_by_key('error'),'Не все поля заполнены');
 	$POSTtrackers = explode("\n",trim((string)$_POST['trackers']));
@@ -152,20 +152,20 @@ $allowed_types = array(
 "image/png" => "png"
 // Add more types here if you like
 );
-    // Where to upload?
-    // Update for your own server. Make sure the folder has chmod write permissions. Remember this director
-    $uploaddir = "torrents/images/";
-		
+// Where to upload?
+// Update for your own server. Make sure the folder has chmod write permissions. Remember this director
+$uploaddir = "torrents/images/";
+
 for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
 	$y=$x+1;
-	
+
 	if ($_FILES[image.$x]['name'] != "") {
-	$_FILES[image.$x]['type'] = strtolower($_FILES[image.$x]['type']);
-    $_FILES[image.$x]['name'] = strtolower($_FILES[image.$x]['name']);
-    $_POST['img'.$x] = $uploaddir.$id."-$x.".$allowed_types[$_FILES[image.$x]['type']];
-    $image_upload[$x] = true;
+		$_FILES[image.$x]['type'] = strtolower($_FILES[image.$x]['type']);
+		$_FILES[image.$x]['name'] = strtolower($_FILES[image.$x]['name']);
+		$_POST['img'.$x] = $uploaddir.$id."-$x.".$allowed_types[$_FILES[image.$x]['type']];
+		$image_upload[$x] = true;
 	} else $image_upload[$x] = false;
-	
+
 	if (!empty($_POST['img'.$x])) {
 		$img=trim(htmlspecialchars((string)$_POST['img'.$x]));
 		if (strpos($img,',') || strpos($img,'?')) stderr($REL_LANG->say_by_key('error'),'Динамические изображения запрещены');
@@ -173,23 +173,23 @@ for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
 		if (!preg_match('/^(.+)\.(gif|png|jpeg|jpg)$/si', $img))
 		stderr($REL_LANG->say_by_key('error'),'Загружаемая картинка '.($x+1).' - не картинка');
 
-		 //$check = remote_fsize($img);
-		 if ($image_upload[$x]) {
+		//$check = remote_fsize($img);
+		if ($image_upload[$x]) {
 		 $check = $_FILES[image.$x]['size'];
-		 
+		 	
 		 if (!$check) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unable to check size of image %s',$y));
 		 if ($check>$maxfilesize) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Image size is greather then %s. Please select smaller image and try again.',$maxfilesize));
-		
-		    // Upload the file
-    		$copy = move_uploaded_file($_FILES[image.$x]['tmp_name'], ROOT_PATH.$img);
-    		
-    		if (!$copy) $REL_TPL->stderr($REL_LANG->_("Error"),$REL_LANG->_("Unable to save image, contact site administration"));
-		 }
-		 $inames[]=$img;
+
+		 // Upload the file
+		 $copy = move_uploaded_file($_FILES[image.$x]['tmp_name'], ROOT_PATH.$img);
+
+		 if (!$copy) $REL_TPL->stderr($REL_LANG->_("Error"),$REL_LANG->_("Unable to save image, contact site administration"));
+		}
+		$inames[]=$img;
 	}
-	
-	
-	
+
+
+
 }
 
 $images = @implode(',',$inames);
@@ -292,7 +292,7 @@ if ($update_torrent) {
 	$infohash = sha1($info["string"]);
 	//move_uploaded_file($tmpname, ROOT_PATH."torrents/$id.torrent");
 	@file_put_contents(ROOT_PATH."torrents/$id.torrent",benc($dict['value']['info']));
-	
+
 	$updateset[] = "info_hash = " . sqlesc($infohash);
 	$update_xbt_query = "UPDATE xbt_files SET info_hash='".pack('H*', $infohash)."' WHERE fid=$id";
 	$updateset[] = "filename = " . sqlesc($fname);
@@ -378,11 +378,11 @@ if ((get_privilege('edit_releases',false)) && isset($_POST['approve'])) {
 		$bfooter = <<<EOD
 Чтобы посмотреть релиз, перейдите по этой ссылке:
 
-{$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
+		{$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))}
 
 EOD;
-$descr = "<hr/>".format_comment($row['descr']).nl2br($bfooter);
-send_notifs('torrents',format_comment($descr));
+		$descr = "<hr/>".format_comment($row['descr']).nl2br($bfooter);
+		send_notifs('torrents',format_comment($descr));
 	}
 } else $updateset[] = "moderatedby = 0";
 

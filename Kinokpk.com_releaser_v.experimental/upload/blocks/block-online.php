@@ -23,7 +23,7 @@ while ($row = mysql_fetch_array($result)) {
 	if (!empty($uname) && ($uname_new != $uname_old)) {
 		$title_who[] = "<a href='".$REL_SEO->make_link('userdetails','id',$uid,'username',$uname)."' class='online'>".get_user_class_color($class, $uname)."</a>";
 	}
-	if (($uname_new != $uname_old) && ($class >= $classes['staffbegin'])) {
+	if (($uname_new != $uname_old) && (get_class_priority($class) >= get_class_priority($classes['staffbegin']))) {
 		$staff++;
 	} elseif((!empty($uname) and $uname_new != $uname_old)) {
 		$users++;

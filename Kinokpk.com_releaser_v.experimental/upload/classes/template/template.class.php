@@ -9,9 +9,9 @@
  */
 require_once('Smarty.class.php');
 class REL_TPL extends Smarty {
-	
+
 	private $config;
-	
+
 
 	/**
 	 * Class constructor depending on releaser's configuration
@@ -38,8 +38,8 @@ class REL_TPL extends Smarty {
 		$this->config['stdfoot_ajax'] = 'stdfoot_ajax.tpl';
 		//$this->register->templateFunction('show_blocks','show_blocks');
 		if ($CURUSER) {
-		$this->assignByRef('REL_NOTIFS',generate_notify_array());
-		$this->assignByRef('REL_RATING_POPUP',generate_ratio_popup_warning());
+			$this->assignByRef('REL_NOTIFS',generate_notify_array());
+			$this->assignByRef('REL_RATING_POPUP',generate_ratio_popup_warning());
 		}
 		if ($REL_CONFIG['cache_template']) {
 			$this->caching = true;
@@ -60,7 +60,7 @@ class REL_TPL extends Smarty {
 	function begin_main_frame() {
 		$this->display('begin_main_frame.tpl');
 	}
-	
+
 	/**
 	 * Outputs template's head
 	 * @param string $title Page title
@@ -72,10 +72,10 @@ class REL_TPL extends Smarty {
 		global $REL_CONFIG, $CURUSER;
 
 		if (!$REL_CONFIG['siteonline'] && get_privilege('deny_disabled_site',false)) {
-		$this->display('offline.tpl');
-		die();
-	}
-	$offline = false;
+			$this->display('offline.tpl');
+			die();
+		}
+		$offline = false;
 		if (get_privilege('view_disabled_site_notice',false) && !$REL_CONFIG['siteonline']) {
 			$offline=true;
 		}
@@ -94,7 +94,7 @@ class REL_TPL extends Smarty {
 			$this->display($this->config['stdhead']);
 		}
 	}
-	
+
 	/**
 	 * Configures class to use specific templates
 	 * @param string $param Config parameter to be assigned for
@@ -103,7 +103,7 @@ class REL_TPL extends Smarty {
 	function configure($param,$value) {
 		$this->config[$param]=$value;
 	}
-	
+
 	/**
 	 * Outputs theme footer
 	 */
@@ -113,7 +113,7 @@ class REL_TPL extends Smarty {
 		close_sessions();
 		run_cronjobs();
 		debug();
-			if (REL_AJAX) {
+		if (REL_AJAX) {
 			$this->display($this->config['stdfoot_ajax']);
 		} else {
 			$this->display($this->config['stdfoot']);
@@ -168,41 +168,41 @@ class REL_TPL extends Smarty {
 	function end_frame() {
 		$this->display('end_frame.tpl');
 	}
-	
-/**
- * Outputs standart information message
- * @param string $heading Message title (blank)
- * @param string $text Message text (blank)
- * @param string $div Message type (success)
- * @param boolean $htmlstrip Strip html? (false)
- */
-function stdmsg($heading = '', $text = '', $div = 'success', $htmlstrip = false) {
-	if ($htmlstrip) {
-		$heading = strip_tags(trim($heading));
-		$text = strip_tags(trim($text));
-	}
-	$this->assignByRef('MSG_TITLE',$heading);
-	$this->assignByRef('MSG_TEXT',$text);
-	if (REL_AJAX) $this->display('stdmsg_'.$div.'_ajax.tpl'); else
-	$this->display('stdmsg_'.$div.'.tpl');
-	return;
-}
 
-/**
- * Outputs error and die
- * @param string $heading Message title (blank)
- * @param string $text Message text (blank)
- * @param string $div Message type (error)
- * @param boolean $htmlstrip Strip html? (false)
- */
-function stderr($heading = '', $text = '', $div ='error', $htmlstrip = false) {
-	$this->stdhead($heading);
-	$this->stdmsg($heading, $text, $div, $htmlstrip);
-	$this->stdfoot();
-	die;
-	return;
-}
-	
+	/**
+	 * Outputs standart information message
+	 * @param string $heading Message title (blank)
+	 * @param string $text Message text (blank)
+	 * @param string $div Message type (success)
+	 * @param boolean $htmlstrip Strip html? (false)
+	 */
+	function stdmsg($heading = '', $text = '', $div = 'success', $htmlstrip = false) {
+		if ($htmlstrip) {
+			$heading = strip_tags(trim($heading));
+			$text = strip_tags(trim($text));
+		}
+		$this->assignByRef('MSG_TITLE',$heading);
+		$this->assignByRef('MSG_TEXT',$text);
+		if (REL_AJAX) $this->display('stdmsg_'.$div.'_ajax.tpl'); else
+		$this->display('stdmsg_'.$div.'.tpl');
+		return;
+	}
+
+	/**
+	 * Outputs error and die
+	 * @param string $heading Message title (blank)
+	 * @param string $text Message text (blank)
+	 * @param string $div Message type (error)
+	 * @param boolean $htmlstrip Strip html? (false)
+	 */
+	function stderr($heading = '', $text = '', $div ='error', $htmlstrip = false) {
+		$this->stdhead($heading);
+		$this->stdmsg($heading, $text, $div, $htmlstrip);
+		$this->stdfoot();
+		die;
+		return;
+	}
+
 	/**
 	 * Displays module tpl located in {THEME_DIR}/modules/$module/$action.tpl
 	 * @param string $action Action of selected module

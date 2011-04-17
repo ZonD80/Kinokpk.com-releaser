@@ -18,7 +18,7 @@ $REL_TPL->begin_main_frame();
 // Get current datetime
 $dt = time() - 300;
 $classes = init_class_array();
-$level = get_class_priority($classes['uploader']);
+$level = get_class_priority($classes['staffbegin']);
 foreach ($classes as $cid=>$class) {
 	if (is_int($cid)&&$class['priority']&&$class['priority']>=$level) $to_select[] = $cid;
 }

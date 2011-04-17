@@ -11,51 +11,51 @@
  * @link http://www.protung.ro/
  * @copyright 2009 Dragos Protung
  * @version 1.5
- */ 
+ */
 final class SimpleLargeXMLParser {
-	
+
 	/**
 	 * DOMDocument
-	 * 
+	 *
 	 * @var DOMDocument
 	 */
 	protected $XMLDoc;
-	
+
 	/**
 	 * DOMXPath
-	 * 
+	 *
 	 * @var DOMXPath
 	 */
 	protected $XPath;
-	
+
 	/**
 	 * Namespaces to register for XPath
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $namespaces = array();
-	
-	
+
+
 	public function __construct() {
-		
+
 		$this->XMLDoc = new DOMDocument();
 		$this->XMLDoc->xmlStandalone = true;
 		$this->XMLDoc->preserveWhiteSpace = false;
 	}
-	
+
 	public function registerNamespace ($prefix, $namspaceURI) {
-		
+
 		$this->XPath->registerNamespace($prefix, $namspaceURI);
 	}
-	
+
 	public function loadXML ($source) {
-		
+
 		$load = $this->XMLDoc->Load($source);
 		$this->XPath = new DOMXPath($this->XMLDoc);
-		
+
 		return $load;
 	}
-	
+
 	/**
 	 * Parse an XML
 	 *
@@ -65,9 +65,9 @@ final class SimpleLargeXMLParser {
 	 * @return array
 	 */
 	public function parseXML ($query = false, $getAttributes = false) {
-		
+
 		$return = array();
-		
+
 		if ($query == false || $query == "//") { // no query defined - get the root
 			$query = "*";
 		}
@@ -79,10 +79,10 @@ final class SimpleLargeXMLParser {
 				}
 			}
 		}
-		
+
 		return $return;
 	}
-	
+
 	/**
 	 * Get the childrens of a DOM node as array or as a string if the node does not have childrens
 	 *
@@ -91,14 +91,14 @@ final class SimpleLargeXMLParser {
 	 * @return array / string
 	 */
 	protected static function getChildern (DOMElement $node, $getAttributes) {
-		
+
 		$getAttributes = (bool)$getAttributes;
-		
+
 		if ($node->hasChildNodes()) {
 			$return = array();
 			foreach ($node->childNodes as $n) {
 				if ($n instanceof DOMText) {
-					
+						
 					if ($getAttributes === true) {
 						$value = $node->nodeValue;
 						$attributes = array();
@@ -109,7 +109,7 @@ final class SimpleLargeXMLParser {
 					} else {
 						$return = $node->nodeValue;
 					}
-					
+						
 				} elseif ($n instanceof DOMElement) {
 					if ($getAttributes === true) {
 						$value = self::getChildern($n, $getAttributes);
@@ -127,9 +127,9 @@ final class SimpleLargeXMLParser {
 		} else {
 			return $node->nodeValue;
 		}
-		
+
 	}
-	
+
 }
 
 ?>

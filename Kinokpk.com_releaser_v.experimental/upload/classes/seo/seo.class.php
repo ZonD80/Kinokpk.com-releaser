@@ -41,7 +41,7 @@ class REL_SEO {
 
 		$linkar = func_get_args();
 		if (is_array($linkar[0]))
-      $linkar = $linkar[0];
+		$linkar = $linkar[0];
 
 		$script = $linkar[0];
 

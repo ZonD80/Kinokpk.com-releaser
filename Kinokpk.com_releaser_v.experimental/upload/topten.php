@@ -16,13 +16,13 @@ INIT();
 loggedinorreturn();
 
 if (!pagercheck()) {
-$REL_TPL->stdhead($REL_LANG->say_by_key('topten'));
+	$REL_TPL->stdhead($REL_LANG->say_by_key('topten'));
 }
 $res = sql_query("SELECT SUM(1) FROM users") or sqlerr(__FILE__, __LINE__);
 $count = mysql_result($res,0);
 if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); $REL_TPL->stdfoot(); die(); }
 
-		$limit = ajaxpager(10, $count, array('topten'), 'userst > tbody:last');
+$limit = ajaxpager(10, $count, array('topten'), 'userst > tbody:last');
 
 
 
@@ -31,8 +31,8 @@ $num = mysql_num_rows($res);
 
 
 if (!pagercheck()) {
-print("<div id=\"pager_scrollbox\"><table id=\"userst\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td></tr>\n");
+	print("<div id=\"pager_scrollbox\"><table id=\"userst\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
+	print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td></tr>\n");
 }
 while ($arr = mysql_fetch_assoc($res)) {
 	if ($arr['country'] > 0) {

@@ -195,7 +195,7 @@ function ajaxdel(key,lang) {
 	</tr>
 </table>
 </form>
-<?php 
+	<?php
 
 	$limit = "LIMIT 50";
 	?>
@@ -214,7 +214,7 @@ function ajaxdel(key,lang) {
 	$count = get_row_count('languages',($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":''));
 
 	$res = sql_query("SELECT * FROM languages".($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":'')." ORDER BY lkey DESC LIMIT 50");
-	
+
 	while ($row = mysql_fetch_assoc($res)) {
 		print "<tr id=\"{$row['lkey']}-{$row['ltranslate']}\"><td><input type=\"text\" name=\"key[{$row['lkey']}][{$row['ltranslate']}]\" value=\"{$row['lkey']}\" maxlength=\"255\"/></td>".
 	"<td>{$row['ltranslate']}</td>".
@@ -224,7 +224,7 @@ function ajaxdel(key,lang) {
 	?>
 </table>
 </form>
-<?php
+	<?php
 }
 $REL_TPL->stdfoot();
 ?>

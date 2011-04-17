@@ -33,44 +33,44 @@ echo "<tr><td  class=\"colhead\" align=\"center\">Пользователь</td>"
 ."<td class=\"colhead\" align=\"center\">Просматривает</td></tr>";
 
 
-	if (isset($searchs) && $count < 1) {
-		print("<tr><td class=\"index\" colspan=\"3\">".$REL_LANG->say_by_key('nothing_found')."</td></tr>\n");
+if (isset($searchs) && $count < 1) {
+	print("<tr><td class=\"index\" colspan=\"3\">".$REL_LANG->say_by_key('nothing_found')."</td></tr>\n");
+}
+
+
+
+$i=20;
+
+while(list($spy_url, $user_id, $user_name, $user_class, $user_ip, $user_agent, $user_time) = mysql_fetch_array($spy_res)){
+
+	$i++;
+	$spy_urlse =  basename($spy_url);
+	$res_list =  explode(".php", $spy_urlse);
+	$read = "";
+	if($CURUSER['id'] == $user_id)
+	{
+		$read = "<font color=\"red\">(Вы здесь)</font>";
 	}
 
+	$slep = "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td class=bottom width=50%><i>Открыть</i></td></tr></table></div><div class=\"sp-body\">"
+	."User_agent - ".$user_agent."<br />"
+	."IP - <a target='_blank' href=\"http://www.dnsstuff.com/tools/whois.ch?ip=".$user_ip."\">". $user_ip."</a></div></div>";
 
-
-	$i=20;
-
-	while(list($spy_url, $user_id, $user_name, $user_class, $user_ip, $user_agent, $user_time) = mysql_fetch_array($spy_res)){
-
-		$i++;
-		$spy_urlse =  basename($spy_url);
-		$res_list =  explode(".php", $spy_urlse);
-		$read = "";
-		if($CURUSER['id'] == $user_id)
-		{
-			$read = "<font color=\"red\">(Вы здесь)</font>";
-		}
-
-		$slep = "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=100% border=0 cellspacing=0 cellpadding=0><tr><td class=bottom width=50%><i>Открыть</i></td></tr></table></div><div class=\"sp-body\">"
-		."User_agent - ".$user_agent."<br />"
-		."IP - <a target='_blank' href=\"http://www.dnsstuff.com/tools/whois.ch?ip=".$user_ip."\">". $user_ip."</a></div></div>";
-
-		if($user_class != -1){
-			echo "<tr><td><a target='_blank' href=\"".$REL_SEO->make_link('userdetails','id',$user_id,'username',translit($user_name))."\">".get_user_class_color($user_class, $user_name)."</a> $slep</td>";
-			echo "<td><b>".get_user_class_name($user_class)."</b></td><td>";
-		}else{
-			echo "<tr><td><a target='_blank' href=\"http://www.dnsstuff.com/tools/whois.ch?ip=".$user_ip."\">Гость</a> $slep</td>";
-			echo "<td>".$user_ip."</td><td>";
-		}
-		echo "<a target='_blank' href=\"".$spy_url."\">$spy_url</a> ".$read;
-		echo "</td></tr>";
-
-
-
+	if($user_class != -1){
+		echo "<tr><td><a target='_blank' href=\"".$REL_SEO->make_link('userdetails','id',$user_id,'username',translit($user_name))."\">".get_user_class_color($user_class, $user_name)."</a> $slep</td>";
+		echo "<td><b>".get_user_class_name($user_class)."</b></td><td>";
+	}else{
+		echo "<tr><td><a target='_blank' href=\"http://www.dnsstuff.com/tools/whois.ch?ip=".$user_ip."\">Гость</a> $slep</td>";
+		echo "<td>".$user_ip."</td><td>";
 	}
-		echo "</table>";
+	echo "<a target='_blank' href=\"".$spy_url."\">$spy_url</a> ".$read;
+	echo "</td></tr>";
 
-		$REL_TPL->stdfoot();
 
-		?>
+
+}
+echo "</table>";
+
+$REL_TPL->stdfoot();
+
+?>

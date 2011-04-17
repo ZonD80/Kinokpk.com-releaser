@@ -37,15 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 
 	$text = '';
 	if ($_POST['clearall']) $REL_CACHE->clearAllCache(); else {
-	if (!is_array($_POST['cache'])) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('dont_set_cache'));
+		if (!is_array($_POST['cache'])) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('dont_set_cache'));
 
-	foreach ($_POST['cache'] as $clearcache){
+		foreach ($_POST['cache'] as $clearcache){
 
-		$REL_CACHE->clearGroupCache($clearcache);
+			$REL_CACHE->clearGroupCache($clearcache);
 
-		$text .= "<br />".$REL_LANG->say_by_key('cache')." <b>".htmlspecialchars($clearcache)."</b> ".$REL_LANG->say_by_key('succ_purif');
+			$text .= "<br />".$REL_LANG->say_by_key('cache')." <b>".htmlspecialchars($clearcache)."</b> ".$REL_LANG->say_by_key('succ_purif');
 
-	}
+		}
 	}
 	stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('cache_cleared') . $text,'success');
 

@@ -40,11 +40,11 @@ $REL_TPL->stdhead("Общее сообщение", false);
 				<td>Кому отправлять:<br />
 				<table style="border: 0" width="100%" cellpadding="0"
 					cellspacing="0">
-					<tr><td>
-					<?php
-					print make_classes_checkbox('classes');
-					?>
-					</td></tr>
+					<tr>
+						<td><?php
+						print make_classes_checkbox('classes');
+						?></td>
+					</tr>
 				</table>
 				</td>
 			</tr>
@@ -72,6 +72,6 @@ $REL_TPL->stdhead("Общее сообщение", false);
 		</td>
 	</tr>
 </table>
-					<?
-					$REL_TPL->stdfoot();
-		?>
+						<?
+						$REL_TPL->stdfoot();
+						?>

@@ -19,45 +19,45 @@ httpauth();
 
 function list_rewrites($server_type) {
 	global $REL_CACHE;
-			$cache = $REL_CACHE->get('system','seorules');
-		if ($cache) {
-			foreach ($cache as $row) {
-				$scripts[] = $row['script'];
-				$SR[$row['script']][$row['parameter']] = $row['repl'];
-				$SO[$row['script']][$row['parameter']] = $row['sort'];
-				$SU[$row['script']][$row['parameter']] = explode(',', $row['unset_params']);
-			}
+	$cache = $REL_CACHE->get('system','seorules');
+	if ($cache) {
+		foreach ($cache as $row) {
+			$scripts[] = $row['script'];
+			$SR[$row['script']][$row['parameter']] = $row['repl'];
+			$SO[$row['script']][$row['parameter']] = $row['sort'];
+			$SU[$row['script']][$row['parameter']] = explode(',', $row['unset_params']);
 		}
-			else return "# no rewrites has been configured yet";
-			
-		foreach ($scripts as $script) {
-					if (isset($SR[$script]['{base}'])) $destar[0] = $SR[$script]['{base}'];
-		else $destar['{base}'] = "$script.php";
+	}
+	else return "# no rewrites has been configured yet";
 		
-			foreach ($SR[$script] as $param => $value) {
+	foreach ($scripts as $script) {
+		if (isset($SR[$script]['{base}'])) $destar[0] = $SR[$script]['{base}'];
+		else $destar['{base}'] = "$script.php";
 
-						foreach ($SU[$script][$param] as $to_unset) {
-							unset($destar[$SO[$script][$to_unset]]);
-							unset($orig[$SO[$script][$to_unset]]);
-						}
-				$destar[$SO[$script][$param]] = $value;
-				$orig[$SO[$script][$param]] = "$param=%s";
+		foreach ($SR[$script] as $param => $value) {
+
+			foreach ($SU[$script][$param] as $to_unset) {
+				unset($destar[$SO[$script][$to_unset]]);
+				unset($orig[$SO[$script][$to_unset]]);
 			}
-			ksort($destar);
-			ksort($orig);
-			$i=0;
-			foreach ($orig AS $key => $uri_part) {
-				if ($key=='{base}') unset($orig[$key]); else {
-				$i++;
-					$orig[$key] = sprintf($uri_part,'$'.$i);
-				}
-			}
-			
-			$return[] = ($server_type=='apache'?'RewriteRule ^':'rewrite ^/').str_replace('%s','(.*?)',implode('',$destar))."&nbsp;&nbsp;&nbsp;&nbsp;/$script.php".($orig?"?".implode('&',$orig):'').($server_type=='apache'?'&nbsp; [L, QSA]': '&nbsp; last;');
-			unset($orig);
-			unset($destar);
+			$destar[$SO[$script][$param]] = $value;
+			$orig[$SO[$script][$param]] = "$param=%s";
 		}
-		return "# here are rewrites configured for $server_type<br/># please verify all rewrites manually before applying to server configuration<br/><br/>".implode("<br/>",$return);
+		ksort($destar);
+		ksort($orig);
+		$i=0;
+		foreach ($orig AS $key => $uri_part) {
+			if ($key=='{base}') unset($orig[$key]); else {
+				$i++;
+				$orig[$key] = sprintf($uri_part,'$'.$i);
+			}
+		}
+			
+		$return[] = ($server_type=='apache'?'RewriteRule ^':'rewrite ^/').str_replace('%s','(.*?)',implode('',$destar))."&nbsp;&nbsp;&nbsp;&nbsp;/$script.php".($orig?"?".implode('&',$orig):'').($server_type=='apache'?'&nbsp; [L, QSA]': '&nbsp; last;');
+		unset($orig);
+		unset($destar);
+	}
+	return "# here are rewrites configured for $server_type<br/># please verify all rewrites manually before applying to server configuration<br/><br/>".implode("<br/>",$return);
 }
 /**
  * Prepares data to use in SQL-query
@@ -65,11 +65,11 @@ function list_rewrites($server_type) {
  * @return array Prepared data
  */
 function prepare_data($arr) {
-		$stripped = array('script','parameter','repl','unset_params');
-		foreach ($stripped as $k) $arr[$k] = sqlesc(trim(htmlspecialchars((string)$arr[$k])));
-		$arr['sort'] = intval($arr['sort']);
-		$arr['enabled'] = ($arr['enabled']?1:0);
-		return $arr;
+	$stripped = array('script','parameter','repl','unset_params');
+	foreach ($stripped as $k) $arr[$k] = sqlesc(trim(htmlspecialchars((string)$arr[$k])));
+	$arr['sort'] = intval($arr['sort']);
+	$arr['enabled'] = ($arr['enabled']?1:0);
+	return $arr;
 }
 $action = trim((string)$_GET['a']);
 $id = (int)$_GET['id'];
@@ -78,13 +78,13 @@ if ($action&&!in_array($action,$allowed_actions)) stderr($REL_LANG->_('Error'),$
 
 if ($action=='genrewrites') {
 	$type = (string)trim($_GET['type']);
-	
+
 	$pages_for = explode(',','index,bookmarks,browse,friends,mytorrents,newsarchive,newsoverview,online,peers,polloverview,pollsarchive,present,relgroups,requests,rgnewsarchive,rgnewsoverview,topten,userhistory,users,viewrequests,votesview');
 	if (!$type) $REL_TPL->stderr($REL_LANG->_('Select server type'),$REL_LANG->_('Please select server type to generate rewrites:<br/><a href="%s">Apache</a> | <a href="%s">Nginx</a>',$REL_SEO->make_link('seoadmin','a','genrewrites','type','apache'),$REL_SEO->make_link('seoadmin','a','genrewrites','type','nginx')),'success');
 	elseif ($type=='apache'||$type=='nginx') {
 		$REL_TPL->stdhead($REL_LANG->_('Rewrites for %s listing',$type));
 		$REL_TPL->begin_frame($REL_LANG->_('This list will help you to configure rewrites.').' <a href="'.$REL_SEO->make_link('seoadmin').'">'.$REL_LANG->_('Back to').' '.$REL_LANG->_("Human Readable URLs configuration (SEO)").'</a>');
-		
+
 		print '<pre>';
 		print (list_rewrites($type));
 		print '</pre>';

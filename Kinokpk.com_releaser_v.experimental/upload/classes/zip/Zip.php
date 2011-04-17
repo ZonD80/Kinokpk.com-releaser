@@ -29,7 +29,7 @@ class Zip {
 	private $streamComment = null;
 	private $streamFile = null;
 	private $streamData = null;
-	private $streamFileLength = 0;	
+	private $streamFileLength = 0;
 	/**
 	 * Constructor.
 	 *
@@ -75,9 +75,9 @@ class Zip {
 		if (!is_null($this->zipFile)) {
 			rewind($this->zipFile);
 			while(!feof($this->zipFile)) {
-			    fwrite($fd, fread($this->zipFile, $this->streamChunkSize));
-			} 
-			
+				fwrite($fd, fread($this->zipFile, $this->streamChunkSize));
+			}
+				
 			fclose($this->zipFile);
 		} else {
 			fwrite($fd, $this->zipData);
@@ -157,13 +157,13 @@ class Zip {
 		if ($this->isFinalized) {
 			return;
 		}
-	
+
 		$this->openStream($filePath, $timestamp, $fileComment);
 
 		$fh = fopen($dataFile, "rb");
 		while(!feof($fh)) {
-		    $this->addStreamData(fread($fh, $this->streamChunkSize));
-		} 
+			$this->addStreamData(fread($fh, $this->streamChunkSize));
+		}
 		fclose($fh);
 
 		$this->closeStream();
@@ -186,7 +186,7 @@ class Zip {
 			fwrite($this->zipFile, $this->zipData);
 			$this->zipData = null;
 		}
-		
+
 		if (mb_strlen($this->streamFilePath) > 0) {
 			closeStream();
 		}
@@ -197,7 +197,7 @@ class Zip {
 		$this->streamFileComment = $fileComment;
 		$this->streamFileLength = 0;
 	}
-	
+
 	public function addStreamData($data) {
 		$length = gzwrite($this->streamData, $data, mb_strlen($data));
 		if ($length != mb_strlen($data)) {
@@ -206,7 +206,7 @@ class Zip {
 		$this->streamFileLength += $length;
 		return $length;
 	}
-	
+
 	/**
 	 * Close the current stream.
 	 */
@@ -214,31 +214,31 @@ class Zip {
 		if ($this->isFinalized || mb_strlen($this->streamFilePath) == 0) {
 			return;
 		}
-		
+
 		fflush($this->streamData);
 		gzclose($this->streamData);
-		
+
 		$gzType = "\x08\x00"; // Compression type 8 = deflate
 		$gpFlags = "\x02\x00"; // General Purpose bit flags for compression type 8 it is: 0=Normal, 1=Maximum, 2=Fast, 3=super fast compression.
 
 		$file_handle = fopen($this->streamFile, "rb");
 		$stats = fstat($file_handle);
 		$eof = $stats['size'];
-		
+
 		fseek($file_handle, $eof-8);
 		$fileCRC32 = fread($file_handle, 4);
 		$dataLength = $this->streamFileLength;//$gzl[1];
 
 		$gzLength = $eof-10;
 		$eof -= 9;
-		
+
 		fseek($file_handle, 10);
 
 		$this->buildZipEntry($this->streamFilePath, $this->streamFileComment, $gpFlags, $gzType, $this->streamTimestamp, $fileCRC32, $gzLength, $dataLength, 32);
 		while(!feof($file_handle)) {
-		    fwrite($this->zipFile, fread($file_handle, $this->streamChunkSize));
-		} 
-		
+			fwrite($this->zipFile, fread($file_handle, $this->streamChunkSize));
+		}
+
 		unlink($this->streamFile);
 		$this->streamFile = null;
 		$this->streamData = null;
@@ -258,18 +258,18 @@ class Zip {
 				$this->closeStream();
 			}
 			$cd = implode("", $this->cdRec);
-			
+				
 			$cdRec = $cd . $this->endOfCentralDirectory
-					. pack("v", sizeof($this->cdRec))
-					. pack("v", sizeof($this->cdRec))
-					. pack("V", mb_strlen($cd))
-					. pack("V", $this->offset); 
+			. pack("v", sizeof($this->cdRec))
+			. pack("v", sizeof($this->cdRec))
+			. pack("V", mb_strlen($cd))
+			. pack("V", $this->offset);
 			if (!is_null($this->zipComment)) {
 				$cdRec .= pack("v", mb_strlen($this->zipComment)) . $this->zipComment;
 			} else {
 				$cdRec .= "\x00\x00";
 			}
-					
+				
 			if (is_null($this->zipFile)) {
 				$this->zipData .= $cdRec;
 			} else {
@@ -353,13 +353,13 @@ class Zip {
 					rewind($this->zipFile);
 
 					while(!feof($this->zipFile)) {
-					    echo fread($this->zipFile, $this->streamChunkSize);
-					} 
+						echo fread($this->zipFile, $this->streamChunkSize);
+					}
 				}
 			}
 		}
 	}
-	
+
 	public function getArchiveSize() {
 		if (is_null($this->zipFile)) {
 			return mb_strlen($this->zipData);
@@ -379,14 +379,14 @@ class Zip {
 		$date = ($timestamp == 0 ? getdate() : getDate($timestamp));
 		if ($date["year"] >= 1980) {
 			return pack("V", (($date["mday"] + ($date["mon"] << 5) + (($date["year"]-1980) << 9)) << 16) |
-				(($date["seconds"] >> 1) + ($date["minutes"] << 5) + ($date["hours"] << 11)));
+			(($date["seconds"] >> 1) + ($date["minutes"] << 5) + ($date["hours"] << 11)));
 		}
 		return "\x00\x00\x00\x00";
 	}
 
 	/**
 	 * Build the Zip file structures
-	 * 
+	 *
 	 * @param unknown_type $filePath
 	 * @param unknown_type $fileComment
 	 * @param unknown_type $gpFlags
@@ -401,7 +401,7 @@ class Zip {
 		$filePath = str_replace("\\", "/", $filePath);
 		$fileCommentLength = (is_null($fileComment) ? 0 : mb_strlen($fileComment));
 		$dosTime = $this->getDosTime($timestamp);
-		
+
 		$zipEntry  = $this->localFileHeader;
 		$zipEntry .= "\x14\x00"; // Version needed to extract
 		$zipEntry .= $gpFlags . $gzType . $dosTime. $fileCRC32;
@@ -415,7 +415,7 @@ class Zip {
 		} else {
 			fwrite($this->zipFile, $zipEntry);
 		}
-				
+
 		$cdEntry  = $this->centralFileHeader;
 		$cdEntry .= "\x00\x00"; // Made By Version
 		$cdEntry .= "\x14\x00"; // Version Needed to extract

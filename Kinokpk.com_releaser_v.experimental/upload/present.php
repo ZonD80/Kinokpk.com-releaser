@@ -25,22 +25,22 @@ $type = trim((string)$_GET['type']);
 $q[] ='present';
 
 if ($type) {
-  $q[] = 'type';
-  $q[] = $type;
+	$q[] = 'type';
+	$q[] = $type;
 }
 if ($fid) {
-  $q[] = 'id';
-  $q[] = $fid;
+	$q[] = 'id';
+	$q[] = $fid;
 }
 if ($to) {
-  $q[] = 'to';
-  $q[] = $to;
+	$q[] = 'to';
+	$q[] = $to;
 }
 
 if (!$type) {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('presents'));
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('what_present'));
-//var_Dump(array_merge($q,array('type','ratingsum')));
+	//var_Dump(array_merge($q,array('type','ratingsum')));
 	print('<table border="1" align="center">'.($REL_CRON['rating_enabled']?'<tr><td align="center"><a href="'.$REL_SEO->make_link(array_merge($q,array('type','torrent'))).'">'.$REL_LANG->say_by_key('big_present_torrent').'</a></td><td align="center"><a href="'.$REL_SEO->make_link(array_merge($q,array('type','discount'))).'">'.$REL_LANG->say_by_key('big_present_discount').'</a></td>
   ':'').'<td align="center"><a href="'.$REL_SEO->make_link(array_merge($q,array('type','ratingsum'))).'">'.$REL_LANG->say_by_key('big_present_ratingsum').'</a></td></tr></table>');
 	$REL_TPL->end_frame();

@@ -9,7 +9,7 @@
  */
 
 require_once ("include/bittorrent.php");
-dbconn(false);
+INIT(false);
 
 $url = strip_tags(trim((string)preg_replace("#(.*?)url=#si", "", getenv("REQUEST_URI"))));
 print('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
