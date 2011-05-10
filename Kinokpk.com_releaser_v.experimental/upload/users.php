@@ -22,7 +22,7 @@ $search = htmlspecialchars(trim($search));
 
 $class = (int) $_GET['class'];
 if ($class == '-' || !is_valid_user_class($class))
-$class = '';
+$class = '-1';
 $q[] = 'users';
 if ($search != '' || $class) {
 	$query = "username LIKE '%" . sqlwildcardesc($search) . "%' AND confirmed=1";
