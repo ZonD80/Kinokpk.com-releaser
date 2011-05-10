@@ -139,7 +139,7 @@ if ($_POST['nofile']) {} else {
 }
 
 
-if ($CURUSER["id"] != $row["owner"] && !get_privilege('edit_releases'))
+if ($CURUSER["id"] != $row["owner"] && !get_privilege('edit_releases',false))
 bark("You're not the owner! How did that happen?\n");
 
 // IMAGE UPLOADS

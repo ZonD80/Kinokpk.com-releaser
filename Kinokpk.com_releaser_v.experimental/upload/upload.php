@@ -117,7 +117,7 @@ function checkname() {
 	tr ($REL_LANG->say_by_key('subcats'),$chsel,1);
 
 
-	if (get_privilege('edit_releases')) {
+	if (get_privilege('edit_releases',false)) {
 		tr($REL_LANG->say_by_key('golden'), "<input type=checkbox name=free value=\"1\"> ".$REL_LANG->say_by_key('golden_descr'), 1);
 		tr("Важный", "<input type=\"checkbox\" name=\"sticky\" value=\"1\">Прикрепить этот торрент (всегда наверху)", 1);
 	}
