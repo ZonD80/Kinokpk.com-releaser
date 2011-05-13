@@ -142,9 +142,7 @@ function get_user_class_name($class) {
  * @return boolean True or False
  */
 function is_valid_user_class($class) {
-	$class = (int)$class;
-	$classes = init_class_array();
-	if (isset($classes[$class])) return true; else return false;
+	return in_array($class, init_class_array());
 }
 /**
  * Returns true or false, or dies. Function used to get privileges on privilege given by name
