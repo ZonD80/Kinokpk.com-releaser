@@ -1626,6 +1626,10 @@ function deletetorrent($id) {
 	foreach(explode(".","snatched.peers.files.trackers") as $x)
 	sql_query("DELETE FROM $x WHERE torrent = $id");
 	@unlink("torrents/$id.torrent");
+	$images = glob(ROOT_PATH.'torrents/images/'.$id.'-*');
+	if ($images) {
+		foreach ($images as $img) unlink($img);
+	}
 	write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".get_user_class_color($CURUSER['class'],$CURUSER['username'])."</a> deleted torrent with id $id (system message)",'system_functions');
 	return;
 }
