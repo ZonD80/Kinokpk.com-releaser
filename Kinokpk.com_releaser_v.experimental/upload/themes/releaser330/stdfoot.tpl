@@ -32,4 +32,5 @@
 {include file='debug.tpl'}
 {/if}
 {$REL_RATING_POPUP}
+{$AJAXPAGER}
 </body></html>
