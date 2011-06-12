@@ -76,7 +76,7 @@ elseif ($action == "edituser") {
 	if (!is_valid_id($userid) || !is_valid_user_class($class))
 	stderr($REL_LANG->say_by_key('error'), "Неверный идентификатор пользователя или класса.");
 	// check target user class
-	$res = sql_query("SELECT warned, enabled, username, class, modcomment, num_warned, avatar FROM users WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
+	$res = sql_query("SELECT warned, enabled, donor, username, class, modcomment, num_warned, avatar,id FROM users WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
 	$arr = mysql_fetch_assoc($res) or puke("Ошибка MySQL: " . mysql_error());
 	if ($avatar)
 	{
@@ -170,7 +170,7 @@ elseif ($action == "edituser") {
 		$passkey = md5($CURUSER['username'].time().$CURUSER['passhash']);
 		$REL_DB->query("UPDATE xbt_users SET torrent_pass='' WHERE uid=".sqlesc($CURUSER[id]));
 	}
-	write_log("Пользователь {$CURUSER['username']} произвел действия над пользователем с ID <a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',translit($arr['username']))."\">$userid</a>, параметры:<br/> <pre>".var_export($updateset,true)."</pre>",'modtask');
+	write_log("Пользователь {$CURUSER['username']} произвел действия над пользователем ".make_user_link($arr).", параметры:<br/> <pre>".var_export($updateset,true)."</pre>",'modtask');
 	sql_query("UPDATE users SET	" . implode(", ", $updateset) . " $birthday WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
 
 	if (!empty($_POST["deluser"])) {

@@ -120,7 +120,7 @@ if ($requestorid <> NULL) {
 
 		$limit = "LIMIT 50";
 
-		$res = sql_query("SELECT (SELECT username FROM users WHERE id = filledby) AS filledname, (SELECT class FROM users WHERE id = filledby) AS filledclass, users.class, users.ratingsum, users.username, requests.filled, requests.filledby, requests.id, requests.userid, requests.request, requests.added, requests.hits, requests.comments, categories.id AS cat_id FROM requests INNER JOIN categories ON requests.cat = categories.id INNER JOIN users ON requests.userid = users.id $query $filtersql $limit") or sqlerr(__FILE__, __LINE__);
+		$res = sql_query("SELECT (SELECT username FROM users WHERE id = filledby) AS filledname, (SELECT class FROM users WHERE id = filledby) AS filledclass, users.class, users.ratingsum, users.username, users.warned, users.donor, users.enabled, requests.filled, requests.filledby, requests.id, requests.userid, requests.request, requests.added, requests.hits, requests.comments, categories.id AS cat_id FROM requests INNER JOIN categories ON requests.cat = categories.id INNER JOIN users ON requests.userid = users.id $query $filtersql $limit") or sqlerr(__FILE__, __LINE__);
 		$num = mysql_num_rows($res);
 
 		print("<form method=get OnSubmit=\"return confirm('Вы уверены?')\" action=\"".$REL_SEO->make_link('viewrequests')."\">\n");
@@ -136,7 +136,9 @@ if ($requestorid <> NULL) {
 			$filledby = $arr['filledname'];
 			else
 			$filledby = " ";
-			$addedby = "<td style='padding: 0px' align=center nowrap><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['userid'],'username',translit($arr["username"]))."\"><b>".get_user_class_color($arr["class"], $arr["username"])." $ratio</b></a></td>\n";
+			$user = $arr;
+			$user['id'] = $user['userid'];
+			$addedby = "<td style='padding: 0px' align=center nowrap>".make_user_link($user)." $ratio</td>\n";
 			$filled = $arr[filled];
 			if ($filled != '')
 			$filled = "<a href=$arr[filled]><font color=green><b>".$REL_LANG->say_by_key('yes')."</b></font></a>\n";

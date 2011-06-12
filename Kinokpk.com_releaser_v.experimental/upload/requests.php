@@ -164,10 +164,10 @@ if ($action=='filled')
 		stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	}
 
-	$res = sql_query("SELECT users.username, requests.userid, requests.request FROM requests INNER JOIN users ON requests.userid = users.id WHERE requests.id = " . sqlesc($requestid)) or sqlerr(__FILE__, __LINE__);
+	$res = sql_query("SELECT users.username, users.id, users.warned, users.donor, users.class, users.enabled, requests.userid, requests.request FROM requests INNER JOIN users ON requests.userid = users.id WHERE requests.id = " . sqlesc($requestid)) or sqlerr(__FILE__, __LINE__);
 	$arr = mysql_fetch_assoc($res);
 	$filledurl = htmlspecialchars($filledurl);
-	$msg = "Ваш запрос, <a href=\"".$REL_SEO->make_link('requests','id',$requestid)."\"><b>" . $arr['request'] . "</b></a> был выполнен пользователем <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER["id"],'username', translit($CURUSER["username"]))."\"><b>" . $CURUSER["username"] . "</b></a>. Вы можете скачать его <a href=" . $filledurl. "><b>тут</b></a>. Пожалуйста не забудьте сказать спасибо. Если это не то, что вы просили или по каким-то причинам вас не устраивает исполнение, то нажмите <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$requestid)."\">здесь</a>.";
+	$msg = "Ваш запрос, <a href=\"".$REL_SEO->make_link('requests','id',$requestid)."\"><b>" . $arr['request'] . "</b></a> был выполнен пользователем ".make_user_link().". Вы можете скачать его <a href=" . $filledurl. "><b>тут</b></a>. Пожалуйста не забудьте сказать спасибо. Если это не то, что вы просили или по каким-то причинам вас не устраивает исполнение, то нажмите <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$requestid)."\">здесь</a>.";
 	$subject = "Ваш запрос выполнен";
 	sql_query ("UPDATE requests SET filled = " . sqlesc($filledurl) . ", filledby = $CURUSER[id] WHERE id = " . sqlesc($requestid)) or sqlerr(__FILE__, __LINE__);
 
@@ -176,7 +176,7 @@ if ($action=='filled')
 	$REL_CACHE->clearGroupCache("block-req");
 
 	sql_query("INSERT INTO messages (poster, sender, receiver, added, msg, location, subject) VALUES(0, 0, $arr[userid], '" . time() . "', " . sqlesc($msg) . ", 1, " . sqlesc($subject) . ")") or sqlerr(__FILE__, __LINE__);
-	stderr($REL_LANG->say_by_key('success'),"Запрос номер $requestid был успешно выполнен с <a href=\"$filledurl\">$filledurl</a>. Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$arr['userid'],'username',translit($arr['username']))."\"><b>$arr[username]</b></a> автоматически получит об этом сообщение. Если вы сделали ошибку при указании адреса выполненного запроса, то пожалуйста отмените свое выполнение нажав <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$requestid)."\">здесь</a>.",'success');
+	stderr($REL_LANG->say_by_key('success'),"Запрос номер $requestid был успешно выполнен с <a href=\"$filledurl\">$filledurl</a>. Пользователь ".make_user_link($arr)." автоматически получит об этом сообщение. Если вы сделали ошибку при указании адреса выполненного запроса, то пожалуйста отмените свое выполнение нажав <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$requestid)."\">здесь</a>.",'success');
 }
 
 if ($action == 'vote')
@@ -220,12 +220,12 @@ if (!pagercheck()) {
 	print("<tr><td align=left>Инфо</td><td width=90% align=left>" . format_comment($num["descr"]) . "</td></tr>");
 	print("<tr><td align=left>Добавлен</td><td width=90% align=left>".mkprettytime($num[added])."</td></tr>");
 
-	$cres = sql_query("SELECT username, id, class FROM users WHERE id=$num[userid]");
+	$cres = sql_query("SELECT username, id, class, warned, donor, enabled FROM users WHERE id=$num[userid]");
 
 	$carr = mysql_fetch_assoc($cres);
 	$username = $carr['username'];
 	$user_req_id = $carr["id"];
-	print("<tr><td align=left>Запросил</td><td width=90% align=left><a href=\"".$REL_SEO->make_link('userdetails','id',$user_req_id,'username',translit($username))."\">".get_user_class_color($carr['class'], $username)."</a></td></tr>");
+	print("<tr><td align=left>Запросил</td><td width=90% align=left>".make_user_link($carr)."</td></tr>");
 	print("<tr><td align=left>Голосовать за этот запрос</td><td width=50% align=left><a href=\"".$REL_SEO->make_link('requests','action','vote','voteid',$id)."\"><b>Голосовать</b></a></td></tr></tr>");
 
 	if ($num["filled"] == '')

@@ -37,7 +37,7 @@ if( mysql_num_rows($res) != 0 )
 		print'<input type=hidden name=\'action\' value=\'confirmuser\'>';
 		print("<input type=hidden name='userid' value='$id'>");
 		print("<input type=hidden name='returnto' value='".$REL_SEO->make_link('unco')."'>");
-		print'<a href="'.$REL_SEO->make_link('userdetails','id',$row['id'],'username',translit($row['username'])).'"><td><center>' . $row['username'] . '</center></td></a>';
+		print make_user_link($row);
 		print'<td align=center>&nbsp;&nbsp;&nbsp;&nbsp;' . $row['email'] . '</td>';
 		print'<td align=center>&nbsp;&nbsp;&nbsp;&nbsp;' . mkprettytime($row['added']) . '</td>';
 		print'<td align=center><select name="confirm"><option value="0">'.$REL_LANG->say_by_key('not_confirmed').'</option><option value="1">'.$REL_LANG->say_by_key('confirmed').'</option></select></td>';

@@ -58,22 +58,22 @@ $REL_TPL->stdhead("ЛС пользователей");
 	$res = sql_query("SELECT * FROM messages $where ORDER BY id DESC $limit") or sqlerr(__FILE__, __LINE__);
 	while ($arr = mysql_fetch_assoc($res))
 	{
-		$res2 = sql_query("SELECT username, class FROM users WHERE id=".$arr["receiver"]) or sqlerr(__FILE__, __LINE__);
+		$res2 = sql_query("SELECT username, class, id, warned, donor, enabled FROM users WHERE id=".$arr["receiver"]) or sqlerr(__FILE__, __LINE__);
 		$arr2 = mysql_fetch_assoc($res2);
 
 		if($arr["receiver"] == 0 or !$arr["receiver"]){
-			$receiver = "<strike><b>Неизвестен</b></strike>";
+			$receiver = "<strike><b>{$REL_LANG->_('Unknown')}</b></strike>";
 		} else {
-			$receiver = "<a href=\"".$REL_SEO->make_link('userdetails','id',$arr["receiver"],'username',translit($arr2["username"]))."\">".get_user_class_color($arr2["class"], $arr2["username"])."</a>";
+			$receiver = make_user_link($arr2);
 		}
 
-		$res3 = sql_query("SELECT username, class FROM users WHERE id=".$arr["sender"]) or sqlerr(__FILE__, __LINE__);
+		$res3 = sql_query("SELECT username, class, id, warned, donor, enabled FROM users WHERE id=".$arr["sender"]) or sqlerr(__FILE__, __LINE__);
 		$arr3 = mysql_fetch_assoc($res3);
 
 		if($arr["sender"] == 0){
 			$sender = "<font color=red><b>Системное</b></font>";
 		} else {
-			$sender = "<a href=\"".$REL_SEO->make_link('userdetails','id',$arr['sender'],'username',translit($arr3["username"]))."\">".get_user_class_color($arr3["class"], $arr3["username"])."</a>";
+			$sender = make_user_link($arr2);
 		}
 		$msg = format_comment($arr['msg']);
 		$added = mkprettytime($arr['added']);

@@ -37,8 +37,11 @@ function dltable($name, $arr, $torrent)
 		// user/ip/port
 		// check if anyone has this ip
 		$s .= "<tr>\n";
-		if ($e["username"])
-		$s .= "<td><a href=\"".$REL_SEO->make_link('userdetails','id',$e['userid'],'username',translit($e["username"]))."\"><b>".get_user_class_color($e["class"], $e["username"])."</b></a>".($mod ? "&nbsp;[<span title=\"{$e["ip"]}\" style=\"cursor: pointer\">IP</span>]" : "")."</td>\n";
+		if ($e["username"]) {
+			$user = $a;
+			$user['id'] = $user['userid'];
+		$s .= "<td><a href=\"".make_user_link($user).($mod ? "&nbsp;[<span title=\"{$e["ip"]}\" style=\"cursor: pointer\">IP</span>]" : "")."</td>\n";
+		}
 		else
 		$s .= "<td>" . ($mod ? $e["ip"] : preg_replace('/\.\d+$/', ".xxx", $e["ip"])) . "</td>\n";
 		$s .='<td nowrap>'.ratearea($e['ratingsum'],$e['userid'],'users',$CURUSER['id']).'</td>';
@@ -347,7 +350,7 @@ compactMenu('colapse',false,'');
 elseif (isset($_GET['dllist'])) {
 	$downloaders = array();
 	$seeders = array();
-	$subres = sql_query("SELECT seeder, peers.ip, port, peer_id, peers.last_action AS la, peers.userid, users.username, users.ratingsum, users.class FROM peers INNER JOIN users ON peers.userid = users.id WHERE peers.torrent = $id") or sqlerr(__FILE__, __LINE__);
+	$subres = sql_query("SELECT seeder, peers.ip, port, peer_id, peers.last_action AS la, peers.userid, users.username, users.ratingsum, users.class, users.donor, users.warned, users.enabled FROM peers INNER JOIN users ON peers.userid = users.id WHERE peers.torrent = $id") or sqlerr(__FILE__, __LINE__);
 	while ($subrow = mysql_fetch_array($subres)) {
 		if ($subrow["seeder"])
 		$seeders[] = $subrow;

@@ -155,10 +155,10 @@ while ($row = mysql_fetch_assoc($sql)) {
 	$row['class'] = explode(',', $row['class']);
 	//var_dump($row['class']);
 	foreach ($row['class'] AS $cl) {
-		$class[] = get_user_class_name($cl);
+	$class[] = get_user_class_name($cl);
 	}
 	$class = @implode(',',$class);
-
+	
 	$sort = $row['sort'];
 
 	print("<tr><td><strong>$id</strong></td><td>$sort</td><td>$name</td><td>{$catseo}</td><td>".($image?'<img src="pic/cats/'.$image.'"/>':$REL_LANG->say_by_key('no'))."</td><td>".($cats[$parent]?$cats[$parent]:$REL_LANG->say_by_key('no'))."</td><td>$class</td><td><a href='forumadmin.php?editid=$id'><div align='center'><img src='pic/multipage.gif' border='0' class='special' /></a></div></td> <td><div align='center'><a onclick=\"return confirm('{$REL_LANG->say_by_key('confirmation_delete')}');\" href='forumadmin.php?delid=$id'><img src='pic/warned2.gif' border='0' class='special' align='center' /></a></div></td></tr>");

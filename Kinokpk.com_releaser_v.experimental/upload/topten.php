@@ -46,7 +46,7 @@ while ($arr = mysql_fetch_assoc($res)) {
 	elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" alt=\"Девушка\" title=\"Девушка\" style=\"margin-left: 4pt\">";
 	else $gender = "<div align=\"center\"><b>?</b></div>";
 
-	print("<tr><td align=\"left\"><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['id'],'username',translit($arr["username"]))."\"><b>".get_user_class_color($arr["class"], $arr["username"])."</b></a>" .($arr["donated"] > 0 ? "<img src=\"pic/star.gif\" border=\"0\" alt=\"Donor\">" : "")."</td>" .
+	print("<tr><td align=\"left\">".make_user_link($arr)."</td>" .
 "<td>".mkprettytime($arr['added'])."</td><td>".mkprettytime($arr['last_access'])." (".get_elapsed_time($arr["last_access"],false)." {$REL_LANG->say_by_key('ago')})</td><td>$ratio</td><td>$gender</td>".
 "<td align=\"left\">" . get_user_class_name($arr["class"]) . "</td>$country</tr>\n");
 }

@@ -39,40 +39,12 @@ if (!$id) {
 		//if ($row['members']) $memarray[$row['id']] = $row['members'];
 	}
 	if (!$rgarray) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroups'));
-	//var_dump($memarray);
-	/* $ownres = sql_query("SELECT id,username,class FROM users WHERE id IN(".implode(',',($memarray?array_merge($uidsarray,$memarray):$uidsarray)).")") or sqlerr(__FILE__,__LINE__);
-	while ($owner = mysql_fetch_array($ownres)) {
-	if (in_array($owner['id'],$uidsarray))
-	$owners[$owner['id']] = "<a href=\"userdetails.php?id={$owner['id']}\">".get_user_class_color($owner['class'],$owner['username'])."</a>";
-	else
-	$members[$owner['id']] = "<a href=\"userdetails.php?id={$owner['id']}\">".get_user_class_color($owner['class'],$owner['username'])."</a>";
 
-	}*/
 	$REL_TPL->stdhead($REL_LANG->say_by_key('relgroups'));
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('relgroups'));
 	print("<table width=\"100%\">");
 	foreach ($rgarray as $row) {
-		/*   $rgown=array();
-		 $rgmemb=array();
 
-		 $row['owners']=explode(',',$row['owners']);
-		 foreach ($row['owners'] as $owner){
-		 $rgown[] = $owners[$owner];
-		 }
-
-		 $rgown=implode(', ',$rgown);
-
-		 if ($row['members']) {
-		 $row['members']=explode(',',$row['members']);
-
-		 foreach ($row['members'] as $member){
-		 $rgmemb[] = $members[$member];
-		 }
-
-		 $rgmemb=implode(', ',$rgmemb);
-		 } else $rgmemb = $REL_LANG->say_by_key('no');
-
-		 */
 		?>
 
 <div class="relgroups_table">
@@ -134,10 +106,10 @@ else {
 			$REL_TPL->stdhead(sprintf($REL_LANG->say_by_key('relgroup_title'),$row['name'],$row['spec']));
 
 			if ($row['owners']||$row['members']) {
-				$ownersres = sql_query("SELECT id, username, class FROM users WHERE id IN(".$row['owners'].($row['members']?','.$row['members']:'').")") or sqlerr(__FILE__,__LINE__);
+				$ownersres = sql_query("SELECT id, username, class, donor, warned, enabled FROM users WHERE id IN(".$row['owners'].($row['members']?','.$row['members']:'').")") or sqlerr(__FILE__,__LINE__);
 				if ($row['members']) $row['members'] = explode(',',$row['members']);
 
-				while($ownersrow = mysql_fetch_assoc($ownersres)) if ($row['members'] && in_array($ownersrow['id'],$row['members'])) $members[$ownersrow['id']] = "<a href=\"".$REL_SEO->make_link('userdetails','id',$ownersrow['id'],'username',translit($ownersrow['username']))."\">".get_user_class_color($ownersrow['class'],$ownersrow['username'])."</a>"; else $owners[$ownersrow['id']] = "<a href=\"".$REL_SEO->make_link('userdetails','id',$ownersrow['id'],'username',translit($ownersrow['username']))."\">".get_user_class_color($ownersrow['class'],$ownersrow['username'])."</a>";
+				while($ownersrow = mysql_fetch_assoc($ownersres)) if ($row['members'] && in_array($ownersrow['id'],$row['members'])) $members[$ownersrow['id']] = make_user_link($ownersrow); else $owners[$ownersrow['id']] = make_user_link($ownersrow);
 
 				$I_OWNER = (in_array($CURUSER['id'],explode(',',$row['owners']))||(get_privilege('edit_relgroups',false)));
 			}
@@ -238,9 +210,9 @@ else {
 </div>
 </div>
 	<?php if ($row['private']) {
-		$subscribessql = sql_query("SELECT rg_subscribes.userid, users.class, users.username FROM rg_subscribes LEFT JOIN users ON rg_subscribes.userid=users.id WHERE rg_subscribes.rgid={$id} ORDER BY rg_subscribes.id DESC LIMIT 10") or sqlerr(__FILE__,__LINE__);
+		$subscribessql = sql_query("SELECT rg_subscribes.userid, users.class, users.username, users.id, users.donor, users.warned, users.enabled FROM rg_subscribes LEFT JOIN users ON rg_subscribes.userid=users.id WHERE rg_subscribes.rgid={$id} ORDER BY rg_subscribes.id DESC LIMIT 10") or sqlerr(__FILE__,__LINE__);
 		while ($rgsubs = mysql_fetch_assoc($subscribessql)) {
-			$rgusers[] = "<a href=\"".$REL_SEO->make_link('userdetails','id',$rgsubs['userid'],'username',translit($rgsubs['username']))."\">".get_user_class_color($rgsubs['class'],$rgsubs['username'])."</a>";
+			$rgusers[] = make_user_link($rgsubs);
 		}
 		if ($rgusers) { $rgusers = implode(', ',$rgusers);
 		?>

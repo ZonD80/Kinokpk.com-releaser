@@ -25,7 +25,7 @@ $REL_TPL->stdhead("Архив опросов");
 print('<table width="100%" border="1">');
 while (list($id) = mysql_fetch_array($pollsrow)) {
 
-	$poll = sql_query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
+	$poll = sql_query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class,users.warned,users.donor, users.enabled FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
 	$pquestion = array();
 	$pstart = array();
 	$pexp = array();
@@ -47,7 +47,7 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 		$public[] = $pollarray['public'];
 		$comments[] = $pollarray['comments'];
 		$sidvalues[$pollarray['sid']] = $pollarray['value'];
-		$votes[] = array($pollarray['sid'] => array('vid'=>$pollarray['vid'],'userid'=>$pollarray['user'],'username'=>$pollarray['username'],'userclass'=>$pollarray['class']));
+		$votes[] = array($pollarray['sid'] => array('vid'=>$pollarray['vid'],'userid'=>$pollarray['user'],'username'=>$pollarray['username'],'userclass'=>$pollarray['class'],'warned'=>$pollarray['warned'],'donor'=>$pollarray['donor'],'enabled'=>$pollarray['enabled']));
 		$sids[] = $pollarray['sid'];
 	}
 
@@ -95,13 +95,17 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 			$userid=$vote['userid'];
 			$user['username']=$vote['username'];
 			$user['class']=$vote['userclass'];
+			$user['donor'] = $vote['donor'];
+			$user['warned'] = $vote['warned'];
+			$user['id'] = $userid;
+			$user['enabled'] = $vote['enabled'];
 
 			//      print($vote['vid'].$vote['username'].$vote['userclass'].$vote['userid'].",");
 			if ($vote['userid'] == $CURUSER['id']) $voted = $votedrow;
 			if (!is_null($vid)) $votecount[$votedrow]++;
 
 			if ((($public) || (get_privilege('polls_operation',false))) && !is_null($vid))
-			$usercode[$votedrow] .= "<a href=\"".$REL_SEO->make_link('userdetails','id',$userid,'username',translit($user['username']))."\">".get_user_class_color($user['class'],$user['username'])."</a>".((get_privilege('polls_operation',false))?" [<a onClick=\"return confirm('Удалить этот голос?')\" href=\"".$REL_SEO->make_link('polloverview','deletevote','vid',$vid)."\">D</a>] ":" ");
+			$usercode[$votedrow] .= make_user_link($user).((get_privilege('polls_operation',false))?" [<a onClick=\"return confirm('Удалить этот голос?')\" href=\"".$REL_SEO->make_link('polloverview','deletevote','vid',$vid)."\">D</a>] ":" ");
 
 			if (($votecount[$votedrow]) >= $maxvotes) $maxvotes = $votecount[$votedrow];
 

@@ -35,7 +35,7 @@ elseif (!preg_match($regex, $mask))
 	$REL_TPL->stdfoot();
 	die();
 }
-$res = sql_query("SELECT id, username, class, last_access, added, ratingsum FROM users WHERE enabled=1 AND confirmed=1 AND id <> $CURUSER[id] AND INET_ATON(ip) & INET_ATON('$mask') = INET_ATON('$ip') & INET_ATON('$mask')") or sqlerr(__FILE__, __LINE__);
+$res = sql_query("SELECT id, username, class, last_access, added, ratingsum, warned, enabled, donor FROM users WHERE enabled=1 AND confirmed=1 AND id <> $CURUSER[id] AND INET_ATON(ip) & INET_ATON('$mask') = INET_ATON('$ip') & INET_ATON('$mask')") or sqlerr(__FILE__, __LINE__);
 if (mysql_num_rows($res)){
 	$REL_TPL->stdhead($REL_LANG->say_by_key('network_neighbot') );
 
@@ -46,7 +46,7 @@ if (mysql_num_rows($res)){
 <td class=colhead>".$REL_LANG->say_by_key('last_access')>"</td><td class=colhead align=left>".$REL_LANG->say_by_key('class')."</td>
 <td class=colhead>IP</td></tr>\n");
 	while($arr=mysql_fetch_assoc($res)){
-		print("<tr><td align=left><b><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['id'],'username',translit($arr["username"]))."\">".get_user_class_color($arr["class"], $arr["username"])."</a></b></td>
+		print("<tr><td align=left>".make_user_link($arr)."</td>
 
 <td>".ratearea($arr['ratingsum'],$arr['id'],'users',$CURUSER['id'])."</td>
 <td>".mkprettytime($arr[added])."</td><td>".get_elapsed_time($arr[last_access])." {$REL_LANG->say_by_key('ago')}</td>

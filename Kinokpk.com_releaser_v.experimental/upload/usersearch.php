@@ -710,8 +710,7 @@ $highlight = " bgcolor=#BBAF9B";
 			while ($user = mysql_fetch_array($res))
 			{
 
-				print "<tr><td><b><a href='userdetails.php?id=" . $user['id'] . "'>" .
-				$user['username']."</a></b>" . get_user_icons($user) . "</td>" .
+				print "<tr><td>".make_user_link($user)."</td>" .
           "<td nowrap>" . ratearea($user['ratingsum'],$user['id'],'users',$CURUSER['id']) . "</td>
           <td>" . $user['ip'] . "</td><td>" . $user['email'] . "</td>
           <td><div align=center>" . mkprettytime($user['added']) . "</div></td>

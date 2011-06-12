@@ -136,9 +136,9 @@ if (!$ret) {
 $id = mysql_insert_id();
 
 if ($REL_CRON['rating_enabled'])
-$msg = $REL_LANG->_to($id,'Hello dear new user. You have just registered on our site. Please check <a href="%s">Your rating stats</a> to be happy on our site.<br/><i>Best regards, site team.</i>',$REL_SEO->make_link('myrating'));
+$msg = $REL_LANG->_('Hello dear new user. You have just registered on our site. Please check <a href="%s">Your rating stats</a> to be happy on our site.<br/><i>Best regards, site team.</i>',$REL_SEO->make_link('myrating'));
 else
-$msg = $REL_LANG->_to($id,'Hello dear new user. You have just registered on our site. Feel free to be happy on our site.<br/><i>Best regards, site team.</i>');
+$msg = $REL_LANG->_('Hello dear new user. You have just registered on our site. Feel free to be happy on our site.<br/><i>Best regards, site team.</i>');
 sql_query("INSERT INTO notifs (checkid, type, userid) VALUES ($id,'usercomments',$id)");
 
 write_sys_msg($id,$msg,$REL_LANG->_("Welcome"));

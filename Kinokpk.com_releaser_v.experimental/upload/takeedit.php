@@ -55,7 +55,7 @@ EOD;
 			send_notifs('torrents',format_comment($descr));
 		}
 
-		die($REL_LANG->say_by_key('checked_by').'<a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username'])).'">'.get_user_class_color(get_user_class(),$CURUSER['username']).'</a> <a onclick="return ajaxcheck();" href="'.$REL_SEO->make_link('takeedit','checkonly','','id',$id).'">'.$REL_LANG->say_by_key('uncheck').'</a>'.$return);
+		die($REL_LANG->say_by_key('checked_by').make_user_link().' <a onclick="return ajaxcheck();" href="'.$REL_SEO->make_link('takeedit','checkonly','','id',$id).'">'.$REL_LANG->say_by_key('uncheck').'</a>'.$return);
 	}
 } elseif(isset($_POST['add_trackers'])) {
 	get_privilege('edit_releases');
@@ -101,7 +101,7 @@ EOD;
 	print "</table>";
 	stdmsg($REL_LANG->say_by_key('success'),'<h1><a href="'.$REL_SEO->make_link('details','id', $row['id'] ,'name',translit($row['name'])).'">'.$REL_LANG->say_by_key('back_to_details').'</a>');
 	$REL_TPL->stdfoot();
-	write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">{$CURUSER['username']}</a> отредактировал трекера торрента с ID <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\">$id</a>",'torrent');
+	write_log(make_user_link()." отредактировал трекера торрента с ID <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\">$id</a>",'torrent');
 	die();
 }
 

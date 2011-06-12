@@ -279,7 +279,7 @@ if (in_array($type,$allowed_types))
 	}
 
 	elseif ($type=='nicknames') {
-		$nicknames = $REL_DB->query_assoc("SELECT id,nick,date FROM nickhistory WHERE userid=$id");
+		$nicknames = $REL_DB->query_return("SELECT id,nick,date FROM nickhistory WHERE userid=$id");
 		if (!$nicknames) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('This user does not have any nickname changes yet. <a href="%s">Go back to user history</a>',$REL_SEO->make_link('userhistory','id',$id,'name',$user['username'])));
 
 		$REL_TPL->stdhead($REL_LANG->_('History of nickname changes for %s',$user['username']));

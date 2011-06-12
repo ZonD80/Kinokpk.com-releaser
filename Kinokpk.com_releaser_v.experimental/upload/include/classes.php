@@ -18,7 +18,7 @@ function init_class_array() {
 	global $REL_CACHE,$REL_DB;
 	$classes = $REL_CACHE->get('system', 'classes');
 	if ($classes===false) {
-		$classes = $REL_DB->query_assoc("SELECT * FROM classes ORDER BY prior DESC");
+		$classes = $REL_DB->query_return("SELECT * FROM classes ORDER BY prior DESC");
 		foreach ($classes AS $class) {
 			$to_cache[$class['id']] = array('name'=>$class['name'],'priority'=>$class['prior'],'style'=>$class['style']);
 			if ($class['remark']) {
@@ -142,8 +142,9 @@ function get_user_class_name($class) {
  * @return boolean True or False
  */
 function is_valid_user_class($class) {
-	return in_array($class, init_class_array());
+return in_array($class, init_class_array());
 }
+
 /**
  * Returns true or false, or dies. Function used to get privileges on privilege given by name
  * @param string $name privilege name
@@ -155,7 +156,7 @@ function get_privilege($name,$die=true) {
 
 	$privs = $REL_CACHE->get('system', 'privileges');
 	if ($privs===false) {
-		$privs = $REL_DB->query_assoc("SELECT * FROM privileges");
+		$privs = $REL_DB->query_return("SELECT * FROM privileges");
 		foreach ($privs AS $priv) {
 			$to_cache[$priv['name']] = array('classes'=>explode(',', $priv['classes_allowed']),'descr'=>$priv['description']);
 		}

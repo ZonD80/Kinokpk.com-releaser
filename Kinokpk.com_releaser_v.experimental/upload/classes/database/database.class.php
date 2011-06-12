@@ -43,16 +43,40 @@ class REL_DB {
 	}
 
 	/**
-	 * Preforms a sql query, returning an associative array of results
+	 * Preforms a sql query, returning a results
 	 * @param string $query query to be executed
-	 * @return array Associative array with data
+	 * @param string $type Type of returned data, assoc (default) - associative array, array - array, object - object
+	 * @return mixed
 	 */
-	function query_assoc($query) {
+	function query_return($query,$type='assoc') {
 		$res = $this->query($query);
+		if ($res) {
+		if ($type=='assoc')
+		while ($row = mysql_fetch_assoc($res)) {
+			$return[] = $row;
+		} 
+		elseif ($type=='array')
+		while ($row = mysql_fetch_array($res)) {
+			$return[] = $row;
+		} 
+		elseif ($type=='object')
 		while ($row = mysql_fetch_assoc($res)) {
 			$return[] = $row;
 		}
 		return $return;
+		} else return false;
+	}
+	
+	/**
+	 * Preforms an sql query, returns first row
+	 * @param string $query query to be executed
+	 * @param string $type Type of returned data, assoc (default) - associative array, array - array, object - object
+	 * @return mixed
+	 */
+	function query_row($query,$type='assoc') {
+		$result = $this->query_return($query);
+		if (!$result) return false;
+		return array_shift($result);
 	}
 
 }

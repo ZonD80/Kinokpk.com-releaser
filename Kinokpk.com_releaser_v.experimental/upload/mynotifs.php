@@ -122,8 +122,8 @@ if (!$type) {
 	}
 	// unchecked done
 	/* case 'rgcomments':
-	$addition = "CONCAT_WS('#comm',$type.{$comment_fields[$type]},$type.id) AS cid, $type.id, relgroups.{$name_fields[$type]}, $type.user, users.username, users.class, $type.added FROM $type LEFT JOIN users ON $type.user = users.id LEFT JOIN relgroups ON $type.relgroup=relgroups.id WHERE $type.added>{$CURUSER['last_login']} ORDER BY $type.added DESC"; break;
-	*/
+	 $addition = "CONCAT_WS('#comm',$type.{$comment_fields[$type]},$type.id) AS cid, $type.id, relgroups.{$name_fields[$type]}, $type.user, users.username, users.class, $type.added FROM $type LEFT JOIN users ON $type.user = users.id LEFT JOIN relgroups ON $type.relgroup=relgroups.id WHERE $type.added>{$CURUSER['last_login']} ORDER BY $type.added DESC"; break;
+	 */
 	elseif ($type=='users') {
 		$addition = "users.id, NULL, NULL, users.id, users.username, users.class, users.added"; $from = "FROM users WHERE users.added>{$CURUSER['last_login']} ORDER BY users.added DESC";
 	}
@@ -132,7 +132,7 @@ if (!$type) {
 	}
 	elseif (in_array($type,array('relcomments','pollcomments','newscomments','usercomments','reqcomments','rgcomments','forumcomments'))) {
 		$typeq = str_replace('comments','',$type);
-		$addition = ($type<>'forumcomments'?"CONCAT_WS('#comm',comments.toid,comments.id) AS cid, NULL":'comments.toid AS cid, comments.id').", {$name_fields[$type]}, comments.user, users.username, users.class, comments.added"; $from = "FROM comments LEFT JOIN users ON comments.user = users.id{$leftjoin_fields[$type]} WHERE comments.added>{$CURUSER['last_login']} AND comments.type='$typeq'".($type=='forumcomments'?" AND FIND_IN_SET(".get_user_class().",forum_categories.class)":'')." ORDER BY comments.added DESC";
+		$addition = ($type<>'forumcomments'?"CONCAT_WS('#comm',comments.toid,comments.id) AS cid, NULL":'comments.toid AS cid, comments.id').", {$name_fields[$type]}, comments.user, users.username, users.class, comments.added"; $from = "FROM comments LEFT JOIN users ON comments.user = users.id{$leftjoin_fields[$type]} WHERE comments.added>{$CURUSER['last_login']} AND comments.type='$typeq'".($type=='forumcomments'?" AND FIND_IN_SET(".get_user_class().",forum_categories.class)":'')." ORDER BY comments.added DESC"; 
 	}
 	$limited = 50;
 	$count = @mysql_result(sql_query("SELECT SUM(1) $from"),0);
@@ -144,7 +144,7 @@ if (!$type) {
 	print '<div id="mynotif">';
 	while ($array = mysql_fetch_array($query, MYSQL_NUM)) {
 		if ($type<>'forumcomments') $disp = $array[1]; else $disp='';
-
+		
 		print ('<div class="column_notifs">
 		<div class="column_left">'.sprintf($REL_LANG->say_by_key('notify_is_'.$type),$disp, $array[2], ($array[3]?
 			"<a href=\"".$REL_SEO->make_link('userdetails','id',$array[3],'username',translit($array[4]))."\">".get_user_class_color($array[5],$array[4])."</a>"

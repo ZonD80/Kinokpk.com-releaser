@@ -19,14 +19,14 @@ if ($action)
 $fid = (int) $_GET['id'];
 else $fid=$CURUSER['id'];
 
-$curusername = '<a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username'])).'">'.get_user_class_color($CURUSER['class'],$CURUSER['username']).'</a>';
+$curusername = make_user_link();
 
 
 if ($action == 'add') {
 
 	if ($CURUSER['id']==$fid) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('cant_add_myself'));
 
-	$user = sql_query("SELECT id,username,class FROM users WHERE id=$fid") or sqlerr(__FILE__,__LINE__);
+	$user = sql_query("SELECT id,username,class,donor,warned,enabled FROM users WHERE id=$fid") or sqlerr(__FILE__,__LINE__);
 	$user = mysql_fetch_assoc($user);
 	if (!$user) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_user'));
 
@@ -34,7 +34,7 @@ if ($action == 'add') {
 	$friend = mysql_fetch_assoc($friend);
 	if ($friend) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('already_in_private_group'));
 
-	$username = '<a href="'.$REL_SEO->make_link('userdetails','id',$fid,'username',translit($user['username'])).'">'.get_user_class_color($user['class'],$user['username']).'</a>';
+	$username = make_user_link($user);
 
 	sql_query("INSERT INTO friends (userid,friendid) VALUES ({$CURUSER['id']},$fid)");
 	$fiid=mysql_insert_id();

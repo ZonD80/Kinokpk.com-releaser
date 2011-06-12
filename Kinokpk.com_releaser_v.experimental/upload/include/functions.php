@@ -299,7 +299,7 @@ function httpauth(){
 	}
 
 	if (($CURUSER['passhash'] != md5($CURUSER['secret'].$_SERVER["PHP_AUTH_PW"].$CURUSER['secret'])) || (($_SERVER['PHP_AUTH_USER']<>$CURUSER['email']) && ($_SERVER['PHP_AUTH_USER']<>$CURUSER['username']))) {
-		if ($_SERVER["PHP_AUTH_PW"]) write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".get_user_class_color($CURUSER['class'],$CURUSER['username'])."</a> at ".getip().", login/e-mail: {$_SERVER['PHP_AUTH_USER']} <font color=\"red\">ADMIN CONTROL PANEL Authentication FAILED</font>",'admincp_auth');
+		if ($_SERVER["PHP_AUTH_PW"]) write_log(make_user_link()." at ".getip().", login/e-mail: {$_SERVER['PHP_AUTH_USER']} <font color=\"red\">ADMIN CONTROL PANEL Authentication FAILED</font>",'admincp_auth');
 
 		header("WWW-Authenticate: Basic realm=\"Kinokpk.com releaser's admininsration panel. You can use email or username to login.\"");
 		header("HTTP/1.0 401 Unauthorized");
@@ -410,6 +410,28 @@ function textbbcode($name, $content="") {
 }
 
 /**
+ * Gets user data by given id
+ * @param int $id ID of users
+ * @param string $type Type of returned data, assoc (default) - associative array, array - array, object - object
+ * @return Ambigous <mixed, boolean> Data or false
+ */
+function get_user($id,$type='assoc') {
+	global $REL_DB;
+	return $REL_DB->query_row("SELECT * FROM users WHERE id=$id",$type);
+}
+
+/**
+ * Generates link to user profile.
+ * @param unknown_type $data
+ * @return string
+ */
+function make_user_link($data=false) {
+	global $REL_SEO,$CURUSER;
+	if (!$data) $data = $CURUSER;
+	return '<a href="'.$REL_SEO->make_link('userdetails','id',$data['id'],'username',translit($data['username'])).'">'.get_user_class_color($data['class'],$data['username']).'</a>'.get_user_icons($data);
+}
+
+/**
  * Deletes tracker user
  * @param int $id id of user
  * @return void
@@ -425,9 +447,10 @@ function delete_user($id) {
 	sql_query("DELETE FROM bookmarks WHERE userid = $id") or sqlerr(__FILE__,__LINE__);
 	sql_query("DELETE FROM invites WHERE inviter = $id") or sqlerr(__FILE__,__LINE__);
 	sql_query("DELETE FROM peers WHERE userid = $id") or sqlerr(__FILE__,__LINE__);
+	sql_query("DELETE FROM presents WHERE presenter = $id OR userid = $id") or sqlerr(__FILE__,__LINE__);
 	sql_query("DELETE FROM addedrequests WHERE userid = $id") or sqlerr(__FILE__,__LINE__);
 	sql_query("DELETE FROM notifs WHERE userid = $id") or sqlerr(__FILE__,__LINE__);
-	write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username', translit($CURUSER['username']))."\">".get_user_class_color($CURUSER['class'],$CURUSER['username'])."</a> <font color=\"red\">deleted user with id $id</font>",'system_functions');
+	write_log(make_user_link()." <font color=\"red\">deleted user with id $id</font>",'system_functions');
 
 	return;
 }
@@ -486,7 +509,7 @@ function sqlerr($file = '', $line = '') {
 	$text = ("<table border=\"0\" bgcolor=\"blue\" align=\"left\" cellspacing=\"0\" cellpadding=\"10\" style=\"background: blue\">" .
 	"<tr><td class=\"embedded\"><font color=\"white\"><h1>Ошибка в SQL</h1>\n" .
 	"<b>Ответ от сервера MySQL: " . $err . ($file != '' && $line != '' ? "<p>в $file, линия $line</p>" : "") . "<p>Запрос номер $queries.</p></b></font></td></tr></table>");
-	write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".get_user_class_color($CURUSER['class'],$CURUSER['username'])."</a> SQL ERROR: $text</font>",'sql_errors');
+	write_log(make_user_link()." SQL ERROR: $text</font>",'sql_errors');
 	print $text;
 	return;
 }
@@ -918,8 +941,6 @@ function userlogin() {
 	if ($_COOKIE["pass"] != md5($row["passhash"].COOKIE_SECRET)) {
 		$REL_CONFIG['ss_uri'] = $row['uri'];
 		$pscheck = htmlspecialchars(trim((string)$_COOKIE['pass']));
-		//$res = mysql_fetch_assoc(sql_query("SELECT id,class,username FROM users WHERE passhash=".sqlesc($pscheck)));
-		//if (!$res) unset($res); else $res = "of <a href=\"userdetails.php?id=\"{$res['id']}\">".get_user_class_color($res['class'],$res['username'])."</a>";
 		write_log(getip()." with cookie ID = $id <font color=\"red\">with passhash ".$pscheck." -> PASSHASH CHECKSUM FAILED!</font>",'security');
 		$REL_LANG = new REL_LANG($REL_CONFIG);
 		user_session();
@@ -1630,7 +1651,7 @@ function deletetorrent($id) {
 	if ($images) {
 		foreach ($images as $img) unlink($img);
 	}
-	write_log("<a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".get_user_class_color($CURUSER['class'],$CURUSER['username'])."</a> deleted torrent with id $id (system message)",'system_functions');
+	write_log(make_user_link()." deleted torrent with id $id (system message)",'system_functions');
 	return;
 }
 
@@ -2004,7 +2025,7 @@ function get_user_icons($arr, $big = false) {
 	}
 	$pics = $arr["donor"] ? "<img src=\"pic/$donorpic\" alt='Donor' border=\"0\" $style>" : "";
 	if ($arr["enabled"])
-	$pics .= $arr["warned"] ? "<img src=pic/$warnedpic alt=\"Warned\" border=0 $style>" : "";
+	$pics .= $arr["warned"] ? "<img src=\"pic/$warnedpic\" alt=\"Warned\" border=\"0\" $style>" : "";
 	else
 	$pics .= "<img src=\"pic/$disabledpic\" alt=\"Disabled\" border=\"0\" $style>\n";
 

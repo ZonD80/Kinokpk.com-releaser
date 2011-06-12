@@ -4,15 +4,15 @@ if (!defined('BLOCK_FILE')) {
 	safe_redirect(" ../".$REL_SEO->make_link('index'));
 	exit;
 }
-$a = mysql_fetch_array(sql_query("SELECT id, username FROM users WHERE id = (SELECT MAX(id) FROM users WHERE users.confirmed=1)"));
+$a = mysql_fetch_array(sql_query("SELECT id, username, donor, warned, class, enabled FROM users WHERE id = (SELECT MAX(id) FROM users WHERE users.confirmed=1)"));
 if ($CURUSER)
-$latestuser = "<a href='".$REL_SEO->make_link('userdetails','id',$a['id'],'username',$a['username'])."' class='online'>" . $a["username"] . "</a>";
+$latestuser = make_user_link($a);
 else
 $latestuser = $a['username'];
 $title_who = array();
 $gues = array();
 $dt = sqlesc(time() - 300);
-$result = sql_query("SELECT DISTINCT s.uid, s.username, s.class, s.ip FROM sessions AS s WHERE s.time > $dt ORDER BY s.class DESC");
+$result = sql_query("SELECT DISTINCT s.uid, s.username, s.class, s.ip, users.donor, users.warned, users.enabled FROM sessions AS s LEFT JOIN users ON s.uid=users.id WHERE s.time > $dt ORDER BY s.class DESC");
 $classes = init_class_array();
 while ($row = mysql_fetch_array($result)) {
 	$uid = $row["uid"];
@@ -21,7 +21,7 @@ while ($row = mysql_fetch_array($result)) {
 	$ip = $row["ip"];
 	$uname_new = $uname;
 	if (!empty($uname) && ($uname_new != $uname_old)) {
-		$title_who[] = "<a href='".$REL_SEO->make_link('userdetails','id',$uid,'username',$uname)."' class='online'>".get_user_class_color($class, $uname)."</a>";
+		$title_who[] = make_user_link($row);
 	}
 	if (($uname_new != $uname_old) && (get_class_priority($class) >= get_class_priority($classes['staffbegin']))) {
 		$staff++;

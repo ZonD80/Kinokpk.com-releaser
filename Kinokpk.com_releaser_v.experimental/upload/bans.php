@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	die;
 }
 
-$res = sql_query("SELECT bans.*, users.username, users.class FROM bans LEFT JOIN users ON bans.user = users.id ORDER BY id DESC") or sqlerr(__FILE__, __LINE__);
+$res = sql_query("SELECT bans.*, users.username, users.class, users.warned, users.donor, users.enabled FROM bans LEFT JOIN users ON bans.user = users.id ORDER BY id DESC") or sqlerr(__FILE__, __LINE__);
 
 $REL_TPL->stdhead("Баны по IP");
 
@@ -64,11 +64,12 @@ else
 
 	while ($arr = mysql_fetch_assoc($res))
 	{
-
+		$user = $arr;
+		$user['id'] = $user['user'];
 		print("<tr><td  class=\"row1\" align=\"center\">".mkprettytime($arr['added'])."</td>".
 	  "<td  class=\"row1\" align=\"center\">$arr[mask]</td>".
 	  "<td  class=\"row1\" align=\"center\">$arr[descr]</td>".
-	  "<td  class=\"row1\" align=\"center\"><a href='".$REL_SEO->make_link('userdetails','id',$arr['user'],'username',$arr['username'])."'>".get_user_class_color($arr['class'],$arr['username'])."</td>".
+	  "<td  class=\"row1\" align=\"center\">".make_user_link($user)."</td>".
  	    "<td  class=\"row1\" align=\"center\"><a href=\"".$REL_SEO->make_link('bans','remove',$arr['id'])."\">D</a></td></tr>\n");
 	}
 	print('</table>');

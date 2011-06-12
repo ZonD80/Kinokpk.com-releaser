@@ -61,7 +61,7 @@ if ($action == "add")
 				$modcomment = sql_query("SELECT modcomment FROM users WHERE id=".$CURUSER['id']);
 				$modcomment = mysql_result($modcomment,0);
 				if (strpos($modcomment,"Maybe spammer in comments") === false) {
-					$reason = sqlesc("Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".$CURUSER['username']."</a> может быть спамером, т.к. его 5 последних посланных комментариев полностью совпадают.$msgview");
+					$reason = sqlesc("Пользователь ".make_user_link()." может быть спамером, т.к. его 5 последних посланных комментариев полностью совпадают.$msgview");
 					sql_query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
 					$modcomment .= "\n".time()." - Maybe spammer in comments";
 					sql_query("UPDATE users SET modcomment = ".sqlesc($modcomment)." WHERE id =".$CURUSER['id']);
@@ -69,11 +69,11 @@ if ($action == "add")
 				} else {
 					sql_query("UPDATE users SET enabled=0, dis_reason='Spam in comments' WHERE id=".$CURUSER['id']);
 
-					$reason = sqlesc("Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']))."\">".$CURUSER['username']."</a> забанен системой за спам, его IP адрес (".$CURUSER['ip'].")");
+					$reason = sqlesc("Пользователь ".make_user_link()." забанен системой за спам, его IP адрес (".$CURUSER['ip'].")");
 					sql_query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
-						
+					
 					stderr("Поздравляем!","Вы успешно забанены системой за спам в комментариях! Если вы не согласны с решением системы, <a href=\"".$REL_SEO->make_link('contact')."\">подайте жалобу админам</a>.");
-				}
+						}
 				stderr($REL_LANG->say_by_key('error'),"На нашем сайте стоит защита от спама, ваши 5 последних комментариев совпадают. В отсылке комментария отказано. <b><u>ВНИМАНИЕ! ЕСЛИ ВЫ ЕЩЕ РАЗ ПОПЫТАЕТЕСЬ ОТПРАВИТЬ ИДЕНТИЧНОЕ СООБЩЕНИЕ, ВЫ БУДЕТЕ АВТОМАТИЧЕСКИ ЗАБЛОКИРОВАНЫ СИСТЕМОЙ!!!</u></b> <a href=\"javascript: history.go(-1)\">Назад</a>");
 
 			}
@@ -92,7 +92,7 @@ if ($action == "add")
 		sql_query("UPDATE {$allowed_types[$type]} SET comments = comments + 1".($type=='forum'?", lastposted_id=$newid":'')." WHERE id = $to_id") or sqlerr(__FILE__,__LINE__);
 		clear_comment_caches($type);
 		/////////////////СЛЕЖЕНИЕ ЗА КОММЕНТАМИ/////////////////
-
+		
 		send_comment_notifs($to_id,"<a href=\"$returnto\">$name</a>","{$type}comments");
 
 		/////////////////СЛЕЖЕНИЕ ЗА КОММЕНТАМИ/////////////////
@@ -226,25 +226,25 @@ elseif ($action == "delete")
 		$res = sql_query("SELECT toid,type FROM comments WHERE id=$commentid")  or sqlerr(__FILE__,__LINE__);
 		$arr = mysql_fetch_array($res);
 		if ($arr) {
-			$to_id = $arr["toid"];
-			$type = $arr['type'];
+		$to_id = $arr["toid"];
+		$type = $arr['type'];
 		}
 		else
 		stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 		sql_query("DELETE FROM comments WHERE id=$commentid") or sqlerr(__FILE__,__LINE__);
 		if ($to_id && mysql_affected_rows() > 0) {
-			sql_query("UPDATE {$allowed_types[$type]} SET comments = comments - 1 WHERE id = $to_id") or sqlerr(__FILE__,__LINE__);
-			if ($type=='forum') {
-					
-				$check = mysql_fetch_assoc($REL_DB->query("SELECT (SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id>$commentid ORDER BY id ASC LIMIT 1) AS next, (SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id<$commentid ORDER BY id DESC LIMIT 1) AS prev"));
-				//die(var_dump($check));
-				if (!$check['next']&&!$check['prev']) $REL_DB->query("DELETE FROM forum_topics WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
-				elseif (!$check['next']) {
-					$REL_DB->query("UPDATE forum_topics SET lastposted_id={$check['prev']} WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
-				}
+		sql_query("UPDATE {$allowed_types[$type]} SET comments = comments - 1 WHERE id = $to_id") or sqlerr(__FILE__,__LINE__);
+		if ($type=='forum') {
+			
+			$check = mysql_fetch_assoc($REL_DB->query("SELECT (SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id>$commentid ORDER BY id ASC LIMIT 1) AS next, (SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id<$commentid ORDER BY id DESC LIMIT 1) AS prev"));
+			//die(var_dump($check));
+			if (!$check['next']&&!$check['prev']) $REL_DB->query("DELETE FROM forum_topics WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
+			elseif (!$check['next']) {
+				$REL_DB->query("UPDATE forum_topics SET lastposted_id={$check['prev']} WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
 			}
-			clear_comment_caches($type);
+		}
+		clear_comment_caches($type);
 		}
 	}
 	if (!REL_AJAX)

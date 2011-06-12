@@ -19,25 +19,14 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('my_my'));
 
 if ($_GET["emailch"])
 print("<h1>".$REL_LANG->say_by_key('my_mail_updated')."</h1>\n");
-/*else
- print("<h1>Добро пожаловать, <a href=userdetails.php?id=$CURUSER[id]>$CURUSER[username]</a>!</h1>\n");*/
-/*
- $country = $_POST["country"];
- print($country.'a1');
- $stylesheet = $_POST["stylesheet"];
- print($stylesheet.'b2');
- $lang = $_POST["language"];
- print($lang.'c3');
- $timezone = (int)$_POST['timezone'];
- print($timezone.'d4');
- */
+
 ?>
 
 
 <div id="my_table">
 <h2><?=$REL_LANG->say_by_key('account_settings')?></h2>
 
-<script type="text/javascript">
+	<script	type="text/javascript">
 	<!--//
 	// on DOM ready
 	

@@ -456,7 +456,7 @@ elseif ($action == 'takemessage') {
 			} else {
 				sql_query ( "UPDATE users SET enabled=0, dis_reason='Spam' WHERE id=" . $CURUSER ['id'] );
 
-				$reason = sqlesc("Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER ['id'],'username',translit($CURUSER['username']))."\">" . $CURUSER ['username'] . "</a> забанен системой за спам, его IP адрес (" . $CURUSER ['ip'] . ")");
+				$reason = sqlesc("Пользователь ".make_user_link()." забанен системой за спам, его IP адрес (" . $CURUSER ['ip'] . ")");
 				sql_query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
 				stderr ( "Поздравляем!", "Вы успешно забанены системой за спам в Личных Сообщениях! Если вы не согласны с решением системы, <a href=\"".$REL_SEO->make_link('contact')."\">подайте жалобу админам</a>." );
 			}
@@ -795,16 +795,16 @@ elseif ($action == "forward") {
 		$from = $message ['sender'];
 		$orig = $message ['receiver'];
 
-		$res = sql_query ( "SELECT username FROM users WHERE id=" . sqlesc ( $orig ) . " OR id=" . sqlesc ( $from ) ) or sqlerr ( __FILE__, __LINE__ );
+		$res = sql_query ( "SELECT id,username,class,donor,warned,enabled FROM users WHERE id=" . sqlesc ( $orig ) . " OR id=" . sqlesc ( $from ) ) or sqlerr ( __FILE__, __LINE__ );
 
 		$orig2 = mysql_fetch_assoc ( $res );
-		$orig_name = "<A href=\"".$REL_SEO->make_link('userdetails','id',$from,'username',translit($orig2['username']))."\">" . $orig2 ['username'] . "</A>";
+		$orig_name = make_user_link($orig2);
 		if ($from == 0) {
 			$from_name = "Системное";
 			$from2 ['username'] = "Системное";
 		} else {
-			$from2 = mysql_fetch_array ( $res );
-			$from_name = "<A href=\"".$REL_SEO->make_link('userdetails','id',$from,'username',translit($from2['username']))."\">" . $from2 ['username'] . "</A>";
+			$from2 = mysql_fetch_assoc ( $res );
+			$from_name = make_user_link($from2);
 		}
 
 		$body = "Оригинальное сообщение:<hr /><blockquote>" . format_comment ( $message ['msg'] . "</blockquote><cite>{$from2['username']}</cite><hr /><br /><br />" );

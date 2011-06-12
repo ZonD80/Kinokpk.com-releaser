@@ -108,7 +108,7 @@ else {
 				$OUT .= "<strong>{$REL_LANG->say_by_key('snatched')}:</strong> {$row ["hits"]} " . $REL_LANG->say_by_key('times')."<br/>";
 			}
 			$keepget = "";
-			$uprow = (isset ( $row ["username"] ) ? ("<a href='{$REL_SEO->make_link('userdetails','id',$row ["owner"],'name',$row['username'])}'>" . get_user_class_color ( $row ['class'], $row ["username"] ) . "</a>") : "<i>Аноним</i>");
+			$uprow = (isset ( $row ["username"] ) ? ("<a href='{$REL_SEO->make_link('userdetails','id',$row ["owner"],'name',$row['username'])}'>" . get_user_class_color ( $row ['class'], $row ["username"] ) . "</a>") : "<i>{$REL_LANG->_('Anonymous')}</i>");
 
 
 			$OUT .= "<strong>{$REL_LANG->_('Uploader')}:</strong>  $uprow $spacer ". ratearea ( $row ['userrating'], $row ['owner'], 'users' ,$CURUSER['id'])."<br/>";

@@ -41,7 +41,7 @@ for ($i = 1; $i <= $num; $i++)
 	$last_access = get_elapsed_time($arr['last_access'])." {$REL_LANG->say_by_key('ago')}";
 	$class=get_user_class_name($arr["class"]);
 
-	print("<tr><td align=left><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['id'],'username',translit($arr['username']))."\"><b>$arr[username]</b></a>" .get_user_icons($arr)."</td>
+	print("<tr><td align=left>".make_user_link($arr)."</td>
 <td align=center>$added</td>
 <td align=center>$last_access</td>
 <td align=center>$class</td>

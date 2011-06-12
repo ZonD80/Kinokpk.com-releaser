@@ -81,7 +81,7 @@ if (! $count) {
 
 	if ($empty) {
 
-		$res = sql_query ( "SELECT reports.*,users.username,users.class FROM reports LEFT JOIN users ON reports.userid=users.id ORDER BY added DESC" ) or sqlerr ( __FILE__, __LINE__ );
+		$res = sql_query ( "SELECT reports.*,users.username,users.class,users.donor,users.warned, users.enabled FROM reports LEFT JOIN users ON reports.userid=users.id ORDER BY added DESC" ) or sqlerr ( __FILE__, __LINE__ );
 		$allowed_types = array ('messages' => $REL_SEO->make_link('message','action','viewmessage','id',''), 'torrents' => $REL_SEO->make_link('details','id',''), 'users' => $REL_SEO->make_link('userdetails','id',''), 'rel' => $REL_SEO->make_link('comments','action','edit','cid',''), 'poll' => $REL_SEO->make_link('comments','action','edit','cid',''), 'news' => $REL_SEO->make_link('comments','action','edit','cid',''), 'user' => $REL_SEO->make_link('comments','action','edit','cid', ''), 'req' => $REL_SEO->make_link('comments','action','edit','cid',''), 'relgroups' => $REL_SEO->make_link('relgroups','id',''), 'rg' => $REL_SEO->make_link('comments','action','edit','cid',''), 'forum' => $REL_SEO->make_link('comments','action','edit','cid',''));
 		$display_types = array ('messages' => $REL_LANG->_('PM'), 'torrents' => $REL_LANG->_('Release'), 'users' => $REL_LANG->_('Users'), 'rel' => $REL_LANG->_('Comments'), 'poll' => $REL_LANG->_('Pollcomments'), 'news' => $REL_LANG->_('Newscomments'), 'user' => $REL_LANG->_('Usercomments'), 'req' => $REL_LANG->_('Reqcomments'), 'relgroups' => $REL_LANG->_('Release Groups'), 'rg' => $REL_LANG->_('Rgcomments'), 'forum' => $REL_LANG->_('Forumcomments'));
 
@@ -94,17 +94,16 @@ if (! $count) {
 			$type = $display_types[$row ['type']];
 
 			$added = mkprettytime ( $row ["added"] ) . ' (' . get_elapsed_time ( $row ['added'], false ) . " {$REL_LANG->say_by_key('ago')})";
-
-			$username = $row ["username"];
 			$userclass = $row ["class"];
 
-
+			$user = $row;
+			$user['id'] = $row['userid'];
 			//foreach ($allowed_types as $atype)
 
 
 			print ( "<tr>
         <td align='center'>$added</td>
-        <td><b><a target='_blank' href='".$REL_SEO->make_link('userdetails','id',$userid,'username',translit($username))."'>" . get_user_class_color ( $userclass, $username ) . "</a></b></td>
+        <td><b>".make_user_link($user)."</b></td>
         <td><a href=\"{$allowed_types[$row ['type']]}$toid\">$type [$toid]</a></td>
         <td>$motive</td>
         <td align='center'>

@@ -47,7 +47,7 @@ while($ras = mysql_fetch_assoc($res)) {
 
 				/*$peer_res = sql_query("SELECT count(*) FROM peers WHERE ip = " . sqlesc($ras['ip']) . " AND userid = " . $arr['id']);
 				 $peer_row = mysql_fetch_row($peer_res);*/
-				print("<tr$utc><td align=left><b><a href='".$REL_SEO->make_link('userdetails','id',$arr['id'],'username',translit($arr['username']))."'>" . get_user_class_color($arr['class'], $arr['username'])."</b></a>" . get_user_icons($arr) . "</td>
+				print("<tr$utc><td align=left>".make_user_link($arr). "</td>
                                   <td align=center>$arr[email]</td>
                                   <td align=center>$added</td>
                                   <td align=center>$last_access</td>

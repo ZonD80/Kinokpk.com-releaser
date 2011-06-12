@@ -18,6 +18,9 @@ $fid = (int) $_GET['id'];
 
 $to = (int) $_GET['to'];
 
+$action = trim((string)$_GET['a']);
+
+
 if ($REL_CRON['rating_enabled']) $allowed_types = array('torrent','discount','ratingsum'); else $allowed_types = array('ratingsum','torrent');
 
 $type = trim((string)$_GET['type']);
@@ -25,22 +28,46 @@ $type = trim((string)$_GET['type']);
 $q[] ='present';
 
 if ($type) {
-	$q[] = 'type';
-	$q[] = $type;
+  $q[] = 'type';
+  $q[] = $type;
 }
 if ($fid) {
-	$q[] = 'id';
-	$q[] = $fid;
+  $q[] = 'id';
+  $q[] = $fid;
 }
 if ($to) {
-	$q[] = 'to';
-	$q[] = $to;
+  $q[] = 'to';
+  $q[] = $to;
 }
+
+if ($action) {
+	$q[] = 'a';
+	$q[] = $action;
+}
+
+if ($action=='viewpresent') {
+	$present = $REL_DB->query_row("SELECT * FROM presents WHERE id=$fid");
+	if (!$present) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Invalid id'));
+	else {
+		$presenter = get_user($present['presenter']);
+		$receiver = get_user($present['userid']);
+		$REL_TPL->assign('presenter',$presenter);
+		$REL_TPL->assign('receiver',$receiver);
+		$REL_TPL->assign('present',$present);
+		$links['present_more'] = $REL_SEO->make_link('present','id',$receiver['id'],'type',$present['type']);
+		$links['present_similar'] = $REL_SEO->make_link('present','type',$present['type']);
+		$REL_TPL->assign('links',$links);
+	}
+	$REL_TPL->stdhead($REL_LANG->_('Viewing present of %s',$presenter['username']));
+	$REL_TPL->output($action);
+	$REL_TPL->stdfoot();
+	die();
+} elseif ($action) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unknown action'));
 
 if (!$type) {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('presents'));
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('what_present'));
-	//var_Dump(array_merge($q,array('type','ratingsum')));
+//var_Dump(array_merge($q,array('type','ratingsum')));
 	print('<table border="1" align="center">'.($REL_CRON['rating_enabled']?'<tr><td align="center"><a href="'.$REL_SEO->make_link(array_merge($q,array('type','torrent'))).'">'.$REL_LANG->say_by_key('big_present_torrent').'</a></td><td align="center"><a href="'.$REL_SEO->make_link(array_merge($q,array('type','discount'))).'">'.$REL_LANG->say_by_key('big_present_discount').'</a></td>
   ':'').'<td align="center"><a href="'.$REL_SEO->make_link(array_merge($q,array('type','ratingsum'))).'">'.$REL_LANG->say_by_key('big_present_ratingsum').'</a></td></tr></table>');
 	$REL_TPL->end_frame();
@@ -68,7 +95,7 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('present_'.$type));
 
 if (!$fid) {
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('select_friend'));
-	$curusername = '<a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username'])).'">'.get_user_class_color($CURUSER['class'],$CURUSER['username']).'</a>';
+	$curusername = make_user_link();
 
 
 
@@ -185,7 +212,7 @@ $friendres = sql_query("SELECT IF (friends.userid={$CURUSER['id']},friends.frien
 $friend = mysql_fetch_assoc($friendres);
 if (!$friend) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_friend'), 'error'); $REL_TPL->stdfoot(); die(); }
 $friendname = '<a href="'.$REL_SEO->make_link('userdetails','id',$friend['friend'],'username',translit($friend['username'])).'">'.get_user_class_color($friend['class'],$friend['username']).'</a>';
-$curusername = '<a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username'])).'">'.get_user_class_color($CURUSER['class'],$CURUSER['username']).'</a>';
+$curusername = make_user_link();
 
 if ($type=='torrent') {
 

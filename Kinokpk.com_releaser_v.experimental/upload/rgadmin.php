@@ -58,14 +58,14 @@ if (!$a) {
 	if (!$rgarray) { print '<tr><td colspan="14">'.$REL_LANG->say_by_key('no_relgroups').'</td></tr>'; $REL_TPL->end_frame(); $REL_TPL->stdfoot(); die(); }
 
 
-	$ownres = sql_query("SELECT id,username,class FROM users WHERE id IN(".implode(',',($memarray?array_merge($uidsarray,$memarray):$uidsarray)).")") or sqlerr(__FILE__,__LINE__);
+	$ownres = sql_query("SELECT id,username,class, warned, donor, enabled FROM users WHERE id IN(".implode(',',($memarray?array_merge($uidsarray,$memarray):$uidsarray)).")") or sqlerr(__FILE__,__LINE__);
 
 	while ($owner = mysql_fetch_array($ownres)) {
 		foreach ($uidsarray as $uar)
 		if (in_array($owner['id'],explode(',',$uar)))
-		$owners[$owner['id']] = "<a href=\"".$REL_SEO->make_link('userdetails','id',$owner['id'],'username',translit($owner['username']))."\">".get_user_class_color($owner['class'],$owner['username'])."</a>";
+		$owners[$owner['id']] = make_user_link($owner);
 		else
-		$members[$owner['id']] = "<a href=\"".$REL_SEO->make_link('userdetails','id',$owner['id'],'username',translit($owner['username']))."\">".get_user_class_color($owner['class'],$owner['username'])."</a>";
+		$members[$owner['id']] = make_user_link($owner);
 
 	}
 
@@ -155,7 +155,7 @@ elseif ($a == 'users') {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('view_users'));
 	$count = get_row_count('rg_subscribes',"WHERE rgid=$id");
 
-	$res = sql_query("SELECT rg_subscribes.*, users.username, users.class FROM rg_subscribes LEFT JOIN users ON rg_subscribes.userid=users.id WHERE rgid = $id ORDER BY valid_until ASC $LIMIT") or sqlerr(__FILE__,__LINE__);
+	$res = sql_query("SELECT rg_subscribes.*, users.username, users.class, users.warned, users.donor, users.enabled FROM rg_subscribes LEFT JOIN users ON rg_subscribes.userid=users.id WHERE rgid = $id ORDER BY valid_until ASC $LIMIT") or sqlerr(__FILE__,__LINE__);
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('view_users'). ' '.@mysql_result(sql_query("SELECT name FROM relgroups WHERE id = $id"),0).$REL_LANG->say_by_key('to_rgadmin'));
 	begin_table();
 
@@ -163,7 +163,9 @@ elseif ($a == 'users') {
 
 	while ($row = mysql_fetch_assoc($res)) {
 		$has_users = true;
-		print ("<tr><td><a href=\"".$REL_SEO->make_link('userdetails','id',$row['userid'],'username',translit($row['username']))."\">".get_user_class_color($row['class'],$row['username'])."</a></td><td>".($row['valid_until']?mkprettytime($row['valid_until'])."{$REL_LANG->say_by_key('in_time')}".get_elapsed_time($row['valid_until']):$REL_LANG->say_by_key('never'))."</td><td><a href=\"".$REL_SEO->make_link('rgadmin','id',$id,'a','deleteuser','userid',$row['userid'])."\" onclick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}');\">D</a> / <a href=\"".$REL_SEO->make_link('rgadmin','id',$id,'a','deleteuser','userid',$row['userid'],'notify','')."\" onclick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}');\">{$REL_LANG->say_by_key('delete_with_notify')}</a></td></tr>");
+		$user = $row;
+		$user['id'] = $user['userid'];
+		print ("<tr><td>".make_user_link($user)."</td><td>".($row['valid_until']?mkprettytime($row['valid_until'])."{$REL_LANG->say_by_key('in_time')}".get_elapsed_time($row['valid_until']):$REL_LANG->say_by_key('never'))."</td><td><a href=\"".$REL_SEO->make_link('rgadmin','id',$id,'a','deleteuser','userid',$row['userid'])."\" onclick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}');\">D</a> / <a href=\"".$REL_SEO->make_link('rgadmin','id',$id,'a','deleteuser','userid',$row['userid'],'notify','')."\" onclick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}');\">{$REL_LANG->say_by_key('delete_with_notify')}</a></td></tr>");
 	}
 	if (!$has_users) print '<tr><td colspan="4" align="center">'.$REL_LANG->say_by_key('no_users').'</td></tr>';
 	print("<tr><td class=\"index\" colspan=\"4\">");

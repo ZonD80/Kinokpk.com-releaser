@@ -62,7 +62,7 @@ if ($type == 'new') {
 	}
 
 
-	$ret = sql_query("SELECT u.id, u.username, u.class, u.email, u.ratingsum, u.warned, u.enabled, u.donor, u.email, invites.confirmed FROM invites LEFT JOIN users AS u ON u.id=invites.inviteid WHERE invitedby = $id") or sqlerr(__FILE__,__LINE__);
+	$ret = sql_query("SELECT u.id, u.username, u.class, u.email, u.ratingsum, u.warned, u.enabled, u.donor, u.disabled, invites.confirmed FROM invites LEFT JOIN users AS u ON u.id=invites.inviteid WHERE invitedby = $id") or sqlerr(__FILE__,__LINE__);
 	$num = mysql_num_rows($ret);
 	print("<form method=post action=\"".$REL_SEO->make_link('takeconfirm','id',$id)."\"><table border=1 width=100% cellspacing=0 cellpadding=5>".
 	"<tr class=tabletitle><td colspan=7><b>Статус приглашенных вами</b> (".(int)$num.")</td></tr>");
@@ -79,7 +79,7 @@ if ($type == 'new') {
 			if (!$arr[confirmed])
 			$user = "<td align=left>$arr[username]</td>";
 			else
-			$user = "<td align=left><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['id'],'username',translit($arr['username']))."\">" . get_user_class_color($arr["class"], "$arr[username]") . "</a>" . ($arr["warned"] ? "&nbsp;<img src=pic/warned.gif border=0 alt='Warned'>" : "") . (!$arr["enabled"] ? "&nbsp;<img src=pic/disabled.gif border=0 alt='Disabled'>" : "") . ($arr["donor"] ? "&nbsp;<img src=pic/star.gif border=0 alt='Donor'>" : "")."</td>";
+			$user = "<td align=left>".make_user_link($arr)."</td>";
 
 			$ratio = (($arr['ratingsum']>0)?"+{$arr['ratingsum']}":$arr['ratingsum']);
 

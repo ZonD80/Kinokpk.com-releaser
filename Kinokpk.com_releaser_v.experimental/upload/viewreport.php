@@ -106,7 +106,7 @@ if (!$count) {
 			$motive = $row["motive"];
 			$added = $row["added"];
 
-			$res1 = sql_query("SELECT username, class FROM users WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
+			$res1 = sql_query("SELECT id, username, class, warned, donor, enabled FROM users WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
 			$row1 = mysql_fetch_array($res1);
 
 			$username = $row1["username"];
@@ -129,7 +129,7 @@ if (!$count) {
 
 			print ("<tr>
         <td align='center'>$added</td>
-        <td><b><a target='_blank' href='".$REL_SEO->make_link('userdetails','id',$userid,'username',translit($username))."'>".get_user_class_color($userclass, $username)."</a></b></td>
+        <td>".make_user_link($row1)."</td>
         <td>$torrenturl</td>
         <td>$motive</td>
         <td align='center'>

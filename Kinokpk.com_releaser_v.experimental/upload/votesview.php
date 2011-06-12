@@ -23,7 +23,7 @@ if ($_GET[requestid])
 	$count = $row[0];
 	$perpage = 50;
 	$limit = pager($perpage, $count, array('votesview') );
-	$res = sql_query("SELECT users.id as userid,users.username, users.ratingsum, users.class, requests.id as requestid, requests.request FROM addedrequests INNER JOIN users ON addedrequests.userid = users.id INNER JOIN requests ON addedrequests.requestid = requests.id WHERE addedrequests.requestid =$requestid $limit") or sqlerr(__FILE__, __LINE__);
+	$res = sql_query("SELECT users.id as userid,users.username, users.ratingsum, users.class, users.enabled, users.warned, users.donor requests.id as requestid, requests.request FROM addedrequests INNER JOIN users ON addedrequests.userid = users.id INNER JOIN requests ON addedrequests.requestid = requests.id WHERE addedrequests.requestid =$requestid $limit") or sqlerr(__FILE__, __LINE__);
 	$REL_TPL->stdhead("Голосовавшие");
 	$res2 = sql_query("SELECT request FROM requests WHERE id=$requestid");
 	$arr2 = mysql_fetch_assoc($res2);
@@ -40,8 +40,9 @@ if ($_GET[requestid])
 		while ($arr = mysql_fetch_assoc($res))
 		{
 			$ratio = ratearea($arr['ratingsum'],$arr['userid'],'users',$CURUSER['id']);
-
-			print("<tr><td><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['userid'],'username',translit($arr["username"]))."\"><b>" . get_user_class_color($arr["class"],$arr["username"]) . "</td><td nowrap>$ratio</td></tr>\n");
+			$user = $arr;
+			$user['id'] = $arr['userid'];
+			print("<tr><td>".make_user_link($user)."</td><td nowrap>$ratio</td></tr>\n");
 		}
 		print("</table>\n");
 	}

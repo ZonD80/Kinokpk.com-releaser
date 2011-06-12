@@ -1,2515 +1,423 @@
 <?xml version="1.0" encoding="utf-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.google.com/schemas/sitemap/0.84 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>1</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>1</priority>
-	</url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.google.com/schemas/sitemap/0.84 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url><loc>http://www.torrentsbook.com/browse.php</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>1</priority></url>
+<url><loc>http://www.torrentsbook.com/</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>1</priority></url>
 
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46256&amp;name=lesnik_/_lesnik_(2011)_[satrip,_1-4_serii_iz_16]</loc>
-		<lastmod>2011-04-04T17:12:23+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46255&amp;name=realnie_pacani_/_2_sezon:_48_seriya_(2011)_[hqsatrip,_efir_04.04.2011]</loc>
-		<lastmod>2011-04-04T15:08:55+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46254&amp;name=mylt_lichnosti_/_kajdoi_dyre_-_po_prazdniky!_[19]_(2011)_[satrip]</loc>
-		<lastmod>2011-04-04T12:04:46+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46253&amp;name=nebesnii_forsaj_/_kill_speed_(2010)_[hdrip_|_licenziya]</loc>
-		<lastmod>2011-04-04T11:18:39+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46252&amp;name=va_-_love_dance_/_va_-_love_dance_(2011)_[mp3]</loc>
-		<lastmod>2011-04-04T10:28:58+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46251&amp;name=rio_/_rio_3d_(2011)_[camrip]</loc>
-		<lastmod>2011-04-04T06:13:38+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46250&amp;name=krot_/_krot_(2001)_[dvdrip]</loc>
-		<lastmod>2011-04-03T20:03:28+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46249&amp;name=dayosh_molodyoj!_/_sbornik_benefisov_(2011)_[satrip_/_iptvrip,_chast_1,_serii_1-8_iz_8_]</loc>
-		<lastmod>2011-04-03T17:34:53+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46248&amp;name=inoplanetnoe_vtorjenie:_bitva_za_los-andjeles_/_battle:_los_angeles_(2011)_[dvdrip-avc,_licenziya]</loc>
-		<lastmod>2011-04-03T16:33:11+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46247&amp;name=lubov_prihodit_ne_odna_/_lubov_prihodit_ne_odna_(2011)_[satrip]</loc>
-		<lastmod>2011-04-03T15:37:02+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46246&amp;name=sbornik_-_dub_step_from_evolinte_vol.5_/_sbornik_-_dub_step_from_evolinte_vol.5_(2011)_[mp3]</loc>
-		<lastmod>2011-04-03T15:28:21+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46245&amp;name=morskie_dinozavri:_pyteshestvie_v_doistoricheskii_mir_3d_/_sea_rex:_journey_to_a_prehistoric_world_3d_(2010)_[hdtv]</loc>
-		<lastmod>2011-04-03T13:40:36+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46244&amp;name=delfini_i_kiti_3d_/_dolphins_and_whales_3d:_tribes_of_the_ocean_(2008)_[blu-ray_disc,_1080p,_imax,_bd3d]</loc>
-		<lastmod>2011-04-03T13:34:23+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46243&amp;name=korol_vecherinok_3_/_van_wilder:_freshman_year_(2009)_[dvdrip]</loc>
-		<lastmod>2011-04-03T13:22:30+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46242&amp;name=zona_myortvih_/_zone_of_the_dead_(2009)_[hdrip,_avc]</loc>
-		<lastmod>2011-04-03T13:19:26+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46241&amp;name=va_-_top_50_radio_epizod_/_va_-_top_50_radio_epizod_(2011)_[mp3]</loc>
-		<lastmod>2011-04-03T12:08:37+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46240&amp;name=maks_manys:_chelovek_voini_/_max_manus_(2008)_[bdrip,_720p]</loc>
-		<lastmod>2011-04-03T12:01:26+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46239&amp;name=tobryk_/_tobruk_(2008)_[dvdrip]</loc>
-		<lastmod>2011-04-03T11:53:48+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46238&amp;name=smert.com_/_imurders_(2008)_[dvdrip]</loc>
-		<lastmod>2011-04-03T11:49:26+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46237&amp;name=vskritie_/_autopsy_(2008)_[bdrip,_720p]</loc>
-		<lastmod>2011-04-03T11:47:08+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46236&amp;name=osobo_opasen_/_wanted_(2008)_[bdrip,_1080p]</loc>
-		<lastmod>2011-04-03T11:42:30+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46235&amp;name=set_2.0_/_the_net_2.0_(2006)_[dvdrip]</loc>
-		<lastmod>2011-04-03T11:38:53+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46234&amp;name=tryp_/_cadaver_/_sop_(2006)_[dvdrip]</loc>
-		<lastmod>2011-04-03T11:34:08+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46233&amp;name=re-cikl_/_gwai_wik_(2006)_[bdrip,_1080p]</loc>
-		<lastmod>2011-04-03T11:29:35+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46232&amp;name=sredi_volkov_/_entre_lobos_(2010)_[dvdrip,_ap_(proshin)]</loc>
-		<lastmod>2011-04-03T10:38:03+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46231&amp;name=skripka_/_el_violin_(2005)_[dvdrip]</loc>
-		<lastmod>2011-04-03T10:35:57+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46230&amp;name=vostochnii_front:_zolotoe_izdanie_/_vostochnii_front:_zolotoe_izdanie_(2010)_[pc,_repack_ot_r.g._catalyst]</loc>
-		<lastmod>2011-04-03T10:31:33+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46229&amp;name=operation_flashpoint_2:_dragon_rising_/_operation_flashpoint_2:_dragon_rising_(2009)_[pc,_lossless_repack]</loc>
-		<lastmod>2011-04-03T10:24:45+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46228&amp;name=gta_4_/_grand_theft_auto_iv_-_complete_(2010)_[pc,_repack]</loc>
-		<lastmod>2011-04-03T10:12:57+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46227&amp;name=va_-_electro-house_boom_box_/_va_-_electro-house_boom_box_(2011)_[mp3]</loc>
-		<lastmod>2011-04-03T08:29:33+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46226&amp;name=va_-_aditional_{x}_trance_/_va_-_aditional_{x}_trance_(2011)_[mp3]</loc>
-		<lastmod>2011-04-03T08:16:36+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46225&amp;name=va_-_ministry_of_sound:_addicted_to_bass_2011_/_va_-_ministry_of_sound:_addicted_to_bass_2011_(2011)_[mp3]</loc>
-		<lastmod>2011-04-03T08:12:34+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46224&amp;name=obryad_/_the_rite_(2011)_[camrip]_*proper*</loc>
-		<lastmod>2011-04-03T08:10:18+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46223&amp;name=astral_/_insidious_(2010)_[camrip]</loc>
-		<lastmod>2011-04-03T08:06:06+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46222&amp;name=pistolet_stradivari_/_pistolet_stradivari_(2011)_[satrip]</loc>
-		<lastmod>2011-04-03T07:57:21+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46221&amp;name=beglec_/_jenskie_mechti_o_dalnih_stranah_(2010)_[dvdrip,_1-6_serii_iz_12]</loc>
-		<lastmod>2011-04-03T05:06:42+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46220&amp;name=chto?_gde?_kogda?_/_vesennyaya_seriya_igr._igra_vtoraya_(2011)_[satrip,_efir_02.04.11]</loc>
-		<lastmod>2011-04-03T04:30:12+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46219&amp;name=ya_znau,_kto_ybil_menya_/_i_know_who_killed_me_(2007)_[dvdrip]</loc>
-		<lastmod>2011-04-02T19:27:19+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46218&amp;name=pyteshestvenniki_/_travellers_(2011)_[dvdrip]</loc>
-		<lastmod>2011-04-02T19:17:40+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46217&amp;name=medved_iogi_/_yogi_bear_(2010)_[blu-ray]</loc>
-		<lastmod>2011-04-02T18:46:15+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46216&amp;name=pyst_govoryat_/_pyst_govoryat_(2011)_[satrip,_1-4_serii_iz_4]</loc>
-		<lastmod>2011-04-02T17:03:18+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46215&amp;name=va_-_lychshaya_klybnaya_sotnya_7_/_va_-_lychshaya_klybnaya_sotnya_7_(2011)_[mp3]</loc>
-		<lastmod>2011-04-02T16:20:20+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46214&amp;name=padenie_djeka_/_jack_falls_(2011)_[hdrip]</loc>
-		<lastmod>2011-04-02T16:16:11+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46213&amp;name=korol_govorit!_/_the_king\\\'s_speech_(2010)_[bdrip,_720p]</loc>
-		<lastmod>2011-04-02T16:10:49+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46212&amp;name=va_-_rm_electro_sensation_vol.13_/_va_-_rm_electro_sensation_vol.13_(2011)_[mp3]</loc>
-		<lastmod>2011-04-02T15:28:23+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46211&amp;name=dobicha_/_prowl_(2010)_[dvdrip]</loc>
-		<lastmod>2011-04-02T15:24:17+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46210&amp;name=projektorperishilton_/_sezon_3,_vipysk_24(91)_(2011)_[satrip,_efir_02.04.11]</loc>
-		<lastmod>2011-04-02T14:57:46+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46209&amp;name=vikrytasi_/_vikrytasi_(2011)_[dvdrip]_|_licenziya</loc>
-		<lastmod>2011-04-02T09:12:02+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46208&amp;name=ment_v_zakone_—_4_/_1-16_serii_iz_16_(2011)_[satrip]</loc>
-		<lastmod>2011-04-01T16:00:32+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46207&amp;name=novii_comedy_club_/_32_vipysk_(2011)_[satrip]</loc>
-		<lastmod>2011-04-01T12:43:58+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46206&amp;name=nasha_russia_/_5_sezon:_4_seriya_(2011)_[satrip]</loc>
-		<lastmod>2011-04-01T12:31:14+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46205&amp;name=inoplanetnoe_vtorjenie:_bitva_za_los-andjeles_/_battle:_los_angeles_(2011)_[dvdrip]_|_licenziya</loc>
-		<lastmod>2011-04-01T12:12:12+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46204&amp;name=inoplanetnoe_vtorjenie:_bitva_za_los-andjeles_/_battle:_los_angeles_(2011)_[dvdrip]</loc>
-		<lastmod>2011-04-01T12:07:55+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46203&amp;name=chelovek_i_zakon_/_chelovek_i_zakon_(2011)_[satrip,_efir_31.03.2011]</loc>
-		<lastmod>2011-03-31T17:30:54+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46202&amp;name=chydaki_3_/_jackass_3_(2010)_[bdrip_1080p]_|_unrated_|_licenziya</loc>
-		<lastmod>2011-03-31T17:24:36+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46201&amp;name=ishodnii_kod_/_source_code_(2011)_[camrip]</loc>
-		<lastmod>2011-03-31T17:07:25+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46200&amp;name=realnie_pacani_/_2_sezon:_47_seriya_(2011)_[hqsatrip,_efir_31.03.2011]</loc>
-		<lastmod>2011-03-31T15:22:49+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46199&amp;name=megamozg_/_megamind_(2010)_[hdrip]</loc>
-		<lastmod>2011-03-31T14:43:17+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46198&amp;name=poedinok_s_vladimirom_solovevim_/_vipysk_26-i_(2011)_[satrip,_efir_31.03.2011]</loc>
-		<lastmod>2011-03-31T13:55:12+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46197&amp;name=vozmezdie_/_vozmezdie_(2011)_[satrip,_1-12_serii_iz_12]</loc>
-		<lastmod>2011-03-31T13:30:35+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46196&amp;name=vsegda_govori_vsegda_/_sezon_7_(2011)_[satrip,_1_-_10_serii_iz_10]</loc>
-		<lastmod>2011-03-31T12:32:46+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46195&amp;name=megamozg_/_megamind_(2010)_[bdrip_1080p]</loc>
-		<lastmod>2011-03-30T19:03:45+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46194&amp;name=realnie_pacani_/_cezon_2_,_seriya_46_(2011)_[hqsatrip]</loc>
-		<lastmod>2011-03-30T12:45:46+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46193&amp;name=600_kg_zolota_/_600_kilos_d\\\'or_pur_(2010)_[hdrip_|_licenziya]</loc>
-		<lastmod>2011-03-30T11:45:40+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46192&amp;name=shelyha_/_husk_(2011)_[dvdrip,_lo]</loc>
-		<lastmod>2011-03-30T11:25:04+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46191&amp;name=realnie_pacani_/_2_sezon:_45_seriya_(2011)_[hqsatrip]</loc>
-		<lastmod>2011-03-29T18:49:54+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46190&amp;name=garri_potter_i_dari_smerti:_chast_1_/_harry_potter_and_the_deathly_hallows:_part_1_(2010)_[dvdrip]</loc>
-		<lastmod>2011-03-29T13:23:28+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46189&amp;name=zapreshennii_priem_/_sucker_punch_(2011)_[camrip]</loc>
-		<lastmod>2011-03-29T12:08:33+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46188&amp;name=va_-_mellomania_20_/_va_-_mellomania_20_(2011)_[mp3]</loc>
-		<lastmod>2011-03-28T15:12:58+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46187&amp;name=va_-_radio_dfm_-_spokoinoi_nochi,_golishi!_from_agr_/_va_-_radio_dfm_-_spokoinoi_nochi,_golishi!_from_agr_(2011)_[mp3]</loc>
-		<lastmod>2011-03-28T15:08:54+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46186&amp;name=va_-_house_vip_/_va_-_house_vip_(2011)_[mp3]</loc>
-		<lastmod>2011-03-28T15:05:14+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46185&amp;name=taina_krasnoi_planeti_/_mars_needs_moms_(2011)_[ts]</loc>
-		<lastmod>2011-03-28T14:37:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46184&amp;name=dom_iz_kostei_/_house_of_bones_(2010)_[dvdrip]</loc>
-		<lastmod>2011-03-28T11:04:22+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46183&amp;name=jigola_/_gigola_(2010)_[dvdrip_|_licenziya]</loc>
-		<lastmod>2011-03-27T16:19:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46182&amp;name=katya._prodoljenie_/_katya._prodoljenie_(2011)_[satrip,_1-16_serii_iz_16]</loc>
-		<lastmod>2011-03-27T16:12:02+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46181&amp;name=formyla_1_/_sezon_2011._etap_1_iz_19._gran-pri_avstralii._gonka_(2011)_[satrip]</loc>
-		<lastmod>2011-03-27T14:46:40+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46180&amp;name=nasha_russia_/_nasha_russia_(2011)_[satrip,_5_sezon:_3_seriya]</loc>
-		<lastmod>2011-03-27T13:00:30+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46179&amp;name=rango_/_rango_(2011)_[ts]</loc>
-		<lastmod>2011-03-27T10:11:43+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46178&amp;name=kluch_salamandri_/_kluch_salamandri_(2011)_[ts]</loc>
-		<lastmod>2011-03-27T10:08:29+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46177&amp;name=jeleznii_ricar_/_ironclad_(2011)_[camrip]</loc>
-		<lastmod>2011-03-26T17:00:35+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46176&amp;name=projektorperishilton_/_vipysk_90_(2011)_[satrip,_efir_26.03.2011]</loc>
-		<lastmod>2011-03-26T16:12:10+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46175&amp;name=pyt_voina_/_the_warrior\\\'s_way_(2010)_[hdrip]</loc>
-		<lastmod>2011-03-26T13:27:14+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46174&amp;name=kluch_salamandri_/_kluch_salamandri_(2011)_[camrip]</loc>
-		<lastmod>2011-03-26T07:03:46+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46173&amp;name=lubov-morkov_3_/_lubov-morkov_3_(2011)_[dvdrip]_licenziya</loc>
-		<lastmod>2011-03-26T06:57:46+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46172&amp;name=kykaracha_3d_/_kykaracha_3d_(2011)_[camrip]</loc>
-		<lastmod>2011-03-25T20:38:17+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46171&amp;name=largo_vinch_2:_zagovor_v_birme_/_largo_winch_2_(2011)_[dvdrip,_licenziya]</loc>
-		<lastmod>2011-03-25T16:58:21+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46170&amp;name=mehanik_/_the_mechanic_(2011)_[blu-ray]</loc>
-		<lastmod>2011-03-25T15:20:44+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46169&amp;name=komedi_klab_/_novii_comedy_club_(2011)_[satrip,_31_vipysk]</loc>
-		<lastmod>2011-03-25T14:34:54+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46168&amp;name=crysis_2_/_crysis_2_(2011)_[pc,_repack]</loc>
-		<lastmod>2011-03-25T13:34:16+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46167&amp;name=bistree_pyli_/_faster_(2010)_[blu-ray_remux_1080p]</loc>
-		<lastmod>2011-03-24T16:34:10+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46166&amp;name=chelovek_i_zakon_/_chelovek_i_zakon_(2011)_[satrip,_efir_24.03.2011]</loc>
-		<lastmod>2011-03-24T15:55:37+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46165&amp;name=poedinok_s_vladimirom_solovevim_/_vipysk_25-i_ot_24/03/2011_(2011)_[satrip]</loc>
-		<lastmod>2011-03-24T15:34:41+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46164&amp;name=lubov_i_razlyka_/_lubov_i_razlyka_(2011)_[satrip,_1-_8_serii_iz_8]</loc>
-		<lastmod>2011-03-24T13:42:48+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46163&amp;name=realnie_pacani_/_sezon_2,_seriya_43_(2011)_[satrip]</loc>
-		<lastmod>2011-03-24T13:17:05+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46162&amp;name=bistree_pyli_/_faster_(2010)_[dvdrip,_licenziya]</loc>
-		<lastmod>2011-03-24T04:37:33+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46161&amp;name=versiya-2_/_versiya-2_(2011)_[satrip,_1-8_serii_iz_12]</loc>
-		<lastmod>2011-03-23T20:04:56+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46160&amp;name=korol_govorit!_/_the_king\\\'s_speech_(2010)_[hdrip]</loc>
-		<lastmod>2011-03-23T19:01:03+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46159&amp;name=sintel_/_sintel_(2010)_[hdrip]</loc>
-		<lastmod>2011-03-23T18:57:52+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46158&amp;name=sreda_obitaniya._bazarnii_den_/_sreda_obitaniya._bazarnii_den_(2011)_[satrip]</loc>
-		<lastmod>2011-03-23T15:35:43+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46157&amp;name=realnie_pacani_/_cezon_2_,_ceriya_42_(2011)_[hqsatrip]</loc>
-		<lastmod>2011-03-23T14:44:27+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46156&amp;name=medved_iogi_/_yogi_bear_(2010)_[dvdrip,_licenziya]</loc>
-		<lastmod>2011-03-23T04:21:50+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46155&amp;name=the_sims_medieval_/_the_sims_medieval_(2011)_[rs]_|_repack</loc>
-		<lastmod>2011-03-22T17:08:04+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46154&amp;name=glyhar_-_3._vozvrashenie_/_glyhar_-_3._vozvrashenie_(2010-2011)_[1_-_48_seriya,_satrip_ot_riperam]</loc>
-		<lastmod>2011-03-21T21:10:38+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46153&amp;name=realnie_pacani_/_2_sezon:_40_seriya_(2011)_[satrip]</loc>
-		<lastmod>2011-03-21T16:40:09+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46152&amp;name=bolshie_mamochki:_sin_kak_otec_/_big_mommas:_like_father,_like_son_(2011)_[dvdrip]</loc>
-		<lastmod>2011-03-21T16:21:50+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46151&amp;name=bolshe_chem_seks_/_no_strings_attached_(2011)_[ts]</loc>
-		<lastmod>2011-03-21T15:06:43+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46150&amp;name=va_-_chart_top10_/_va_-_chart_top10_(2011)_[mp3]</loc>
-		<lastmod>2011-03-20T13:44:19+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46149&amp;name=istorii_na_syper_8_/_super_8_stories_(2001)_[dvdrip]</loc>
-		<lastmod>2011-03-20T13:41:27+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46148&amp;name=va_-_hardtrance_&amp;amp;_dancecore_top_100_/_va_-_hardtrance_&amp;amp;_dancecore_top_100_(2011)_[mp3]</loc>
-		<lastmod>2011-03-20T13:36:13+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46147&amp;name=slyjebnii_roman._nashe_vremya_/_slyjebnii_roman._nashe_vremya_(2011)_[ts]</loc>
-		<lastmod>2011-03-20T11:14:58+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46146&amp;name=chetire_lva_/_four_lions_(2010)_[dvdrip,_licenziya]</loc>
-		<lastmod>2011-03-20T04:08:52+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46145&amp;name=krasnaya_shapochka_/_red_riding_hood_(2011)_[camrip]</loc>
-		<lastmod>2011-03-19T22:19:41+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46144&amp;name=s.w.a.t.:_ognennaya_byrya_/_s.w.a.t.:_firefight_(2011)_[bdrip]_1080r</loc>
-		<lastmod>2011-03-19T21:37:00+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46143&amp;name=projektorperishilton_/_vipysk_89_(2011)_[satrip,_efir_19.03.11]</loc>
-		<lastmod>2011-03-19T16:20:49+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46142&amp;name=oblasti_tmi_/_limitless_(2011)_[ts]</loc>
-		<lastmod>2011-03-18T18:22:48+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46141&amp;name=telohranitel_/_london_boulevard_(2010)_[hdrip]</loc>
-		<lastmod>2011-03-18T17:20:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46140&amp;name=chydaki_3_/_jackass_3d_(2010)_[bdrip]_720p_|_unrated</loc>
-		<lastmod>2011-03-18T16:18:20+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46139&amp;name=novii_comedy_club_/_30_vipysk_(2011)_[satrip]</loc>
-		<lastmod>2011-03-18T14:43:10+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46138&amp;name=apokalipsis_2011_/_apokalipsis_2011_(2011)_[satrip,_efir_18.03.11]</loc>
-		<lastmod>2011-03-18T14:20:27+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46137&amp;name=poedinok_s_vladimirom_solovevim_/_poedinok_s_vladimirom_solovevim_(2011)_[satrip,_vipysk_24_ot_17.03.2011]</loc>
-		<lastmod>2011-03-17T17:09:26+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46136&amp;name=chelovek_i_zakon_/_chelovek_i_zakon_(2011)_[satrip,_efir_17.03.2011]</loc>
-		<lastmod>2011-03-17T15:28:27+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46135&amp;name=chrevo_/_womb_(2010)_[dvdrip,_licenziya]</loc>
-		<lastmod>2011-03-17T13:18:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46134&amp;name=rapyncel:_zapytannaya_istoriya_/_tangled_(2010)_[bdrip]_1080r</loc>
-		<lastmod>2011-03-16T18:36:26+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46133&amp;name=sreda_obitaniya_._krashenaya_riba_/_sreda_obitaniya_._krashenaya_riba_(2011)_[satrip,_efir_16.03.2011]</loc>
-		<lastmod>2011-03-16T15:54:54+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46132&amp;name=bez_prava_na_oshibky:_operaciya_&amp;quot;gorod&amp;quot;_/_bez_prava_na_oshibky:_operaciya_&amp;quot;gorod&amp;quot;_(2011)_[dvdrip,_4_serii_iz_4]</loc>
-		<lastmod>2011-03-16T14:40:11+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46131&amp;name=soprovojdaushii_/_the_chaperone_(2011)_[dvdrip,_ld]</loc>
-		<lastmod>2011-03-16T13:36:48+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46130&amp;name=vremya_vedm_/_season_of_the_witch_(2010)_[dvdrip]_|_licenziya</loc>
-		<lastmod>2011-03-15T16:25:01+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46129&amp;name=intervu_lykashenko_dlya_vashington_post_/_intervu_lykashenko_dlya_vashington_post_(2011)_[satrip]</loc>
-		<lastmod>2011-03-15T15:16:41+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46128&amp;name=mylt_lichnosti._zvezd_otpravili_v_policiu_/_mylt_lichnosti._zvezd_otpravili_v_policiu_(2011)_[satrip]</loc>
-		<lastmod>2011-03-14T15:26:15+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46127&amp;name=novii_comedy_club_/_29_vipysk_(2011)_[satrip]</loc>
-		<lastmod>2011-03-13T10:42:19+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46126&amp;name=rango_/_rango_(2011)_[camrip]</loc>
-		<lastmod>2011-03-12T21:28:02+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46125&amp;name=taina_krasnoi_planeti_/_mars_needs_moms_(2011)_[camrip]</loc>
-		<lastmod>2011-03-12T15:30:19+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46124&amp;name=inoplanetnoe_vtorjenie:_bitva_za_los-andjeles_/_battle:_los_angeles_(2011)_[camrip]</loc>
-		<lastmod>2011-03-12T12:38:49+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46123&amp;name=ivan_vasilevich_menyaet_professiu_/_ivan_vasilevich_menyaet_professiu_(1973)_[blu-ray]</loc>
-		<lastmod>2011-03-12T10:47:31+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46122&amp;name=rossiya_ot_kraya_do_kraya._yral_/_wild_russia._ural_(2009)_[satrip]</loc>
-		<lastmod>2011-03-12T10:26:43+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46121&amp;name=inoplanetnoe_vtorjenie:_bitva_za_los-andjeles_/_battle:_los_angeles_(2011)_[camrip]</loc>
-		<lastmod>2011-03-12T07:54:26+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46120&amp;name=slove._pryamo_v_serdce_/_slove._pryamo_v_serdce_(2011)_[dvdrip]</loc>
-		<lastmod>2011-03-11T14:32:26+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46119&amp;name=chernii_lebed_/_black_swan_(2010)_[bdrip]_1080p_|_licenziya</loc>
-		<lastmod>2011-03-11T04:20:15+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46118&amp;name=tron:_nasledie_/_tron:_legacy_(2010)_[hdrip_|_licenziya]</loc>
-		<lastmod>2011-03-10T12:09:57+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46117&amp;name=pritvoris_moei_jenoi_/_just_go_with_it_(2011)_[ts]</loc>
-		<lastmod>2011-03-10T04:27:01+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46116&amp;name=tron:_nasledie_/_tron:_legacy_(2010)_[blu-ray]_|_licenziya</loc>
-		<lastmod>2011-03-10T04:23:49+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46115&amp;name=dragon_age_ii_/_dragon_age_ii_(2011)_[pc]__repack</loc>
-		<lastmod>2011-03-09T15:28:37+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46114&amp;name=tron:_nasledie_/_tron:_legacy_(2010)_[bdrip]_1080p</loc>
-		<lastmod>2011-03-09T15:21:49+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46113&amp;name=tron:_nasledie_/_tron:_legacy_(2010)_[hdrip]</loc>
-		<lastmod>2011-03-09T13:53:16+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46112&amp;name=naidenish_/_naidyonish_(2010)_[dvdrip]</loc>
-		<lastmod>2011-03-08T14:05:13+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46111&amp;name=va_-_music_compilation_/_va_-_music_compilation_(2011)_[mp3]</loc>
-		<lastmod>2011-03-08T12:26:33+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46110&amp;name=poslednyaya_vstrecha_/_poslednyaya_vstrecha_(2011)_[dvdrip,_1_-_16_iz_16]</loc>
-		<lastmod>2011-03-08T08:18:45+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46109&amp;name=boec_/_the_fighter_(2010)_[bdrip_720p]</loc>
-		<lastmod>2011-03-07T18:31:08+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46108&amp;name=va_-_lychshie_prazdnichnie_hiti:_8_marta_/_va_-_lychshie_prazdnichnie_hiti:_8_marta_(2011)_[mp3]</loc>
-		<lastmod>2011-03-07T18:28:00+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46107&amp;name=va_-_hardbass_/_va_-_hardbass_(2011)_[flac]</loc>
-		<lastmod>2011-03-07T18:23:18+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46106&amp;name=mihail_zadornov._zapisnie_knijki_/_mihail_zadornov._zapisnie_knijki_(2011)_[satrip,efir_2011.03.07]</loc>
-		<lastmod>2011-03-07T16:30:50+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46105&amp;name=comedy_woman_/_comedy_woman_(2011)_[satrip,_vipysk_60]</loc>
-		<lastmod>2011-03-07T15:39:46+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46104&amp;name=realnie_pacani_/_realnie_pacani_(2011)_[webrip,_cezon_2_,_seriya_36]</loc>
-		<lastmod>2011-03-07T15:20:20+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46103&amp;name=pylya-dyra_4:_agent_i_sokrovishe_nacii_/_pylya-dyra_4:_agent_i_sokrovishe_nacii_(2011)_[satrip,_1_-_4_serii_iz_4]</loc>
-		<lastmod>2011-03-07T11:39:28+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46102&amp;name=professional_/_le_professionnel_/_the_professional_(1981)_[bdrip,_720p]</loc>
-		<lastmod>2011-03-07T11:19:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46101&amp;name=samii_glamyrnii_film_/_drop_dead_gorgeous_(2010)_[dvdrip_|_licenziya]</loc>
-		<lastmod>2011-03-07T10:06:53+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46100&amp;name=symasshedshaya_ezda_/_drive_angry_(2011)_[camrip_*proper*]</loc>
-		<lastmod>2011-03-06T13:57:32+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46099&amp;name=menyaushie_realnost_/_the_adjustment_bureau_(2011)_[ts]</loc>
-		<lastmod>2011-03-05T16:45:30+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46098&amp;name=adskii_endshpil_/_rogues_gallery_(2010)_[hdrip]</loc>
-		<lastmod>2011-03-05T16:35:25+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46097&amp;name=symasshedshaya_ezda_/_drive_angry_3d_(2011)_[camrip]</loc>
-		<lastmod>2011-03-05T08:25:43+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46096&amp;name=daesh_molodej!_(benefis_valeri_i_tani)_/_daesh_molodej!_(benefis_valeri_i_tani)_(2010)_[satrip,_04/03/2011]</loc>
-		<lastmod>2011-03-04T14:14:34+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46095&amp;name=hameleon_/_the_chameleon_(2010)_[dvdrip,_licenziya]</loc>
-		<lastmod>2011-03-04T13:45:37+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46094&amp;name=4.3.2.1_/_4.3.2.1_(2010)_[hdrip_|_licenziya]</loc>
-		<lastmod>2011-03-04T11:42:55+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46093&amp;name=chyjie_protiv_nindzya_/_alien_vs._ninja_(2010)_[dvdrip,licenziya]</loc>
-		<lastmod>2011-03-04T04:36:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46092&amp;name=chelovek_i_zakon_/_chelovek_i_zakon_(2011)_[satrip,_03.03.2011]</loc>
-		<lastmod>2011-03-03T18:26:15+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46091&amp;name=sailent_hill_/_silent_hill_(2006)_[bdrip_1080p]</loc>
-		<lastmod>2011-03-03T16:50:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46090&amp;name=proklyatii_drakon_/_carny_(2009)_[dvdrip,_pm]</loc>
-		<lastmod>2011-03-03T16:19:02+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46089&amp;name=telohranitel_/_london_boulevard_(2010)_[dvdrip]</loc>
-		<lastmod>2011-03-02T12:08:50+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46088&amp;name=na_solnechnoi_storone_ylici_/_na_solnechnoi_storone_ylici_(2011)_[satrip,_1-_14_serii_iz_14]</loc>
-		<lastmod>2011-03-01T14:32:54+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46087&amp;name=mest_/_mest_(2011)_[satrip,_1_-_16_serii_iz_16]</loc>
-		<lastmod>2011-03-01T14:19:33+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46086&amp;name=ya_–_chetvertii_/_i_am_number_four_(2011)_[camrip*proper*]</loc>
-		<lastmod>2011-03-01T12:13:05+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46085&amp;name=poteryannoe_bydyshee_/_gryadyshee,_kotorogo_net_/_the_lost_future_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-28T15:50:10+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46084&amp;name=vizityori_/_v:_the_serie_(2011)_[hdtvrip,__sezon_2,_serii_1-10_iz_10_ot_lostfilm]</loc>
-		<lastmod>2011-03-20T13:32:12+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46083&amp;name=sverhnovii_sypermen_/_all-star_superman_(2011)_[dvdrip,_ld]</loc>
-		<lastmod>2011-02-27T19:29:03+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46082&amp;name=krasnoe_na_belom_/_krasnoe_na_belom_(2009)_[satrip,_1-4_serii_iz_4]</loc>
-		<lastmod>2011-02-27T18:58:00+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46081&amp;name=largo_vinch:_zagovor_v_birme_/_largo_winch_2_(2011)_[ts]</loc>
-		<lastmod>2011-02-27T15:10:44+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46080&amp;name=djessi_stoyn:_bez_poshadi_/_jesse_stone:_no_remorse_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-27T04:29:35+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46079&amp;name=samii_lychshii_film_3-de_/_samii_lychshii_film_3-de_(2011)_[dvdrip,_licenziya]</loc>
-		<lastmod>2011-02-27T04:00:19+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46078&amp;name=belie_rozi_nadejdi_/_belie_rozi_nadejdi_(2011)_[satrip,_1-4_serii_iz_4]</loc>
-		<lastmod>2011-02-26T18:25:47+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46077&amp;name=ya_pluu_na_vashi_mogili_/_i_spit_on_your_grave_(2010)_[dvdrip,_rasshirennaya_versiya]</loc>
-		<lastmod>2011-02-26T11:07:15+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46076&amp;name=vlubis_v_menya,_esli_osmelishsya_/_jeux_d\\\'enfants_(2003)_[dvdrip]</loc>
-		<lastmod>2011-02-26T10:23:45+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46075&amp;name=p.s._ya_lublu_tebya_/_p.s._i_love_you_(2007)_[dvdrip]</loc>
-		<lastmod>2011-02-26T09:59:52+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46074&amp;name=s.w.a.t.:_ognennaya_byrya_/_s.w.a.t.:_firefight_(2011)_[dvdrip,_ld]</loc>
-		<lastmod>2011-02-25T20:29:40+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46073&amp;name=zelyonii_shershen_/_the_green_hornet_(2011)_[dvdrip]</loc>
-		<lastmod>2011-02-25T16:00:31+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46072&amp;name=gorkii_pir_/_bitter_feast_(2010)_[dvdrip,_lo]</loc>
-		<lastmod>2011-02-25T15:47:30+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46070&amp;name=novii_comedy_club_/_novii_comedy_club_(2011)_[satrip,_vipysk_27]</loc>
-		<lastmod>2011-02-25T12:41:30+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46069&amp;name=red_/_red_(2010)_[hdrip_|_goblin]</loc>
-		<lastmod>2011-02-25T10:23:37+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46068&amp;name=sanktym_/_sanctum_(2011)_[dvdrip]</loc>
-		<lastmod>2011-02-25T09:35:14+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46067&amp;name=nevesta_/_nevesta_(2006)_[dvdrip]</loc>
-		<lastmod>2011-02-24T19:03:03+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46066&amp;name=chelovek_i_zakon_/_chelovek_i_zakon_(2011)_[satrip,24.02.2011]</loc>
-		<lastmod>2011-02-24T18:34:30+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46063&amp;name=glyhar_3_/_glyhar_3_(2011)_[satrip,_35_-48_serii_iz_64]</loc>
-		<lastmod>2011-02-24T04:30:44+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46062&amp;name=bolshie_mamochki:_sin_kak_otec_/_big_mommas:_like_father,_like_son_(2011)_[ts]</loc>
-		<lastmod>2011-02-23T18:55:03+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46061&amp;name=sanktym_/_sanctum_(2011)_[dvdrip]</loc>
-		<lastmod>2011-02-23T16:40:43+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46060&amp;name=discovery:_kryche_ne_pridymaesh_/_discovery:_the_gadget_show_[01-65]_(2004-2010)_[satrip,_pdtvrip]</loc>
-		<lastmod>2011-02-23T15:59:14+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46059&amp;name=strelyaushie_gori_/_strelyaushie_gori_(2011)_[satrip,_1-4_serii_iz_4]</loc>
-		<lastmod>2011-02-23T13:20:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46058&amp;name=borcy_ne_bolno_/_borcy_ne_bolno_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-23T13:01:12+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46057&amp;name=bulletstorm_/_bulletstorm_(2011)_[pc,_repack]</loc>
-		<lastmod>2011-02-23T07:33:29+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46056&amp;name=pyt_mesti_/_sacrifice_(2011)_[dvdscr]</loc>
-		<lastmod>2011-02-23T05:54:57+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46055&amp;name=na_kruchke!_/_na_kruchke!_(2011)_[dvdrip]</loc>
-		<lastmod>2011-02-22T21:04:57+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46054&amp;name=tri_dnya_na_pobeg_/_the_next_three_days_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-22T20:11:53+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46053&amp;name=pocelyi_skvoz_steny_/_pocelyi_skvoz_steny_(2011)_[dvdrip-avc]</loc>
-		<lastmod>2011-02-22T17:17:11+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46052&amp;name=retrum_/_retrum_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-22T13:45:22+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46051&amp;name=zloradstvo_/_el_mal_ajeno_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-22T04:59:18+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46050&amp;name=dilemma_/_the_dilemma_(2011)_[ts]</loc>
-		<lastmod>2011-02-21T15:42:26+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46049&amp;name=neizvestnii_/_unknown_(2011)_[ts]</loc>
-		<lastmod>2011-02-21T15:15:33+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46048&amp;name=127_chasov_/_127_hours_(2010)_[bdrip_1080p]</loc>
-		<lastmod>2011-02-21T14:44:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46047&amp;name=neizvestnii_/_unknown_(2011)_[camrip]</loc>
-		<lastmod>2011-02-21T04:10:32+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46046&amp;name=bratya_djonas_/_jonas_(2010)_[komediya,_web-dlrip]_(cezon_2_,_seriya_1-5_iz_13)__</loc>
-		<lastmod>2011-02-20T17:55:09+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46045&amp;name=sedmaya_jertva_/_sedmaya_jertva_(2011)_[satrip]</loc>
-		<lastmod>2011-02-20T17:08:20+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46044&amp;name=vikrytasi_/_vikrytasi_(2011)_[camrip]</loc>
-		<lastmod>2011-02-20T13:01:16+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46043&amp;name=dom_y_bolshoi_reki_/_dom_y_bolshoi_reki_(2011)_[satrip,_1_-_12_serii_iz_12]</loc>
-		<lastmod>2011-02-20T07:47:55+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46042&amp;name=anjelika_/_anjelika_(2010)_[dvdrip,_1_-12_serii_iz_12]</loc>
-		<lastmod>2011-02-20T05:36:42+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46041&amp;name=pocelyi_skvoz_steny_/_pocelyi_skvoz_steny_(2011)_[dvdrip,_licenziya]</loc>
-		<lastmod>2011-02-20T04:44:12+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46040&amp;name=bolshe_chem_seks_/_no_strings_attached_(2011)_[ts]</loc>
-		<lastmod>2011-02-19T21:58:45+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46039&amp;name=neadekvatnie_ludi_/_neadekvatnie_ludi_(2010)_[blu-ray]</loc>
-		<lastmod>2011-02-19T19:25:44+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46038&amp;name=2046_/_2046_(2004)_[dvdrip]</loc>
-		<lastmod>2011-02-19T14:28:03+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46037&amp;name=mehanik_/_the_mechanic_(2011)_[dvdrip,__licenziya]</loc>
-		<lastmod>2011-02-19T13:32:06+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46036&amp;name=neslyjebnoe_zadanie_/_neslyjebnoe_zadanie_(2004)_[dvdrip]</loc>
-		<lastmod>2011-02-19T10:58:20+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46035&amp;name=vedmina_gora_/_race_to_witch_mountain_(2009)_[bdrip]</loc>
-		<lastmod>2011-02-19T10:32:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46034&amp;name=nemoi_dom_/_la_casa_muda_/_silent_house_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-19T10:02:18+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46033&amp;name=afganskii_izlom_/_afganskii_izlom_(1991)_[dvdrip]</loc>
-		<lastmod>2011-02-19T09:12:53+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46032&amp;name=ohotniki_za_privideniyami:_dvijyshiesya_kartinki_/_ghostbusters_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-18T18:47:59+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46031&amp;name=lubov_i_drygie_lekarstva_/_love_and_other_drugs_(2010)_[hdrip_|_licenziya]</loc>
-		<lastmod>2011-02-18T15:53:50+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46030&amp;name=2001_manyak_2_/_2001_maniacs:_field_of_screams_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-17T18:33:33+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46029&amp;name=elitnii_otryad:_vrag_sredi_nas_/_tropa_de_elite_2_-_o_inimigo_agora_É_outro_(2010)_[hdrip]</loc>
-		<lastmod>2011-02-17T18:27:54+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46028&amp;name=orel_devyatogo_legiona_/_the_eagle_(2011)_[camrip_*proper*]</loc>
-		<lastmod>2011-02-17T16:48:04+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46027&amp;name=poedinok_s_vladimirom_solovevim_/_poedinok_s_vladimirom_solovevim_(2011)_[satrip,_vipysk_20]</loc>
-		<lastmod>2011-02-17T15:44:48+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46026&amp;name=chelovek_i_zakon_/_chelovek_i_zakon_(2011)_[satrip,_efir_17.02.2011]</loc>
-		<lastmod>2011-02-17T15:31:50+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46025&amp;name=satisfakciya_/_satisfakciya_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-16T18:37:09+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46024&amp;name=va_-_electro_assemblage_/_va_-_electro_assemblage_(2011)_[mp3]</loc>
-		<lastmod>2011-02-16T11:32:59+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46023&amp;name=deti_shpionov:_kinolyapi_i_interesnie_fakti_/_spy_kids_(2011)_[dvdrip]</loc>
-		<lastmod>2011-02-16T09:28:42+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46022&amp;name=izgoi_/_outcasts_(2011)_[hdtvrip,_seriya_1_iz_8]</loc>
-		<lastmod>2011-02-15T15:11:33+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46021&amp;name=poezd_dalshe_ne_idet_/_stag_night_(2008)_[dvdrip]</loc>
-		<lastmod>2011-02-15T14:04:18+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46020&amp;name=ne_nado_pechalitsya_/_ne_nado_pechalitsya_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-14T19:22:34+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46019&amp;name=slepaya_yarost_/_blind_fury_(1989)_[hdtv_(1080i)]</loc>
-		<lastmod>2011-02-14T17:10:00+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46018&amp;name=shelkynchik_i_krisinii_korol_/_the_nutcracker_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-14T14:44:15+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46017&amp;name=vkys_granata_/_vkys_granata_(2011)_[satrip,_1_-16_serii_iz_16]</loc>
-		<lastmod>2011-02-14T14:04:32+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46016&amp;name=shelkynchik_i_krisinii_korol_/_the_nutcracker_(2010)_[dvdrip,_licenziya]</loc>
-		<lastmod>2011-02-14T13:10:24+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46015&amp;name=test_drive_unlimited_-_dilogiya_/_test_drive_unlimited_-_dilogiya_(2011)_[repack_ot_!sagat!]</loc>
-		<lastmod>2011-02-13T22:21:16+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46014&amp;name=tv_player_classic_6.7.20_/_tv_player_classic_6.7.20_(2011)_[pc]</loc>
-		<lastmod>2011-02-13T20:50:23+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46013&amp;name=chempion_/_sekretariat_/_secretariat_(2010)_[hdrip]</loc>
-		<lastmod>2011-02-13T18:53:47+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46012&amp;name=hozyain_/_hozyain_(2010)_[satrip]</loc>
-		<lastmod>2011-02-13T16:29:13+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46011&amp;name=spisok_kontaktov_/_deception_(2008)_[hdrip]</loc>
-		<lastmod>2011-02-13T16:06:38+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46010&amp;name=medved_iogi_/_yogi_bear_(2011)_[ts]</loc>
-		<lastmod>2011-02-13T10:56:14+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46009&amp;name=voini_sveta_/_daybreakers_(2009)_[bdrip,_avc,_1080p]</loc>
-		<lastmod>2011-02-13T10:49:09+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46008&amp;name=poimat,_chtobi_ybit_/_hunt_to_kill_(2010)_[hdrip]</loc>
-		<lastmod>2011-02-13T08:35:17+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46007&amp;name=djoker_/_djoker_(2010)_[dvdrip,_1-8_serii_iz_8]</loc>
-		<lastmod>2011-02-13T04:49:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46006&amp;name=dead_space_-_dilogiya_/_dead_space_-_dilogiya_(2008-2011)_[repack_ot_r.g._mehaniki]</loc>
-		<lastmod>2011-02-12T23:29:31+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46005&amp;name=telma_i_lyiza_/_thelma_&amp;amp;_louise_(1991)_[bdrip]</loc>
-		<lastmod>2011-02-12T23:08:04+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46004&amp;name=ohotniki_na_trollei_/_the_troll_hunter_/_trolljegeren_(2010)_[hdrip]</loc>
-		<lastmod>2011-02-12T22:57:56+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46003&amp;name=ya_nenavijy_den_svyatogo_valentina_/_i_hate_valentine\\\'s_day_(2009)_[bdrip,_720p]</loc>
-		<lastmod>2011-02-12T22:54:09+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46002&amp;name=neadekvatnie_ludi_/_neadekvatnie_ludi_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-12T19:19:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46001&amp;name=paren_moei_devyshki_/_my_girlfriends_boyfriend_(2010)_[bdrip,_1080p]</loc>
-		<lastmod>2011-02-13T00:18:00+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=46000&amp;name=spartak:_bogi_areni_/_spartacus:_gods_of_the_arena_(2011)_[hdtvrip,_serii_1-6_iz_6_]</loc>
-		<lastmod>2011-03-01T10:05:58+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45999&amp;name=spartak:_bogi_areni_/_spartacus:_gods_of_the_arena_(2011)_[hdtvrip_720,_serii_1-6_iz_6_]</loc>
-		<lastmod>2011-03-01T10:13:30+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45998&amp;name=projektorperishilton_/_projektorperishilton_(2011)_[satrip,vipysk_85]</loc>
-		<lastmod>2011-02-12T16:00:58+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45997&amp;name=naslednica_/_naslednica_(2011)_[satrip,1-4serii_iz_4]</loc>
-		<lastmod>2011-02-12T13:28:51+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45996&amp;name=yralskie_pelmeni:_den_smeshnogo_valentina_/_yralskie_pelmeni:_den_smeshnogo_valentina_(2011)_[satrip]</loc>
-		<lastmod>2011-02-12T12:34:51+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45995&amp;name=kak_znat..._/_how_do_you_know?_(2010)_[ts]</loc>
-		<lastmod>2011-02-11T23:52:17+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45994&amp;name=telohranitel_/_london_boulevard_(2010)_[camrip]</loc>
-		<lastmod>2011-02-11T23:50:09+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45993&amp;name=nevernii_/_the_infidel_(2010)_[hdrip]</loc>
-		<lastmod>2011-02-11T13:49:51+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45992&amp;name=ekstrasensi_vedyt_rassledovanie_/_[01]_(2011)_[satrip]</loc>
-		<lastmod>2011-02-11T13:32:12+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45991&amp;name=lovyshka_/_the_resident_(2011)_[hdrip-avc]</loc>
-		<lastmod>2011-02-11T09:46:53+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45990&amp;name=orel_devyatogo_legiona_/_the_eagle_(2011)_[camrip]</loc>
-		<lastmod>2011-02-11T09:36:14+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45989&amp;name=chelovek_i_zakon_/_chelovek_i_zakon_(2011)_[satrip,10.02.2011]</loc>
-		<lastmod>2011-02-10T19:46:04+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45988&amp;name=poedinok_s_vladimirom_solovevim_/_poedinok_s_vladimirom_solovevim_(2011)_[satrip,vipysk_19]</loc>
-		<lastmod>2011-02-10T14:58:12+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45987&amp;name=strelok_/_triggerman_(2010)_[dvdrip,lo]</loc>
-		<lastmod>2011-02-10T14:10:26+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45986&amp;name=dok_vest_/_doc_west_(2009)_[dvdrip,lo]</loc>
-		<lastmod>2011-02-10T13:56:58+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45985&amp;name=bistree_pyli_/_faster_(2010)_[dvdrip,pd]</loc>
-		<lastmod>2011-02-09T20:52:11+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45984&amp;name=sreda_obitaniya_-_razvodka_na_benzine_/_sreda_obitaniya_-_razvodka_na_benzine_(2011)_[satrip]</loc>
-		<lastmod>2011-02-09T16:21:12+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45983&amp;name=povelitel_kykol:_os_zla_/_puppet_master:_axis_of_evil_(2010)_[hdrip]_(rip_s_bdrip_1080p)</loc>
-		<lastmod>2011-02-09T15:23:48+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45982&amp;name=znakomstvo_s_fakerami_2_/_little_fockers_(2010)_[dvdscr]_*proper*</loc>
-		<lastmod>2011-02-09T15:20:05+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45980&amp;name=smertelnaya_gonka:_frankenshtein_jiv_/_death_race_2_(2010)_[dvdrip,db]</loc>
-		<lastmod>2011-02-08T17:11:18+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45979&amp;name=600_kg_zolota_/_600_kilos_d\\\'or_pur_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-08T14:30:03+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45978&amp;name=sindikat_smerti_/_fleisch_(2008)_[dvdrip]</loc>
-		<lastmod>2011-02-08T03:50:28+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45977&amp;name=fraht_/_freight_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-07T13:23:49+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45976&amp;name=ti_i_ya_/_ti_i_ya_(2010)_[camrip]</loc>
-		<lastmod>2011-02-07T12:56:38+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45975&amp;name=na_kruchke!_/_na_kruchke!_(2011)_[ts]</loc>
-		<lastmod>2011-02-07T09:32:11+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45973&amp;name=sekreti_los-andjelesa_/_l.a._confidential_(1997)_[bdrip_1080p]</loc>
-		<lastmod>2011-02-07T00:31:42+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45972&amp;name=obyavlen_v_rozisk_/_obyavlen_v_rozisk_(2011)_[satrip,1-12_seriya_iz_12]</loc>
-		<lastmod>2011-02-11T03:25:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45971&amp;name=missiya_london_/_mission_london_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-06T17:18:40+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45970&amp;name=malchiki-naletchiki_/_takers_(2010)_[bdrip]_1080p</loc>
-		<lastmod>2011-02-06T09:51:11+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45969&amp;name=svyazannie_krovu_/_bonded_by_blood_(2010)_[hdrip]</loc>
-		<lastmod>2011-02-06T09:47:33+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45968&amp;name=vpysti_menya._saga_/_let_me_in_(2010)_[bdrip]</loc>
-		<lastmod>2011-02-06T09:44:58+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45967&amp;name=trilokvist_/_chrevoveshatel_/_triloquist_(2008)_[dvdrip]</loc>
-		<lastmod>2011-02-05T23:52:07+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45966&amp;name=svadba_v_malinovke_/_svadba_v_malinovke_(1967)_[bdrip_ot_hellywood]</loc>
-		<lastmod>2011-02-05T23:50:03+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45965&amp;name=bbc:_jivoi_mir._syperstaya_/_bbc:_the_natural_world._superswarms_(2009)_[bdrip_720p]</loc>
-		<lastmod>2011-02-05T23:46:52+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45964&amp;name=va_-_trancetop_/_va_-_trancetop_(2011)_[mp3]</loc>
-		<lastmod>2011-02-05T23:44:24+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45963&amp;name=yarost_chesti_/_rage_of_honor_(1987)_[dvdrip_ot_novalan]</loc>
-		<lastmod>2011-02-05T23:41:54+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45962&amp;name=mej_dvyh_ognei_/_middle_men_(2009)_[hdrip-avc]</loc>
-		<lastmod>2011-02-05T20:19:23+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45961&amp;name=pyteshestviya_gyllivera_/_gulliver\\\'s_travels_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-05T15:56:35+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45960&amp;name=national_geographic.seks,lekarstva_i_zavodi_/_national_geographic.sex,drugs_and_plants_(2009)_[iptvrip]_[</loc>
-		<lastmod>2011-02-05T14:36:28+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45959&amp;name=bistree_pyli_/_faster_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-05T14:06:25+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45958&amp;name=pyteshestviya_gyllivera_/_gulliver\\\'s_travels_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-05T12:42:20+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45957&amp;name=chernaya_metka_/_chernaya_metka_(2011)_[satrip,1-4seriya_iz_4]</loc>
-		<lastmod>2011-02-05T11:54:37+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45956&amp;name=tri_dnya_na_pobeg_/_the_next_three_days_(2010)_[dvdscr]</loc>
-		<lastmod>2011-02-05T11:12:28+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45955&amp;name=ment_v_zakone_-_3_/_ment_v_zakone_-_3_(2010)_[satrip,serii_1-16_iz_16]</loc>
-		<lastmod>2011-02-11T04:22:27+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45954&amp;name=kroshka_iz_beverli-hillz_2_/_beverly_hills_chihuahua_2_(2011)_[dvdrip]</loc>
-		<lastmod>2011-02-05T10:31:38+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45953&amp;name=byrlesk_/_burlesque_(2010)_[dvdrip]</loc>
-		<lastmod>2011-02-04T22:26:10+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/details.php?id=45952&amp;name=vpritik_/_due_date_(2010)_[hdrip-avc]</loc>
-		<lastmod>2011-02-04T22:19:58+00:00</lastmod>
-		<changefreq>daily</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=24</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=25</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=26</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=27</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=28</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=29</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=30</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=31</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=32</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=33</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=34</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=35</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=36</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=37</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=38</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=39</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=40</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=41</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=42</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=43</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=44</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=45</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=46</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=47</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=48</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=49</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=50</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=51</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=52</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=53</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=54</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=55</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=56</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=57</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=58</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=59</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=60</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=61</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=62</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=63</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=64</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=65</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=66</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=67</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=68</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=69</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=70</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=71</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=72</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=73</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=74</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=75</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=76</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=77</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=78</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=79</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=80</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=81</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=82</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=83</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=84</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=85</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=86</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=87</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=88</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=89</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=90</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=91</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=92</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=93</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=94</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=95</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=96</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=97</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=98</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=99</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=100</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=101</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=102</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=103</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=104</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=105</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=106</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=107</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=108</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=109</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=110</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=111</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=112</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=113</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=115</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=116</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=117</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=118</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=119</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=120</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=121</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=122</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=123</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=124</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=125</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=126</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=127</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=128</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=129</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=130</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=131</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=132</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=133</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=134</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=135</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=136</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=137</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=138</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=139</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
-	<url>
-		<loc>http://www.torrentsbook.com/browse.php?cat=140</loc>
-		<lastmod>2011-04-04T17:20:36+00:00</lastmod>
-		<changefreq>hourly</changefreq>
-		<priority>0.50</priority>
-	</url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46724&amp;name=stoynhendj_apokalipsis_/_stonehenge_apocalypse_(2010)_[hdrip]</loc><lastmod>2011-06-12T09:13:13+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46723&amp;name=interni_/_interni_[70]_(2011)_[webrip]</loc><lastmod>2011-06-12T09:07:51+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46722&amp;name=drevo_jizni_/_the_tree_of_life_(2011)_[ts]</loc><lastmod>2011-06-12T05:34:54+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46721&amp;name=chto?_gde?_kogda?_/_letnyaya_seriya_igr._igra_vtoraya__(2011)_[iptvrip]</loc><lastmod>2011-06-12T05:18:42+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46720&amp;name=gop-stop_/_gop-stop_(2010)_[dvdrip,_licenziya]</loc><lastmod>2011-06-11T15:21:41+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46719&amp;name=projektorperishilton_/_sezon_3,_vipysk_33_(2011)_[satrip]</loc><lastmod>2011-06-11T14:41:26+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46718&amp;name=ludi_iks:_pervii_klass_/_x-men:_first_class_(2011)_[ts]_proper</loc><lastmod>2011-06-10T20:59:55+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46717&amp;name=voin_dorog_/_downstream_(2010)_[hdrip]_|_licenziya</loc><lastmod>2011-06-10T18:44:51+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46716&amp;name=taina_krasnoi_planeti_/_mars_needs_moms_(2011)_[dvdrip]</loc><lastmod>2011-06-10T17:55:17+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46715&amp;name=novii_comedy_club_/_vipysk_41_(2011)_[satrip,_efir_10.06.11]</loc><lastmod>2011-06-10T17:37:17+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46714&amp;name=zelenii_fonar:_izymrydnie_ricari_/_green_lantern:_emerald_knights_(2011)_[dvdrip_,licenziya]</loc><lastmod>2011-06-10T17:32:43+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46713&amp;name=i_probil_chas_/_good_day_for_it_(2011)_[dvdrip,_licenziya]</loc><lastmod>2011-06-10T17:27:51+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46712&amp;name=nasha_russia_/_sezon_5,_seriya_14_(2011)_[satrip]</loc><lastmod>2011-06-10T03:41:56+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46711&amp;name=chelovek_i_zakon_/_chelovek_i_zakon_(2011)_[satrip,_efir_09.06.2011]</loc><lastmod>2011-06-10T03:28:45+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46710&amp;name=poedinok_s_vladimirom_solovevim_/_vipysk_35-i_(2011)_[satrip,_efir_09.06.11]</loc><lastmod>2011-06-10T02:53:07+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46709&amp;name=izgoi_/_cast_away_(2000)_[bdremux]</loc><lastmod>2011-06-09T12:31:42+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46708&amp;name=menyaushie_realnost_/_the_adjustment_bureau_(2011)_[hdrip,_zvyk_c_ts]</loc><lastmod>2011-06-09T12:24:31+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46707&amp;name=275_/_tem_dlya_windows7_3.0_+_patch_(2011)_[pc]</loc><lastmod>2011-06-08T17:48:30+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46706&amp;name=malchishnik_v_vegase_/_the_hangover_(2009)_[bdrip_1080p]_unrated</loc><lastmod>2011-06-08T14:27:39+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46705&amp;name=interni_/_[67]_(2011)_[webrip]</loc><lastmod>2011-06-08T06:53:36+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46704&amp;name=karl_myasnik_protiv_topora_/_karl_the_butcher_vs_axe_(2010)_[dvdrip]</loc><lastmod>2011-06-07T14:09:21+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46703&amp;name=interni_/_interni_[68]_(2011)_[webrip]</loc><lastmod>2011-06-07T09:14:02+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46702&amp;name=rei_/_ray_(2004)_[bdrip]</loc><lastmod>2011-06-07T05:41:46+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46701&amp;name=koroli_ylic_2_/_street_kings:_motor_city_(2011)_[dvdrip,_licenziya]</loc><lastmod>2011-06-07T03:48:41+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46700&amp;name=moskva._tri_vokzala_-_2_/_01-_10_serii_iz_12_(2011)_[satrip]</loc><lastmod>2011-06-11T11:08:46+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46699&amp;name=zemletryasenie_/_tangshan_dadizhen_(2010)_[hdrip_|_licenziya]</loc><lastmod>2011-06-06T06:20:15+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46698&amp;name=vremya_schastya_2_/_vremya_schastya_2_(2011)_[iptvrip]</loc><lastmod>2011-06-05T14:27:44+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46697&amp;name=mosgorsmeh_/_vipysk_1_(2011)_[satrip]</loc><lastmod>2011-06-05T14:10:24+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46696&amp;name=ludi_iks:_pervii_klass_/_x-men:_first_class_(2011)_[ts]</loc><lastmod>2011-06-05T12:54:41+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46695&amp;name=chto?_gde?_kogda?_/_letnyaya_seriya._igra_pervaya_(2011)_[satrip]</loc><lastmod>2011-06-05T12:45:06+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46694&amp;name=izmychennii_/_the_tortured_(2010)_[hdrip]</loc><lastmod>2011-06-05T07:09:53+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46693&amp;name=interni_/_interni_[66]_(2011)_[webrip]</loc><lastmod>2011-06-05T07:05:11+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46692&amp;name=projektorperishilton_/_vipysk_99_(2011)_[satrip,efir_04.06.2011_]</loc><lastmod>2011-06-04T16:07:32+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46691&amp;name=hrabrie_percem_/_your_highness_(2011)_[dvdscr,_zvyk_s_camrip]</loc><lastmod>2011-06-04T08:47:06+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46690&amp;name=interni_/_interni_[65]_(2011)_[webrip]</loc><lastmod>2011-06-04T06:14:19+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46689&amp;name=tamojnya_daet_dobro_/_rien_a_declarer_(2010)_[dvdrip,_zvyk_s_ts]</loc><lastmod>2011-06-04T01:50:15+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46688&amp;name=ludi_iks:_pervii_klass_/_x-men:_first_class_(2011)_[camrip]</loc><lastmod>2011-06-04T01:41:07+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46687&amp;name=hanna._sovershennoe_oryjie_/_hanna_(2011)_[dvdrip,_licenziya]</loc><lastmod>2011-06-04T00:57:19+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46686&amp;name=krest_/_cross_(2011)_[dvdrip]_|_licenziya</loc><lastmod>2011-06-03T20:07:47+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46685&amp;name=estestvennii_otbor_/_1-8_serii_iz_8_(2010)_[dvdrip]</loc><lastmod>2011-06-03T14:51:17+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46684&amp;name=akyla_/_seriya_1-8_iz_8_(2011)_[satrip]</loc><lastmod>2011-06-03T12:40:11+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46683&amp;name=nasha_russia_/_sezon_5,_seriya_13_(2011)_[satrip]</loc><lastmod>2011-06-03T12:31:01+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46682&amp;name=novii_comedy_club_/_40_vipysk_(2011)_[satrip,_efir_03.06.11]</loc><lastmod>2011-06-03T11:49:58+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46681&amp;name=krestnii_pes_/_the_dogfather_(2010)_[dvdrip]</loc><lastmod>2011-06-03T03:43:45+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46680&amp;name=chelovek_i_zakon_/_chelovek_i_zakon_(2011)_[satrip,_efir_02.06.2011]</loc><lastmod>2011-06-02T16:19:09+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46679&amp;name=interni_/_interni_[64]_(2011)_[satrip]</loc><lastmod>2011-06-02T14:34:50+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46678&amp;name=pastir_/_priest_(2011)_[dvdrip]_|_licenziya</loc><lastmod>2011-06-02T14:31:03+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46677&amp;name=tyman_/_the_fog_(2005)_[dvdrip]</loc><lastmod>2011-06-02T09:01:36+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46676&amp;name=na_drygoi_storone_/_the_other_side_of_the_tracks_(2008)_[dvdrip]</loc><lastmod>2011-06-01T13:54:09+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46675&amp;name=sindrom_frankenshteina_/_the_frankenstein_syndrome_(2010)_[dvdrip]</loc><lastmod>2011-06-01T13:46:49+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46674&amp;name=rango_/_rango_(2011)_[dvdscr]</loc><lastmod>2011-05-31T15:08:29+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46673&amp;name=v_ojidanii_vechnosti_/_waiting_for_forever_(2010)_[hdrip]</loc><lastmod>2011-05-31T14:19:31+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46672&amp;name=malchishnik_2:_iz_vegasa_v_bangkok_/_the_hangover_part_ii_(2011)_[ts]</loc><lastmod>2011-05-30T19:25:10+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46670&amp;name=interni_/_[63]_(2011)_[webrip]</loc><lastmod>2011-05-30T13:29:56+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46669&amp;name=interni_/_[62]_(2011)_[webrip]</loc><lastmod>2011-05-30T13:27:22+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46668&amp;name=formyla_1._sezon_2011._etap_6_iz_19_/_gran-pri_monako._gonka._(2011)_[satrip]</loc><lastmod>2011-05-30T04:33:41+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46667&amp;name=krasnaya_shapochka_/_red_riding_hood_(2011)_[bdrip_1080p]</loc><lastmod>2011-05-29T06:09:05+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46666&amp;name=interni_/_interni_[04x01]_(2011)_[webrip]</loc><lastmod>2011-05-29T06:05:49+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46665&amp;name=era_drakonov_/_age_of_the_dragons_(2011)_[dvdrip]</loc><lastmod>2011-05-29T05:57:46+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46664&amp;name=igri_strasti_/_passion_play_(2010)_[hdrip]</loc><lastmod>2011-05-28T06:39:50+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46663&amp;name=novie_parni_tyrbo_/_new_kids_turbo_(2010)_[hdrip]</loc><lastmod>2011-05-27T19:44:05+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46662&amp;name=zvyki_shyma_/_sound_of_noise_(2010)_[dvdrip]</loc><lastmod>2011-05-27T18:48:23+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46661&amp;name=nasha_russia_/_sezon_5,_seriya_12_(2011)_[satrip]</loc><lastmod>2011-05-27T12:17:41+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46660&amp;name=novii_comedy_club_/_39_vipysk_(2011)_[satrip,_efir_27.05.11]</loc><lastmod>2011-05-27T12:12:09+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46659&amp;name=masha_i_medved_/_masha_i_medved_(2011)_[dvdrip,_seriya_17_]</loc><lastmod>2011-05-27T11:34:21+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46658&amp;name=gnomeo_i_djyletta_/_gnomeo_&amp;amp;_juliet_(2011)_[hdrip_|_licenziya]</loc><lastmod>2011-05-27T08:24:22+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46657&amp;name=gnomeo_i_djyletta_/_gnomeo_&amp;amp;_juliet_(2011)_[bdrip_(1080i)]_|_licenziya</loc><lastmod>2011-05-27T04:39:42+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46656&amp;name=kyng-fy_panda_2_/_kung_fu_panda_2_(2011)_[camrip]</loc><lastmod>2011-05-26T18:13:04+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46655&amp;name=chelovek_i_zakon_/_chelovek_i_zakon_(2011)_[satrip,_efir_26.05.2011]</loc><lastmod>2011-05-26T16:29:29+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46654&amp;name=mest_/_haevnen_(2010)_[dvdrip]</loc><lastmod>2011-05-26T13:49:52+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46653&amp;name=poedinok_s_vladimirom_solovevim_/_vipysk_33-i_(2011)_[satrip,_efir_26.05.11]</loc><lastmod>2011-05-26T13:11:53+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46652&amp;name=sledstvie_po_tely_/_body_of_proof_[01x01-11]_(2011)_[satrip]</loc><lastmod>2011-05-26T10:08:38+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46651&amp;name=jeleznaya_hvatka_/_true_grit_(2010)_[bdrip_1080p]</loc><lastmod>2011-05-26T08:14:49+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46650&amp;name=ytomlennie_solncem_2_/_citadel_(2011)_[dvdrip-avc]</loc><lastmod>2011-05-25T17:16:40+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46649&amp;name=potystoronnee_/_hereafter_(2010)_[hdrip]_|_licenziya</loc><lastmod>2011-05-25T17:12:20+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46648&amp;name=metod_lavrovoi_/_seriya_1_-_12_iz_40_(2011)_[satrip]</loc><lastmod>2011-06-07T12:22:54+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46647&amp;name=elen_/_helen_(2009)_[hdrip]</loc><lastmod>2011-05-25T11:08:57+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46646&amp;name=krasnaya_shapochka_/_red_riding_hood_(2011)_[dvdrip]_|_licenziya</loc><lastmod>2011-05-24T13:39:31+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46645&amp;name=neizvestnii_/_unknown_(2011)_[dvdrip]_|_licenziya</loc><lastmod>2011-05-24T13:36:18+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46644&amp;name=chyjaya_rasa_/_the_orb_(2005)_[dvdrip]</loc><lastmod>2011-05-24T12:05:56+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46643&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_24_seriya_iz_24]</loc><lastmod>2011-05-24T11:56:47+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46642&amp;name=artyr._idealnii_millioner_/_arthur_(2011)_[ts]</loc><lastmod>2011-05-24T07:01:40+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46641&amp;name=bladrein_3_/_bloodrayne:_the_third_reich_(2010)_[dvdrip]</loc><lastmod>2011-05-24T06:44:07+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46640&amp;name=pri_zagadochnih_obstoyatelstvah_/_8_serii_iz_8_(2009-2010)_[satrip]</loc><lastmod>2011-05-23T12:13:48+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46639&amp;name=jivie_peizaji:_krasiveishie_vodopadi_/_living_landscapes:_earthscapes_-_world\\\'s_most_beautiful_waterfalls_(2009)_[bdrip]</loc><lastmod>2011-05-23T11:09:26+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46638&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_23_seriya_iz_24]</loc><lastmod>2011-05-23T10:52:25+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46637&amp;name=zataivshiesya_/_hidden_(2011)_[blu-ray]</loc><lastmod>2011-05-23T05:05:28+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46636&amp;name=formyla_1._sezon_2011_/_etap_5_iz_19._gran-pri_ispanii._gonka_(2011)_[satrip]</loc><lastmod>2011-05-23T04:59:18+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46635&amp;name=igra_/_igra_(2011)_[satrip,_seriya_1-20_iz_20]</loc><lastmod>2011-06-03T03:35:16+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46634&amp;name=kapli_krovi_na_cvetyshem_vereske_/_leto_volkov_(2011)_[satrip,_serii_1-6_iz_6]</loc><lastmod>2011-05-22T16:18:28+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46633&amp;name=kluch_salamandri_/_kluch_salamandri_(2011)_[blu-ray]</loc><lastmod>2011-05-22T15:10:24+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46632&amp;name=sverhestestvennoe_/_supernatural_[06x21-22]_(2011)_[hdtvrip_ot_onefilm]</loc><lastmod>2011-05-22T11:15:50+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46631&amp;name=unaited_/_united_(2011)_[hdtvrip]</loc><lastmod>2011-05-22T11:14:31+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46630&amp;name=moya_vtoraya_polovinka_/_seriya_1_-_4_iz_4_(2011)_[satrip]</loc><lastmod>2011-05-22T10:57:05+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46629&amp;name=pechalnaya_ballada_dlya_trybi_/_balada_triste_de_trompeta_(2010)_[hdrip,_licenziya]</loc><lastmod>2011-05-22T06:38:11+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46628&amp;name=ylichnie_voini_/_perekrestok_smerti_(2011)_[hdrip,_licenziya]</loc><lastmod>2011-05-22T06:28:02+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46627&amp;name=projektorperishilton_/_vipysk_97_(2011)_[satrip,efir_21.05.2011_]</loc><lastmod>2011-05-22T06:16:17+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46626&amp;name=chelovek_niotkyda_/_chelovek_niotkyda_(2010)_[dvdrip]</loc><lastmod>2011-05-22T06:02:51+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46625&amp;name=vse_sekreti_raboti_s_photoshop_cs5!_/_obychaushii_videokyrs_(2011)_[pc]</loc><lastmod>2011-05-22T02:48:28+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46624&amp;name=yralskie_pelmeni_/_otci_i_eti_(2011)_[satrip]</loc><lastmod>2011-05-21T12:46:01+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46623&amp;name=ya_dojdys_/_ya_dojdys_(2011)_[satrip,_2_serii_iz_2]</loc><lastmod>2011-05-21T12:34:55+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46622&amp;name=pirati_karibskogo_morya_:_4_na_strannih_beregah_/_pirates_of_the_caribbean_:_4_on_stranger_tides_(2011)_[ts_*proper*]</loc><lastmod>2011-05-21T11:24:31+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46621&amp;name=sypermenedjer,_ili_motiga_sydbi_/_sypermenedjer,_ili_motiga_sydbi_(2011)_[camrip]</loc><lastmod>2011-05-21T07:17:46+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46620&amp;name=svadba_po_obmeny_/_svadba_po_obmeny_(2011)_[dvdrip]</loc><lastmod>2011-05-21T06:30:21+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46619&amp;name=begleci_/_begleci_(2011)_[satrip]</loc><lastmod>2011-05-20T16:31:31+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46618&amp;name=wofty_/_jivoi_zveryok_dlya_rabochego_stola_(2010)_[pc]</loc><lastmod>2011-05-20T15:37:33+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46617&amp;name=zataivshiesya_/_hidden__(2011)_[dvd9_|_2d_i_3d_versii]</loc><lastmod>2011-05-20T15:21:51+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46616&amp;name=novii_comedy_club_/_38_vipysk_(2011)_[satrip,_efir_20.05.11]</loc><lastmod>2011-05-20T12:02:42+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46615&amp;name=nasha_russia_/_sezon_5,_seriya_11_(2011)_[satrip]</loc><lastmod>2011-05-20T11:53:47+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46614&amp;name=vodi_slonam!_/_water_for_elephants_(2011)_[dvdrip]</loc><lastmod>2011-05-20T11:45:08+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46613&amp;name=pirati_karibskogo_morya_4:_na_strannih_beregah_/_pirates_of_the_caribbean_4:_on_stranger_tides_(2011)_[ts]</loc><lastmod>2011-05-20T08:18:54+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46612&amp;name=ac/dc_/_live_at_river_plate_(2010)_[hdrip]</loc><lastmod>2011-05-19T17:38:15+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46611&amp;name=zataivshiesya_/_hidden_(2011)_[dvdrip,_licenziya]</loc><lastmod>2011-05-19T16:32:42+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46610&amp;name=chelovek_i_zakon_/_chelovek_i_zakon_(2011)_[satrip,_efir_19.05.2011]</loc><lastmod>2011-05-19T14:11:08+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46609&amp;name=v_kompanii_myjchin_/_the_company_men_(2010)_[hdrip]</loc><lastmod>2011-05-19T12:59:22+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46608&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_22_seriya_iz_24]</loc><lastmod>2011-05-19T10:56:35+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46607&amp;name=moi_lychshii_telohranitel_/_my_best_bodyguard_(2010)_[dvdrip]</loc><lastmod>2011-05-19T10:30:57+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46606&amp;name=oblasti_tmi_/_limitless_(2011)_[blu-ray_1080p_avc_dts-hd_7.1]</loc><lastmod>2011-05-19T08:14:46+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46605&amp;name=dobroe_ytro_/_morning_glory_(2010)_[dvdrip,_licenziya]</loc><lastmod>2011-05-19T03:34:10+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46604&amp;name=tor:_skazaniya_asgarda_/_thor:_tales_of_asgard_(2011)_[hdrip]</loc><lastmod>2011-05-18T16:35:20+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46603&amp;name=igra_prestolov_/_game_of_thrones_(2011)_[hdtvrip,_seriya_1_-8_iz_10]</loc><lastmod>2011-05-18T16:23:28+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46602&amp;name=zaicev+1_/_[01-21_iz_24]_(2011)_[dvb]</loc><lastmod>2011-05-18T14:32:42+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46601&amp;name=ohranyaemie_lica_/_serii_1-5_iz_5_(2011)_[satrip]</loc><lastmod>2011-05-18T14:28:39+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46600&amp;name=sosedka_po_komnate_/_the_roommate_(2011)_[bdrip_(1080p)]</loc><lastmod>2011-05-18T14:21:52+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46599&amp;name=sosedka_po_komnate_/_the_roommate_(2011)_[hdrip]_|_licenziya</loc><lastmod>2011-05-18T14:02:44+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46598&amp;name=ya_–_chetvertii_/_i_am_number_four_(2011)_[dvdrip,_licenziya]</loc><lastmod>2011-05-18T13:31:22+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46597&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_21_seriya_iz_24]</loc><lastmod>2011-05-18T11:54:34+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46596&amp;name=astronavt_farmer_/_the_astronaut_farmer_(2006)_[bdrip_720p]</loc><lastmod>2011-05-18T10:28:53+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46595&amp;name=sini_anarhii_/_sons_of_anarchy_(2009)_[hdtvrip,_2_sezon,_1-4_seriya]</loc><lastmod>2011-05-17T16:21:13+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46594&amp;name=sini_anarhii_/_sons_of_anarchy_(2008)_[hdtvrip,_1-13_serii_iz_13]</loc><lastmod>2011-05-17T16:12:16+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46593&amp;name=bombila_/_1-_16_serii_iz_16_(2011)_[satrip]</loc><lastmod>2011-05-19T15:09:15+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46592&amp;name=igla_remix_/_igla_remix_(2010)_[dvdrip]</loc><lastmod>2011-05-17T13:30:53+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46591&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_20_seriya_iz_24]</loc><lastmod>2011-05-17T12:03:03+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46590&amp;name=oblasti_tmi_/_limitless_(2011)_[dvdrip_|_licenziya]</loc><lastmod>2011-05-17T10:33:12+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46589&amp;name=inoplanetnoe_vtorjenie:_bitva_za_los-andjeles_/_battle:_los_angeles_(2011)_[bdrip_1080p]_|_licenziya</loc><lastmod>2011-05-16T17:52:24+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46587&amp;name=inoplanetnoe_vtorjenie:_bitva_za_los-andjeles_/_battle:_los_angeles_(2011)_[bdrip_720p]</loc><lastmod>2011-05-16T15:18:20+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46586&amp;name=inoplanetnoe_vtorjenie:_bitva_za_los-andjeles_/_battle:_los_angeles_(2011)_[bdrip_720p]</loc><lastmod>2011-05-16T15:12:23+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46585&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_19_seriya_iz_24]</loc><lastmod>2011-05-16T13:15:03+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46584&amp;name=symasshedshaya_ezda_/_drive_angry_(2011)_[bdrip_1080p]</loc><lastmod>2011-05-16T10:50:54+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46583&amp;name=ben_gyr_/_ben_hur_(2010)_[dvdrip_|_licenziya]</loc><lastmod>2011-05-16T08:39:39+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46582&amp;name=pobeg_iz_«novoi_jizni»_/_pobeg_iz_«novoi_jizni»_(2009)_[dvdrip]</loc><lastmod>2011-05-15T12:57:38+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46581&amp;name=inoplanetnii_apokalipsis_/_alien_apocalypse_(2005)_[dvdrip]</loc><lastmod>2011-05-15T12:35:30+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46580&amp;name=vtorjenie_(zahvat)_/_infestation_(2009)_[hdrip]</loc><lastmod>2011-05-15T12:12:13+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46579&amp;name=shanson_goda_-_2011_/_30.04.2011_(2011)_[satrip]</loc><lastmod>2011-05-15T11:59:41+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46578&amp;name=pastir_3d_/_priest_3d_(2011)_[camrip]</loc><lastmod>2011-05-15T11:39:23+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46577&amp;name=mogychii_tor_/_almighty_thor_(2011)_[hdtvrip_720p]</loc><lastmod>2011-05-15T10:31:52+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46576&amp;name=mogychii_tor_/_almighty_thor_(2011)_[hdtvrip]</loc><lastmod>2011-05-15T10:27:03+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46575&amp;name=mogychii_tor_/_almighty_thor_(2011)_[hdtvrip]</loc><lastmod>2011-05-15T10:21:38+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46574&amp;name=paparaca_/_paparaca_(2006)_[satrip]</loc><lastmod>2011-05-15T10:03:01+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46573&amp;name=priklucheniya_na_bagamah_/_beneath_the_blue_(2010)_[bdrip_720p]</loc><lastmod>2011-05-15T08:20:04+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46572&amp;name=razvod_po-rysski_/_piva_net?_(2011)_[satrip]</loc><lastmod>2011-05-15T07:38:40+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46571&amp;name=evrovidenie_2011_/_final_(2011)_[satrip]</loc><lastmod>2011-05-15T07:09:29+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46570&amp;name=v_sybboty_/_v_sybboty_(2011)_[dvdrip]</loc><lastmod>2011-05-15T04:07:04+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46569&amp;name=belaya_vorona_/_1-_4_serii_iz_4_(2011)_[satrip]</loc><lastmod>2011-05-15T03:44:50+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46568&amp;name=symasshedshaya_ezda_/_drive_angry_(2011)_[hdrip]</loc><lastmod>2011-05-14T18:49:47+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46567&amp;name=ygon_/_vipysk_3_(2011)_[satrip,_efir_14.05.11]</loc><lastmod>2011-05-14T15:38:24+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46566&amp;name=yralskie_pelmeni_/_souzi-apolloni__(2011)_[satrip]</loc><lastmod>2011-05-14T13:21:32+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46565&amp;name=znaki_sydbi-2_/_sezon_2_serii_1-18_iz_?_(2011)_[satrip]</loc><lastmod>2011-06-11T14:43:50+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46564&amp;name=petr_pervii._zaveshanie_/_1-4_serii_iz_4_(2011)_[satrip]</loc><lastmod>2011-05-15T14:32:04+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46563&amp;name=projektorperishilton_/_vipysk_96_(2011)_[satrip,_efir_14.05.11]</loc><lastmod>2011-05-14T12:56:08+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46562&amp;name=ischeznovenie_na_7-i_ylice_/_vanishing_on_7th_street_(2010)_[hdrip]</loc><lastmod>2011-05-14T07:21:42+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46561&amp;name=hrabrie_percem_/_your_highness_(2011)_[camrip/proper]</loc><lastmod>2011-05-13T13:39:30+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46560&amp;name=kontrolnaya_zakypka_/_kofe_syblimirovannii_rastvorimii_(2011)_[iptvrip,_efir_12.05.11]</loc><lastmod>2011-05-13T13:28:33+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46559&amp;name=kontrolnaya_zakypka_/_sardelki_&amp;quot;doktorskie&amp;quot;_(2011)_[iptvrip,_efir_13.05.11]</loc><lastmod>2011-05-13T13:22:53+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46558&amp;name=zaicev+1_/_seriya_17_iz_24_(2011)_[satrip]</loc><lastmod>2011-05-13T13:19:54+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46557&amp;name=novii_comedy_club_/_37_vipysk_(2011)_[satrip,_efir_13.05.11]</loc><lastmod>2011-05-13T13:14:57+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46556&amp;name=zaicev+1_/_serii_1-16_iz_24_(2011)_[satrip-_avc]</loc><lastmod>2011-05-13T13:13:56+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46555&amp;name=zaicev+1_/_serii_1-18_iz_24_(2011)_[satrip]</loc><lastmod>2011-05-13T13:06:57+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46554&amp;name=nasha_russia_/_sezon_5,_seriya_10_(2011)_[satrip]</loc><lastmod>2011-05-13T12:45:30+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46553&amp;name=nasha_russia_/_sezon_5,_seriya_10_(2011)_[webrip]</loc><lastmod>2011-05-13T12:36:04+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46552&amp;name=nasha_russia_/_sezon_5,_serii_0-8_(2011)_[satrip]</loc><lastmod>2011-05-13T12:31:54+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46551&amp;name=nasha_russia_/_gena_i_vovan_(2011)_[satrip,_narezka]</loc><lastmod>2011-05-13T12:10:01+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46550&amp;name=nasha_russia_/_borodach_(2011)_[satrip,_narezka]</loc><lastmod>2011-05-13T12:05:29+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46549&amp;name=nasha_russia_/_jorik_vartanov_(2011)_[satrip,_narezka]</loc><lastmod>2011-05-13T11:57:23+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46548&amp;name=narkomovskii_oboz_/_serii_1-4_iz_4_(2011)_[satrip]</loc><lastmod>2011-05-13T11:46:35+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46547&amp;name=astral_/_insidious_(2011)_[dvdrip-avc]_|_licenziya</loc><lastmod>2011-05-13T06:58:57+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46546&amp;name=vikrytasi_/_vikrytasi_(2011)_[blu-ray]</loc><lastmod>2011-05-13T04:59:54+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46545&amp;name=kak_viiti_zamyj_za_milliardera_/_chalet_girl_(2011)_[dvdrip]_|_licenziya</loc><lastmod>2011-05-13T04:52:54+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46544&amp;name=smertelnii_spisok_/_the_hit_list_(2011)_[bdrip_1080p]_|_licenziya</loc><lastmod>2011-05-13T04:47:40+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46543&amp;name=strashno_krasiv_/_beastly_(2011)_[scr]</loc><lastmod>2011-05-13T03:09:36+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46542&amp;name=tom_i_djerri:_bistrii_i_beshenii_/_tom_and_jerry:_the_fast_and_the_furry_(2005)_[bdrip_(720p)]</loc><lastmod>2011-05-12T17:23:26+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46541&amp;name=priklucheniya_sari_djein_/_the_sarah_jane_adventures_(2008)_[dvdrip,_sezon_2_iz_4,_serii_1-12_iz_12]</loc><lastmod>2011-05-12T16:05:32+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46540&amp;name=priklucheniya_sari_djein_/_the_sarah_jane_adventures_(2007)_[dvdrip,_sezon_1_iz_4,_serii_1-11_iz_11]</loc><lastmod>2011-05-12T15:43:34+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46539&amp;name=skeleti_jeleznogo_ostrova_/_hierro_(2009)_[dvdrip]</loc><lastmod>2011-05-12T15:42:05+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46538&amp;name=poedinok_s_vladimirom_solovevim_/_vipysk_31-i_(2011)_[satrip,_efir_12.05.11]</loc><lastmod>2011-05-12T15:18:16+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46537&amp;name=fobos._klyb_straha_/_fobos._klyb_straha_(2010)_[dvdrip]</loc><lastmod>2011-05-12T15:01:27+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46536&amp;name=zaicev+1_/_[18]_(2011)_[satrip]</loc><lastmod>2011-05-12T11:09:25+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46535&amp;name=yjin_s_pridyrkami_/_dinner_for_schmucks_(2010)_[bdrip_1080p]_|_licenziya</loc><lastmod>2011-05-12T10:22:35+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46534&amp;name=istoriya_igryshek_1-2:_kinolyapi_i_interesnie_fakti_/_toy_story_1-2_(2010)_[dvdrip]</loc><lastmod>2011-05-12T10:16:25+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46533&amp;name=djili_/_gigli_(2003)_[dvdrip]</loc><lastmod>2011-05-12T09:23:13+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46532&amp;name=skachat_sverhestestvennoe_/_supernatural_(2010-2011)_[web-dl,_sezon_6,_seriya_1-22_iz_22_ot_lostfilm]</loc><lastmod>2011-05-29T08:07:37+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46531&amp;name=yjin_s_pridyrkami_/_dinner_for_schmucks_(2010)_[dvdrip,_licenziya]</loc><lastmod>2011-05-11T17:02:11+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46530&amp;name=brink_/_brink_(2011)_[pc,_repack(z10yded),_eng+rus_]</loc><lastmod>2011-05-11T16:48:00+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46529&amp;name=kak_viiti_zamyj_za_milliardera_/_chalet_girl_(2011)_[dvdrip]</loc><lastmod>2011-05-11T14:23:51+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46528&amp;name=transformeri_1-2:_kinolyapi_i_interesnie_fakti_/_transformers_1-2_(2010)_[dvdrip]</loc><lastmod>2011-05-11T13:56:47+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46527&amp;name=pastir_/_priest_(2011)_[camrip]</loc><lastmod>2011-05-11T11:43:35+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46526&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_17_seriya_iz_24]</loc><lastmod>2011-05-11T11:36:16+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46525&amp;name=sindbad_i_minotavr_/_sinbad_and_the_minotaur_(2010)_[dvdrip]</loc><lastmod>2011-05-11T11:10:23+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46524&amp;name=narkomovskii_oboz_/_seriya_1-4_iz_4_(2011)_[satrip]</loc><lastmod>2011-05-11T03:41:19+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46523&amp;name=sindbad_i_minotavr_/_sinbad_and_the_minotaur_(2011)_[dvdrip,ld]</loc><lastmod>2011-05-10T16:41:10+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46522&amp;name=zdes_kto-to_est-2._iskyplenie_/_seriya_1-16_iz_16_(2011)_[satrip]</loc><lastmod>2011-05-16T13:04:08+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46521&amp;name=hemislimoe_/_unthіnkable_(2010)_[bdrip-avc]_goblin</loc><lastmod>2011-05-10T13:48:00+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46520&amp;name=krytie_berega_/_seriya_1-14_iz_14_(2011)_[satrip]</loc><lastmod>2011-05-16T12:59:53+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46519&amp;name=parad_pobedi_1945_goda_/_parad_pobedi_1945_goda_(1945)_[dvdrip_|_cvetnoi]</loc><lastmod>2011-05-10T12:13:45+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46518&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_16_seriya_iz_24]</loc><lastmod>2011-05-10T11:50:53+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46517&amp;name=hanna._sovershennoe_oryjie_/_hanna_(2011)_[ts]</loc><lastmod>2011-05-09T19:48:18+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46516&amp;name=zayac,_jarennii_po-berlinski_/_serii_1-10_iz_10_(2011)_[dvdrip]</loc><lastmod>2011-05-09T15:39:49+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46515&amp;name=skachat_orel_devyatogo_legiona_/_the_eagle_(2011)_[bdrip-avc]</loc><lastmod>2011-05-09T15:25:08+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46514&amp;name=brink_/_brink_(2011)_[pal/multi5,eng_xbox_360]</loc><lastmod>2011-05-09T12:42:24+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46513&amp;name=jajda_/_jajda_(2011)_[satrip,_1-4_serii_iz_4]</loc><lastmod>2011-05-09T12:34:26+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46512&amp;name=parad_pobedi_-_moskva._krasnaya_ploshad._/_parad,_posvyashennii_66-i_godovshine_pobedi_(2011)_[satrip]</loc><lastmod>2011-05-09T10:39:19+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46511&amp;name=bydy_pomnit_/_bydy_pomnit_(2010)_[satrip]</loc><lastmod>2011-05-09T10:09:47+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46510&amp;name=noch_dlinou_v_jizn_/_noch_dlinou_v_jizn_(2010)_[satrip]</loc><lastmod>2011-05-09T07:25:23+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46509&amp;name=operaciya_&amp;quot;gorgona&amp;quot;_/_operaciya_&amp;quot;gorgona&amp;quot;_(2011)_[satrip,_1-4_serii_iz_4]</loc><lastmod>2011-05-09T06:42:52+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46508&amp;name=dostavit_luboi_cenoi_/_dostavit_luboi_cenoi_(2011)_[satrip,_1-4_serii_iz_4]</loc><lastmod>2011-05-09T06:29:54+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46507&amp;name=perekrestok_smerti_/_true_justice_(2011)_[dvdrip_|_licenziya]</loc><lastmod>2011-05-08T07:06:57+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46506&amp;name=orel_devyatogo_legiona_/_the_eagle_(2011)_[blu-ray_1080p]</loc><lastmod>2011-05-08T06:23:30+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46505&amp;name=telohranitel_/_london_boulevard_(2010)_[blu-ray_1080p]</loc><lastmod>2011-05-08T05:15:53+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46504&amp;name=comodo_internet_security_pro_/_versiya_5.4.189068.1354_(2011)_[multi/rysskii]</loc><lastmod>2011-05-07T17:29:53+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46503&amp;name=svyatoe_mesto_/_hallowed_ground_(2007)_[dvdrip]</loc><lastmod>2011-05-07T16:19:42+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46502&amp;name=projektorperishilton_/_vipysk_95_(2011)_[satrip,_efir_07.05.11]</loc><lastmod>2011-05-07T15:39:08+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46501&amp;name=ybit_bono_/_killing_bono_(2011)_[dvdrip,_licenziya]</loc><lastmod>2011-05-07T13:29:30+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46500&amp;name=mi_obyavlyaem_vam_voiny_/_mi_obyavlyaem_vam_voiny_(2011)_[satrip,_1-_4_serii_iz_4]</loc><lastmod>2011-05-07T13:16:59+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46499&amp;name=poslednyaya_taina_gitlera_/_poslednyaya_taina_gitlera_(2011)_[satrip]</loc><lastmod>2011-05-07T08:59:07+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46498&amp;name=symasshedshaya_ezda_/_drive_angry_(2011)_[scr]</loc><lastmod>2011-05-07T07:49:19+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46497&amp;name=kryiz_/_kryiz_(2011)_[satrip,_1-8_serii_iz_8]</loc><lastmod>2011-05-27T11:24:29+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46496&amp;name=dogovor_na_beremennost_/_the_pregnancy_pact_(2010)_[dvdrip]</loc><lastmod>2011-05-06T18:31:21+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46495&amp;name=nokayt_/_knockout_(2011)_[dvdrip]</loc><lastmod>2011-05-06T18:03:02+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46494&amp;name=ytomlennie_solncem_2:_citadel_/_ytomlennie_solncem_2:_citadel_(2011)_[ts]</loc><lastmod>2011-05-06T16:19:08+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46493&amp;name=smertelnii_spisok_/_the_hit_list_(2011)_[dvdrip,_ld]</loc><lastmod>2011-05-06T15:13:19+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46492&amp;name=delo_chesti_/_delo_chesti_(2011)_[satrip]</loc><lastmod>2011-05-06T13:15:21+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46491&amp;name=nasha_russia_/_5_sezon:_9_seriya_(2011)_[satrip,efir_06.05.11]</loc><lastmod>2011-05-06T12:28:11+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46490&amp;name=rio_/_rio_(2011)_[dvdrip]</loc><lastmod>2011-05-06T10:10:30+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46489&amp;name=vkys_nochi_/_wir_sind_die_nacht_(2010)_[dvdrip,_licenziya]</loc><lastmod>2011-05-06T03:53:46+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46488&amp;name=rio_/_rio_(2011)_[dvdrip]</loc><lastmod>2011-05-06T03:12:24+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46487&amp;name=golie_i_smeshnie_/_golie_i_smeshnie_(2011)_[satrip,_efir_05.05.11]</loc><lastmod>2011-05-05T17:54:13+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46486&amp;name=sdaetsya_nedorogo_/_sdaetsya_nedorogo_(2010)_[dvdrip]</loc><lastmod>2011-05-05T17:46:40+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46485&amp;name=v_poiskah_svyatogo_graalya﻿_/_the_first_templar_(2011)_[pc,_action,_ru]</loc><lastmod>2011-05-05T16:07:42+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46484&amp;name=hanna._sovershennoe_oryjie_/_hanna_(2011)_[camrip]</loc><lastmod>2011-05-05T15:15:57+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46483&amp;name=ya_–_chetvertii_/_i_am_number_four_(2011)_[dvdrip]</loc><lastmod>2011-05-05T13:01:40+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46482&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_15_seriya_iz_24]</loc><lastmod>2011-05-05T11:39:25+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46481&amp;name=generation_p_/_generation_p_(2011)_[dvdrip_|_licenziya]</loc><lastmod>2011-05-05T11:33:15+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46480&amp;name=golie_i_smeshnie_/_golie_i_smeshnie_(2011)_[satrip,_efir_04.05.11]</loc><lastmod>2011-05-04T18:05:12+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46479&amp;name=gnomeo_i_djyletta_/_gnomeo_&amp;amp;_juliet_(2011)_[dvdrip,_db_(ts)]</loc><lastmod>2011-05-04T17:19:01+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46478&amp;name=vosstanie_dysh:_bynt_mertvecov_(ten:_myatej_mertvecov)_/_shadow:_dead_riot_(2006)_[dvdrip]</loc><lastmod>2011-05-04T16:11:05+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46477&amp;name=nasha_russia_/_5_sezon:_9_seriya_(2011)_[webrip]</loc><lastmod>2011-05-04T12:09:30+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46476&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_14_seriya_iz_24]</loc><lastmod>2011-05-04T11:46:25+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46475&amp;name=tor_/_thor_(2011)_[ts_*proper*]</loc><lastmod>2011-05-04T11:39:07+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46474&amp;name=foobar2000_/_1.1.7_rusxpack_1.23_beta_1_(2011)_[sborka_vadimsva,rysskii]</loc><lastmod>2011-05-03T18:45:39+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46473&amp;name=bolotnaya_akyla_/_swamp_shark_(2011)_[dvdrip]</loc><lastmod>2011-05-03T16:54:19+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46472&amp;name=krik_4_/_scream_4_(2011)_[ts]</loc><lastmod>2011-05-03T13:37:16+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46471&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_13_seriya_iz_24]</loc><lastmod>2011-05-03T12:37:13+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46470&amp;name=1942_/_1942_(2011)_[satrip,_1-16_serii_iz_16]</loc><lastmod>2011-05-03T03:06:09+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46469&amp;name=menyaushie_realnost_/_the_adjustment_bureau_(2011)_[dvdscr]</loc><lastmod>2011-05-03T02:51:57+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46468&amp;name=shytki_v_storony_/_koncert_evgeniya_petrosyana._chast-1_(2011)_[satrip]</loc><lastmod>2011-05-02T17:57:29+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46467&amp;name=belii_slon_/_elephant_white_(2011)_[dvdrip]</loc><lastmod>2011-05-02T15:52:33+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46466&amp;name=robot_/_endhiran_/_robot_(2010)_[bdrip_1080p]</loc><lastmod>2011-05-02T15:42:43+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46465&amp;name=nas_ne_ocifryesh!_/_koncert_mihaila_zadornova_(2011)_[satrip]</loc><lastmod>2011-05-02T12:29:08+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46464&amp;name=belii_pesok_/_belii_pesok_(2010)_[satrip]</loc><lastmod>2011-05-02T02:16:28+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46463&amp;name=forsaj_5_/_fast_five_(2011)_[ts]</loc><lastmod>2011-05-01T15:17:53+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46462&amp;name=koncert_stasa_mihailova_/_&amp;quot;tolko_ti...&amp;quot;_(2011)_[satrip]</loc><lastmod>2011-05-01T13:45:15+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46461&amp;name=mest_podryjek_nevesti_/_revenge_of_the_bridesmaids_(2010)_[dvdrip]</loc><lastmod>2011-05-01T13:27:24+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46460&amp;name=chikagskie_pohoroni_/_chicago_overcoat_(2009)_[dvdrip]</loc><lastmod>2011-05-01T12:54:49+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46459&amp;name=samka_/_samka_(2011)_[dvdrip]</loc><lastmod>2011-05-01T12:45:59+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46458&amp;name=serfer_dyshi_/_soul_surfer_(2011)_[camrip]</loc><lastmod>2011-04-30T17:52:31+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46456&amp;name=irlandec_/_kill_the_irishman_(2011)_[dvdrip,_lo]</loc><lastmod>2011-04-30T03:25:49+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46455&amp;name=bynt_yshastih_/_hop_(2011)_[ts]</loc><lastmod>2011-04-29T17:09:40+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46454&amp;name=svadba_princa_yilyama_i_keit_middlton_/_[efir_ot_29.04]_(2011)_[satrip]</loc><lastmod>2011-04-29T17:07:02+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46453&amp;name=jertva_/_victim_(2010)_[dvdrip]</loc><lastmod>2011-04-29T15:27:18+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46452&amp;name=lubov_–_eto_dlya_dvoih_/_lamour,_cest_mieux_a_deux_(2010)_[dvdrip,_licenziya]</loc><lastmod>2011-04-29T13:15:45+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46451&amp;name=nannerl,_sestra_mocarta_/_nannerl,_la_soeur_de_mozart_(2010)_[dvdrip,_licenziya]</loc><lastmod>2011-04-29T13:01:08+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46450&amp;name=novii_comedy_club_/_36_vipysk_(2011)_[satrip,_efir_29.04.11]]</loc><lastmod>2011-04-29T12:46:18+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46449&amp;name=tor_/_thor_(2011)_[camrip]_*proper*</loc><lastmod>2011-04-28T18:20:10+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46448&amp;name=chelovek_i_zakon_/_chelovek_i_zakon_(2011)_[satrip,_efir_28.04.2011]</loc><lastmod>2011-04-28T16:20:27+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46446&amp;name=poedinok_s_vladimirom_solovevim_/_vipysk_30-i__(2011)_[satrip,_efir_28.04.11]</loc><lastmod>2011-04-28T13:08:32+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46445&amp;name=zaicev+1_/_[12]_(2011)_[satrip]</loc><lastmod>2011-04-28T11:20:44+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46444&amp;name=forsaj_5_/_fast_five_(2011)_[camrip]</loc><lastmod>2011-04-28T09:02:07+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46443&amp;name=snaiper_4_/_sniper:_reloaded_(2011)_[dvdrip,_licenziya]</loc><lastmod>2011-04-28T02:04:48+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46442&amp;name=nasha_russia_/_5_sezon:_8_seriya_(2011)_[webrip]</loc><lastmod>2011-04-27T16:07:21+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46441&amp;name=sreda_obitaniya_/_chem_pahnet_maslo?_(2011)_[satrip]</loc><lastmod>2011-04-27T15:26:11+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46440&amp;name=linkoln_dlya_advokata_/_the_lincoln_lawyer_(2011)_[dvdrip]</loc><lastmod>2011-04-27T15:07:40+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46439&amp;name=linkoln_dlya_advokata_/_the_lincoln_lawyer_(2011)_[dvd_-_9]</loc><lastmod>2011-04-27T14:31:45+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46438&amp;name=obryad_/_the_rite_(2011)_[bdrip_1080p]</loc><lastmod>2011-04-27T14:10:12+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46437&amp;name=tainii_znak_/_an_invisible_sign_(2010)_[dvdrip]</loc><lastmod>2011-04-27T12:03:11+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46436&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_11_seriya_iz_24]</loc><lastmod>2011-04-27T11:42:07+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46435&amp;name=prada_i_chyvstva_/_from_prada_to_nada_(2011)_[hdrip]</loc><lastmod>2011-04-27T10:19:59+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46434&amp;name=strannie_rodstvenniki_/_relative_strangers_(2006)_[dvdrip]</loc><lastmod>2011-04-26T20:58:11+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46433&amp;name=rapyncel:_zapytannaya_istoriya_/_tangled_(2010)_[bluray,_chd]</loc><lastmod>2011-04-28T11:22:22+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46432&amp;name=ballada_o_bombere_/_ballada_o_bombere_(2011)_[dvdrip,1-8_serii_iz_8]</loc><lastmod>2011-04-26T16:05:27+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46431&amp;name=pravda_o_chernobile_/_26_aprelya_1986_goda_(2004)_[satrip]</loc><lastmod>2011-04-26T15:42:25+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46430&amp;name=bolshe_chem_seks_/_no_strings_attached_(2011)_[bdrip_720p]</loc><lastmod>2011-04-26T15:36:48+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46429&amp;name=beep_/_beep_(2011)_[rs,_repack]</loc><lastmod>2011-04-26T14:25:36+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46428&amp;name=obryad_/_the_rite_(2011)_[hdrip]</loc><lastmod>2011-04-26T13:59:08+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46427&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_10_seriya_iz_24]</loc><lastmod>2011-04-26T11:23:09+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46426&amp;name=senna_/_ayrton_senna:_beyond_the_speed_of_sound_(2010)_[hdrip]</loc><lastmod>2011-04-25T19:19:38+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46425&amp;name=krov_/_blood_out_(2011)_[bdrip_1080p]</loc><lastmod>2011-04-25T14:01:31+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46424&amp;name=demoni_/_demoni_(2011)_[satrip,_1-16_serii_iz_16]</loc><lastmod>2011-04-29T13:23:56+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46423&amp;name=bolshe_chem_seks_/_no_strings_attached_(2011)_[hdrip_|_zvyk_s_ts]</loc><lastmod>2011-04-25T12:04:12+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46422&amp;name=shpana_zamoskvoreckaya_/_y_kajdogo_svoya_voina_(2011)_[dvdrip,_1-16_serii_iz_16]</loc><lastmod>2011-05-15T18:26:58+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/details.php?id=46421&amp;name=zaicev_+1_/_zaicev_+1_(2011)_[satrip,_9_seriya_iz_24]</loc><lastmod>2011-04-25T11:30:25+00:00</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=24</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=25</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=26</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=27</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=28</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=29</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=30</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=31</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=32</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=33</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=34</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=35</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=36</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=37</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=38</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=39</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=40</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=41</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=42</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=43</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=44</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=45</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=46</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=47</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=48</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=49</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=50</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=51</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=52</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=53</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=54</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=55</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=56</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=57</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=58</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=59</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=60</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=61</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=62</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=63</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=64</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=65</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=66</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=67</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=68</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=69</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=70</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=71</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=72</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=73</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=74</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=75</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=76</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=77</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=78</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=79</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=80</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=81</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=82</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=83</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=84</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=85</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=86</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=87</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=88</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=89</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=90</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=91</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=92</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=93</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=94</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=95</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=96</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=97</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=98</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=99</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=100</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=101</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=102</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=103</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=104</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=105</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=106</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=107</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=108</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=109</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=110</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=111</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=112</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=113</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=115</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=116</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=117</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=118</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=119</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=120</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=121</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=122</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=123</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=124</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=125</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=126</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=127</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=128</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=129</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=130</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=131</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=132</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=133</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=134</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=135</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=136</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=137</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=138</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=139</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
+<url><loc>http://www.torrentsbook.com/browse.php?cat=140</loc><lastmod>2011-06-12T12:40:57+00:00</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>
 </urlset>
 
