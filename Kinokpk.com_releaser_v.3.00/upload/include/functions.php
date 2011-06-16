@@ -1767,7 +1767,7 @@ function stdhead($title = "", $addition = '') {
 <meta http-equiv="Content-Type" content="text/html; charset='. $tracker_lang['language_charset'].'" />
 <meta name="Description" content="'.$CACHEARRAY['description'].'" />
 <meta name="Keywords" content="'.$CACHEARRAY['keywords'].'" />
-<base href="'.$CACHEARRAY['defaultbaseurl'].'" />
+<base href="'.$CACHEARRAY['defaultbaseurl'].'/" />
 <!--“оже любишь смотреть исходники HTML? «наешь еще и PHP/MySQL? обратись к админам, наверн€ка дл€ теб€ есть местечко в нашей команде http://www.kinokpk.com/staff.php -->
 <title>'.$title.'</title>
 <link rel="stylesheet" href="themes/'.$ss_uri.'/'.$ss_uri.'.css" type="text/css"/>
