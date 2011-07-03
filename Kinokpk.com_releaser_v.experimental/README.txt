@@ -119,7 +119,7 @@ INIT();
 
 $res = $REL_DB->query("SELECT id, info_hash FROM torrents ORDER BY id ASC");
 while ($row=mysql_fetch_assoc($res)) {
-$REL_DB->query("INSERT INTO xbt_files (fid,info_hash) VALUES ({$row['id']},'".pack('H*', $row['info_hash'])."')");
+$REL_DB->query("INSERT INTO xbt_files (fid,info_hash,completed,ctime) VALUES ({$row['id']},".sqlesc(pack('H*', $row['info_hash'])).",{$row['times_completed']},{$row[added]})") or sqlerr(__FILE__,__LINE__);
 print "{$row['id']} processed<br/>";
 }
 ?>
