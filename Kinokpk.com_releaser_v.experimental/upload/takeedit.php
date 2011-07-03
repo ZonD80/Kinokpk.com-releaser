@@ -294,7 +294,7 @@ if ($update_torrent) {
 	@file_put_contents(ROOT_PATH."torrents/$id.torrent",benc($dict['value']['info']));
 
 	$updateset[] = "info_hash = " . sqlesc($infohash);
-	$update_xbt_query = "UPDATE xbt_files SET info_hash='".pack('H*', $infohash)."' WHERE fid=$id";
+	$update_xbt_query = "UPDATE xbt_files SET info_hash=".sqlesc(pack('H*', $infohash))." WHERE fid=$id";
 	$updateset[] = "filename = " . sqlesc($fname);
 	sql_query("DELETE FROM files WHERE torrent = $id");
 	sql_query("DELETE FROM trackers WHERE torrent = ".$id);

@@ -289,7 +289,7 @@ if ($_POST['nofile']) {
 	}
 	$id = mysql_insert_id();
 
-	$REL_DB->query("INSERT INTO xbt_files (fid,info_hash) VALUES ($id,'".pack('H*', $infohash)."')");
+	$REL_DB->query("INSERT INTO xbt_files (fid,info_hash) VALUES ($id,".sqlesc(pack('H*', $infohash)).")");
 
 	//insert localhost tracker
 	if (!$_POST['nofile']) sql_query("INSERT INTO trackers (torrent,tracker) VALUES ($id,'localhost')");
