@@ -118,7 +118,7 @@ $row = mysql_fetch_row($res);
 
 		$dbname = $mysql_db;
 
-		$result = sql_query("SHOW TABLES FROM ".$dbname."");
+		$result = sql_query("SHOW TABLES FROM `".$dbname."`");
 		$content = "";
 		while (list($name) = mysql_fetch_array($result)) $content .= "<option value=\"".$name."\" selected>".$name."</option>";
 		echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\">"
@@ -132,7 +132,7 @@ $row = mysql_fetch_row($res);
 		."<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"Выполнить действие\"></td></tr></form></table>";
 
 		if ($_POST['type'] == "Optimize") {
-			$result = sql_query("SHOW TABLE STATUS FROM ".$dbname."");
+			$result = sql_query("SHOW TABLE STATUS FROM `".$dbname."`");
 			$tables = array();
 			while ($row = mysql_fetch_array($result)) {
 				$total = $row['Data_length'] + $row['Index_length'];
@@ -146,11 +146,11 @@ $row = mysql_fetch_row($res);
 				$content3 .= "<tr class=\"bgcolor1\"><td align=\"center\">".$i."</td><td>".$row[0]."</td><td>".mksize($total)."</td><td align=\"center\">".$otitle."</td><td align=\"center\">".mksize($free)."</td></tr>";
 			}
 			sql_query("OPTIMIZE TABLE ".implode(", ", $tables));
-			echo "<center><font class=\"option\">Оптимизация базы данных: ".$dbname."<br />Общий размер базы данных: ".mksize($totaltotal)."<br />Общие накладные расходы: ".mksize($totalfree)."<br /><br />"
+			echo "<center><font class=\"option\">Оптимизация базы данных: `".$dbname."`<br />Общий размер базы данных: ".mksize($totaltotal)."<br />Общие накладные расходы: ".mksize($totalfree)."<br /><br />"
 			."<table border=\"0\" cellpadding=\"3\" cellspacing=\"1\" width=\"100%\"><tr><td class=\"colhead\" align=\"center\">№</td><td class=\"colhead\">Таблица</td><td class=\"colhead\">Размер</td><td class=\"colhead\">Статус</td><td class=\"colhead\">Накладные расходы</td></tr>"
 			."".$content3."</table>";
 		} elseif ($_POST['type'] == "Repair") {
-			$result = sql_query("SHOW TABLE STATUS FROM ".$dbname."");
+			$result = sql_query("SHOW TABLE STATUS FROM `".$dbname."`");
 			while ($row = mysql_fetch_array($result)) {
 				$total = $row['Data_length'] + $row['Index_length'];
 				$totaltotal += $total;
