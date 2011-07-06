@@ -62,7 +62,7 @@ if ($type == 'new') {
 	}
 
 
-	$ret = sql_query("SELECT u.id, u.username, u.class, u.email, u.ratingsum, u.warned, u.enabled, u.donor, u.disabled, invites.confirmed FROM invites LEFT JOIN users AS u ON u.id=invites.inviteid WHERE invitedby = $id") or sqlerr(__FILE__,__LINE__);
+	$ret = sql_query("SELECT u.id, u.username, u.class, u.email, u.ratingsum, u.warned, u.enabled, u.donor, invites.confirmed FROM invites LEFT JOIN users AS u ON u.id=invites.inviteid WHERE invitedby = $id") or sqlerr(__FILE__,__LINE__);
 	$num = mysql_num_rows($ret);
 	print("<form method=post action=\"".$REL_SEO->make_link('takeconfirm','id',$id)."\"><table border=1 width=100% cellspacing=0 cellpadding=5>".
 	"<tr class=tabletitle><td colspan=7><b>Статус приглашенных вами</b> (".(int)$num.")</td></tr>");
