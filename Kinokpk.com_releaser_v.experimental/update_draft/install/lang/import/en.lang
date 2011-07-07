@@ -1059,6 +1059,7 @@ shop=Shop
 show_all=Show all
 show_data=Show info
 show_my_requests=Show my requests
+show_more=Show more results
 Signature=Signature
 signature_notice=Your signature will be shown in comments. Maximum length is %s characters (if more, text will be cutted). Pure HTML knowing is allowed!
 signup=Registration
