@@ -47,7 +47,7 @@
 {/if}
 <table border="0" class="index bottom">
 <tr>
-  <td valign="top" class="itd bottom"><div class="tl"></div></td>
+  <td valign="top" class="itd bottom"><div class="tl1"></div></td>
   <td valign="top" class="itdc bottom"><div class="index2">
     <div class="header1">
       <div class="header3">
