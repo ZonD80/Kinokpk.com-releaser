@@ -27,7 +27,7 @@ if (!$comarray) $content.='<tr><td>'.$REL_LANG->say_by_key('no_comments').'</td>
 		$content .= "<tr>";
 		$user = $row;
 		$user['id'] = $user['user'];
-		$content .= "<td align=\"left\"><a href=\"".$REL_SEO->make_link('details','id',$row['torrent'],'name',translit($row['name']))."#comm$row[id]\"><b>".substr($row['name'],0,50).'...'."</b></a></td>";
+		$content .= "<td align=\"left\"><a href=\"".$REL_SEO->make_link('details','id',$row['torrent'],'name',translit($row['name']))."#comm$row[id]\"><b>".mb_substr($row['name'],0,50).'...'."</b></a></td>";
 		$content .= "<td align=\"left\">".make_user_link($user);
 		$content .= "</td></tr>";
 	}
