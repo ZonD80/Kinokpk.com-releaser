@@ -36,7 +36,6 @@ class REL_DB {
 		$result = mysql_query($query);
 		$query_end_time = microtime(true); // End time
 		$query_time = ($query_end_time - $query_start_time);
-		$querytime = $querytime + $query_time;
 		//$query_time = substr($query_time, 0, 8);
 		$this->query[] = array("seconds" => $query_time, "query" => $query);
 		return $result;

@@ -36,7 +36,7 @@ function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
 	var MAX_PAGE = $maxpage;
 	var PAGER_HREF = \"$href\";
 	$('document').ready(function(){
-	$('#pager_scrollbox').after('<div align=\"center\"><input type=\"button\" id=\"pager_button\" value=\"{$REL_LANG->_('Show more')}\" onclick=\"javascript:do_pager();\"/></div>');
+	$('#pager_scrollbox').after('<div align=\"center\"><input type=\"button\" id=\"pager_button\" value=\"{$REL_LANG->say_by_key('show_more')}\" onclick=\"javascript:do_pager();\"/></div>');
 });
 	function do_pager() {
 	if (CURR_PAGE>=MAX_PAGE) { $('#pager_button').val('{$REL_LANG->_('This is an end')}'); $('#pager_button').attr('disabled','disabled'); return false; }
