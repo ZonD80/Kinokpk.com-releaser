@@ -31,7 +31,6 @@
 <script language="javascript" type="text/javascript" src="js/features.js"></script>
 <script language="javascript" type="text/javascript" src="js/swfobject.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.paginator3000.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.utils.js"></script>
 <script language="javascript" type="text/javascript" src="js/blocks.js"></script>
 <!--Выпадающее меню-->
 <script language="javascript" type="text/javascript" src="themes/{$REL_CONFIG.ss_uri}/js/topmenu.js"></script>

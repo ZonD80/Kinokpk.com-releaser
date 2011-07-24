@@ -1531,7 +1531,7 @@ function logoutcookie() {
 function loggedinorreturn() {
 	global $CURUSER, $REL_SEO;
 	if (!$CURUSER) {
-		safe_redirect($REL_SEO->make_link('login','returnto',urlencode(basename($_SERVER["REQUEST_URI"]))));
+		safe_redirect($REL_SEO->make_link('login','returnto',urlencode(str_replace($REL_CONFIG['defaultbaseurl'],'', $_SERVER["REQUEST_URI"]))));
 		exit();
 	}
 	return;

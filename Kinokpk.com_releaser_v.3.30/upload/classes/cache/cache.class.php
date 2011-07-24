@@ -126,7 +126,7 @@ class Cache
 			$drv=$this->getDriver($driver);
 
 			if(!$drv->exists($groupName, $identifier)) return false;
-			if((time() - $drv->modificationTime($groupName, $idetnifier) > $lifeTime) && $lifeTime){
+			if((time() - $drv->modificationTime($groupName, $identifier) > $lifeTime) && $lifeTime){
 				$drv->clearCache($groupName, $identifier);
 				return false;
 			}
