@@ -70,7 +70,7 @@ if (isset($_GET['id'])) {
                   "".$newsid." AND nc.type='news' GROUP BY nc.id ORDER BY nc.id DESC $limit") or sqlerr(__FILE__, __LINE__);
 		$allrows = prepare_for_commenttable($subres,$news['subject'],$REL_SEO->make_link('newsoverview','id',$newsid));
 		if (!pagercheck()) {
-			print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >");
+			print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" style=\"float:left;\">");
 			print("<tr><td class=\"colhead\" align=\"center\" >");
 			print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>");
 			print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('newsoverview','id',$newsid)."#comments\" class=altlink_white>Добавить комментарий</a></div>");

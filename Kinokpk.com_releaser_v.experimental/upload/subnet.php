@@ -43,7 +43,7 @@ if (mysql_num_rows($res)){
 	print("<tr><td class=colhead align=center colspan=8>:: ".$REL_LANG->say_by_key('network_neighbot')." ::</td></tr><tr><td colspan=8><center>".$REL_LANG->say_by_key('speed_above')."</center></td></tr>");
 	print("<tr><td class=colhead align=left>".$REL_LANG->say_by_key('username')."</td>
 <td class=colhead>".$REL_LANG->say_by_key('ratio')."</td><td class=colhead>".$REL_LANG->say_by_key('registered')."</td>
-<td class=colhead>".$REL_LANG->say_by_key('last_access')>"</td><td class=colhead align=left>".$REL_LANG->say_by_key('class')."</td>
+<td class=colhead>".$REL_LANG->say_by_key('last_access')."</td><td class=colhead align=left>".$REL_LANG->say_by_key('class')."</td>
 <td class=colhead>IP</td></tr>\n");
 	while($arr=mysql_fetch_assoc($res)){
 		print("<tr><td align=left>".make_user_link($arr)."</td>
