@@ -32,6 +32,8 @@ $user = mysql_fetch_array ( $r ) or bark ( "Нет пользователя с �
 if (! $user ["confirmed"])
 stderr ( $REL_LANG->say_by_key('error'), "Этот пользователь еще не подтвердил себя по e-mail, возможно, этот аккаунт вскоре будет удален" );
 
+$user['custom_privileges'] = explode(',',$user['custom_privileges']);
+
 if (!pagercheck()) {
 	$cats = assoc_cats ();
 	$am_i_friend = ($id==$CURUSER['id']?true:@mysql_result(sql_query("SELECT 1 FROM friends WHERE (userid={$CURUSER['id']} AND friendid=$id) OR (friendid={$CURUSER['id']} AND userid=$id) AND confirmed=1"),0));
@@ -448,11 +450,30 @@ function togglepic(bu, picid, formid)
 		else
 		print ( "<tr><td class=\"rowhead\">Удалить</td><td colspan=\"2\" align=\"left\"><input type=\"checkbox\" name=\"deluser\"></td></tr>" );
 		print ( "</td></tr>" );
+		if (get_privilege('edit_user_privileges',false)) {
+			print ( "<tr><td colspan=\"3\" align=\"center\">{$REL_LANG->_("Edit custom user privileges (these priveleges will be added to default for user class)")}</td></tr>\n" );
+				$priority = get_class_priority();
+				$priority2 = get_class_priority($user['class']);
+				$classes = init_class_array();
+				foreach ($classes as $cid=>$cl) 
+					if ($cl['priority']<=$priority2||$cl['priority']>=$priority||!is_int($cid)) unset($classes[$cid]); else $classes[$cid] = "FIND_IN_SET($cid,classes_allowed)";
+					
+				$privs = $REL_DB->query_return("SELECT name,description,classes_allowed FROM privileges WHERE ".implode(' OR ',$classes));
+				if ($privs) {
+					print ("<tr><td colspan=\"3\"><div class=\"sp-wrap\"><div class=\"sp-head folded clickable\">{$REL_LANG->_("Open information")}</div><div class=\"sp-body\"><table border=\"1\"><tr><td class=\"colhead\">{$REL_LANG->_("Check")}<!-- | {$REL_LANG->_("All")}: <input type=\"checkbox\" name=\"allprivs\" value=\"1\"/>--></td><td class=\"colhead\">{$REL_LANG->_("Description")}</td></tr>");
+				foreach ($privs as $p) {
+					if (!in_array($user['class'],explode(',',$p['classes_allowed'])))
+					print "<tr><td><input type=\"checkbox\" name=\"privileges[]\" value=\"{$p['name']}\"".(in_array($p['name'],$user['custom_privileges'])?' checked':'')."></td><td>{$REL_LANG->_($p['description'])}</td></tr>";
+				}
+				print "</table></div></td></tr>";
+				}
 		print ( "<tr><td colspan=\"3\" align=\"center\"><input type=\"submit\" class=\"btn\" value=\"ОК\"></td></tr>\n" );
 		print ( "</table>\n" );
 		print ( "<input type=\"hidden\" id=\"ratingchange\" name=\"ratingchange\" value=\"plus\"><input type=\"hidden\" id=\"discountchange\" name=\"discountchange\" value=\"plus\"><input type=\"hidden\" id=\"upchange\" name=\"upchange\" value=\"plus\"><input type=\"hidden\" id=\"downchange\" name=\"downchange\" value=\"plus\">\n" );
 		print ( "</form>\n" );
 		$REL_TPL->end_frame ();
+				//$privs = 
+}
 }
 
 set_visited('users',$id);

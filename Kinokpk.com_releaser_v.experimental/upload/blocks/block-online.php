@@ -12,10 +12,10 @@ $latestuser = $a['username'];
 $title_who = array();
 $gues = array();
 $dt = sqlesc(time() - 300);
-$result = sql_query("SELECT DISTINCT s.uid, s.username, s.class, s.ip, users.donor, users.warned, users.enabled FROM sessions AS s LEFT JOIN users ON s.uid=users.id WHERE s.time > $dt ORDER BY s.class DESC");
+$result = sql_query("SELECT DISTINCT s.uid as id, s.username, s.class, s.ip, users.donor, users.warned, users.enabled FROM sessions AS s LEFT JOIN users ON s.uid=users.id WHERE s.time > $dt ORDER BY s.class DESC");
 $classes = init_class_array();
 while ($row = mysql_fetch_array($result)) {
-	$uid = $row["uid"];
+	$uid = $row["id"];
 	$uname = $row["username"];
 	$class = $row["class"];
 	$ip = $row["ip"];

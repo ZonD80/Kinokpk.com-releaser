@@ -69,6 +69,25 @@ elseif ($action == "edituser") {
 	$supportfor = ($_POST["support"]?htmlspecialchars($_POST["supportfor"]):'');
 	$deluser = $_POST["deluser"];
 
+	$privileges = (array)$_POST['privileges'];
+
+	$priority = get_class_priority();
+	$priority2 = get_class_priority($userid);
+	$classes = init_class_array();
+	foreach ($classes as $cid=>$cl)
+	if ($cl['priority']<=$priority2||$cl['priority']>=$priority||!is_int($cid)) unset($classes[$cid]); else $classes[$cid] = "FIND_IN_SET($cid,classes_allowed)";
+
+	$privsdata = $REL_DB->query_return("SELECT name FROM privileges WHERE ".implode(' OR ',$classes));
+	foreach ($privsdata as $p) {
+		$privs[] = $p['name'];
+	}
+	foreach ($privileges as $pid=>$priv) {
+		if (!in_array($priv,$privs)) unset ($privileges[$pid]);
+	}
+	
+	$updateset[] = "custom_privileges = ".sqlesc(implode(',',$privileges));
+
+
 	if ($ratingtoadd > 0) $updateset[] = 'ratingsum = ratingsum'.($rch=='plus'?'+':'-').$ratingtoadd;
 	if ($discounttoadd > 0) $updateset[] = 'discount = discount'.($dch=='plus'?'+':'-').$discounttoadd;
 

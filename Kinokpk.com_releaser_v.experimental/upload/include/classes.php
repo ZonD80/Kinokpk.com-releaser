@@ -97,7 +97,7 @@ function make_classes_checkbox($name,$selected='',$max=false) {
 	$classes = init_class_array();
 	foreach ($classes AS $id=>$class) {
 		if ($max&&$class['priority']>=$max) continue;
-		if (is_int($id)) 
+		if (is_int($id))
 		$return.="<input type=\"checkbox\" name=\"{$name}[]\" value=\"{$id}\"".(in_array($id, $selected)?' checked':'')."> {$REL_LANG->_($class['name'])}<br/>";
 	}
 	return $return;
@@ -142,7 +142,7 @@ function get_user_class_name($class) {
  * @return boolean True or False
  */
 function is_valid_user_class($class) {
-return in_array($class, init_class_array());
+	return in_array($class, init_class_array());
 }
 
 /**
@@ -173,16 +173,99 @@ function get_privilege($name,$die=true) {
 		}
 	}
 	if (!$privs[$name]['classes']) die("No classes defined for privilege $name");
+	
+	if ($CURUSER['custom_privileges']) {
+		if (in_array($name, $CURUSER['custom_privileges'])||($CURUSER['custom_privileges'][0]=='all')) return true;
+	}
+	
 	if (in_array($CURUSER['class'], $privs[$name]['classes'])) {
 		return true;
-	} else {
-		if (!$die) return false; else {
-			if (ob_get_length()) {
-				$REL_TPL->stdmsg($REL_LANG->_('Access denied, you must to have permission to:'),$REL_LANG->_($privs[$name]['descr']));
-				$REL_TPL->stdfoot();
-				die();
-			} else $REL_TPL->stderr($REL_LANG->_('Access denied, you must to have permission to:'),$REL_LANG->_($privs[$name]['descr']));
+	}
+
+	if (!$die) return false; else {
+		if (ob_get_length()) {
+			$REL_TPL->stdmsg($REL_LANG->_('Access denied, you must to have permission to:'),$REL_LANG->_($privs[$name]['descr']));
+			$REL_TPL->stdfoot();
+			die();
+		} else $REL_TPL->stderr($REL_LANG->_('Access denied, you must to have permission to:'),$REL_LANG->_($privs[$name]['descr']));
+	}
+
+}
+
+/**
+ * Adds privilege to user by given user id and privilege name
+ * @param integer $id User id
+ * @param string $name Privilege name
+ * @param boolean $monopoly Add only given prililege (cleanups another). Default false.
+ * @return boolean True on success, false on fail
+ */
+function add_privilege($id,$name,$monopoly=false) {
+	global $REL_DB;
+	if (!$monopoly) {
+		$privs = @explode(',',$REL_DB->query_row("SELECT custom_privileges FROM users WHERE id=$id"));
+
+		if (!in_array($name, $privs)) { $privs[] = $name;
+		return $REL_DB->query("UPDATE users SET custom_privileges=".sqlesc(implode(',',$privs))." WHERE id=$id");
 		}
 	}
+	else return $REL_DB->query("UPDATE users SET custom_privileges=".sqlesc($name)." WHERE id=$id");
+}
+
+/**
+ * Revoke privilege from user by given user id and privilege name
+ * @param integer $id User id
+ * @param string $name Privilege name
+ * @return boolean True on success, false on fail
+ */
+function del_privilege($id,$name) {
+	global $REL_DB;
+	$privs = @explode(',',$REL_DB->query_row("SELECT custom_privileges FROM users WHERE id=$id"));
+
+	if ($privs) {
+		foreach ($privs as $pid=>$priv) {
+			if ($priv==$name) unset($privs[$pid]);
+		}
+	}
+	return $REL_DB->query("UPDATE users SET custom_privileges=".sqlesc(implode(',',$privs))." WHERE id=$id");
+}
+
+/**
+ * Adds(registers)/updates privilege by given name
+ * @param string $name Name of privilege
+ * @param array $classes_allowed Classes allowed
+ * @param string $desc Description to be used in privilege explanation
+ * @param boolean $overwrite Owerwrite current rules (default false)
+ * @return boolean True on success, false on fail
+ */
+function register_privilege($name,$classes_allowed,$desc,$overwrite=false) {
+	global $REL_DB,$REL_LANG,$REL_CACHE;
+	$classes_allowed = array_map("intval",(array)$classes_allowed);
+
+	$REL_DB->query("INSERT INTO privileges (name,classes_allowed,description) VALUES (".sqlesc(htmlspecialchars($name)).",".sqlesc(implode(",",$classes_allowed)).",".sqlesc(htmlspecialchars($desc)).")".($owerwrite?" ON DUPLICATE KEY UPDATE classes_allowed=".sqlesc(implode(",",$classes_allowed)):''));
+	if (mysql_errno()==1062) {
+		return false;
+	}
+	$REL_CACHE->clearCache('system','privileges');
+	return true;
+}
+
+/**
+ * Unregisters privilege and cleanups custom user rules
+ * @param string $name Privilege name
+ */
+function unregister_privilege($name) {
+	global $REL_DB,$REL_CACHE;
+	$REL_DB->query("DELETE FROM privileges WHERE name=".sqlesc($name));
+	$uar = $REL_DB->query_return("SELECT id,custom_privileges FROM users WHERE FIND_IN_SET(".sqlesc($name).",custom_privileges)");
+	if ($uar) {
+		foreach ($uar as $u) {
+			$u['custom_privileges'] = explode(',',$u['custom_privileges']);
+			foreach ($u['custom_privileges'] as $pid=> $priv) {
+				if ($priv==$name) unset($u['custom_privileges'][$priv]);
+			}
+			$REL_DB->query("UPDATE users SET custom_privileges = ".sqlesc($u['custom_privileges'])." WHERE id={$u['id']}");
+		}
+	}
+	$REL_CACHE->clearCache('system','privileges');
 }
 ?>

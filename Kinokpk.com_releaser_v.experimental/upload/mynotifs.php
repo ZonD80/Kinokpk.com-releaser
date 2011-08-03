@@ -25,8 +25,8 @@ if (isset($_GET['settings'])) {
 
 	if ($_SERVER['REQUEST_METHOD']!='POST') {
 		$REL_TPL->stdhead($REL_LANG->say_by_key('my_notifs_settings'));
-		$notifs = explode(',',$CURUSER['notifs']);
-		$emailnotifs = explode(',',$CURUSER['emailnotifs']);
+		$notifs = $CURUSER['notifs'];
+		$emailnotifs = $CURUSER['emailnotifs'];
 
 		$REL_TPL->begin_frame(sprintf($REL_LANG->say_by_key('i_can_be_notified_due_my_class'),get_user_class_name($CURUSER['class'])));
 		print('<form action="'.$REL_SEO->make_link('mynotifs','settings','').'" method="POST">
@@ -70,7 +70,7 @@ if (isset($_GET['settings'])) {
 $REL_TPL->stdhead($REL_LANG->say_by_key('my_notifs'));
 //var_dump($CURUSER);
 
-$allowed_types = explode(',',$CURUSER['notifs']);
+$allowed_types = $CURUSER['notifs'];
 
 $types_diff = array_diff($allowed_types_view,$allowed_types);
 

@@ -169,6 +169,8 @@ ALTER TABLE `polls_structure` ENGINE=MyISAM;
 /* Alter table in target */
 ALTER TABLE `polls_votes` ENGINE=MyISAM; 
 
+ALTER TABLE  `users` ADD  `custom_privileges` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
 /* Create table in target */
 CREATE TABLE `presents`(
 	`id` int(10) unsigned NOT NULL  auto_increment , 

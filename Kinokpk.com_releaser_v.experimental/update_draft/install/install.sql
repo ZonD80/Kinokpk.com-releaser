@@ -1371,3 +1371,5 @@ CREATE TABLE IF NOT EXISTS `nickhistory` (
   `date` int(10) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+
+ALTER TABLE  `users` ADD  `custom_privileges` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;

@@ -49,6 +49,11 @@ logincookie($row["id"], $row["passhash"], $row["language"]);
 if (!$row["enabled"])
 bark($REL_LANG->_("Your account was disabled due reason: %s",$row[dis_reason]));
 
+// Array creation
+$row['notifs'] = explode(',',$row['notifs']);
+$row['emailnotifs'] = explode(',',$row['emailnotifs']);
+$row['custom_privileges'] = explode(',',$row['custom_privileges']);
+
 $CURUSER = $row;
 
 $returnto = strip_tags(trim((string)$_POST['returnto']));

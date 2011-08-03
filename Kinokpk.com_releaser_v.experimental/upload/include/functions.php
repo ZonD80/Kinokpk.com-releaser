@@ -36,7 +36,7 @@ function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
 	var MAX_PAGE = $maxpage;
 	var PAGER_HREF = \"$href\";
 	$('document').ready(function(){
-	$('#pager_scrollbox').after('<div align=\"center\"><input type=\"button\" id=\"pager_button\" value=\"{$REL_LANG->say_by_key('show_more')}\" onclick=\"javascript:do_pager();\"/></div>');
+	$('#pager_scrollbox').after('<div align=\"center\"><input type=\"button\" id=\"pager_button\" value=\"{$REL_LANG->_('Show more')}\" onclick=\"javascript:do_pager();\"/></div>');
 });
 	function do_pager() {
 	if (CURR_PAGE>=MAX_PAGE) { $('#pager_button').val('{$REL_LANG->_('This is an end')}'); $('#pager_button').attr('disabled','disabled'); return false; }
@@ -964,6 +964,12 @@ function userlogin() {
 		if (get_class_priority($override)<get_class_priority($row['class']) && $override>=0)
 		$row['class'] = $override;
 	}
+	
+	// Array creation
+	$row['notifs'] = explode(',',$row['notifs']);
+	$row['emailnotifs'] = explode(',',$row['emailnotifs']);
+	$row['custom_privileges'] = explode(',',$row['custom_privileges']);
+	
 	/* @var array Not full yet array of variables of current user
 	 * @see $REL_TPL->stdhead()
 	 */
@@ -1059,7 +1065,7 @@ function user_session() {
 			$allowed_types_moderator = array('users', 'reports', 'unchecked');
 			$allowed_types = array_merge($allowed_types,$allowed_types_moderator);
 		}
-		$allowed_types=array_merge(array('unread', 'inbox', 'outbox'),array_intersect($allowed_types,explode(',',$CURUSER['notifs'])));
+		$allowed_types=array_merge(array('unread', 'inbox', 'outbox'),array_intersect($allowed_types,$CURUSER['notifs']));
 
 		$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
 		$dt_system = time() - $secs_system; // Сегодня минус количество дней
@@ -1522,7 +1528,7 @@ function generate_notify_array()
 {
 	global $CURUSER,$REL_LANG,$REL_SEO;
 
-	$allowed_types = explode(',',$CURUSER['notifs']);
+	$allowed_types = $CURUSER['notifs'];
 	$return['total'] = 0;
 	$return['notifs'] = array();
 	if ($allowed_types) {
@@ -1623,7 +1629,7 @@ function logoutcookie() {
  * @return void
  */
 function loggedinorreturn() {
-	global $CURUSER, $REL_SEO, $REL_CONFIG;
+	global $CURUSER, $REL_SEO;
 	if (!$CURUSER) {
 		safe_redirect($REL_SEO->make_link('login','returnto',urlencode(str_replace($REL_CONFIG['defaultbaseurl'],'', $_SERVER["REQUEST_URI"]))));
 		exit();
@@ -2441,5 +2447,5 @@ define ("BETA_NOTICE", "\n<br />This isn't complete release of source!");
  * Kinokpk.com releaser's version
  * @var string
  */
-define("RELVERSION","3.40-xbt ALPHA");
+define("RELVERSION","3.40 experimental alpha with xbt support");
 ?>
