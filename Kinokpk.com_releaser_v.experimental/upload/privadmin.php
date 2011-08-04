@@ -24,24 +24,29 @@ $reserved_privileges = array('is_guest');
 if ($_SERVER['REQUEST_METHOD']=='POST') {
 	$name = trim((string)($_POST['name']?$_POST['name']:$_GET['name']));
 	if ($a=='add') {
-		$t = register_privilege($name, (array)$_POST['classes'], trim((string)$_POST['desc']));
+		if (!$_POST['classes']) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Error. Please select at least one class'));
+		$t = register_privilege($name, (array)$_POST['classes'], trim((string)$_POST['descr']));
 		$REL_CACHE->clearCache('system','privileges');
-		$REL_TPL->stderr(($t?$REL_LANG->_('Successful'):$REL_LANG->_('Error')),($t?$REL_LANG->_('Privilege "%s" successfully registered',htmlspecialchars($name)):$REL_LANG->_('Privilege does not registered (it already exists)')),($t?'success':''));
+		if (!REL_AJAX) safe_redirect($REL_SEO->make_link('privadmin'),1);
+		$REL_TPL->stderr(($t?$REL_LANG->_('Successful'):$REL_LANG->_('Error')),($t?$REL_LANG->_('Privilege "%s" successfully registered',htmlspecialchars($name)):$REL_LANG->_('Privilege does not registered (it already exists)')),($t?'success':'error'));
 	}
 	elseif ($a=='del') {
 		if (in_array($name,$reserved_privileges)) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Privilege "%s" can not be deleted. It is system privilege.',htmlspecialchars($name)));
 		unregister_privilege($name);
 		$REL_CACHE->clearCache('system','privileges');
+		if (!REL_AJAX) safe_redirect($REL_SEO->make_link('privadmin'),1);
 		$REL_TPL->stderr($REL_LANG->_('Successful'),$REL_LANG->_('Privilege "%s" unregistered',htmlspecialchars($name)),'success');
 		
 	}
 	elseif ($a=='edit') {
 		$classes = implode(',',array_map('intval',(array)$_POST['classes']));
 		$descr = htmlspecialchars(trim((string)$_POST['descr']));
-		if (!$classes) die($REL_LANG->_('Error. Please selet at least one class'));
+		if (!$classes) die($REL_LANG->_('Error. Please select at least one class'));
 		$REL_DB->query('UPDATE privileges SET classes_allowed='.sqlesc($classes).($descr?', description='.sqlesc($descr):'').' WHERE name='.sqlesc($name));
 		$REL_CACHE->clearCache('system','privileges');
+		if (REL_AJAX) {
 		die($REL_LANG->_('Privilege updated'));
+		}
 	}
 }
 
@@ -63,7 +68,7 @@ if ($a=='add'||$a=='edit') {
 } 
 else {
 
-		$privs = $REL_DB->query_return("SELECT * FROM privileges");
+		$privs = $REL_DB->query_return("SELECT * FROM privileges ORDER BY id DESC");
 		foreach ($privs AS $priv) {
 			$p[$priv['id']] = array('name'=>$priv['name'],'classes'=>$priv['classes_allowed'],'descr'=>$priv['description']);
 		}

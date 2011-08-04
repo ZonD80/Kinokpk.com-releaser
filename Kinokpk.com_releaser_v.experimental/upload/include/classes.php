@@ -261,9 +261,9 @@ function unregister_privilege($name) {
 		foreach ($uar as $u) {
 			$u['custom_privileges'] = explode(',',$u['custom_privileges']);
 			foreach ($u['custom_privileges'] as $pid=> $priv) {
-				if ($priv==$name) unset($u['custom_privileges'][$priv]);
+				if ($priv==$name) unset($u['custom_privileges'][$pid]);
 			}
-			$REL_DB->query("UPDATE users SET custom_privileges = ".sqlesc($u['custom_privileges'])." WHERE id={$u['id']}");
+			$REL_DB->query("UPDATE users SET custom_privileges = ".sqlesc(implode(',',$u['custom_privileges']))." WHERE id={$u['id']}");
 		}
 	}
 	$REL_CACHE->clearCache('system','privileges');
