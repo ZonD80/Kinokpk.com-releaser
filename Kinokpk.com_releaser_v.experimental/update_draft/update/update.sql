@@ -497,3 +497,7 @@ CREATE TABLE IF NOT EXISTS `nickhistory` (
   `date` int(10) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+
+ALTER TABLE  `users` ADD UNIQUE (
+`email`
+);
