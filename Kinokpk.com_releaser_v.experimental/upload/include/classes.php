@@ -142,7 +142,7 @@ function get_user_class_name($class) {
  * @return boolean True or False
  */
 function is_valid_user_class($class) {
-	return in_array($class, init_class_array());
+	return in_array($class, array_keys(init_class_array()));
 }
 
 /**
