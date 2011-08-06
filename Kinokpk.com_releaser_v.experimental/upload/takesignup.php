@@ -125,7 +125,7 @@ $classes = init_class_array();
 
 $ret = sql_query("INSERT INTO users (username, passhash, secret, editsecret, notifs, emailnotifs, email, confirmed, class, added, last_login, last_access, language, timezone, invitedby, invitedroot,custom_privileges) VALUES (" .
 implode(",", array_map("sqlesc", array($wantusername, $wantpasshash, $secret, $editsecret, $REL_CONFIG['default_notifs'], $REL_CONFIG['default_emailnotifs'], strtolower($email), $status))).
-		", ". (!$users?$classes['sysop']:$classes['reg']).",".$time.",".$time.",".$time.", '{$REL_CONFIG['default_language']}', {$REL_CONFIG['register_timezone']} , ".(int)$inviter.", ".(int)$invitedroot.",". (!$users?'all':'').")");// or sqlerr(__FILE__, __LINE__);
+		", ". (!$users?$classes['sysop']:$classes['reg']).",".$time.",".$time.",".$time.", '{$REL_CONFIG['default_language']}', {$REL_CONFIG['register_timezone']} , ".(int)$inviter.", ".(int)$invitedroot.",". (!$users?"'all'":'').")");// or sqlerr(__FILE__, __LINE__);
 
 if (!$ret) {
 	if (mysql_errno() == 1062)
