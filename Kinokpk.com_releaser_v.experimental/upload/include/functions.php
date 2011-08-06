@@ -437,7 +437,7 @@ function make_user_link($data=false) {
  * @return void
  */
 function delete_user($id) {
-	global $CURUSER, $REL_SEO;
+	global $CURUSER, $REL_SEO, $REL_DB;
 	sql_query("DELETE FROM users WHERE id = $id");
 	sql_query("DELETE FROM comments WHERE toid=$id AND type='user'") or sqlerr(__FILE__, __LINE__);
 	sql_query("DELETE FROM notifs WHERE type='usercomments' AND checkid=$id") or sqlerr(__FILE__, __LINE__);
@@ -450,6 +450,7 @@ function delete_user($id) {
 	sql_query("DELETE FROM presents WHERE presenter = $id OR userid = $id") or sqlerr(__FILE__,__LINE__);
 	sql_query("DELETE FROM addedrequests WHERE userid = $id") or sqlerr(__FILE__,__LINE__);
 	sql_query("DELETE FROM notifs WHERE userid = $id") or sqlerr(__FILE__,__LINE__);
+	sql_query("DELETE FROM xbt_users WHERE uid = $id") or sqlerr(__FILE__,__LINE__);
 	write_log(make_user_link()." <font color=\"red\">deleted user with id $id</font>",'system_functions');
 
 	return;
