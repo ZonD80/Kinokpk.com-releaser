@@ -133,4 +133,4 @@ Start xbtt, try to download/upload files to your tracker
 WARNING: No configuration files are written yet for xbtt at all or "use_xbt" parameter in cache_stats. Please edit them manually, clearing cache "system" after modification.
 Also, php scaper/announcer is disabled due incompatibility. (it need to be rewritten for xbtt for pure noob-admins)
 
-No configuration files are wiritten yet for privilege system. Please edit tables "privileges" and "classes" manually
+No configuration files are wiritten yet for class system. Please edit table "classes" manually

@@ -33,6 +33,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	if (mysql_errno()==1062)
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('unable_to_create_account'));
 	$id = mysql_insert_id();
+	
+	$REL_DB->query("INSERT INTO xbt_users (uid) VALUES ($id)");
+	
 	safe_redirect($REL_SEO->make_link('userdetails','id',$id,'username',$username));
 	die;
 }

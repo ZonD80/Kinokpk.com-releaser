@@ -135,6 +135,8 @@ if (!$ret) {
 
 $id = mysql_insert_id();
 
+$REL_DB->query("INSERT INTO xbt_users (uid) VALUES ($id)");
+
 if ($REL_CRON['rating_enabled'])
 $msg = $REL_LANG->_('Hello dear new user. You have just registered on our site. Please check <a href="%s">Your rating stats</a> to be happy on our site.<br/><i>Best regards, site team.</i>',$REL_SEO->make_link('myrating'));
 else
