@@ -22,9 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('missing_form_data'));
 	if ($_POST["password"] != $_POST["password2"])
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('password_mismatch'));
-	$username = sqlesc(htmlspecialchars((string)$_POST["username"]));
+	$username = (htmlspecialchars((string)$_POST["username"]));
 	$password = (string)$_POST["password"];
-	$email = (htmlspecialchars(trim((string)$_POST["email"])));
+	$email = sqlesc(htmlspecialchars(trim((string)$_POST["email"])));
 	$secret = mksecret();
 	$passhash = sqlesc(md5($secret . $password . $secret));
 	$secret = sqlesc($secret);
