@@ -24,12 +24,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('password_mismatch'));
 	$username = sqlesc(htmlspecialchars((string)$_POST["username"]));
 	$password = (string)$_POST["password"];
-	$email = sqlesc(htmlspecialchars(trim((string)$_POST["email"])));
+	$email = (htmlspecialchars(trim((string)$_POST["email"])));
 	$secret = mksecret();
 	$passhash = sqlesc(md5($secret . $password . $secret));
 	$secret = sqlesc($secret);
 	$classes = init_class_array();
-	sql_query("INSERT INTO users (class, added, last_access, secret, username, passhash, notifs, emailnotifs, confirmed, email) VALUES({$classes['reg']},".time().", ".time().", $secret, $username, $passhash, '{$REL_CONFIG['default_notifs']}', '{$REL_CONFIG['default_emailnotifs']}', 1, $email)");
+	sql_query("INSERT INTO users (class, added, last_access, secret, username, passhash, notifs, emailnotifs, confirmed, email) VALUES({$classes['reg']},".time().", ".time().", $secret, ".sqlesc($username).", $passhash, '{$REL_CONFIG['default_notifs']}', '{$REL_CONFIG['default_emailnotifs']}', 1, $email)");
 	if (mysql_errno()==1062)
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('unable_to_create_account'));
 	$id = mysql_insert_id();
