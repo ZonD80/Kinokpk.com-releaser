@@ -2416,22 +2416,23 @@ function get_trailer($descr) {
 }
 
 /**
- * Tranliterate chars from russan to english
- * @param string $st string to be transliterated
- * @param boolean $replace_spaces replase spaces by "_" ? Default true
- * @return string Transliterated String
- */
+* Tranliterate chars from russan-ukrainian to english
+* @param string $st string to be transliterated
+* @param boolean $replace_spaces replase spaces by "_" ? Default true
+* @return string Transliterated String
+* updated by animan(http://ua-torrents.net)
+*/
 function translit($st,$replace_spaces = true) {
-	$ar = array("а"=>"a","б"=>"b","в"=>"v","г"=>"g","д"=>"d","е"=>"e","ё" =>"yo","ж"=>"j","з"=>"z","и"=>"i","й"=>"i","к"=>"k","л"=>"l","м"=>"m","н"=>"n","о"=>"o","п"=>"p","р"=>"r","с"=>"s","т"=>"t","у"=>"y","ф"=>"f","х"=>"h","ц"=>"c","ч"=>"ch", "ш"=>"sh","щ"=>"sh","ы"=>"i","э"=>"e","ю"=>"u","я"=>"ya",
-"ь"=>"","ъ"=>"",'%'=>'');
-	$alfavitlover = array('ё','й','ц','у','к','е','н','г', 'ш','щ','з','х','ъ','ф','ы','в', 'а','п','р','о','л','д','ж','э', 'я','ч','с','м','и','т','ь','б','ю');
-	$alfavitupper = array('Ё','Й','Ц','У','К','Е','Н','Г', 'Ш','Щ','З','Х','Ъ','Ф','Ы','В', 'А','П','Р','О','Л','Д','Ж','Э', 'Я','Ч','С','М','И','Т','Ь','Б','Ю');
+   $ar = array("а"=>"a","б"=>"b","в"=>"v","г"=>"g","ґ"=>"g","д"=>"d","е"=>"e","ё" =>"yo","ж"=>"j","з"=>"z","и"=>"u","й"=>"i","к"=>"k","л"=>"l","м"=>"m","н"=>"n","о"=>"o","п"=>"p","р"=>"r","с"=>"s","т"=>"t","у"=>"y","ф"=>"f","х"=>"h","ц"=>"c","ч"=>"ch", "ш"=>"sh","щ"=>"sh","ы"=>"i","і"=>"i","ї"=>"yi","є"=>"ye","э"=>"e","ю"=>"u","я"=>"ya",
+"ь"=>"","ъ"=>"",'%'=>'','/'=>'-','['=>'',']'=>'','{'=>'','}'=>'','('=>'',')'=>'','<'=>'','>'=>'','|'=>'','#'=>'','!'=>'','@'=>'','$'=>'','^'=>'','*'=>'',':'=>'',';'=>'',','=>'','?'=>'',' / '=>'-','/ '=>'-',' /'=>'-','&'=>'-','  '=>'-','’'=>'',"'"=>"",'"'=>'','+'=>'','.'=>'','№'=>'','quot'=>'','«'=>'','»'=>'','`'=>'');
+   $alfavitlover = array('ё','й','ц','у','к','е','н','г', 'ш','щ','з','х','ъ','ф','ы','в', 'а','п','р','о','л','д','ж','э', 'я','ч','с','м','и','т','ь','б','ю','і','є','ґ','ї');
+   $alfavitupper = array('Ё','Й','Ц','У','К','Е','Н','Г', 'Ш','Щ','З','Х','Ъ','Ф','Ы','В', 'А','П','Р','О','Л','Д','Ж','Э', 'Я','Ч','С','М','И','Т','Ь','Б','Ю','І','Є','Ґ','Ї');
 
-	$st = str_replace($alfavitupper,$alfavitlover,strtolower($st));
-	$st = strtr($st,$ar);
+   $st = str_replace($alfavitupper,$alfavitlover,strtolower($st));
+   $st = strtr($st,$ar);
 
-	if ($replace_spaces) $st = str_replace(" ","_",$st);
-	return $st;
+   if ($replace_spaces) $st = str_replace(" ","_",$st);
+   return $st;
 }
 
 /**

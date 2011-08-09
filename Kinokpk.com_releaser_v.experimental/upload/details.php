@@ -65,9 +65,14 @@ else {
 			$s = "<br />";
 			$s .= "<$editlink>[" . $REL_LANG->say_by_key('edit') . "]</a>";
 		}
+		// AddThis button language
+		$button_lang = substr((string)$_COOKIE['lang'],0,2);
+		if (!$button_lang) $button_lang = $REL_CONFIG['default_language'];
+		elseif ($button_lang=='ua') $button_lang = 'uk';
+		
 		tr ($rgcontent."<br/>".$REL_LANG->say_by_key('name') . '<br /><b>' . $REL_LANG->say_by_key('download') . '</b><br/>'.($CURUSER?reportarea ( $id, 'torrents' ):'') . $s, "<h1>$thisispresent" . (($row ['free']) ? "<img src=\"pic/freedownload.gif\" title=\"" . $REL_LANG->say_by_key('golden') . "\" alt=\"" . $REL_LANG->say_by_key('golden') . "\"/>&nbsp;" : '') . "<a class=\"index\" href=\"".$REL_SEO->make_link("download","id",$id,"name",translit($row['name']))."\" onclick=\"javascript:$.facebox({ajax:'".$REL_SEO->make_link("download","id",$id,"name",translit($row['name']))."'}); return false;\">{$REL_LANG->_("Download")} " . $row ["name"] . "</a>&nbsp;<a href=\"".$REL_SEO->make_link("bookmark","torrent",$row['id'],"name",translit($row['name']))."\"><img border=\"0\" src=\"pic/bookmark.gif\" alt=\"".$REL_LANG->say_by_key('bookmark_this')."\" title=\"".$REL_LANG->say_by_key('bookmark_this')."\" /></a></h1>
 <div style=\"text-align:right;\"><!-- AddThis Button BEGIN -->
-<a class=\"addthis_button\" href=\"http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4b9d38957e4015b5\"><img src=\"http://s7.addthis.com/static/btn/v2/lg-share-".($_COOKIE['lang'] ? substr((string)$_COOKIE['lang'],0,2) : $REL_CONFIG['default_language']).".gif\" width=\"125\" height=\"16\" alt=\"{$REL_LANG->say_by_key('bookmark_this')}\" style=\"border:0\"/></a><script type=\"text/javascript\" src=\"http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4beeed1d66d87035\"></script>
+<a class=\"addthis_button\" href=\"http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4b9d38957e4015b5\"><img src=\"http://s7.addthis.com/static/btn/v2/lg-share-$button_lang.gif\" width=\"125\" height=\"16\" alt=\"{$REL_LANG->say_by_key('bookmark_this')}\" style=\"border:0\"/></a><script type=\"text/javascript\" src=\"http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4beeed1d66d87035\"></script>
 <!-- AddThis Button END -->
 	</div>", 1, 1, "10%" );
 
@@ -108,7 +113,7 @@ else {
 				$OUT .= "<strong>{$REL_LANG->say_by_key('snatched')}:</strong> {$row ["hits"]} " . $REL_LANG->say_by_key('times')."<br/>";
 			}
 			$keepget = "";
-			$uprow = (isset ( $row ["username"] ) ? ("<a href='{$REL_SEO->make_link('userdetails','id',$row ["owner"],'name',$row['username'])}'>" . get_user_class_color ( $row ['class'], $row ["username"] ) . "</a>") : "<i>{$REL_LANG->_('Anonymous')}</i>");
+			$uprow = (isset ( $row ["username"] ) ? ("<a href='{$REL_SEO->make_link('userdetails','id',$row ["owner"],'name',$row['username'])}'>" . get_user_class_color ( $row ['class'], $row ["username"] ) . "</a>") : "<i>Аноним</i>");
 
 
 			$OUT .= "<strong>{$REL_LANG->_('Uploader')}:</strong>  $uprow $spacer ". ratearea ( $row ['userrating'], $row ['owner'], 'users' ,$CURUSER['id'])."<br/>";
