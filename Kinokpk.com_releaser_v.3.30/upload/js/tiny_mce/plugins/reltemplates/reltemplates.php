@@ -1,8 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type"
-	content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>{#reltemplates_dlg.title}</title>
 <script type="text/javascript" src="../../tiny_mce_popup.js"></script>
 <script type="text/javascript" src="js/reltemplates.js"></script>
@@ -17,7 +16,7 @@
 <?php
 $path = str_replace("js/tiny_mce/plugins/reltemplates",'',dirname(__FILE__));
 require_once ($path."include/bittorrent.php");
-dbconn();
+INIT();
 if (!$CURUSER) die('Only users enabled');
 $reltemplatearray = sql_query("SELECT id,name,content FROM reltemplates");
 while ($reltemplate = mysql_fetch_assoc($reltemplatearray)) {

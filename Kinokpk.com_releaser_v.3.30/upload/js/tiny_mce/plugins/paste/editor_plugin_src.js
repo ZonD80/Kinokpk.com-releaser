@@ -12,6 +12,7 @@
 	var each = tinymce.each,
 		defs = {
 			paste_auto_cleanup_on_paste : true,
+			paste_enable_default_filters : true,
 			paste_block_drop : false,
 			paste_retain_style_properties : "none",
 			paste_strip_class_attributes : "mso",
@@ -24,6 +25,7 @@
 			paste_dialog_height : "400",
 			paste_text_use_dialog : false,
 			paste_text_sticky : false,
+			paste_text_sticky_default : false,
 			paste_text_notifyalways : false,
 			paste_text_linebreaktype : "p",
 			paste_text_replacements : [
@@ -62,13 +64,19 @@
 				ed.execCallback('paste_postprocess', pl, o);
 			});
 
+			ed.onKeyDown.addToTop(function(ed, e) {
+				// Block ctrl+v from adding an undo level since the default logic in tinymce.Editor will add that
+				if (((tinymce.isMac ? e.metaKey : e.ctrlKey) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45))
+					return false; // Stop other listeners
+			});
+
 			// Initialize plain text flag
-			ed.pasteAsPlainText = false;
+			ed.pasteAsPlainText = getParam(ed, 'paste_text_sticky_default');
 
 			// This function executes the process handlers and inserts the contents
 			// force_rich overrides plain text mode set by user, important for pasting with execCommand
 			function process(o, force_rich) {
-				var dom = ed.dom, rng, nodes;
+				var dom = ed.dom, rng;
 
 				// Execute pre process handlers
 				t.onPreProcess.dispatch(t, o);
@@ -81,10 +89,9 @@
 				if (tinymce.isGecko) {
 					rng = ed.selection.getRng(true);
 					if (rng.startContainer == rng.endContainer && rng.startContainer.nodeType == 3) {
-						nodes = dom.select('p,h1,h2,h3,h4,h5,h6,pre', o.node);
-
-						if (nodes.length == 1)
-							dom.remove(nodes.reverse(), true);
+						// Is only one block node and it doesn't contain word stuff
+						if (o.node.childNodes.length === 1 && /^(p|h[1-6]|pre)$/i.test(o.node.firstChild.nodeName) && o.content.indexOf('__MCE_ITEM__') === -1)
+							dom.remove(o.node.firstChild, true);
 					}
 				}
 
@@ -92,7 +99,7 @@
 				t.onPostProcess.dispatch(t, o);
 
 				// Serialize content
-				o.content = ed.serializer.serialize(o.node, {getInner : 1});
+				o.content = ed.serializer.serialize(o.node, {getInner : 1, forced_root_block : ''});
 
 				// Plain text option active?
 				if ((!force_rich) && (ed.pasteAsPlainText)) {
@@ -140,7 +147,7 @@
 			// hidden div and placing the caret inside it and after the browser paste
 			// is done it grabs that contents and processes that
 			function grabContent(e) {
-				var n, or, rng, sel = ed.selection, dom = ed.dom, body = ed.getBody(), posY, textContent;
+				var n, or, rng, oldRng, sel = ed.selection, dom = ed.dom, body = ed.getBody(), posY, textContent;
 
 				// Check if browser supports direct plaintext access
 				if (e.clipboardData || dom.doc.dataTransfer) {
@@ -157,25 +164,29 @@
 					return;
 
 				// Create container to paste into
-				n = dom.add(body, 'div', {id : '_mcePaste', 'class' : 'mcePaste', 'data-mce-bogus' : '1'}, '\uFEFF<br data-mce-bogus="1">');
+				n = dom.add(body, 'div', {id : '_mcePaste', 'class' : 'mcePaste', 'data-mce-bogus' : '1'}, '\uFEFF\uFEFF');
 
 				// If contentEditable mode we need to find out the position of the closest element
 				if (body != ed.getDoc().body)
 					posY = dom.getPos(ed.selection.getStart(), body).y;
 				else
-					posY = body.scrollTop + dom.getViewPort().y;
+					posY = body.scrollTop + dom.getViewPort(ed.getWin()).y;
 
 				// Styles needs to be applied after the element is added to the document since WebKit will otherwise remove all styles
+				// If also needs to be in view on IE or the paste would fail
 				dom.setStyles(n, {
 					position : 'absolute',
-					left : -10000,
-					top : posY,
+					left : tinymce.isGecko ? -40 : 0, // Need to move it out of site on Gecko since it will othewise display a ghost resize rect for the div
+					top : posY - 25,
 					width : 1,
 					height : 1,
 					overflow : 'hidden'
 				});
 
 				if (tinymce.isIE) {
+					// Store away the old range
+					oldRng = sel.getRng();
+
 					// Select the container
 					rng = dom.doc.body.createTextRange();
 					rng.moveToElementText(n);
@@ -186,14 +197,23 @@
 
 					// Check if the contents was changed, if it wasn't then clipboard extraction failed probably due
 					// to IE security settings so we pass the junk though better than nothing right
-					if (n.innerHTML === '\uFEFF') {
+					if (n.innerHTML === '\uFEFF\uFEFF') {
 						ed.execCommand('mcePasteWord');
 						e.preventDefault();
 						return;
 					}
 
-					// Process contents
-					process({content : n.innerHTML});
+					// Restore the old range and clear the contents before pasting
+					sel.setRng(oldRng);
+					sel.setContent('');
+
+					// For some odd reason we need to detach the the mceInsertContent call from the paste event
+					// It's like IE has a reference to the parent element that you paste in and the selection gets messed up
+					// when it tries to restore the selection
+					setTimeout(function() {
+						// Process contents
+						process({content : n.innerHTML});
+					}, 0);
 
 					// Block the real paste event
 					return tinymce.dom.Event.cancel(e);
@@ -208,11 +228,11 @@
 
 					or = ed.selection.getRng();
 
-					// Move caret into hidden div
+					// Move select contents inside DIV
 					n = n.firstChild;
 					rng = ed.getDoc().createRange();
 					rng.setStart(n, 0);
-					rng.setEnd(n, 1);
+					rng.setEnd(n, 2);
 					sel.setRng(rng);
 
 					// Wait a while and grab the pasted contents
@@ -247,8 +267,9 @@
 									h += n.innerHTML;
 							});
 						} else {
-							// Found WebKit weirdness so force the content into plain text mode
-							h = '<pre>' + dom.encode(textContent).replace(/\r?\n/g, '<br />') + '</pre>';
+							// Found WebKit weirdness so force the content into paragraphs this seems to happen when you paste plain text from Nodepad etc
+							// So this logic will replace double enter with paragraphs and single enter with br so it kind of looks the same
+							h = '<p>' + dom.encode(textContent).replace(/\r?\n\r?\n/g, '</p><p>').replace(/\r?\n/g, '<br />') + '</p>';
 						}
 
 						// Remove the nodes
@@ -273,7 +294,7 @@
 			if (getParam(ed, "paste_auto_cleanup_on_paste")) {
 				// Is it's Opera or older FF use key handler
 				if (tinymce.isOpera || /Firefox\/2/.test(navigator.userAgent)) {
-					ed.onKeyDown.add(function(ed, e) {
+					ed.onKeyDown.addToTop(function(ed, e) {
 						if (((tinymce.isMac ? e.metaKey : e.ctrlKey) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45))
 							grabContent(e);
 					});
@@ -285,17 +306,19 @@
 				}
 			}
 
-			// Block all drag/drop events
-			if (getParam(ed, "paste_block_drop")) {
-				ed.onInit.add(function() {
+			ed.onInit.add(function() {
+				ed.controlManager.setActive("pastetext", ed.pasteAsPlainText);
+
+				// Block all drag/drop events
+				if (getParam(ed, "paste_block_drop")) {
 					ed.dom.bind(ed.getBody(), ['dragend', 'dragover', 'draggesture', 'dragdrop', 'drop', 'drag'], function(e) {
 						e.preventDefault();
 						e.stopPropagation();
 
 						return false;
 					});
-				});
-			}
+				}
+			});
 
 			// Add legacy support
 			t._legacySupport();
@@ -312,14 +335,14 @@
 		},
 
 		_preProcess : function(pl, o) {
-			//console.log('Before preprocess:' + o.content);
-
 			var ed = this.editor,
 				h = o.content,
 				grep = tinymce.grep,
 				explode = tinymce.explode,
 				trim = tinymce.trim,
 				len, stripClass;
+
+			//console.log('Before preprocess:' + o.content);
 
 			function process(items) {
 				each(items, function(v) {
@@ -329,6 +352,23 @@
 					else
 						h = h.replace(v[0], v[1]);
 				});
+			}
+			
+			if (ed.settings.paste_enable_default_filters == false) {
+				return;
+			}
+
+			// IE9 adds BRs before/after block elements when contents is pasted from word or for example another browser
+			if (tinymce.isIE && document.documentMode >= 9) {
+				// IE9 adds BRs before/after block elements when contents is pasted from word or for example another browser
+				process([[/(?:<br>&nbsp;[\s\r\n]+|<br>)*(<\/?(h[1-6r]|p|div|address|pre|form|table|tbody|thead|tfoot|th|tr|td|li|ol|ul|caption|blockquote|center|dl|dt|dd|dir|fieldset)[^>]*>)(?:<br>&nbsp;[\s\r\n]+|<br>)*/g, '$1']]);
+
+				// IE9 also adds an extra BR element for each soft-linefeed and it also adds a BR for each word wrap break
+				process([
+					[/<br><br>/g, '<BR><BR>'], // Replace multiple BR elements with uppercase BR to keep them intact
+					[/<br>/g, ' '], // Replace single br elements with space since they are word wrap BR:s
+					[/<BR><BR>/g, '<br>'], // Replace back the double brs but into a single BR
+				]);
 			}
 
 			// Detect Word content and process it more aggressive
@@ -504,8 +544,7 @@
 
 			process([
 				// Copy paste from Java like Open Office will produce this junk on FF
-				[/Version:[\d.]+\nStartHTML:\d+\nEndHTML:\d+\nStartFragment:\d+\nEndFragment:\d+/gi, ''],
-				[/<\/h[1-6][^>]*>/gi, "</strong></p>"]
+				[/Version:[\d.]+\nStartHTML:\d+\nEndHTML:\d+\nStartFragment:\d+\nEndFragment:\d+/gi, '']
 			]);
 
 			// Class attribute options are: leave all as-is ("none"), remove all ("all"), or remove only those starting with mso ("mso").
@@ -546,6 +585,10 @@
 		_postProcess : function(pl, o) {
 			var t = this, ed = t.editor, dom = ed.dom, styleProps;
 
+			if (ed.settings.paste_enable_default_filters == false) {
+				return;
+			}
+			
 			if (o.wordContent) {
 				// Remove named anchors or TOC links
 				each(dom.select('a', o.node), function(a) {
@@ -627,7 +670,7 @@
 				val = p.innerHTML.replace(/<\/?\w+[^>]*>/gi, '').replace(/&nbsp;/g, '\u00a0');
 
 				// Detect unordered lists look for bullets
-				if (/^(__MCE_ITEM__)+[\u2022\u00b7\u00a7\u00d8o]\s*\u00a0*/.test(val))
+				if (/^(__MCE_ITEM__)+[\u2022\u00b7\u00a7\u00d8o\u25CF]\s*\u00a0*/.test(val))
 					type = 'ul';
 
 				// Detect ordered lists 1., a. or ixv.
@@ -661,9 +704,9 @@
 						var html = span.innerHTML.replace(/<\/?\w+[^>]*>/gi, '');
 
 						// Remove span with the middot or the number
-						if (type == 'ul' && /^[\u2022\u00b7\u00a7\u00d8o]/.test(html))
+						if (type == 'ul' && /^__MCE_ITEM__[\u2022\u00b7\u00a7\u00d8o\u25CF]/.test(html))
 							dom.remove(span);
-						else if (/^[\s\S]*\w+\.(&nbsp;|\u00a0)*\s*/.test(html))
+						else if (/^__MCE_ITEM__[\s\S]*\w+\.(&nbsp;|\u00a0)*\s*/.test(html))
 							dom.remove(span);
 					});
 
@@ -671,7 +714,7 @@
 
 					// Remove middot/list items
 					if (type == 'ul')
-						html = p.innerHTML.replace(/__MCE_ITEM__/g, '').replace(/^[\u2022\u00b7\u00a7\u00d8o]\s*(&nbsp;|\u00a0)+\s*/, '');
+						html = p.innerHTML.replace(/__MCE_ITEM__/g, '').replace(/^[\u2022\u00b7\u00a7\u00d8o\u25CF]\s*(&nbsp;|\u00a0)+\s*/, '');
 					else
 						html = p.innerHTML.replace(/__MCE_ITEM__/g, '').replace(/^\s*\w+\.(&nbsp;|\u00a0)+\s*/, '');
 
@@ -701,7 +744,6 @@
 			if (!ed.selection.isCollapsed() && r.startContainer != r.endContainer)
 				ed.getDoc().execCommand('Delete', false, null);
 
-			// It's better to use the insertHTML method on Gecko since it will combine paragraphs correctly before inserting the contents
 			ed.execCommand('mceInsertContent', false, h, {skip_undo : skip_undo});
 		},
 
@@ -757,7 +799,7 @@
 					/^\s+|\s+$/g									// Trim the front & back
 				]);
 
-				h = dom.decode(h);
+				h = dom.decode(tinymce.html.Entities.encodeRaw(h));
 
 				// Delete any highlighted text before pasting
 				if (!sel.isCollapsed()) {

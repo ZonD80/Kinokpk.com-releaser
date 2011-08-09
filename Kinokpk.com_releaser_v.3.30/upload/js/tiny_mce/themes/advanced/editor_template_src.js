@@ -85,6 +85,7 @@
 				theme_advanced_resizing_use_cookie : 1,
 				theme_advanced_font_sizes : "1,2,3,4,5,6,7",
 				theme_advanced_font_selector : "span",
+				theme_advanced_show_current_color: 0,
 				readonly : ed.settings.readonly
 			}, ed.settings);
 
@@ -334,6 +335,10 @@
 						return v == sv;
 					});
 
+					if (cur && cur.value == v) {
+						c.select(null);
+					}
+
 					return false; // No auto select
 				}
 			});
@@ -381,6 +386,10 @@
 					return v == sv;
 				});
 
+				if (cur && (cur.value.fontSize == v.fontSize || cur.value['class'] == v['class'])) {
+					c.select(null);
+				}
+
 				return false; // No auto select
 			}});
 
@@ -417,7 +426,11 @@
 				samp : 'advanced.samp'
 			}, t = this;
 
-			c = t.editor.controlManager.createListBox('formatselect', {title : 'advanced.block', cmd : 'FormatBlock'});
+			c = t.editor.controlManager.createListBox('formatselect', {title : 'advanced.block', onselect : function(v) {
+				t.editor.execCommand('FormatBlock', false, v);
+				return false;
+			}});
+
 			if (c) {
 				each(t.editor.getParam('theme_advanced_blockformats', t.settings.theme_advanced_blockformats, 'hash'), function(v, k) {
 					c.add(t.editor.translate(k != v ? k : fmts[v]), v, {'class' : 'mce_formatPreview mce_' + v});
@@ -580,6 +593,7 @@
 
 				if (evt.altKey) {
 		 			if (evt.keyCode === DOM_VK_F10) {
+						window.focus();
 						t.toolbarGroup.focus();
 						return Event.cancel(evt);
 					} else if (evt.keyCode === DOM_VK_F11) {
@@ -610,7 +624,7 @@
 		},
 
 		resizeBy : function(dw, dh) {
-			var e = DOM.get(this.editor.id + '_tbl');
+			var e = DOM.get(this.editor.id + '_ifr');
 
 			this.resizeTo(e.clientWidth + dw, e.clientHeight + dh);
 		},
@@ -739,7 +753,7 @@
 			each(explode(s.theme_advanced_containers || ''), function(c, i) {
 				var v = s['theme_advanced_container_' + c] || '';
 
-				switch (v.toLowerCase()) {
+				switch (c.toLowerCase()) {
 					case 'mceeditor':
 						n = DOM.add(tb, 'tr');
 						n = ic = DOM.add(n, 'td', {'class' : 'mceIframeContainer'});
@@ -856,7 +870,7 @@
 			
 
 			if (s.theme_advanced_resizing) {
-				DOM.add(td, 'a', {id : ed.id + '_resize', href : 'javascript:;', onclick : "return false;", 'class' : 'mceResize'});
+				DOM.add(td, 'a', {id : ed.id + '_resize', href : 'javascript:;', onclick : "return false;", 'class' : 'mceResize', tabIndex:"-1"});
 
 				if (s.theme_advanced_resizing_use_cookie) {
 					ed.onPostRender.add(function() {
@@ -923,14 +937,14 @@
 		},
 
 		_updateUndoStatus : function(ed) {
-			var cm = ed.controlManager;
+			var cm = ed.controlManager, um = ed.undoManager;
 
-			cm.setDisabled('undo', !ed.undoManager.hasUndo() && !ed.typing);
-			cm.setDisabled('redo', !ed.undoManager.hasRedo());
+			cm.setDisabled('undo', !um.hasUndo() && !um.typing);
+			cm.setDisabled('redo', !um.hasRedo());
 		},
 
 		_nodeChanged : function(ed, cm, n, co, ob) {
-			var t = this, p, de = 0, v, c, s = t.settings, cl, fz, fn, formatNames, matches;
+			var t = this, p, de = 0, v, c, s = t.settings, cl, fz, fn, fc, bc, formatNames, matches;
 
 			tinymce.each(t.stateControls, function(c) {
 				cm.setActive(c, ed.queryCommandState(t.controls[c][1]));
@@ -952,8 +966,7 @@
 			};
 
 			cm.setActive('visualaid', ed.hasVisual);
-			cm.setDisabled('undo', !ed.undoManager.hasUndo() && !ed.typing);
-			cm.setDisabled('redo', !ed.undoManager.hasRedo());
+			t._updateUndoStatus(ed);
 			cm.setDisabled('outdent', !ed.queryCommandState('Outdent'));
 
 			p = getParent('A');
@@ -970,12 +983,12 @@
 			}
 
 			if (c = cm.get('anchor')) {
-				c.setActive(!!p && p.name);
+				c.setActive(!co && !!p && p.name);
 			}
 
 			p = getParent('IMG');
 			if (c = cm.get('image'))
-				c.setActive(!!p && n.className.indexOf('mceItem') == -1);
+				c.setActive(!co && !!p && n.className.indexOf('mceItem') == -1);
 
 			if (c = cm.get('styleselect')) {
 				t._importClasses();
@@ -1009,6 +1022,12 @@
 
 					if (!fn && n.style.fontFamily)
 						fn = n.style.fontFamily.replace(/[\"\']+/g, '').replace(/^([^,]+).*/, '$1').toLowerCase();
+					
+					if (!fc && n.style.color)
+						fc = n.style.color;
+
+					if (!bc && n.style.backgroundColor)
+						bc = n.style.backgroundColor;
 				}
 
 				return false;
@@ -1033,6 +1052,20 @@
 					if (v['class'] && v['class'] === cl)
 						return true;
 				});
+			}
+			
+			if (s.theme_advanced_show_current_color) {
+				function updateColor(controlId, color) {
+					if (c = cm.get(controlId)) {
+						if (!color)
+							color = c.settings.default_color;
+						if (color !== c.value) {
+							c.displayColor(color);
+						}
+					}
+				}
+				updateColor('forecolor', fc);
+				updateColor('backcolor', bc);
 			}
 
 			if (s.theme_advanced_show_current_color) {
@@ -1063,16 +1096,9 @@
 				getParent(function(n) {
 					var na = n.nodeName.toLowerCase(), u, pi, ti = '';
 
-					if (n.getAttribute('data-mce-bogus'))
+					// Ignore non element and bogus/hidden elements
+					if (n.nodeType != 1 || na === 'br' || n.getAttribute('data-mce-bogus') || DOM.hasClass(n, 'mceItemHidden') || DOM.hasClass(n, 'mceItemRemoved'))
 						return;
-
-					// Ignore non element and hidden elements
-					if (n.nodeType != 1 || n.nodeName === 'BR' || (DOM.hasClass(n, 'mceItemHidden') || DOM.hasClass(n, 'mceItemRemoved')))
-						return;
-
-					// Fake name
-					if (v = DOM.getAttrib(n, 'mce_name'))
-						na = v;
 
 					// Handle prefix
 					if (tinymce.isIE && n.scopeName !== 'HTML')
@@ -1151,7 +1177,7 @@
 					pi = DOM.create('a', {'href' : "javascript:;", role: 'button', onmousedown : "return false;", title : ti, 'class' : 'mcePath_' + (de++)}, na);
 
 					if (p.hasChildNodes()) {
-						p.insertBefore(DOM.create('span', {'aria-hidden': 'true'}, '&nbsp;\u00bb '), p.firstChild);
+						p.insertBefore(DOM.create('span', {'aria-hidden': 'true'}, '\u00a0\u00bb '), p.firstChild);
 						p.insertBefore(pi, p.firstChild);
 					} else
 						p.appendChild(pi);
