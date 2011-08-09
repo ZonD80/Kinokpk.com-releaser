@@ -102,7 +102,7 @@ insert into cache_stats (cache_name,cahce_value) values ('use_xbt',1);
 
 ALTER TABLE `users`
   DROP `passkey`,
-  DROP `passkey_ip`
+  DROP `passkey_ip`,
   DROP `last_downloaded`,
   DROP `last_announced`;
 
