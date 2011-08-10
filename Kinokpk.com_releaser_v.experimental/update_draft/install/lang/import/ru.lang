@@ -1422,4 +1422,22 @@ priv_upload_releases=Возможность загружать новые рел
 deny_priv_message=Доступ запрещен, у вас должен быть доступ к:
 edit_custom_user_privileges_title=Редактировать привилегии пользователя (они будут добавлены к текущим привилегиям класса пользователя)
 privilege_custom_priv=Возможность назначать уникальные привилегии для пользователей
-// langfile (ru) from http://www.torrentsbook.com created at 03/08/2011 18:11:03
+Information about torrent=Информация о торренте
+Successfully imported=Удачно импортировано
+Privileges configuration=Конфигурирование привилегий
+privadmin_cls_allowed=Допустимые классы
+privadmin_error_no_class=Ошибка. Пожалуйста выберите хотя бы один класс
+privadmin_priv_registered=Привилегия "%s" успешно зарегистрирована
+privilege_register_error=Привилегия не зарегистрирована (она уже существует)
+privadmin_error_sys_priv=Привилегия "%s" не может быть удалена. Это системная привилегия.
+privadmin_priv_unregistered=Привилегия "%s" удалена
+privadmin_priv_updated=Привилегия обновлена
+privadmin_title=Панель управления привилегиями
+privadmin_editor_title=Добавление или редактирование привилегии
+privadmin_editor_notice=<b>ПИШИТЕ ПО-АНГЛИЙСКИ</b>; Эта фраза будет выведена через систему языков. Не забудьте добавить переводы для этой фразы в панели управления языками.
+Save=Сохранить
+privadmin_curr_registered=Список зарегистрированных привилегий
+privadmin_save_classes=Сохранить отмеченные классы
+privadmin_edit_desc=Редактировать описание привилегии
+access_to_privadmin=Доступ к панели управления привилегиями
+// langfile (ru) from http://www.torrentsbook.com created at 10/08/2011 14:46:43

@@ -35,8 +35,10 @@ elseif ($lang_export) {
 	$REL_LANG->export_langfile($lang_export);
 }
 
-$REL_TPL->stdhead($REL_LANG->_("Language administration tools"));
-?>
+if (!pagercheck()) {
+
+	$REL_TPL->stdhead($REL_LANG->_("Language administration tools"));
+	?>
 <table width="100%">
 	<tr>
 		<td><?php print "<a href=\"{$REL_SEO->make_link('langadmin')}\">{$REL_LANG->_("To panel index")}</a>";?></td>
@@ -46,7 +48,10 @@ $REL_TPL->stdhead($REL_LANG->_("Language administration tools"));
 		<td><?php print "<a href=\"{$REL_SEO->make_link('langadmin','clearcache',1)}\">{$REL_LANG->_("Clear language cache")}</a>";?></td>
 	</tr>
 </table>
-<?php
+	<?php
+
+}
+
 if (isset($_GET['clearcache'])) {
 	$REL_CACHE->clearGroupCache('languages');
 	stdmsg($REL_LANG->_("Successful"),$REL_LANG->_("Language cache cleared"));
@@ -111,7 +116,7 @@ elseif (isset($_GET['import'])) {
 			stdmsg($REL_LANG->_("Error"),implode('<br/>',$result['errors']),'error');
 		}
 		if ($result['words']) {
-			stdmsg($REL_LANG->_("Successly imported"),implode('<br/>',$result['words']));
+			stdmsg($REL_LANG->_("Successfully imported"),implode('<br/>',$result['words']));
 		}
 		$REL_CACHE->clearCache('languages',$lang);
 	}
@@ -153,7 +158,9 @@ elseif (isset($_GET['editor'])) {
 			}
 		}
 	}
-	?>
+
+	if (!pagercheck()) {
+		?>
 <script type="text/javascript">
 function ajaxdel(key,lang) {
 
@@ -187,23 +194,20 @@ function ajaxdel(key,lang) {
 	method="post">
 <table>
 	<tr>
-		<td><input type="text" name="language" maxlength="2" size="2" /> <?php print $REL_LANG->_("Language to be imported, e.g. 'ru,en,ua'");?></td>
-		<td><input type="text" name="key"> <?php print $REL_LANG->_("Key (optional, else MD5 of word)");?></td>
-		<td><textarea name="word"></textarea> <?php print $REL_LANG->_("Word");?></td>
+		<td><?php print $REL_LANG->_("Language to be imported, e.g. 'ru,en,ua'");?><br/><input type="text" name="language" maxlength="2" size="2" /></td>
+		<td><?php print $REL_LANG->_("Key (optional, else MD5 of word)");?><br/><input type="text" name="key"></td>
+		<td><?php print $REL_LANG->_("Word");?><br/><textarea name="word" rows="10" cols="40"></textarea></td>
 		<td><input type="submit"
 			value="<?php print $REL_LANG->_("Continue");?>" /></td>
 	</tr>
 </table>
 </form>
-<?php 
 
-	$limit = "LIMIT 50";
-	?>
 <form
 	action=<?php print $REL_SEO->make_link('langadmin','editor','1','a','gensave');
 	?>
 	method="POST">
-<table width="100%">
+<div id="pager_scrollbox"><table id="wordstable" width="100%">
 	<tr>
 		<td class="colhead"><?php print $REL_LANG->_("Key");?></td>
 		<td class="colhead"><?php print $REL_LANG->_("Language");?></td>
@@ -211,20 +215,27 @@ function ajaxdel(key,lang) {
 		<td class="colhead"><?php print $REL_LANG->_("Delete");?></td>
 	</tr>
 	<?php
+	}
 	$count = get_row_count('languages',($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":''));
 
-	$res = sql_query("SELECT * FROM languages".($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":'')." ORDER BY lkey DESC LIMIT 50");
-	
+	$limit = ajaxpager(25, $count, array('langadmin','editor','1','search',$search), 'wordstable > tbody:last');
+
+	$res = sql_query("SELECT * FROM languages".($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":'')." ORDER BY lkey DESC $limit");
+
 	while ($row = mysql_fetch_assoc($res)) {
 		print "<tr id=\"{$row['lkey']}-{$row['ltranslate']}\"><td><input type=\"text\" name=\"key[{$row['lkey']}][{$row['ltranslate']}]\" value=\"{$row['lkey']}\" maxlength=\"255\"/></td>".
 	"<td>{$row['ltranslate']}</td>".
 	"<td><textarea name=\"val[".addslashes($row['lkey'])."][{$row['ltranslate']}]\">{$row['lvalue']}</textarea></td><td><a onclick=\"return ajaxdel('".addslashes($row['lkey'])."','{$row['ltranslate']}');\" href=\"{$REL_SEO->make_link("langadmin",'del','','key',$row['lkey'],'language',$row['ltranslate'])}\">{$REL_LANG->_("Delete")}</a></td></tr>";
 	}
-	print '<tr><td colspan="4" align="right"><input type="submit" value="'.$REL_LANG->_("Save changes").'"/></td></tr>';
-	?>
-</table>
+	if (!pagercheck()) {
+		print '<tr><td colspan="4" align="right"><input type="submit" value="'.$REL_LANG->_("Save changes").'"/></td></tr>';
+		?>
+</table></div>
 </form>
-<?php
+		<?php
+	}
 }
-$REL_TPL->stdfoot();
+if (!pagercheck()) {
+	$REL_TPL->stdfoot();
+}
 ?>

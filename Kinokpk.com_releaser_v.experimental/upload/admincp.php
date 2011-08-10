@@ -31,7 +31,8 @@ if (get_privilege('is_owner',false)) {
 
 	</tr>
 	<tr>
-		<td colspan="4"><a href="<?=$REL_SEO->make_link('seoadmin');?>"><?=$REL_LANG->_("Human Readable URLs configuration (SEO)");?></a></td>
+		<td><a href="<?=$REL_SEO->make_link('privadmin');?>"><?=$REL_LANG->_("Privileges configuration");?></a></td>
+		<td colspan="3"><a href="<?=$REL_SEO->make_link('seoadmin');?>"><?=$REL_LANG->_("Human Readable URLs configuration (SEO)");?></a></td>
 	</tr>
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('spam');?>"><?=$REL_LANG->_("View private messages");?></a></td>

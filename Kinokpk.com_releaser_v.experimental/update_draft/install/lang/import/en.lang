@@ -1421,4 +1421,22 @@ priv_is_administrator=You are administartor
 deny_priv_message=Access denied, you must to have permission to:
 edit_custom_user_privileges_title=Edit custom user privileges (these priveleges will be added to default for user class)
 privilege_custom_priv=Ability to edit privileges given to custom users
-// langfile (en) from http://www.torrentsbook.com created at 03/08/2011 18:10:39
+Information about torrent=Information about torrent
+Successfully imported=Successfully imported
+Privileges configuration=Privileges configuration
+privadmin_cls_allowed=Classes allowed
+privadmin_error_no_class=Error. Please select at least one class
+privadmin_priv_registered=Privilege "%s" successfully registered
+privilege_register_error=Privilege does not registered (it already exists)
+privadmin_error_sys_priv=Privilege "%s" can not be deleted. It is system privilege.
+privadmin_priv_unregistered=Privilege "%s" unregistered
+privadmin_priv_updated=Privilege updated
+privadmin_title=Privileges control panel
+privadmin_editor_title=Adding or editing privilege
+privadmin_editor_notice=<b>WRITE IN ENGLISH</b>; This phrase will be parsed via language system. Do not forget to add translations for this phrase.
+Save=Save
+privadmin_curr_registered=Current registered privileges
+privadmin_save_classes=Save checked classes
+privadmin_edit_desc=Edit privilege description
+access_to_privadmin=Access to privileges administration panel
+// langfile (en) from http://www.torrentsbook.com created at 10/08/2011 14:46:21
