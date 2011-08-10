@@ -75,7 +75,7 @@ if (isset($_GET['id'])) {
 			print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>");
 			print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('newsoverview','id',$newsid)."#comments\" class=altlink_white>Добавить комментарий</a></div>");
 			print("</td></tr>");
-			print ( "<tr><td><div id=\"newcomment_placeholder\"></td></tr>" );
+			
 			print("<tr><td>");
 			commenttable($allrows);
 			print("</td></tr>");

@@ -322,7 +322,7 @@ else {
 				print("<div align=\"right\"><b>{$REL_LANG->_('Add comment (%s)',$REL_LANG->_('Release group'))}</b></div>");
 				print("</td>
 			</tr>");
-				print ( "<tr><td><div id=\"newcomment_placeholder\"></td></tr>" );
+				
 				print("<tr><td>");
 				commenttable($allrows);
 				print("</td></tr>");

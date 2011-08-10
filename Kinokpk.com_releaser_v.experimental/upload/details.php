@@ -245,7 +245,7 @@ return no_ajax;
 			print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>" );
 			print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\" class=\"altlink_white\">{$REL_LANG->_('Add comment (%s)',$REL_LANG->_('Release'))}</a></div>" );
 			print ( "</td></tr>" );
-			print ( "<tr><td><div id=\"newcomment_placeholder\"></td></tr>" );
+			
 			print ( "<tr><td>" );
 			commenttable ( $allrows );
 			print ( "</td></tr>" );

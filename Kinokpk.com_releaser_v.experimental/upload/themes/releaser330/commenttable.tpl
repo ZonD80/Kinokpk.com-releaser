@@ -1,4 +1,5 @@
 {if $IS_MODERATOR && !pagercheck()}<form method="get" action="{$REL_SEO->make_link('comments')}">{/if}
+{if !pagercheck()}<div id="newcomment_placeholder"></div>{/if}
 {foreach item=row from=$rows}
 {include file='commenttable_entry.tpl'}
 {/foreach}
