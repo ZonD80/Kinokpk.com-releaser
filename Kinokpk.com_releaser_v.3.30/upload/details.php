@@ -261,7 +261,7 @@ if (! $count) {
 	print ( "<table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
 	print ( "<tr><td class=\"colhead\" align=\"center\" >" );
 	print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>" );
-	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\" class=\"altlink_white\">{$REL_LANG->_('Add comment to %s','релизу')}</a></div>" );
+	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\" class=\"altlink_white\">{$REL_LANG->_('Add comment (%s)','релизу')}</a></div>" );
 	print ( "</td></tr>" );
 
 	print ( "<tr><td>" );
