@@ -132,7 +132,7 @@ function send_comment(type,to_id) {
 		tinyMCE.triggerSave();
 		content = tinyMCE.activeEditor.getContent();
 	} else content = $("input[name=text]").val();
-	$('<div id="loading" align="center"><img src="pic/loading.gif" border="0"/></div>').insertBefore("#newcomment_placeholder").slideDown('slow');
+	$('<div id="loading" align="center"><img src="pic/loading.gif" border="0"/></div>').insertAfter("#newcomment_placeholder").slideDown('slow');
 	$.post('comments.php?action=add&type='+type,{to_id: to_id, text: content}, function (data) {
 	$('#loading').hide();
 	$('#newcomment_placeholder').slideUp('slow');
