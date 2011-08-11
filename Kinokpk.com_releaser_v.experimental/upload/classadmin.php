@@ -1,6 +1,6 @@
 <?php
 /**
- * Privileges administration panel
+ * Classes administration panel
  * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
  * @package Kinokpk.com releaser
  * @author ZonD80 <admin@kinokpk.com>
@@ -13,15 +13,28 @@ INIT();
 loggedinorreturn();
 
 
-get_privilege('access_to_privadmincp');
+get_privilege('access_to_classadmin');
 
 httpauth();
 
 $a = (string)$_GET['a'];
 
-$reserved_privileges = array('is_guest');
+function rolesdesc() {
+	global $REL_TPL;
+	return $REL_TPL->fetch('modules/classadmin/rolesdesc.tpl');
+}
 
-if ($_SERVER['REQUEST_METHOD']=='POST') {
+function make_role_checkbox($currole,$name) {
+	
+	$roles = array('sysop','uploader','staffbegin','vip','rating','reg','guest');
+	$currole = explode(',',$currole);
+	foreach ($roles as $r) {
+		$return.='<input class="role_'.$r.'" type="checkbox" name="'.$name.'"'.(in_array($r, $currole)?' checked="checked"':'').'> '.$r.'&nbsp;';
+	}
+	return $return;
+}
+
+/*if ($_SERVER['REQUEST_METHOD']=='POST') {
 	$name = trim((string)($_POST['name']?$_POST['name']:$_GET['name']));
 	if ($a=='add') {
 		if (!$_POST['classes']) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Error. Please select at least one class'));
@@ -48,31 +61,31 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 		die($REL_LANG->_('Privilege updated'));
 		}
 	}
-}
+}*/
 
-$REL_TPL->stdhead($REL_LANG->_('Privileges control panel'));
+$REL_TPL->stdhead($REL_LANG->_('Classes control panel'));
 
 if ($a=='add'||$a=='edit') {
-		$name = trim((string)($_POST['name']?$_POST['name']:$_GET['name']));
+		$id = (int)($_POST['id']?$_POST['id']:$_GET['id']);
 		if ($a=='edit') {
-			$p = $REL_DB->query_row("SELECT * FROM privileges WHERE name=".sqlesc($name));
-			if (!$p) {
-				$REL_TPL->stdmsg($REL_LANG->_('Error'),$REL_LANG->_('No privilege named "%s"',htmlspecialchars($name)),'error');
+			$c = $REL_DB->query_row("SELECT * FROM classes WHERE id=$id");
+			if (!$c) {
+				$REL_TPL->stdmsg($REL_LANG->_('Error'),$REL_LANG->_('Invalid id'));
 				$REL_TPL->stdfoot();
 				die();
 			}
-			$REL_TPL->assign('p',$p);
+			$REL_TPL->assign('c',$c);
 		}
 		$REL_TPL->assign('a',$a);
 	$REL_TPL->output('edit');
 } 
 else {
 
-		$privs = $REL_DB->query_return("SELECT * FROM privileges ORDER BY id DESC");
-		foreach ($privs AS $priv) {
-			$p[$priv['id']] = array('name'=>$priv['name'],'classes'=>$priv['classes_allowed'],'descr'=>$priv['description']);
+		$classes = $REL_DB->query_return("SELECT * FROM classes ORDER BY prior DESC");
+		foreach ($classes AS $class) {
+			$c[$class['id']] = $class;
 		}
-	$REL_TPL->assign('p',$p);
+	$REL_TPL->assign('c',$c);
 	$REL_TPL->output();	
 }
 $REL_TPL->stdfoot();

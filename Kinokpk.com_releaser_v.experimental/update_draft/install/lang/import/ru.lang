@@ -1440,4 +1440,6 @@ privadmin_curr_registered=Список зарегистрированных пр
 privadmin_save_classes=Сохранить отмеченные классы
 privadmin_edit_desc=Редактировать описание привилегии
 access_to_privadmin=Доступ к панели управления привилегиями
-// langfile (ru) from http://www.torrentsbook.com created at 10/08/2011 14:46:43
+classadmin_priv=Доступ к панели администрирования классов
+privadmin_noprivname_edit=Редактирование названий уже существующих привилегий запрещено. Если вы хотите его изменить, то создайте новую привилегию с другим именем и удалите эту.
+// langfile (ru) from http://www.torrentsbook.com created at 11/08/2011 10:22:46
