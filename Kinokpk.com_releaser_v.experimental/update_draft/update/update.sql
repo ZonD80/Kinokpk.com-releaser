@@ -169,8 +169,6 @@ ALTER TABLE `polls_structure` ENGINE=MyISAM;
 /* Alter table in target */
 ALTER TABLE `polls_votes` ENGINE=MyISAM; 
 
-ALTER TABLE  `users` ADD  `custom_privileges` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
-
 /* Create table in target */
 CREATE TABLE `presents`(
 	`id` int(10) unsigned NOT NULL  auto_increment , 
@@ -488,7 +486,8 @@ INSERT INTO `privileges` (`id`, `name`, `classes_allowed`, `description`) VALUES
 (59, 'post_releases_approved', '1,2,3,4', 'Ability to post automatically approved releases'),
 (60, 'upload_releases', '1,2,3,4,5,6,7', 'Ability to upload new releases to site'),
 (61, 'edit_user_privileges', '1,2,3', 'Ability to edit privileges given to custom users'),
-(62, 'access_to_privadmincp', '1' , 'Access to privileges administration panel');
+(62, 'access_to_privadmincp', '1' , 'Access to privileges administration panel'),
+(63, 'access_to_classadmin', '1' , 'Access to classes administration panel');
 
 CREATE TABLE IF NOT EXISTS `nickhistory` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -498,6 +497,13 @@ CREATE TABLE IF NOT EXISTS `nickhistory` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
+ALTER TABLE  `users` ADD  `custom_privileges` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
 ALTER TABLE  `users` ADD UNIQUE (
 `email`
+);
+
+
+ALTER TABLE  `classes` ADD UNIQUE (
+`prior`
 );

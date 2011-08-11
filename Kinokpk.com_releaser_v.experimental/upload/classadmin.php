@@ -29,39 +29,104 @@ function make_role_checkbox($currole,$name) {
 	$roles = array('sysop','uploader','staffbegin','vip','rating','reg','guest');
 	$currole = explode(',',$currole);
 	foreach ($roles as $r) {
-		$return.='<input class="role_'.$r.'" type="checkbox" name="'.$name.'"'.(in_array($r, $currole)?' checked="checked"':'').'> '.$r.'&nbsp;';
+		$return.='<input class="role_'.$r.'" type="checkbox" name="'.$name.'"'.(in_array($r, $currole)?' checked="checked"':'').' value="'.$r.'"> '.$r.'&nbsp;';
 	}
 	return $return;
 }
 
-/*if ($_SERVER['REQUEST_METHOD']=='POST') {
-	$name = trim((string)($_POST['name']?$_POST['name']:$_GET['name']));
+if ($_SERVER['REQUEST_METHOD']=='POST') {
+	$id = (int)($_POST['id']?$_POST['id']:$_GET['id']);
 	if ($a=='add') {
-		if (!$_POST['classes']) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Error. Please select at least one class'));
-		$t = register_privilege($name, (array)$_POST['classes'], trim((string)$_POST['descr']));
-		$REL_CACHE->clearCache('system','privileges');
-		if (!REL_AJAX) safe_redirect($REL_SEO->make_link('privadmin'),1);
-		$REL_TPL->stderr(($t?$REL_LANG->_('Successful'):$REL_LANG->_('Error')),($t?$REL_LANG->_('Privilege "%s" successfully registered',htmlspecialchars($name)):$REL_LANG->_('Privilege does not registered (it already exists)')),($t?'success':'error'));
+		$to_set = (array)$_POST['c'];
+
+		$keys = array('name','style','prior','remark');
+		foreach ($keys as $key) {
+		$val = $to_set[$key];
+		//var_Dump($val);
+				if ($key=='remark') {
+					$check = (array)$val;
+					if ($check) {
+					foreach ($check as $chk=>$chv) $check[$chk] = "FIND_IN_SET(".sqlesc($chv).",remark)";
+					$count = get_row_count("classes","WHERE ".implode(' OR ',$check));
+					if ($count) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Error. Selected roles already associated with another classes. Please <a href="javascript:history.go(-1);">try again</a> and select another roles'));
+					}
+					$val = implode(',',(array)$val);
+				}
+			$query[] = sqlesc($val);
+		}
+		if ($query) {
+		$REL_DB->query('INSERT INTO classes ('.implode(',',$keys).') VALUES ('.implode(', ', $query).")");
+		if (mysql_errno()==1062) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Class with this priority already exists. Please <a href="javascript:history.go(-1);">try again</a>'));
+		$REL_CACHE->clearCache('system','classes');
+		safe_redirect($REL_SEO->make_link('classadmin'),1);
+		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Class added'),'success');
+		} else $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Invalid form data'));
 	}
 	elseif ($a=='del') {
-		if (in_array($name,$reserved_privileges)) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Privilege "%s" can not be deleted. It is system privilege.',htmlspecialchars($name)));
-		unregister_privilege($name);
-		$REL_CACHE->clearCache('system','privileges');
-		if (!REL_AJAX) safe_redirect($REL_SEO->make_link('privadmin'),1);
-		$REL_TPL->stderr($REL_LANG->_('Successful'),$REL_LANG->_('Privilege "%s" unregistered',htmlspecialchars($name)),'success');
-		
+		$cl = (int)$_POST['cl'];
+		$count = get_row_count("classes");
+		if ($count==1) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('You can not delete last class'));
+		$REL_DB->query("DELETE FROM classes WHERE id=$id");
+		$REL_DB->query("UPDATE users SET class = $cl WHERE class = $id");
+		$REL_CACHE->clearCache('system','classes');
+		safe_redirect($REL_SEO->make_link('classadmin'),1);
+		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Class deleted'),'success');
 	}
 	elseif ($a=='edit') {
-		$classes = implode(',',array_map('intval',(array)$_POST['classes']));
-		$descr = htmlspecialchars(trim((string)$_POST['descr']));
-		if (!$classes) die($REL_LANG->_('Error. Please select at least one class'));
-		$REL_DB->query('UPDATE privileges SET classes_allowed='.sqlesc($classes).($descr?', description='.sqlesc($descr):'').' WHERE name='.sqlesc($name));
-		$REL_CACHE->clearCache('system','privileges');
-		if (REL_AJAX) {
-		die($REL_LANG->_('Privilege updated'));
+		
+		$to_set = (array)$_POST['c'];
+
+		$keys = array('name','style','prior','remark');
+		foreach ($keys as $key) {
+		$val = $to_set[$key];
+		//var_Dump($val);
+				if ($key=='remark') {
+					$check = (array)$val;
+					if ($check) {
+					foreach ($check as $chk=>$chv) $check[$chk] = "FIND_IN_SET(".sqlesc($chv).",remark)";
+					$count = get_row_count("classes","WHERE (".implode(' OR ',$check).") AND id<>$id");
+					if ($count) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Error. Selected roles already associated with another classes. Please <a href="javascript:history.go(-1);">try again</a> and select another roles'));
+					}
+					$val = implode(',',(array)$val);
+				}
+			$query[] = "$key = ".sqlesc($val);
 		}
+		if ($query) {
+		$REL_DB->query('UPDATE classes SET '.implode(', ', $query)." WHERE id=$id");
+		if (mysql_errno()==1062) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Class with this priority already exists. Please <a href="javascript:history.go(-1);">try again</a>'));
+		$REL_CACHE->clearCache('system','classes');
+		safe_redirect($REL_SEO->make_link('classadmin'),1);
+		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Class updated'),'success');
+		} else $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Invalid form data'));
 	}
-}*/
+	elseif ($a=='reorder') {
+		$classes = init_class_array();
+		$pr_set = (array)$_POST['prior'];
+		$ro_set = (array)$_POST['role'];
+		$pr_set = array_map('intval',$pr_set);
+		$vals = array();
+		foreach ($pr_set as $key=>$val) {
+			$key = (int)$key;
+			$check = (array)$ro_set[$key];
+			$roq = implode(',',$check);
+			
+							if ($check) {
+					foreach ($check as $chk=>$chv) $check[$chk] = "FIND_IN_SET(".sqlesc($chv).",remark)";
+					$count = get_row_count("classes","WHERE (".implode(' OR ',$check).") AND id<>$key");
+					if ($count) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Error. Selected roles for class "%s" are alredy associated with another classes. Please <a href="javascript:history.go(-1);">try again</a> and select another roles',$REL_LANG->_($classes[$key]['name'])));
+					}
+			if (in_array($val,$vals)){ $prerror=$key; break; }
+			$vals[] = $val;
+			$query[] = "UPDATE classes SET prior=$val, remark=".sqlesc($roq)." WHERE id=$key";
+		}
+		if ($prerror) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Prioity for class %s is not unique',$REL_LANG->_($classes[$prerror]['name'])));
+		
+		if ($query) foreach ($query as $q) $REL_DB->query($q);
+		$REL_CACHE->clearCache('system','classes');
+		safe_redirect($REL_SEO->make_link('classadmin'),1);
+		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Priority and role chages saved'),'success');
+	}
+}
 
 $REL_TPL->stdhead($REL_LANG->_('Classes control panel'));
 
@@ -78,7 +143,16 @@ if ($a=='add'||$a=='edit') {
 		}
 		$REL_TPL->assign('a',$a);
 	$REL_TPL->output('edit');
-} 
+}
+elseif ($a=='del') {
+	$id = (int)$_GET['id'];
+	$classes = $REL_DB->query_return("SELECT id,name FROM classes WHERE id<>$id ORDER BY prior DESC");
+	$REL_TPL->assign('c',$classes);
+	$REL_TPL->assign('id',$id);
+	$REL_TPL->output($a);
+	$REL_TPL->stdfoot();
+	die();
+}
 else {
 
 		$classes = $REL_DB->query_return("SELECT * FROM classes ORDER BY prior DESC");
