@@ -1468,4 +1468,5 @@ classadmin_vip_desc=<b>vip</b> - class with this role has no rating downgrade
 classadmin_rating_desc=<b>rating</b> - class with this role will be setted to users with good rating
 classadmin_reg_desc=<b>reg</b> - class with this role will be setted to newly registered users
 classadmin_guest_desc=<b>guest</b> - class with this role will be associated with guests
-// langfile (en) from http://www.torrentsbook.com created at 12/08/2011 16:11:00
+admincp_classconfig=Classes configuration
+// langfile (en) from http://www.torrentsbook.com created at 12/08/2011 16:19:06

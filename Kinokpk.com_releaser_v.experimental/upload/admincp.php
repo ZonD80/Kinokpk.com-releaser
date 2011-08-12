@@ -24,15 +24,15 @@ if (get_privilege('is_owner',false)) {
 	$REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For owners")); ?>
 <table width=100% cellspacing=10 align=center>
 	<tr>
-		<td><a href="<?=$REL_SEO->make_link('configadmin');?>"><b><?=$REL_LANG->_("Global settings");?></b></a></td>
-		<td><a href="<?=$REL_SEO->make_link('blocksadmin');?>"><?=$REL_LANG->_("Blocks administration");?></a></td>
-		<td><a href="<?=$REL_SEO->make_link('templatesadmin');?>"><?=$REL_LANG->_("Skins administration");?></a></td>
-		<td><a href="<?=$REL_SEO->make_link('forumadmin');?>"><b><?=$REL_LANG->_("Forum");?></b></a></td>
-
+		<td><a href="<?=$REL_SEO->make_link('configadmin');?>"><?=$REL_LANG->_("Global settings");?></a></td>
+		<td><a href="<?=$REL_SEO->make_link('privadmin');?>"><?=$REL_LANG->_("Privileges configuration");?></a></td>
+		<td><a href="<?=$REL_SEO->make_link('classadmin');?>"><?=$REL_LANG->_("Classes configuration");?></a></td>
+		<td><a href="<?=$REL_SEO->make_link('seoadmin');?>"><?=$REL_LANG->_("Human Readable URLs configuration (SEO)");?></a></td>
 	</tr>
 	<tr>
-		<td><a href="<?=$REL_SEO->make_link('privadmin');?>"><?=$REL_LANG->_("Privileges configuration");?></a></td>
-		<td colspan="3"><a href="<?=$REL_SEO->make_link('seoadmin');?>"><?=$REL_LANG->_("Human Readable URLs configuration (SEO)");?></a></td>
+		<td><a href="<?=$REL_SEO->make_link('blocksadmin');?>"><?=$REL_LANG->_("Blocks administration");?></a></td>
+		<td><a href="<?=$REL_SEO->make_link('templatesadmin');?>"><?=$REL_LANG->_("Skins administration");?></a></td>
+		<td colspan="2"><a href="<?=$REL_SEO->make_link('forumadmin');?>"><?=$REL_LANG->_("Forum");?></a></td>
 	</tr>
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('spam');?>"><?=$REL_LANG->_("View private messages");?></a></td>
@@ -43,7 +43,7 @@ if (get_privilege('is_owner',false)) {
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('dchubsadmin');?>"><?=$REL_LANG->_("DC Hubs administration");?></a></td>
 		<td><a href="<?=$REL_SEO->make_link('retrackeradmin');?>"><?=$REL_LANG->_("Retracker administration");?></a></td>
-		<td><a href="<?=$REL_SEO->make_link('cronadmin');?>"><b><?=$REL_LANG->_("Sheduled jobs administration");?></b></a></td>
+		<td><a href="<?=$REL_SEO->make_link('cronadmin');?>"><?=$REL_LANG->_("Sheduled jobs administration");?></a></td>
 		<td><a href="<?=$REL_SEO->make_link('langadmin');?>"><?=$REL_LANG->_("Language tools");?></a></td>
 	</tr>
 </table>

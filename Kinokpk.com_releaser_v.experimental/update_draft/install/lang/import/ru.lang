@@ -1469,4 +1469,5 @@ classadmin_vip_desc=<b>vip</b> - для класса с этой ролью не
 classadmin_rating_desc=<b>rating</b> - класс с этой ролью будет присвоен пользователям с хорошим рейтингом
 classadmin_reg_desc=<b>reg</b> - класс с этой ролью будет присвоен новым пользователям
 classadmin_guest_desc=<b>guest</b> - класс с этой ролью - класс гостей
-// langfile (ru) from http://www.torrentsbook.com created at 12/08/2011 16:11:19
+admincp_classconfig=Конфигурирование классов
+// langfile (ru) from http://www.torrentsbook.com created at 12/08/2011 16:19:13
