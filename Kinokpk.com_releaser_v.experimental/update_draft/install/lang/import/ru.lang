@@ -1442,4 +1442,31 @@ privadmin_edit_desc=Редактировать описание привилег
 access_to_privadmin=Доступ к панели управления привилегиями
 classadmin_priv=Доступ к панели администрирования классов
 privadmin_noprivname_edit=Редактирование названий уже существующих привилегий запрещено. Если вы хотите его изменить, то создайте новую привилегию с другим именем и удалите эту.
-// langfile (ru) from http://www.torrentsbook.com created at 11/08/2011 10:22:46
+classadmin_roles_error=Ошибка. Выбранные роли уже используются другим классом. Пожалуйста <a href="javascript:history.go(-1);">вернитесь назад</a> и выберите другие роли
+blocksadmin_saved=Блок сохранен
+classadmin_priority_error=Класс с таким приоритетом уже существует. Пожалуйста <a href="javascript:history.go(-1);">вернитесь назад</a> и выберите другой приоритет
+classadmin_added=Класс добавлен
+classadmin_error_last=Вы не можете удалить последний класс
+classadmin_deleted=Класс удален
+classadmin_updated=Класс обновлен
+classadmin_roles_error_this=Ошибка. Роли, выбранные для класса "%s", уже назначены другим классам. Пожалуйста <a href="javascript:history.go(-1);">вернитесь назад</a> и выберите другие роли
+classadmin_priority_error_this=Приоритет класса "%s" не уникален
+classadmin_saved=Изменения приоритетов и ролей сохранены
+classadmin_title=Панель управления классами
+classadmin_current=Список классов
+Priority=Приоритет
+Roles=Роли
+classadmin_att_priority=Внимание: Приоритеты должны быть уникальными
+classadmin_wildcard_notice=Вы можете использовать замены {clname} в качестве имени класса и {uname} в качестве имени пользователя
+classadmin_add_edit=Добавление или редактирование класса
+classadmin_del_assign=Выберите класс, который будет присвоен пользователям, у которым сейчас назначен удаляемый класс
+classadmin_roles_desc_title=Описание ролей
+classadmin_roles_desc_how=Роль может быть присвоена только одному классу, но один класс может иметь несколько ролей!
+classadmin_sysop_desc=<b>sysop</b> - суперадминистратор. Класс с этой ролью получает доступ к некоторым суперадминистраторским опциям
+classadmin_uploader_desc=<b>uploader</b> - класс с этой ролью может добавлять торренты к релизам без торрентов
+classadmin_staffbegin_desc=<b>staffbegin</b> -  класс с этой ролью и классы, высшие по приоритету, отображаются на странице "Администрация" (staff.php)
+classadmin_vip_desc=<b>vip</b> - для класса с этой ролью не действует понижение рейтинга при включенной рейтинговой системе
+classadmin_rating_desc=<b>rating</b> - класс с этой ролью будет присвоен пользователям с хорошим рейтингом
+classadmin_reg_desc=<b>reg</b> - класс с этой ролью будет присвоен новым пользователям
+classadmin_guest_desc=<b>guest</b> - класс с этой ролью - класс гостей
+// langfile (ru) from http://www.torrentsbook.com created at 12/08/2011 16:11:19

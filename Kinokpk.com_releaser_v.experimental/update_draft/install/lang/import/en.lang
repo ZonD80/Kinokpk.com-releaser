@@ -1441,4 +1441,31 @@ privadmin_edit_desc=Edit privilege description
 access_to_privadmin=Access to privileges administration panel
 classadmin_priv=Access to classes administration panel
 privadmin_noprivname_edit=Editing names of existing privileges is not possible. If you want to change it, you must create new privilege and delete this one
-// langfile (en) from http://www.torrentsbook.com created at 11/08/2011 10:22:59
+blocksadmin_saved=Block saved
+classadmin_roles_error=Error. Selected roles already associated with another classes. Please <a href="javascript:history.go(-1);">try again</a> and select another roles
+classadmin_priority_error=Class with this priority already exists. Please <a href="javascript:history.go(-1);">try again</a>
+classadmin_added=Class added
+classadmin_error_last=You can not delete last class
+classadmin_deleted=Class deleted
+classadmin_updated=Class updated
+classadmin_roles_error_this=Error. Selected roles for class "%s" are alredy associated with another classes. Please <a href="javascript:history.go(-1);">try again</a> and select another roles
+classadmin_priority_error_this=Prioity for class "%s" is not unique
+classadmin_saved=Priority and role changes saved
+classadmin_title=Classes control panel
+classadmin_current=Current classes
+Priority=Priority
+Roles=Roles
+classadmin_att_priority=Attention: Priorities must be unique
+classadmin_wildcard_notice=You can use wildcards {clname} as class name and {uname} as user name
+classadmin_add_edit=Adding or editing class
+classadmin_del_assign=Select class to be assigned to users, which currently have deleting class
+classadmin_roles_desc_title=Roles description
+classadmin_roles_desc_how=Only one class can be associated to every single role, but one class can have many roles!
+classadmin_sysop_desc=<b>sysop</b> - system operator. Class with this role can access some only sysop-specific features
+classadmin_uploader_desc=<b>uploader</b> - class with this role can add torrents to non-torrent releases
+classadmin_staffbegin_desc=<b>staffbegin</b> - class with this role and classes with higher priority will be listed on staff page (staff.php)
+classadmin_vip_desc=<b>vip</b> - class with this role has no rating downgrade
+classadmin_rating_desc=<b>rating</b> - class with this role will be setted to users with good rating
+classadmin_reg_desc=<b>reg</b> - class with this role will be setted to newly registered users
+classadmin_guest_desc=<b>guest</b> - class with this role will be associated with guests
+// langfile (en) from http://www.torrentsbook.com created at 12/08/2011 16:11:00

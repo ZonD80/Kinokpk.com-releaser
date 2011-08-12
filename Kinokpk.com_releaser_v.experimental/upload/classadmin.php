@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 		$REL_CACHE->clearCache('system','classes');
 		safe_redirect($REL_SEO->make_link('classadmin'),1);
 		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Class added'),'success');
-		} else $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Invalid form data'));
+		} else $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Missing form data'));
 	}
 	elseif ($a=='del') {
 		$cl = (int)$_POST['cl'];
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 		$REL_CACHE->clearCache('system','classes');
 		safe_redirect($REL_SEO->make_link('classadmin'),1);
 		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Class updated'),'success');
-		} else $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Invalid form data'));
+		} else $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Missing form data'));
 	}
 	elseif ($a=='reorder') {
 		$classes = init_class_array();
@@ -119,12 +119,12 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 			$vals[] = $val;
 			$query[] = "UPDATE classes SET prior=$val, remark=".sqlesc($roq)." WHERE id=$key";
 		}
-		if ($prerror) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Prioity for class %s is not unique',$REL_LANG->_($classes[$prerror]['name'])));
+		if ($prerror) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Prioity for class "%s" is not unique',$REL_LANG->_($classes[$prerror]['name'])));
 		
 		if ($query) foreach ($query as $q) $REL_DB->query($q);
 		$REL_CACHE->clearCache('system','classes');
 		safe_redirect($REL_SEO->make_link('classadmin'),1);
-		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Priority and role chages saved'),'success');
+		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Priority and role changes saved'),'success');
 	}
 }
 
