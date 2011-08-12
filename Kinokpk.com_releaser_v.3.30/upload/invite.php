@@ -24,7 +24,8 @@ $invite = $_GET["invite"];
 $REL_TPL->stdhead("Приглашения");
 
 function bark($msg) {
-	stdmsg("Ошибка", $msg);
+	global $REL_TPL;
+	$REL_TPL->stdmsg("Ошибка", $msg,'error');
 	$REL_TPL->stdfoot();
 }
 
