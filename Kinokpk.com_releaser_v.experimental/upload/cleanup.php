@@ -8,7 +8,6 @@
  * @link http://dev.kinokpk.com
  */
 header("Content-Type: image/gif");
-
 @set_time_limit(0);
 @ignore_user_abort(1);
 date_default_timezone_set('UTC');
@@ -25,6 +24,7 @@ $time = time();
 require_once(ROOT_PATH . 'classes/database/database.class.php');
 $REL_DB = new REL_DB($db);
 unset($db);
+//$REL_DB->debug();
 
 $REL_CONFIGrow = $REL_DB->query("SELECT * FROM cache_stats WHERE cache_name IN ('sitename','defaultbaseurl','siteemail','default_language','smtptype')");
 
@@ -56,20 +56,22 @@ $cronrow = $REL_DB->query("SELECT * FROM cron WHERE cron_name IN ('in_cleanup','
 while ($cronres = mysql_fetch_assoc($cronrow)) $REL_CRON[$cronres['cron_name']] = $cronres['cron_value'];
 
 if ($REL_CRON['in_cleanup']) die('Cleanup already running');
+
 $REL_DB->query("UPDATE cron SET cron_value=".time()." WHERE cron_name='last_cleanup'") or sqlerr(__FILE__,__LINE__);
 
 $REL_DB->query("UPDATE cron SET cron_value=1 WHERE cron_name='in_cleanup'") or sqlerr(__FILE__,__LINE__);
 
 $torrents = array();
-$res = $REL_DB->query('SELECT fid,seeders,leechers,mtime FROM xbt_files') or sqlerr(__FILE__,__LINE__);
+$res = $REL_DB->query('SELECT fid,seeders,leechers FROM xbt_files') or sqlerr(__FILE__,__LINE__);
 while ($row = mysql_fetch_assoc($res)) {
-	$torrents[$row['fid']] = $row;
+	$torrents["seeders = {$row['seeders']}, leechers={$row['leechers']}, lastchecked={$time}"][] = $row['fid'];
 }
 
 if ($torrents) {
-	foreach ($torrents AS $id=>$torrent) {
-		$REL_DB->query("UPDATE trackers SET seeders = ".(int)$torrent['seeders'].", leechers = ".(int)$torrent['leechers'].", lastchecked = {$torrent['mtime']} WHERE torrent = $id AND tracker='localhost'") or sqlerr(__FILE__,__LINE__);
-		$ids[] = $id;
+	$ids = array();
+	foreach ($torrents AS $to_set=> $to_ids) {
+		$REL_DB->query("UPDATE trackers SET $to_set WHERE torrent IN (".implode(',',$to_ids).") AND tracker='localhost'") or sqlerr(__FILE__,__LINE__);
+		$ids = array_merge($ids,$to_ids);
 	}
 }
 
@@ -77,8 +79,15 @@ $REL_DB->query("UPDATE trackers SET seeders=0, leechers=0, lastchecked=$time WHE
 
 $res = $REL_DB->query("SELECT torrent, SUM(seeders) AS seeders, SUM(leechers) AS leechers FROM trackers GROUP BY torrent") or sqlerr(__FILE__,__LINE__);
 
+$torrents = array();
 while ($row = mysql_fetch_assoc($res)) {
-	$REL_DB->query("UPDATE torrents SET seeders={$row['seeders']}, leechers={$row['leechers']} WHERE id={$row['torrent']}") or sqlerr(__FILE__,__LINE__);
+	$torrents["seeders={$row['seeders']}, leechers={$row['leechers']}"][] = $row['torrent'];
+}
+if ($torrents) {
+	foreach ($torrents AS $to_set=> $to_ids) {
+		$REL_DB->query("UPDATE torrents SET $to_set WHERE id IN (".implode(',',$to_ids).")") or sqlerr(__FILE__,__LINE__);
+			
+	}
 }
 /*	//delete inactive user accounts
  $secs = 31*86400;

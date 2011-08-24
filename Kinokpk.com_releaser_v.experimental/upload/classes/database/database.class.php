@@ -1,13 +1,21 @@
 <?php
 class REL_DB {
 	public $query, $conntection;
-
+	
+	
+	/**
+	 * Sets mode to non-gui debug. Query times and errors will be printed directly to page.
+	 */
+	function debug() {
+		$this->debug = true;
+		$this->ttime = 0;
+	}
 	function __construct($db) {
 		$this->connection = @mysql_connect($db['host'], $db['user'], $db['pass']);
 		if (!$this->connection)
-		die("[" . mysql_errno() . "] dbconn: mysql_connect: " . mysql_error());
+		die("Error " . mysql_errno() . " aka " . mysql_error().". Failed to estabilish connection to SQL server");
 		mysql_select_db($db['db'])
-		or die("dbconn: mysql_select_db: " + mysql_error());
+		or die("Cannot select database {$db['db']}: " + mysql_error());
 
 		$this->my_set_charset($db['charset']);
 		$this->query = array();
@@ -36,7 +44,11 @@ class REL_DB {
 		$result = mysql_query($query);
 		$query_end_time = microtime(true); // End time
 		$query_time = ($query_end_time - $query_start_time);
-		//$query_time = substr($query_time, 0, 8);
+		if ($this->debug) {
+		$this->ttime = $this->ttime + $query_time;
+		print (mysql_errno()?"ERROR: ".mysql_errno()." - ".mysql_error().'<br/>':'')."$query<br/>took $query_time, total {$this->ttime}<hr/>";
+			
+		}
 		$this->query[] = array("seconds" => $query_time, "query" => $query);
 		return $result;
 	}
