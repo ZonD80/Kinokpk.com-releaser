@@ -77,7 +77,7 @@ send_notifs('torrents',format_comment($descr));
 	if ($trackers_to_delete)
 	foreach ($trackers_to_delete as $tracker) {
 		if ($tracker)
-		sql_query("DELETE FROM trackers WHERE tracker='$tracker' AND torrent=$id") or sqlerr(__FILE__,__LINE__);
+		sql_query("DELETE FROM trackers WHERE tracker=".sqlesc($tracker)." AND torrent=$id") or sqlerr(__FILE__,__LINE__);
 		$state[$tracker] = 'deleted';
 	}
 	if ($trackers_to_add)
@@ -87,7 +87,7 @@ send_notifs('torrents',format_comment($descr));
 			$reason[$tracker] = makesafe($peers['state']);
 			if ($peers['state']=='ok') {
 				sql_query("INSERT INTO trackers (tracker,torrent) VALUES (".sqlesc(strip_tags($tracker)).",$id)");// or sqlerr(__FILE__,__LINE__);
-				sql_query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", lastchecked=".time().", state='".mysql_real_escape_string($peers['state'])."' WHERE torrent=$id AND tracker='$tracker'") or sqlerr(__FILE__,__LINE__);
+				sql_query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", lastchecked=".time().", state=".sqlesc($peers['state'])." WHERE torrent=$id AND tracker=".sqlesc($tracker)) or sqlerr(__FILE__,__LINE__);
 				$state[$tracker] = 'added';
 			} else $state[$tracker] = 'failed';
 		}
