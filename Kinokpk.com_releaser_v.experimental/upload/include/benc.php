@@ -471,7 +471,12 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 	);
 	$req_uri = $scheme.'://'.$http_host.$http_port.$http_path.($http_params ? '?'.$http_params : '');
 
-	if ( function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1 ) {
+	if ($scheme=='udp') {
+		// here it is. Packets http://xbtt.sourceforge.net/udp_tracker_protocol.html
+		return array('tracker' => $http_host, 'state' => 'failed:udp_not_supported', 'method' => 'not_supported', 'remote_method' => 'N/A');
+		
+	}
+	elseif ( function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1 ) {
 		$context = @stream_context_create($opts);
 		$result = @file_get_contents($req_uri , false, $context);
 		$remote_method = 'file';

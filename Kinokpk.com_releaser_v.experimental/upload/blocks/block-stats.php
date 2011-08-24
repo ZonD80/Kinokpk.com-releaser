@@ -80,8 +80,8 @@ $content .= "<table width=\"100%\" class=\"main\" border=\"0\" cellspacing=\"0\"
 <table width=\"100%\" class=\"main\" border=\"0\" cellspacing=\"0\" cellpadding=\"10\">
   <tr>
     <td width=\"50%\" align=\"center\" style=\"border: none;\"><table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">
-<tr><td class=\"rowhead\">".$REL_LANG->say_by_key('users_registered')."</td><td align=\"right\"><img src=\"pic/male.gif\" alt=\"Парни\"/>".number_format($male)."<img src=\"pic/female.gif\" alt=\"Девушки\"/>".number_format($female)."<br />".$REL_LANG->say_by_key('total').": ".number_format($registered)."</td></tr>
-".($REL_CONFIG['maxusers']?"<tr><td colspan=\"2\" class=\"rowhead\"><table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\"><tr><td style=\"text-align: right; font-weight: bold; vertical-align: top;\">Мест на трекере</td><td align=\"right\">".number_format($REL_CONFIG['maxusers'])."</td></tr></table></td></tr>":'')."
+<tr><td class=\"rowhead\">".$REL_LANG->say_by_key('users_registered')."</td><td align=\"right\"><img src=\"pic/male.gif\" alt=\"{$REL_LANG->_('Males')}\"/>".number_format($male)."<img src=\"pic/female.gif\" alt=\"{$REL_LANG->_('Females')}\"/>".number_format($female)."<br />".$REL_LANG->say_by_key('total').": ".number_format($registered)."</td></tr>
+".($REL_CONFIG['maxusers']?"<tr><td colspan=\"2\" class=\"rowhead\"><table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\"><tr><td style=\"text-align: right; font-weight: bold; vertical-align: top;\">{$REL_LANG->_('Account limit')}</td><td align=\"right\">".number_format($REL_CONFIG['maxusers'])."</td></tr></table></td></tr>":'')."
 <tr><td class=\"rowhead\">".$REL_LANG->say_by_key('users_unconfirmed')."</td><td align=\"right\">".($unverified?$unverified:$REL_LANG->say_by_key('no'))."</td></tr>
 <tr><td class=\"rowhead\">".$REL_LANG->say_by_key('users_warned')."&nbsp;<img src=\"pic/warned.gif\" alt=\"{$REL_LANG->say_by_key('users_warned')}\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".($warned_users?number_format($warned_users):$REL_LANG->say_by_key('no'))."</td></tr>
 <tr><td class=\"rowhead\">".$REL_LANG->say_by_key('users_disabled')."&nbsp;<img src=\"pic/disabled.gif\" alt=\"{$REL_LANG->say_by_key('users_disabled')}\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".($disabled?number_format($disabled):$REL_LANG->say_by_key('no'))."</td></tr>
@@ -89,14 +89,14 @@ $content .= "<table width=\"100%\" class=\"main\" border=\"0\" cellspacing=\"0\"
 
 </table></td>
 <td width=\"50%\" align=\"center\" style=\"border: none;\"><table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">
-<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('browse')."\">Релизов</a></td><td align=\"right\">".number_format($torrents)."</td></tr>
-<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('browse','nofile','')."\">Релизов без торрентов</a></td><td align=\"right\">".($nofiler?number_format($nofiler):$REL_LANG->say_by_key('no'))."</td></tr>
-<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('browse','dead','')."\">Мертвых релизов</a></td><td align=\"right\">".($dead?number_format($dead):$REL_LANG->say_by_key('no'))."</td></tr>
+<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('browse')."\">{$REL_LANG->_('Releases')}</a></td><td align=\"right\">".number_format($torrents)."</td></tr>
+<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('browse','nofile','')."\">{$REL_LANG->_('Releases without torrents')}</a></td><td align=\"right\">".($nofiler?number_format($nofiler):$REL_LANG->say_by_key('no'))."</td></tr>
+<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('browse','dead','')."\">{$REL_LANG->_('Dead releases')}</a></td><td align=\"right\">".($dead?number_format($dead):$REL_LANG->say_by_key('no'))."</td></tr>
 <tr><td class=\"rowhead\"><a href= \"".$REL_SEO->make_link('peers')."\">".$REL_LANG->say_by_key('tracker_peers')."</a></td><td align=\"right\">".number_format($peers)."</td></tr>";
 if (isset($peers)) {
-	$content .= "<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('peers','view','seeders')."\">".$REL_LANG->say_by_key('tracker_seeders')."</a>&nbsp;&nbsp; <img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/arrowup.gif\" alt=\"Раздает\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".number_format($seeders+$block_online['seeders'])."</td></tr>
-<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('peers','view','leechers')."\">".$REL_LANG->say_by_key('tracker_leechers')."</a>&nbsp;&nbsp;<img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/arrowdown.gif\" alt=\"Качает\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".number_format($leechers+$block_online['leechers'])."</td></tr>
-<tr><td class=\"rowhead\">Размер релизов</td><td align=\"right\">$total_size</td></tr>
+	$content .= "<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('peers','view','seeders')."\">".$REL_LANG->say_by_key('tracker_seeders')."</a>&nbsp;&nbsp; <img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/arrowup.gif\" alt=\"{$REL_LANG->_('Seeding')}\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".number_format($seeders+$block_online['seeders'])."</td></tr>
+<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('peers','view','leechers')."\">".$REL_LANG->say_by_key('tracker_leechers')."</a>&nbsp;&nbsp;<img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/arrowdown.gif\" alt=\"{$REL_LANG->_('Leeching')}\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".number_format($leechers+$block_online['leechers'])."</td></tr>
+<tr><td class=\"rowhead\">{$REL_LANG->_('Total releases size')}</td><td align=\"right\">$total_size</td></tr>
 <tr><td class=\"rowhead\">".$REL_LANG->say_by_key('tracker_seed_peer')."</td><td align=\"right\">$ratio</td></tr>";
 }
 

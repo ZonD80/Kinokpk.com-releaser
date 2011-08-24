@@ -1,7 +1,7 @@
 <?php
 global $CURUSER, $REL_CONFIG, $REL_SEO, $REL_CACHE, $REL_LANG;
 if (!defined('BLOCK_FILE')) {
-	safe_redirect(" ../".$REL_SEO->make_link('index'));
+	safe_redirect($REL_SEO->make_link('index'));
 	exit;
 }
 $a = mysql_fetch_array(sql_query("SELECT id, username, donor, warned, class, enabled FROM users WHERE id = (SELECT MAX(id) FROM users WHERE users.confirmed=1)"));
@@ -60,25 +60,25 @@ if ($users == "")  $users = 0;
 if ($total == "")  $total = 0;
 $content .= "<table border='0' width='100%'>
              <tr valign='middle'>
-             <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'><b>Последний: </b> $latestuser</td></tr>";
+             <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'><b>{$REL_LANG->_('Last')}: </b> $latestuser</td></tr>";
 if (count($title_who)) {
 	$content .= "<tr valign='middle'>
                     <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>
-                    <b>Кто онлайн: </b><br />".@implode(", ", $title_who)."</td></tr>";
+                    <b>{$REL_LANG->_('Who is online')}: </b><br />".@implode(", ", $title_who)."</td></tr>";
 } else {
 	$content .= "<tr valign='middle'>
                     <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>
-                    <b>Кто онлайн: </b><br />Нет пользователей за последние 10 минут.</td></tr>";
+                    <b>{$REL_LANG->_('Who is online')}: </b><br />{$REL_LANG->_('There is no users in last 10 minutes')}</td></tr>";
 }
 $content .= "<tr valign='middle'>
             <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>
-            <b>В сети: </b><br />";
-$content .= "<img src='pic/info/admin.gif' alt='Администраторы' align='middle' width='16' height='16' />&nbsp;<font color='red'>Администрация: $staff</font>&nbsp;";
-$content .= "<img src='pic/info/member.gif' alt='Пользователи' align='middle' width='16' height='16' />&nbsp;Пользователи: $users&nbsp;<br />";
-$content .= "<img src='pic/info/guest.gif' alt='Гости' align='middle' width='16' height='16' />&nbsp;Гости: $guests&nbsp;";
-$content .= "<img src='pic/info/group.gif' alt='Всего' align='middle' width='16' height='16' />&nbsp;Всего: $total</td></tr>";
+            <b>{$REL_LANG->_('Online')}: </b><br />";
+$content .= "<img src='pic/info/admin.gif' alt='{$REL_LANG->_('Staff')}' align='middle' width='16' height='16' />&nbsp;<font color='red'>{$REL_LANG->_('Staff')}: $staff</font>&nbsp;";
+$content .= "<img src='pic/info/member.gif' alt='{$REL_LANG->_('Users')}' align='middle' width='16' height='16' />&nbsp;{$REL_LANG->_('Users')}: $users&nbsp;<br />";
+$content .= "<img src='pic/info/guest.gif' alt='{$REL_LANG->_('Guests')}' align='middle' width='16' height='16' />&nbsp;{$REL_LANG->_('Guests')}: $guests&nbsp;";
+$content .= "<img src='pic/info/group.gif' alt='{$REL_LANG->_('Total')}' align='middle' width='16' height='16' />&nbsp;{$REL_LANG->_('Total')}: $total</td></tr>";
 $content .= "<tr valign='middle'>
             <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>
-            <b>Рекорд: $max_total</b>, зарегестрирован<br/>".mkprettytime($max_time)." (".get_elapsed_time($max_time,false)." {$REL_LANG->say_by_key('ago')})</td></tr></table>";
+            <b>{$REL_LANG->_('Record')}: $max_total</b>, {$REL_LANG->_('registered at')}<br/>".mkprettytime($max_time)." (".get_elapsed_time($max_time,false)." {$REL_LANG->say_by_key('ago')})</td></tr></table>";
 
 ?>

@@ -125,7 +125,7 @@ elseif (!isset($_GET['act'])) {
 	$num = mysql_num_rows($res);
 
 	if (!pagercheck()) {
-		print("<div id=\"pager_scrollbox\"><table id=\"userst\"  cellspacing=\"0\" cellpadding=\"5\" border=\"1\" style=\"width: 964px;\">\n");
+		print("<div id=\"pager_scrollbox\"><table id=\"userst\"  cellspacing=\"0\" cellpadding=\"5\" border=\"1\" style=\"width: 100%;\">\n");
 		print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td></tr>\n");
 	}
 	while ($arr = mysql_fetch_assoc($res)) {

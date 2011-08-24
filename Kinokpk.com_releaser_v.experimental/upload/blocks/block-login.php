@@ -1,7 +1,7 @@
 <?php
 global $CURUSER, $REL_LANG, $REL_CONFIG, $REL_SEO;
 if (!defined('BLOCK_FILE')) {
-	safe_redirect(" ../".$REL_SEO->make_link('index'));
+	safe_redirect($REL_SEO->make_link('index'));
 	exit;
 }
 
@@ -29,9 +29,8 @@ if ($CURUSER)  $content = "<a class=\"menu\" href=\"".$REL_SEO->make_link('my').
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('formats')."\">&nbsp;".$REL_LANG->say_by_key('formats')."</a>";
 else
 $content = "<center>
-<a href=\"".$REL_SEO->make_link('login')."\"><font size=\"3\"><b><u>Войти</u></b></font></a><br /><br />
-Вы можете использовать логин и пароль форума {$REL_CONFIG['forumname']} для авторизации.<br /><hr /><br />
-У вас нет аккаунта?<br />
-<a href=\"".$REL_SEO->make_link('signup')."\"><u>Зарегистрируйтесь</u></a> прямо сейчас!</center><br /><br />"
+<a href=\"".$REL_SEO->make_link('login')."\"><font size=\"3\"><b><u>{$REL_LANG->_('Log in')}</u></b></font><hr /><br />
+{$REL_LANG->_('You have no account?')}<br />
+<a href=\"".$REL_SEO->make_link('signup')."\"><u>{$REL_LANG->_('Register')}</u></a> {$REL_LANG->_('Just now')}!</center><br /><br />"
 
 ?>

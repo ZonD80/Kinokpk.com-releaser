@@ -1,7 +1,7 @@
 <?php
 global $REL_LANG, $REL_CACHE, $REL_SEO;
 if (!defined('BLOCK_FILE')) {
-	safe_redirect(" ../".$REL_SEO->make_link('index'));
+	safe_redirect($REL_SEO->make_link('index'));
 	exit;
 }
 
@@ -28,7 +28,7 @@ if ($resource) {
 			$content .="<hr/><div align=\"right\">";
 			if (get_privilege('news_operation',false)) {
 				$content .= "[<a href=\"".$REL_SEO->make_link('news','action','edit','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>E</b></a>]";
-				$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
+				$content .= "[<a onclick=\"return confirm('{$REL_LANG->_('Are you sure?')}');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
 			}
 			$content .= "".$REL_LANG->say_by_key('comms_2')."".$array['comments']." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$array['id'])."#comments\">".$REL_LANG->say_by_key('to_comment')."</a>]</div>";
 			$content .= "</div></div>";
@@ -39,7 +39,7 @@ if ($resource) {
 			$content .="<hr/><div align=\"right\">";
 			if (get_privilege('news_operation',false)) {
 				$content .= "[<a href=\"".$REL_SEO->make_link('news','action','edit','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>E</b></a>]";
-				$content .= "[<a onclick=\"return confirm('Вы уверены?');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
+				$content .= "[<a onclick=\"return confirm('{$REL_LANG->_('Are you sure?')}');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
 			}
 			$content .= "".$REL_LANG->say_by_key('comms_2')."".$array['comments']." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$array['id'])."\">".$REL_LANG->say_by_key('to_comment')."</a>]</div>";
 			$content .= "</div></div>";

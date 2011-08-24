@@ -107,7 +107,8 @@ if (!$fid) {
 	$class = (int) $_GET['class'];
 	if ($class == '-' || !is_valid_user_class($class))
 	$class = '';
-
+	
+	$query = array();
 	if ($search != '' || $class) {
 		$querystr = " LEFT JOIN users ON friendid=users.id";
 		$query_table = $query['u'] = "users.username LIKE '%" . sqlwildcardesc($search) . "%' AND users.confirmed=1";
@@ -121,12 +122,13 @@ if (!$fid) {
 		$q[] = "class";
 		$q[] = $class;
 	}
+	
+	$query_data = $querystr.' WHERE '.implode(' AND ',$query);
 
-	$query['def'] = "userid={$CURUSER['id']} OR friendid={$CURUSER['id']}";
+$query['def'] = "(userid={$CURUSER['id']} OR friendid=$fid)";
 
-	$query = $querystr.' WHERE '.implode(' AND ',$query)." GROUP BY friends.id";
-
-
+$querycount = $querystr.' WHERE '.implode(' AND ',$query);
+$query = $querycount." GROUP BY friends.id";
 
 	print("<h1>{$REL_LANG->say_by_key('friends')}</h1>\n");
 
@@ -145,10 +147,10 @@ if (!$fid) {
 
 
 
-	$res = sql_query("SELECT IF (friends.userid={$CURUSER['id']},friends.friendid,friends.userid) AS friend, IF (friends.userid={$CURUSER['id']},0,1) AS init, friends.confirmed AS fconf, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON IF (friends.userid={$CURUSER['id']},u.id=friendid,u.id=userid) LEFT JOIN countries AS c ON c.id = u.country$query ORDER BY friends.id,friends.confirmed DESC $limit") or sqlerr(__FILE__, __LINE__);
+	$res = sql_query("(SELECT friends.friendid AS friend, 0 AS init, friends.confirmed AS fconf, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON u.id=friendid LEFT JOIN countries AS c ON c.id = u.country$query_data friends.userid={$CURUSER['id']}) UNION (SELECT friends.userid AS friend, 1 AS init, friends.confirmed AS fconf, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON u.id=userid LEFT JOIN countries AS c ON c.id = u.country$query_data friends.friendid={$CURUSER['id']})") or sqlerr(__FILE__, __LINE__);
 
 	print ('<div id="users-table">');
-	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
+	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\" width=\"100%\">\n");
 	print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td><td class=\"colhead\">Подтвержден</td><td class=\"colhead\">Действия</td></tr>\n");
 	while ($arr = mysql_fetch_assoc($res)) {
 		if ($arr['country'] > 0) {

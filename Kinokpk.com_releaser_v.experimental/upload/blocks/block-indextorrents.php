@@ -11,12 +11,12 @@ global $REL_LANG, $REL_CACHE, $REL_CONFIG, $CURUSER, $REL_SEO;
 
 
 if (!defined('BLOCK_FILE')) {
-	safe_redirect(" ../".$REL_SEO->make_link('index'));
+	safe_redirect($REL_SEO->make_link('index'));
 	exit;
 }
 
 
-$blocktitle = "<span>Релизы</span>".(get_privilege('upload_releases',false) ? "<font class=\"small\"> - [<a class=\"altlink\" href=\"".$REL_SEO->make_link('upload')."\"><b>Залить</b></a>]  </font>" : "<font class=\"small\"> - (новые поступления)</font>");
+$blocktitle = "<span>{$REL_LANG->_('Releases')}</span>".(get_privilege('upload_releases',false) ? "<font class=\"small\"> - [<a class=\"altlink\" href=\"".$REL_SEO->make_link('upload')."\"><b>{$REL_LANG->_('Upload')}</b></a>]  </font>" : "<font class=\"small\"> - ({$REL_LANG->_('new releases')}</font>");
 
 
 }
@@ -27,7 +27,7 @@ if ($count===false) {
 	$REL_CACHE->set('block-indextorrents','count',$count);
 }
 
-if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; } else {
+if (!$count) { $content = "<div align=\"center\">{$REL_LANG->_('No releases yet')}</div>"; } else {
 
 
 	$perpage = 9;
@@ -61,7 +61,7 @@ if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; }
 		if ($pron) { $image = 'pic/nopron.gif';  $row['name'] = $REL_LANG->say_by_key('xxx_release'); } else
 		if ($row['images']) $image = array_shift(explode(",",$row['images'])); else $image='pic/noimage.gif';
 		$content .= "<div align=\"center\"><a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\"><img border=\"0\" src=\"$image\" width=\"170\" height=\"200\" title=\"{$row['name']}\" alt=\"{$row['name']}\"/></a>";
-		$content .= "<br/><br/>".(($row['free'])?'<img border="0" src="pic/freedownload.gif" alt="Золотой торрент"/>&nbsp;':'')."<a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\">{$row['name']}</a></div>";
+		$content .= "<br/><br/>".(($row['free'])?'<img border="0" src="pic/freedownload.gif" alt="'.$REL_LANG->_('Golden release').'"/>&nbsp;':'')."<a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\">{$row['name']}</a></div>";
 
 		$content .= "</td>";
 		++$nc;
@@ -72,7 +72,3 @@ if (!$count) { $content = "<div align=\"center\">Нет релизов</div>"; }
 	else print $content;
 }
 ?>
-
-
-
-

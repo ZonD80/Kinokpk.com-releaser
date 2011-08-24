@@ -252,6 +252,7 @@ class REL_LANG {
 		 if (!$REL_DATABASE) die("FATAL ERROR: No database");*/
 		global $REL_DB;
 		$args = func_get_args();
+		if ($args[0]==0) $langauge = $this->language; else
 		$langauge = @mysql_result($REL_DB->query("SELECT language FROM users WHERE id={$args[0]}"),0);
 		$text = $args[1];
 		$return = '';

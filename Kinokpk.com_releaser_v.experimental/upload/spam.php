@@ -16,45 +16,44 @@ get_privilege('spamadmin');
 httpauth();
 
 
-$res2 = sql_query("SELECT SUM(1) FROM messages");
-$row = mysql_fetch_array($res2);
-$count = $row[0];
+$count = get_row_count("messages");
 
 if (!$count){
-	stderr("Извините, но сообщения не найдены.");
+	$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Nothing was found'));
 }
 
-$limit = "LIMIT 50";
-$REL_TPL->stdhead("ЛС пользователей");
+$limit = ajaxpager(50, $count, array('spam'), "messages > tbody:last");
+if (!pagercheck()) {
+$REL_TPL->stdhead($REL_LANG->_('Private messages viewer'));
 
 ?>
 
-<form method="post" action="<?=$REL_SEO->make_link('take-delmp');?>"
+<form method="post" action="<?php print $REL_SEO->make_link('take-delmp');?>"
 	name="form1" id="message">
 
-<table border="1" cellspacing="1" cellpadding="1" width="100%">
+<div id="pager_scrollbox"><table id="messages" border="1" cellspacing="1" cellpadding="1" width="100%">
 	<tr>
-		<td colspan="5" class=colhead align=center>Просмотр сообщений (всего <font
-			color="red"><?=$count?></font>)</td>
+		<td colspan="5" class=colhead align=center><?php print $REL_LANG->_('Private messages (%s total)',$count);?></td>
 	</tr>
 	<tr>
 		<td colspan="5">
 		<div style="float: right;"><input type="submit"
-			value="Удалить выбранное!" onClick="return confirm('Вы уверены?')"></div>
+			value="<?php print $REL_LANG->_('Delete selected');?>!" onClick="return confirm('<?php print $REL_LANG->_('Are you sure?');?>')"></div>
 		</td>
 	</tr>
 	<tr>
-		<td class=colhead align=center>Отправитель/Получатель</td>
+		<td class=colhead align=center><?php print $REL_LANG->_('Sender/Receiver');?></td>
 		<td class=colhead align=center>ID</td>
-		<td class=colhead align=center>Содержание</td>
-		<td class=colhead align=center>Дата</td>
+		<td class=colhead align=center><?php print $REL_LANG->_('Text');?></td>
+		<td class=colhead align=center><?php print $REL_LANG->_('Date');?></td>
 		<td class=colhead>
-		<center><INPUT type="checkbox" title="Выбрать все" value="Выбрать все"
+		<center><INPUT type="checkbox" title="<?php print $REL_LANG->_('Select All');?>" value="<?php print $REL_LANG->_('Select All');?>"
 			id="toggle-all"></center>
 		</td>
 	</tr>
-	<tr>
-	<?
+	<?php
+}
+
 	$res = sql_query("SELECT * FROM messages $where ORDER BY id DESC $limit") or sqlerr(__FILE__, __LINE__);
 	while ($arr = mysql_fetch_assoc($res))
 	{
@@ -71,51 +70,53 @@ $REL_TPL->stdhead("ЛС пользователей");
 		$arr3 = mysql_fetch_assoc($res3);
 
 		if($arr["sender"] == 0){
-			$sender = "<font color=red><b>Системное</b></font>";
+			$sender = "<font color=red><b>{$REL_LANG->_('System')}</b></font>";
 		} else {
 			$sender = make_user_link($arr2);
 		}
 		$msg = format_comment($arr['msg']);
 		$added = mkprettytime($arr['added']);
 
-		print("<td align='left'>
-        <div style='padding-top:5px; padding-bottom:10px;'>Отправитель:&nbsp;".$sender."</div>
-        <div style='padding-top:10px; padding-bottom:5px;'>Получатель:&nbsp;".$receiver."</div>
+		print("<tr><td align='left'>
+        <div style='padding-top:5px; padding-bottom:10px;'>{$REL_LANG->_('Sender')}:&nbsp;".$sender."</div>
+        <div style='padding-top:10px; padding-bottom:5px;'>{$REL_LANG->_('Receiver')}:&nbsp;".$receiver."</div>
         </td><td align=center><a href=\"".$REL_SEO->make_link('message','action','viewmessage','id',$arr["id"])."\">".$arr["id"]."</a></td>
         <td>$msg</td>
         <td align=center>$added</td>");
 		print("<TD align=center><INPUT type=\"checkbox\" name=\"delmp[]\" value=\"".$arr['id']."\" id=\"checkbox_tbl_".$arr['id']."\">
           </TD></tr>");
 	}
+	
 	?>
 		<tr>
 			<td class=colhead colspan="4"></td>
 			<td class=colhead>
-			<center><INPUT type="checkbox" title="Выбрать все"
-				value="Выбрать все" id="toggle-all"></center>
+			<center><INPUT type="checkbox" title="<?php print $REL_LANG->_('Select All');?>"
+				value="<?php print $REL_LANG->_('Select All');?>" id="toggle-all"></center>
 			</td>
 		</tr>
 
-		<?
+		<?php
+		
+			
 		if ($where && $count){
 			?>
 		<tr>
-			<td colspan="5"><a href="<?=$REL_SEO->make_link('spam');?>">Вернуться
-			к общему списку сообщений</a></td>
+			<td colspan="5"><a href="<?php print$REL_SEO->make_link('spam');?>"><?php print $REL_LANG->_('Back')?></a></td>
 		</tr>
-		<?}?>
+		<?php }?>
 
 		<tr>
 			<td colspan="5">
 			<div style="float: right;"><input type="submit"
-				value="Удалить выбранное!" onClick="return confirm('Вы уверены?')">
+				value="<?php print $REL_LANG->_('Delete selected');?>!" onClick="return confirm('<?php print $REL_LANG->_('Are you sure?');?>')">
 			</div>
 			</td>
 		</tr>
-
-</table>
+<?php 			if (pagercheck()) die();?>
+</table></div>
 </form>
 <br />
-		<?
+<?php
 		$REL_TPL->stdfoot();
 		?>

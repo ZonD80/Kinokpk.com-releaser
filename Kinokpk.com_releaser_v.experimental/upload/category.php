@@ -31,11 +31,21 @@ print("<br /><a href=\"category.php?add\">{$REL_LANG->say_by_key('add_new_catego
 
 if (isset($_GET['delid'])) {
 	if (!is_valid_id($_GET['delid'])) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
-
 	$delid = (int) $_GET['delid'];
-
+	$to_id = (int) $_GET['to_id'];
+	if (!$to_id||($to_id==$delid)) {
+		print "{$REL_LANG->_('You deleting "%s"',get_cur_position_str($tree,$delid))}<br/>{$REL_LANG->_('Select category to be associated to deleting category releases')}: <form action=\"{$REL_SEO->make_link('category')}\" method=\"get\">";
+		print "<input type=\"hidden\" name=\"delid\" value=\"$delid\"/>";
+		print gen_select_area('to_id',$tree,0,true);
+		print "<input type=\"submit\" value=\"{$REL_LANG->_('Continue')}\"/>";
+		print "</form>";
+		$REL_TPL->stdfoot();
+		die();
+	}
 	sql_query("DELETE FROM categories WHERE id=" .sqlesc($delid) . " LIMIT 1");
+	$REL_DB->query("UPDATE torrents SET category=$to_id WHERE category=$delid");
 	$REL_CACHE->clearGroupCache('trees');
+	safe_redirect($REL_SEO->make_link('category'),1);
 	stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('category_success_delete'));
 	$REL_TPL->stdfoot();
 	die();
@@ -54,6 +64,7 @@ elseif (isset($_GET['edited'])) {
 	sql_query("UPDATE categories SET
 name = $category_name,
 parent_id = $category_parent, image=$category_pic, sort=$category_sort,seo_name=$category_seo WHERE id=$category_id") or sqlerr(__FILE__,__LINE__);
+	safe_redirect($REL_SEO->make_link('category'),1);
 	stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('category_success_edit'));
 	$REL_CACHE->clearGroupCache('trees');
 	$REL_TPL->stdfoot();
@@ -94,6 +105,7 @@ if(isset($_GET['added'])) {
 	$category_sort = sqlesc((int)$_POST['category_sort']);
 	$category_seo = sqlesc(htmlspecialchars((string)$_POST['category_seo']));
 	sql_query("INSERT INTO categories (name,image,parent_id,sort,seo_name) VALUES ($category_name,$category_pic,$category_parent,$category_sort,$category_seo)") or sqlerr(__FILE__,__LINE__);
+	safe_redirect($REL_SEO->make_link('category'),1);
 	stdmsg($REL_LANG->_("Successful"),$REL_LANG->_("The category successfully added"));
 	$REL_CACHE->clearGroupCache('trees');
 	$REL_TPL->stdfoot();

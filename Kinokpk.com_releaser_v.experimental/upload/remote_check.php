@@ -59,7 +59,7 @@ if ($id)  {
 
 	while (list($infohash,$url) = mysql_fetch_array($anarray)) {
 		$peers = get_remote_peers($url, $infohash);
-		mysql_query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", lastchecked=".time().", method='{$peers['method']}', remote_method='{$peers['remote_method']}', state='".mysql_real_escape_string($peers['state'])."' WHERE torrent=$id AND tracker='$url'") or sqlerr(__FILE__,__LINE__);
+		mysql_query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", lastchecked=".time().", method='{$peers['method']}', remote_method='{$peers['remote_method']}', state=".sqlesc($peers['state'])." WHERE torrent=$id AND tracker=".sqlesc($url)) or sqlerr(__FILE__,__LINE__);
 	}
 }
 

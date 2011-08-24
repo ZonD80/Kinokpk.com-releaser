@@ -67,7 +67,7 @@ if ($action=='my') {
 		$dict['value']['publisher.utf-8']=bdec(benc_str( $row['owner'])); // change publisher.utf-8
 		$dict['value']['publisher-url']=bdec(benc_str( $REL_SEO->make_link('userdetails','id',$row['userid'],'username',$row['owner']))); // change publisher-url
 		$dict['value']['publisher-url.utf-8']=bdec(benc_str($REL_SEO->make_link('userdetails','id',$row['userid'],'username',$row['owner']))); // change publisher-url.utf-8
-		$zip->addFile(benc($dict), str_replace('/','-',translit($row['name']))."-{$row['id']}-{$_SERVER['HTTP_HOST']}.torrent",$row['added']);//,$row['name']);
+		$zip->addFile(benc($dict), str_replace('/','---',translit($row['name']))."-{$row['id']}-{$_SERVER['HTTP_HOST']}.torrent",$row['added']);//,$row['name']);
 		unset($dict);
 		unset($announce_urls_list);
 	}
@@ -200,7 +200,7 @@ header ("X-Powered-by: Kinokpk.com releaser - http://www.kinokpk.com - http://de
 header ("Accept-Ranges: bytes");
 header ("Connection: close");
 header ("Content-Transfer-Encoding: binary");
-header ("Content-Disposition: attachment; filename=\"".str_replace('/','-',translit($row['name']))."-{$id}-{$_SERVER['HTTP_HOST']}.torrent\"");
+header ("Content-Disposition: attachment; filename=\"".str_replace('/','---',translit($row['name']))."-{$id}-{$_SERVER['HTTP_HOST']}.torrent\"");
 header ("Content-Type: application/x-bittorrent");
 ob_implicit_flush(true);
 

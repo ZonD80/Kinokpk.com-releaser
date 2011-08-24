@@ -94,7 +94,8 @@ if ($action == "add")
 		/////////////////СЛЕЖЕНИЕ ЗА КОММЕНТАМИ/////////////////
 		
 		send_comment_notifs($to_id,"<a href=\"$returnto\">$name</a>","{$type}comments");
-
+		
+		set_visited("{$type}comments",$newid);
 		/////////////////СЛЕЖЕНИЕ ЗА КОММЕНТАМИ/////////////////
 		if (!REL_AJAX) {
 			safe_redirect($returnto);

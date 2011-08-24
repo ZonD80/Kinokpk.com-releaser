@@ -14,16 +14,6 @@ INIT();
 
 loggedinorreturn();
 
-function puke($text = "You have forgotten here someting?") {
-	global $REL_LANG;
-	stderr($REL_LANG->say_by_key('error'), $text);
-}
-
-function barf($text = "Пользователь удален") {
-	global $REL_LANG;
-	stderr($REL_LANG->say_by_key('success'), $text);
-}
-
 get_privilege('edit_users');
 
 $action = (string)$_POST["action"];
@@ -33,7 +23,7 @@ if (($action == 'ownsupport') && get_privilege('ownsupport',false)) {
 	$updateset[] = "supportfor = " . sqlesc($supportfor);
 	sql_query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__, __LINE__);
 	safe_redirect($REL_SEO->make_link('my'),0);
-	stderr($REL_LANG->say_by_key('success'),'Вы успешно сменили себе статус поддержки','success');
+	stderr($REL_LANG->say_by_key('success'),$REL_LANG->_('You successfully changed your support status'),'success');
 
 }
 elseif (($action == 'delnick') && get_privilege('ownsupport',false)) {
@@ -51,7 +41,7 @@ elseif ($action == "edituser") {
 	$resetb = $_POST["resetb"];
 	$birthday = ($resetb?", birthday = '0000-00-00'":"");
 	$enabled = ((!isset($_POST["enabled"]) || $_POST["enabled"])?1:0);
-	$dis_reason = htmlspecialchars($_POST['disreason']);
+	$dis_reason = htmlspecialchars((string)$_POST['disreason']);
 	$warned = $_POST["warned"]?1:0;
 	$warnlength = (int) $_POST["warnlength"];
 	$warnpm = $_POST["warnpm"];
@@ -93,10 +83,10 @@ elseif ($action == "edituser") {
 
 	$class = (int) $_POST["class"];
 	if (!is_valid_id($userid) || !is_valid_user_class($class))
-	stderr($REL_LANG->say_by_key('error'), "Неверный идентификатор пользователя или класса.");
+	stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid ID'));
 	// check target user class
 	$res = sql_query("SELECT warned, enabled, donor, username, class, modcomment, num_warned, avatar,id FROM users WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
-	$arr = mysql_fetch_assoc($res) or puke("Ошибка MySQL: " . mysql_error());
+	$arr = mysql_fetch_assoc($res) or sqlerr(__FILE__,__LINE__);
 	if ($avatar)
 	{
 		@unlink (ROOT_PATH."avatars/".$arr['avatar']);
@@ -112,52 +102,48 @@ elseif ($action == "edituser") {
 	$modcomment = $arr["modcomment"];
 	// User may not edit someone with same or higher class than himself!
 	if (get_class_priority($curclass) >= get_class_priority(get_user_class()) || get_class_priority($class) >= get_class_priority(get_user_class()))
-	puke("Так нельзя делать!");
+		$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access deined'));
 
 	if ($curclass != $class) {
 		// Notify user
-		$what = ($class > $curclass ? "повышены" : "понижены");
-		$msg = sqlesc("Вы были $what до класса \"" . get_user_class_name($class) . "\" пользователем $CURUSER[username].");
+		$msg = sqlesc($REL_LANG->_to($userid,'Your class was setted to "%s" by %s',get_user_class_name($class),make_user_link()));
 		$added = sqlesc(time());
-		$subject = sqlesc("Вы были $what");
+		$subject = sqlesc($REL_LANG->_to($userid,'Notification about class changing'));
 		sql_query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES(0, $userid, $msg, $added, $subject)") or sqlerr(__FILE__, __LINE__);
 		$updateset[] = "class = $class";
-		$what = ($class > $curclass ? "Повышен" : "Пониженен");
-		$modcomment = date("Y-m-d") . " - $what до класса \"" . get_user_class_name($class) . "\" пользователем $CURUSER[username].\n". $modcomment;
+		$modcomment = date("Y-m-d") . ($REL_LANG->_to(0,'Class was setted to "%s" by %s',get_user_class_name($class),$CURUSER['username']))."\n". $modcomment;
 	}
 
-	// some Helshad fun
-	// $fun = ($CURUSER['id'] == 277) ? " Tremble in fear, mortal." : "";
-	$num_warned = 1 + $arr["num_warned"]; //мод кол-ва предупреждений
+	$num_warned = 1 + $arr["num_warned"];
 	if ($curwarned != $warned) {
 		$updateset[] = "warned = 0";
 		$updateset[] = "warneduntil = 0";
-		$subject = sqlesc("Ваше предупреждение снято");
+		$subject = sqlesc($REL_LANG->_to($userid,'Your warning has been disabled'));
 		if (!$warned)
 		{
-			$modcomment = date("Y-m-d") . " - Предупреждение снял пользователь " . $CURUSER['username'] . ".\n". $modcomment;
-			$msg = sqlesc("Ваше предупреждение снял пользователь " . $CURUSER['username'] . ".");
+			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Warning has been disabled by %s',$CURUSER['username']) . ".\n". $modcomment;
+			$msg = sqlesc($REL_LANG->_to($userid,'Your warning has been disabled by %s', make_user_link()));
 		}
 		$added = sqlesc(time());
 		sql_query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES (0, $userid, $msg, $added, $subject)") or sqlerr(__FILE__, __LINE__);
 	} elseif ($warnlength) {
 		if (mb_strlen($warnpm) == 0)
-		stderr($REL_LANG->say_by_key('error'), "Вы должны указать причину по которой ставите предупреждение!");
+		stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('You must specify a reason'));
 		if ($warnlength == 255) {
-			$modcomment = date("Y-m-d") . " - Предупрежден пользователем " . $CURUSER['username'] . ".\nПричина: $warnpm\n" . $modcomment;
-			$msg = sqlesc("Вы получили <a href=\"".$REL_SEO->make_link('rules')."#warning\">предупреждение</a> на неограниченый срок от $CURUSER[username]" . ($warnpm ? "\n\nПричина: $warnpm" : ""));
+			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Warned by %s with the following reason: "%s"',$CURUSER['username'],$warnpm)."\n" . $modcomment;
+			$msg = sqlesc($REL_LANG->_to($userid,'You got warned by %s for %s with the following reason: "%s"',make_user_link(),$REL_LANG->_('an unlimited time'),$warnpm));
 			$updateset[] = "warneduntil = 0";
 			$updateset[] = "num_warned = $num_warned";
 		} else {
 			$warneduntil = (time() + $warnlength * 604800);
-			$dur = $warnlength . " недел" . ($warnlength > 1 ? "и" : "ю");
-			$msg = sqlesc("Вы получили <a href=\"".$REL_SEO->make_link('rules')."#warning\">предупреждение</a> на $dur от пользователя " . $CURUSER['username'] . ($warnpm ? "\n\nПричина: $warnpm" : ""));
-			$modcomment = date("Y-m-d") . " - Предупрежден на $dur пользователем " . $CURUSER['username'] .	".\nПричина: $warnpm\n" . $modcomment;
+			$dur = $warnlength . ($warnlength > 1 ? $REL_LANG->_('week') : $REL_LANG->_('weeks'));
+			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Warned by %s for %s with the following reason: "%s"',$CURUSER['username'],$dur,$warnpm)."\n" . $modcomment;
+			$msg = sqlesc($REL_LANG->_to($userid,'You got warned by %s for %s with the following reason: "%s"',make_user_link(),$dur,$warnpm));
 			$updateset[] = "warneduntil = $warneduntil";
 			$updateset[] = "num_warned = $num_warned";
 		}
 		$added = sqlesc(time());
-		$subject = sqlesc("Вы получили предупреждение");
+		$subject = sqlesc($REL_LANG->_to($userid,'You have got a warning!'));
 		sql_query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES (0, $userid, $msg, $added, $subject)") or sqlerr(__FILE__, __LINE__);
 		$updateset[] = "warned = 1";
 	}
@@ -165,15 +151,13 @@ elseif ($action == "edituser") {
 	if ($enabled != $curenabled) {
 		$modifier = (int) $CURUSER['id'];
 		if ($enabled) {
-			if (!isset($_POST["enareason"]) || empty($_POST["enareason"]))
-			puke("Введите причину почему вы включаете пользователя!");
-			$enareason = htmlspecialchars($_POST["enareason"]);
-			$modcomment = date("Y-m-d") . " - Включен пользователем " . $CURUSER['username'] . ".\nПричина: $enareason\n" . $modcomment;
+			$enareason = htmlspecialchars((string)$_POST["enareason"]);
+			if (!$enareason) $REL_TPL->stderr($REL_LANG->_('Error'), $REL_LANG->_('You must specify a reason'));
+			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Enabled by user %s with the following reason: "%s"',$CURUSER['username'],$enareason)."\n" . $modcomment;
 
 		} else   {
-			if (empty($dis_reason))
-			puke("Введите причину почему вы отключаете пользователя!");
-			$modcomment = date("Y-m-d") . " - Выключен пользователем " . $CURUSER['username'] . ".\nПричина: $dis_reason\n" . $modcomment;
+			if (empty($dis_reason)) $REL_TPL->stderr($REL_LANG->_('Error'), $REL_LANG->_('You must specify a reason'));
+			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Disabled by user %s with the following reason: "%s"',$CURUSER['username'],$dis_reason)."\n" . $modcomment;
 
 		}
 	}
@@ -189,23 +173,18 @@ elseif ($action == "edituser") {
 		$passkey = md5($CURUSER['username'].time().$CURUSER['passhash']);
 		$REL_DB->query("UPDATE xbt_users SET torrent_pass='' WHERE uid=".sqlesc($CURUSER[id]));
 	}
-	write_log("Пользователь {$CURUSER['username']} произвел действия над пользователем ".make_user_link($arr).", параметры:<br/> <pre>".var_export($updateset,true)."</pre>",'modtask');
+	write_log($REL_LANG->_to(0,'User %s modify user %s, parameters:<br/><pre>%s</pre>',make_user_link(),make_user_link($arr),var_export($updateset,true)),'modtask');
 	sql_query("UPDATE users SET	" . implode(", ", $updateset) . " $birthday WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
 
 	if (!empty($_POST["deluser"])) {
-		$res=@sql_query("SELECT * FROM users WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
-		$user = mysql_fetch_array($res);
-		$username = $user["username"];
-		$avatar = $user['avatar'];
-		$email=$user["email"];
+		$user = get_user($userid);
 		delete_user($userid);
 		@unlink(ROOT_PATH.$avatar);
-		$deluserid=$CURUSER["username"];
-		write_log("Пользователь $username был удален пользователем $deluserid",'modtask');
+		write_log($REL_LANG->_to(0,'User %s deleted user %s',make_user_link(),make_user_link($user)),'modtask');
 		barf();
 	} else {
-		$returnto = makesafe($_POST["returnto"]);
-		safe_redirect("$returnto");
+		$returnto = makesafe((string)$_POST["returnto"]);
+		safe_redirect($returnto);
 		die;
 	}
 } elseif ($action == "confirmuser") {
@@ -213,14 +192,15 @@ elseif ($action == "edituser") {
 	$confirm = (int)$_POST["confirm"];
 	if (!is_valid_id($userid))
 	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+	$user = get_user($userid);
 	$updateset[] = "confirmed = " . $confirm;
-	write_log("Пользователь {$CURUSER['username']} произвел действия над пользователем c ID $userid, параметры:<br/> <pre>".var_export($updateset,true)."</pre>",'modtask');
+	write_log($REL_LANG->_to(0,'User %s confirmed user %s',make_user_link(),make_user_link($user)),'modtask');
 	sql_query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
 	$returnto = makesafe($_POST["returnto"]);
 
 	safe_redirect($returnto);
 }
 
-puke();
+$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access denied'));
 
 ?>

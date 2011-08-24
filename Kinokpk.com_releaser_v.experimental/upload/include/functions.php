@@ -52,61 +52,12 @@ function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
 		});
 	}
 </script>");
-/*	$REL_TPL->assign("AJAXPAGER", "
-	<style type=\"text/css\">
-	#pager_scrollbox{ width:100%; height:500px;  overflow:auto; overflow-x:hidden; border:1px solid #f2f2f2; }
-	</style>
-	<script type=\"text/javascript\">
-	var IN_SCROLL = false;
-	var CURR_PAGE = 0;
-	var MAX_PAGE = $maxpage;
-	var PAGER_HREF = \"$href\";
-	$('document').ready(function(){
-
-	scrollalert();
-});
-	function scrollalert(){
-	if (CURR_PAGE>=MAX_PAGE) return false;
-	var scrolltop=$('#pager_scrollbox').attr('scrollTop');
-	var scrollheight=$('#pager_scrollbox').attr('scrollHeight');
-	var windowheight=$('#pager_scrollbox').attr('clientHeight');
-	var scrolloffset=20;
-	if(scrolltop>=(scrollheight-(windowheight+scrolloffset))&&!IN_SCROLL)
-	{
-		$.facebox('{$REL_LANG->_('Loading')}');
-		IN_SCROLL = true;
-		CURR_PAGE=CURR_PAGE+1;
-		page = PAGER_HREF.replace(/%number%/i,CURR_PAGE);
-
-		$.get(page, '', function(newitems){
-
-			$('#$el_id').append(newitems);
-			IN_SCROLL = false;
-			$.facebox.close();
-		});
-	}
-	setTimeout('scrollalert();', $timeout);
-}
-</script>");*/
 	
 	return "LIMIT $perpage";
 	} else {
 		return "LIMIT ".($page*$perpage).",$perpage";
 	}
 }
-
-$zodiac[] = array("Козерог", "capricorn.gif", "22-12");
-$zodiac[] = array("Стрелец", "sagittarius.gif", "23-11");
-$zodiac[] = array("Скорпион", "scorpio.gif", "24-10");
-$zodiac[] = array("Весы", "libra.gif", "24-09");
-$zodiac[] = array("Дева", "virgo.gif", "24-08");
-$zodiac[] = array("Лев", "leo.gif", "23-07");
-$zodiac[] = array("Рак", "cancer.gif", "22-06");
-$zodiac[] = array("Близнецы", "gemini.gif", "22-05");
-$zodiac[] = array("Телец", "taurus.gif", "21-04");
-$zodiac[] = array("Овен", "aries.gif", "22-03");
-$zodiac[] = array("Рыбы", "pisces.gif", "21-02");
-$zodiac[] = array("Водолей", "aquarius.gif", "21-01");
 
 /**
  * Checks username
@@ -301,7 +252,7 @@ function httpauth(){
 	if (($CURUSER['passhash'] != md5($CURUSER['secret'].$_SERVER["PHP_AUTH_PW"].$CURUSER['secret'])) || (($_SERVER['PHP_AUTH_USER']<>$CURUSER['email']) && ($_SERVER['PHP_AUTH_USER']<>$CURUSER['username']))) {
 		if ($_SERVER["PHP_AUTH_PW"]) write_log(make_user_link()." at ".getip().", login/e-mail: {$_SERVER['PHP_AUTH_USER']} <font color=\"red\">ADMIN CONTROL PANEL Authentication FAILED</font>",'admincp_auth');
 
-		header("WWW-Authenticate: Basic realm=\"Kinokpk.com releaser's admininsration panel. You can use email or username to login.\"");
+		header("WWW-Authenticate: Basic realm=\"Kinokpk.com releaser's admininsration panel. You can use email or username to login. All inputs are case-sensitive\"");
 		header("HTTP/1.0 401 Unauthorized");
 		stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'),'error');
 
@@ -505,11 +456,11 @@ function stderr($heading = '', $text = '', $div ='error', $htmlstrip = false) {
  * @return void
  */
 function sqlerr($file = '', $line = '') {
-	global $queries, $CURUSER, $REL_SEO;
+	global $queries, $CURUSER, $REL_SEO, $REL_LANG;
 	$err = mysql_error();
 	$text = ("<table border=\"0\" bgcolor=\"blue\" align=\"left\" cellspacing=\"0\" cellpadding=\"10\" style=\"background: blue\">" .
-	"<tr><td class=\"embedded\"><font color=\"white\"><h1>Ошибка в SQL</h1>\n" .
-	"<b>Ответ от сервера MySQL: " . $err . ($file != '' && $line != '' ? "<p>в $file, линия $line</p>" : "") . "<p>Запрос номер $queries.</p></b></font></td></tr></table>");
+	"<tr><td class=\"embedded\"><font color=\"white\"><h1>{$REL_LANG->_('SQL error')}</h1>\n" .
+	"<b>{$REL_LANG->_('SQL server response')}: " . $err . ($file != '' && $line != '' ? "<p>{$REL_LANG->_('in')} $file, {$REL_LANG->_('line')} $line</p>" : "") . "<p>{$REL_LANG->_('Query number')}: $queries.</p></b></font></td></tr></table>");
 	write_log(make_user_link()." SQL ERROR: $text</font>",'sql_errors');
 	print $text;
 	return;
@@ -522,14 +473,15 @@ function sqlerr($file = '', $line = '') {
  */
 function AgeToStr($age)
 {
-	if(($age>=5) && ($age<=14)) $str = "лет";
+	global $REL_LANG;
+	if(($age>=5) && ($age<=14)) $str = $REL_LANG->_('years');
 	else {
 		$num = $age - (floor($age/10)*10);
 
-		if($num == 1) { $str = "год"; }
-		elseif($num == 0) { $str = "лет"; }
-		elseif(($num>=2) && ($num<=4)) { $str = "года"; }
-		elseif(($num>=5) && ($num<=9)) { $str = "лет"; }
+		if($num == 1) { $str = $REL_LANG->_('year'); }
+		elseif($num == 0) { $str = $REL_LANG->_('years'); }
+		elseif(($num>=2) && ($num<=4)) { if (getlang()!='en') $str = "года"; else $str=$REL_LANG->_('years');  }
+		elseif(($num>=5) && ($num<=9)) { if (getlang()!='en') $str = "лет"; else $str=$REL_LANG->_('years'); }
 	}
 	return $age . " " . $str ;
 }
@@ -709,11 +661,12 @@ function write_log($text, $type = "tracker") {
  * @see stderr()
  */
 function check_banned_emails ($email) {
+	global $REL_TPL, $REL_LANG;
 	$expl = explode("@", $email);
 	$wildemail = "*@".$expl[1];
 	$res = sql_query("SELECT id, comment FROM bannedemails WHERE email = ".sqlesc($email)." OR email = ".sqlesc($wildemail)."") or sqlerr(__FILE__, __LINE__);
 	if ($arr = mysql_fetch_assoc($res))
-	stderr("Ошибка!","Этот емайл адресс забанен!<br /><br /><strong>Причина</strong>: $arr[comment]", false);
+	$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('This email address was banned due the following reason: <b>%s</b>',$arr[comment]), false);
 	return;
 }
 
@@ -841,8 +794,7 @@ function INIT($lightmode = false) {
 
 		$REL_CACHE->set('system','config',$REL_CONFIG);
 	}
-	$REL_CONFIG['lang'] = substr(trim((string)$_COOKIE['lang']),0,2);
-	if (!$REL_CONFIG['lang']) $REL_CONFIG['lang'] = $REL_CONFIG['default_language'];
+	$REL_CONFIG['lang'] = getlang();
 	//configcache init end
 	$cronrow = sql_query("SELECT * FROM cron");
 	/* @var array cron array init */
@@ -871,6 +823,16 @@ function INIT($lightmode = false) {
 	return;
 }
 
+/**
+ * Gets current language setting
+ * @return string 2-char language code
+ */
+function getlang() {
+	global $REL_CONFIG;
+		$return = substr(trim((string)$_COOKIE['lang']),0,2);
+	if (!$return) $return = $REL_CONFIG['default_language'];
+	return $return;
+}
 /**
  * Logins user
  * @return void
@@ -921,6 +883,7 @@ function userlogin() {
 	if (!$row) {
 		$REL_CONFIG['ss_uri'] = $REL_CONFIG['default_theme'];
 		$REL_LANG = new REL_LANG($REL_CONFIG);
+		make_zodiac_records($REL_LANG);
 		user_session();
 		return;
 	} elseif ((!$row['enabled']) && !defined("IN_CONTACT")) {
@@ -930,6 +893,7 @@ function userlogin() {
 		}
 		$REL_CONFIG['ss_uri'] = $row['uri'];
 		$REL_LANG = new REL_LANG($REL_CONFIG);
+		make_zodiac_records($REL_LANG);
 		headers(true);
 		die($REL_LANG->say_by_key('disabled').$row['dis_reason'].(($row['dis_reason']=='Your rating was too low.')?$REL_LANG->say_by_key('disabled_rating'):'').$REL_LANG->say_by_key('contact_admin'));
 
@@ -944,6 +908,7 @@ function userlogin() {
 		$pscheck = htmlspecialchars(trim((string)$_COOKIE['pass']));
 		write_log(getip()." with cookie ID = $id <font color=\"red\">with passhash ".$pscheck." -> PASSHASH CHECKSUM FAILED!</font>",'security');
 		$REL_LANG = new REL_LANG($REL_CONFIG);
+		make_zodiac_records($REL_LANG);
 		user_session();
 		return;
 	}
@@ -976,11 +941,33 @@ function userlogin() {
 	 */
 	$GLOBALS["CURUSER"] = $row;
 	$REL_LANG = new REL_LANG($REL_CONFIG);
+	make_zodiac_records($REL_LANG);
 
 	user_session();
 
 	// $_SESSION = $CURUSER;
 
+}
+
+/**
+ * Generates zodiac records for current language
+ * @param complex $REL_LANG Language object
+ */
+function make_zodiac_records($REL_LANG) {
+	global $zodiac;
+	$zodiac[] = array($REL_LANG->_('Capricorn'), "capricorn.gif", "22-12");
+$zodiac[] = array($REL_LANG->_('Sagittarius'), "sagittarius.gif", "23-11");
+$zodiac[] = array($REL_LANG->_('Scorpio'), "scorpio.gif", "24-10");
+$zodiac[] = array($REL_LANG->_('Libra'), "libra.gif", "24-09");
+$zodiac[] = array($REL_LANG->_('Virgo'), "virgo.gif", "24-08");
+$zodiac[] = array($REL_LANG->_('Leo'), "leo.gif", "23-07");
+$zodiac[] = array($REL_LANG->_('Cancer'), "cancer.gif", "22-06");
+$zodiac[] = array($REL_LANG->_('Gemini'), "gemini.gif", "22-05");
+$zodiac[] = array($REL_LANG->_('Taurus'), "taurus.gif", "21-04");
+$zodiac[] = array($REL_LANG->_('Aries'), "aries.gif", "22-03");
+$zodiac[] = array($REL_LANG->_('Pisces'), "pisces.gif", "21-02");
+$zodiac[] = array($REL_LANG->_('Aquarius'), "aquarius.gif", "21-01");
+$GLOBALS['zodiac'] = $zodiac;
 }
 
 /**
@@ -1068,10 +1055,10 @@ function user_session() {
 		}
 		$allowed_types=array_merge(array('unread', 'inbox', 'outbox'),array_intersect($allowed_types,$CURUSER['notifs']));
 
-		$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
-		$dt_system = time() - $secs_system; // Сегодня минус количество дней
-		$secs_all = $REL_CRON['pm_delete_user_days']*86400; // Количество дней
-		$dt_all = time() - $secs_all; // Сегодня минус количество дней
+		$secs_system = $REL_CRON['pm_delete_sys_days']*86400;
+		$dt_system = time() - $secs_system;
+		$secs_all = $REL_CRON['pm_delete_user_days']*86400;
+		$dt_all = time() - $secs_all;
 
 		foreach ($allowed_types as $type) {
 			if ($type=='torrents') {
@@ -1270,13 +1257,24 @@ function mksizeint($bytes) {
  * @return string Nice time
  */
 function mkprettytime($seconds, $time = true) {
-	global $CURUSER, $REL_CONFIG;
+	global $CURUSER, $REL_CONFIG, $REL_LANG;
 	$seconds = $seconds+$REL_CONFIG['site_timezone']*3600;
 	$seconds = $seconds-date("Z")+$CURUSER['timezone']*3600;
 	$search = array('January','February','March','April','May','June','July','August','September','October','November','December');
-	$replace = array('января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря');
+	$replace = array($REL_LANG->_('January'),
+	$REL_LANG->_('February'),
+	$REL_LANG->_('March'),
+	$REL_LANG->_('April'),
+	$REL_LANG->_('May'),
+	$REL_LANG->_('June'),
+	$REL_LANG->_('July'),
+	$REL_LANG->_('August'),
+	$REL_LANG->_('September'),
+	$REL_LANG->_('October'),
+	$REL_LANG->_('November'),
+	$REL_LANG->_('December'));
 	if ($time == true)
-	$data = @date("j F Y в H:i:s", $seconds);
+	$data = @date("j F Y {$REL_LANG->_('at')} H:i:s", $seconds);
 	else
 	$data = @date("j F Y", $seconds);
 	if (!$data) $data = 'N/A'; else
@@ -1748,7 +1746,7 @@ function commenttable($rows,$fetch = false, $custom_tpl='commenttable.tpl') {
  * @see cloud()
  */
 function cloud3d() {
-	global $REL_CACHE, $REL_SEO;
+	global $REL_CACHE, $REL_SEO, $REL_LANG;
 	$tags = $REL_CACHE->get('system','cat_tags');
 	if ($tags===false) {
 		$cats = assoc_cats();
@@ -1798,7 +1796,7 @@ function cloud3d() {
 		$cloud_links[] = "<br /><a href=\"".$REL_SEO->make_link('browse','cat',$taginfo['id'])."\" style='font-size:". floor($size) . "px;'>$tag</a><br />";
 		$i++;
 	}
-	$cloud_links[$i-1].="Ваш браузер не поддерживает flash!";
+	$cloud_links[$i-1].=$REL_LANG->_('Your browser does not support flash!');
 	$cloud_html[0] = join("", $cloud_tags);
 	$cloud_html[1] = join("", $cloud_links);
 
@@ -1983,8 +1981,20 @@ function torrenttable($res, $variant = "index") {
  * @return string Nice month
  */
 function mkprettymonth($seconds) {
+	global $REL_LANG;
 	$search = array('January','February','March','April','May','June','July','August','September','October','November','December');
-	$replace = array('янв','фев','марта','апреля','мая','июня','июля','авг','сент','окт','ноя','дек');
+		$replace = array($REL_LANG->_('Jan'),
+	$REL_LANG->_('Feb'),
+	$REL_LANG->_('Mar'),
+	$REL_LANG->_('Apr'),
+	$REL_LANG->_('May'),
+	$REL_LANG->_('Jun'),
+	$REL_LANG->_('Jul'),
+	$REL_LANG->_('Aug'),
+	$REL_LANG->_('Sep'),
+	$REL_LANG->_('Oct'),
+	$REL_LANG->_('Nov'),
+	$REL_LANG->_('Dec'));
 	$data = @date("d F ", $seconds);
 
 	if (!$data) $data = 'N/A'; else
@@ -2158,33 +2168,25 @@ function &make_tree($table='categories',$condition='')
 		while (($node = mysql_fetch_assoc($query)))
 		{
 			$node['class'] = explode(',',$node['class']);
-			//if ($node['childs'] === '1') //если есть поле определяющее наличие дочерних веток
-			//    $node['nodes'] = array();  //то добавляем к записи узел (массив дочерних веток) на данном этапе
-			$nodes[$node['id']] =& $node; //заполняем список веток записями из БД
-			$keys[] = $node['id']; //заполняем список ключей(ID)
+
+			$nodes[$node['id']] =& $node;
+			$keys[] = $node['id'];
 			unset($node);
 		}
 		mysql_free_result($query);
 
 		foreach ($keys as $key)
 		{
-			/**
-			 * если нашли главную ветку(или одну из главных), то добавляем
-			 * её в дерево
-			 */
+
 			if ($nodes[$key]['parent_id'] === '0')
 			$tree[] =& $nodes[$key];
 
-			/**
-			 * else находим родительскую ветку и добавляем текущую
-			 * ветку к дочерним элементам родит.ветки.
-			 */
 			else
 			{
-				if (isset($nodes[ $nodes[$key]['parent_id'] ])) //на всякий случай, вдруг в базе есть потерянные ветки
+				if (isset($nodes[ $nodes[$key]['parent_id'] ]))
 				{
-					if (! isset($nodes[ $nodes[$key]['parent_id'] ]['nodes'])) //если нет поля определяющего наличие дочерних веток
-					$nodes[ $nodes[$key]['parent_id'] ]['nodes'] = array(); //то добавляем к записи узел (массив дочерних веток) на данном этапе
+					if (! isset($nodes[ $nodes[$key]['parent_id'] ]['nodes']))
+					$nodes[ $nodes[$key]['parent_id'] ]['nodes'] = array();
 
 					$nodes[ $nodes[$key]['parent_id'] ]['nodes'][] =& $nodes[$key];
 				}
@@ -2435,6 +2437,13 @@ function translit($st,$replace_spaces = true) {
    return $st;
 }
 
+function generate_lang_js() {
+	global $REL_LANG;
+	return "<script type=\"text/javascript\" language=\"javascript\">
+			var REL_LANG_NO_TEXT_SELECTED = '{$REL_LANG->_('No text selected!')}';
+			var REL_LANG_ARE_YOU_SURE = '{$REL_LANG->_('Are you sure?')}';
+			</script>";
+}
 /**
  * Outputs beta warning. Default false.
  * @var boolean

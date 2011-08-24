@@ -1,15 +1,13 @@
 <?php
 
-//Блок "Последние комментарии к торрентам"
-
 global $REL_LANG, $REL_CACHE, $REL_SEO;
 if (!defined('BLOCK_FILE')) {
-	safe_redirect(" ../".$REL_SEO->make_link('index'));
+	safe_redirect($REL_SEO->make_link('index'));
 	exit;
 }
 
 $content .= "<small><table cellpadding=\"2\" cellspacing=\"0\"><tr>";
-$content .= "<td align=\"center\" class=\"colhead\">Название</td><td align=\"center\" class=\"colhead\">Сообщил(а)</td></tr>";
+$content .= "<td align=\"center\" class=\"colhead\">{$REL_LANG->_('Name')}</td><td align=\"center\" class=\"colhead\">{$REL_LANG->_('Submitted by')}</td></tr>";
 
 $comarray = $REL_CACHE->get('block-comments','query');
 if ($comarray===false) {
