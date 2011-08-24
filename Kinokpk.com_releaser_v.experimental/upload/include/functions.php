@@ -2201,27 +2201,29 @@ function &make_tree($table='categories',$condition='')
  * Generates input=select for tree
  * @param string $name Name of select element
  * @param array $tree Tree to be processed
- * @param int $selected id of selected element. Defalut 0 as 'none'
+ * @param string $selected ids of selected elements, separated by comma Defalut '' as 'none'
  * @param boolean $selectparents allow user select parents. Default false
+ * @param boolean $multiple Allow multiple select. Default false
  * @param boolean $recurs Is recursive launch? Used only inside recursion. Default false
  * @param int $level Level of tree. Default 0 as 'top'. Used only inside recursion.
  * @param string $t_content Already generated content. Default empty string. Used only inside recursion
  * @return string HTML code of input=select
  */
-function gen_select_area($name, $tree, $selected=0, $selectparents = false, $recurs = false, $level = 0, &$t_content = '') {
+function gen_select_area($name, $tree, $selected='', $selectparents = false, $multiple=false, $recurs = false, $level = 0, &$t_content = '') {
 	global $REL_LANG;
-	if (!$recurs) $t_content = "<select class='linkselect'  name=\"$name\"><option value=\"0\">{$REL_LANG->say_by_key('choose')}</option>\n";
+	$pass_sel = $selected;
+	$selected = explode(',',$selected);
+	if (!$recurs) $t_content = "<select name=\"$name\"".($multiple?' multiple="multiple"':'')."><option value=\"0\">{$REL_LANG->say_by_key('choose')}</option>\n";
 
 	foreach ($tree as $branch) {
 		$add = str_repeat('--',$level).' ';
 		if ($branch['nodes']) {
 			$level++;
-
-			$t_content .="<option class=\"select\" value=\"{$branch['id']}\"".(!$selectparents?" disabled=\"disabled\"":(($selected==$branch['id'])?" selected=\"selected\"":'')).">$add{$branch['name']}</option>\n";
-			gen_select_area('',$branch['nodes'],$selected, $selectparents, true,$level, $t_content);
+			$t_content .="<option class=\"select\" value=\"{$branch['id']}\"".(!$selectparents?" disabled=\"disabled\"":(in_array($branch['id'],$selected)?" selected=\"selected\"":'')).">$add{$branch['name']}</option>\n";
+			gen_select_area('',$branch['nodes'],$pass_sel, $selectparents, $multiple, true,$level, $t_content);
 			$level--;
 		} else {
-			$t_content .="<option value=\"{$branch['id']}\"".(($selected==$branch['id'])?" selected=\"selected\"":'').">$add{$branch['name']}</option>\n";
+			$t_content .="<option value=\"{$branch['id']}\"".((in_array($branch['id'],$selected))?" selected=\"selected\"":'').">$add{$branch['name']}</option>\n";
 		}
 	}
 	if (!$recurs) { $t_content.= "</select>\n";  return $t_content; }

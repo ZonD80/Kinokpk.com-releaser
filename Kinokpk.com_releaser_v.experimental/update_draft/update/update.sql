@@ -507,3 +507,6 @@ ALTER TABLE  `users` ADD UNIQUE (
 ALTER TABLE  `classes` ADD UNIQUE (
 `prior`
 );
+
+DELETE FROM `snt_tracker`.`cache_stats` WHERE `cache_stats`.`cache_name` = 'announce_interval';
+DELETE FROM `snt_tracker`.`cache_stats` WHERE `cache_stats`.`cache_name` = 'announce_packed';
