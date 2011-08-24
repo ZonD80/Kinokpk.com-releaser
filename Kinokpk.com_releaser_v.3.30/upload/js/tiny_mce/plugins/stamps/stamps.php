@@ -16,7 +16,7 @@
 <?php
 $path = str_replace("js/tiny_mce/plugins/stamps",'',dirname(__FILE__));
 require_once ($path."include/bittorrent.php");
-INIT();
+dbconn();
 if (!$CURUSER) die('Only users enabled');
 $stamparray = sql_query("SELECT image FROM stamps WHERE FIND_IN_SET(".get_user_class().",class) ORDER BY sort ASC");
 while ((list($img) = mysql_fetch_array($stamparray)))

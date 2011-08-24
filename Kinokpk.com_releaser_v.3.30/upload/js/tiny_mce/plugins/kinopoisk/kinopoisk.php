@@ -5,7 +5,7 @@
 <?php
 $path = str_replace("js/tiny_mce/plugins/kinopoisk",'',dirname(__FILE__));
 require_once ($path."include/bittorrent.php");
-INIT();
+dbconn();
 ?>
 <base href="<?=$REL_CONFIG['defaultbaseurl'];?>" />
 <title>{#kinopoisk_dlg.title}</title>
