@@ -1261,18 +1261,18 @@ function mkprettytime($seconds, $time = true) {
 	$seconds = $seconds+$REL_CONFIG['site_timezone']*3600;
 	$seconds = $seconds-date("Z")+$CURUSER['timezone']*3600;
 	$search = array('January','February','March','April','May','June','July','August','September','October','November','December');
-	$replace = array($REL_LANG->_('January'),
-	$REL_LANG->_('February'),
-	$REL_LANG->_('March'),
-	$REL_LANG->_('April'),
-	$REL_LANG->_('May'),
-	$REL_LANG->_('June'),
-	$REL_LANG->_('July'),
-	$REL_LANG->_('August'),
-	$REL_LANG->_('September'),
-	$REL_LANG->_('October'),
-	$REL_LANG->_('November'),
-	$REL_LANG->_('December'));
+	$replace = array($REL_LANG->_('of January'),
+	$REL_LANG->_('of February'),
+	$REL_LANG->_('of March'),
+	$REL_LANG->_('of April'),
+	$REL_LANG->_('of May'),
+	$REL_LANG->_('of June'),
+	$REL_LANG->_('of July'),
+	$REL_LANG->_('of August'),
+	$REL_LANG->_('of September'),
+	$REL_LANG->_('of October'),
+	$REL_LANG->_('of November'),
+	$REL_LANG->_('of December'));
 	if ($time == true)
 	$data = @date("j F Y {$REL_LANG->_('at')} H:i:s", $seconds);
 	else

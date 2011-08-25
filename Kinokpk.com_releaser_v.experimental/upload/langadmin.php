@@ -125,14 +125,23 @@ elseif (isset($_GET['editor'])) {
 	$search = htmlspecialchars(trim((string)$_GET['search']));
 	if ($_SERVER['REQUEST_METHOD']=='POST') {
 		if ($_GET['a']=='saveadd') {
-			$lang = substr(trim((string)$_POST['language']),0,2);
-			$word = (trim((string)$_POST['word']));
+			$lang = array_map("strval",(array)$_POST['word']);
 			$key = (trim((string)$_POST['key']));
-			if (!$key) $key=md5($word);
-			sql_query("INSERT INTO languages (lkey,ltranslate,lvalue) VALUES (".sqlesc($key).",".sqlesc($lang).",".sqlesc($word).")");
-			if (mysql_errno()==1062) { stdmsg($REL_LANG->_("Error"),'REDECLARATED KEY:"'.$key.'"','error'); $REL_TPL->stdfoot(); die(); }
-			stdmsg($REL_LANG->_("Successful"),"$key : $word");
-			$REL_CACHE->clearCache('languages',$lang);
+			if (!$lang || !$key) {
+				$REL_TPL->stdmsg($REL_LANG->_('Error'),$REL_LANG->_('Missing form data'),'error');
+				$REL_TPL->stdfoot();
+				die();
+			}
+			foreach ($lang as $l=>$word) {
+				$word = (trim((string)$word));
+				$l = substr($l,0,2);
+				sql_query("INSERT INTO languages (lkey,ltranslate,lvalue) VALUES (".sqlesc($key).",".sqlesc($l).",".sqlesc($word).")");
+				if (mysql_errno()==1062) { stdmsg($REL_LANG->_("Error"),'REDECLARATED KEY:"'.$key.'"','error'); $REL_TPL->stdfoot(); die();
+				}
+				stdmsg($REL_LANG->_("Successful"),"$l: $key : $word");
+			}
+			safe_redirect($REL_SEO->make_link('langadmin','editor','1'),2);
+			$REL_CACHE->clearGroupCache('languages');
 			$REL_TPL->stdfoot();
 			die();
 		}
@@ -188,15 +197,22 @@ function ajaxdel(key,lang) {
 	</tr>
 </table>
 </form>
-<p><?php print $REL_LANG->_("Add a new word. <b>Remember, that you must FIRST add ENGLISH translation, than another one!</b>");?></p>
+<p><b><?php print $REL_LANG->_("Add a new word");?></b></p>
 <form
 	action=<?php print $REL_SEO->make_link('langadmin','editor',1,'a','saveadd');?>
 	method="post">
 <table>
 	<tr>
-		<td><?php print $REL_LANG->_("Language to be imported, e.g. 'ru,en,ua'");?><br/><input type="text" name="language" maxlength="2" size="2" /></td>
-		<td><?php print $REL_LANG->_("Key (optional, else MD5 of word)");?><br/><input type="text" name="key"></td>
-		<td><?php print $REL_LANG->_("Word");?><br/><textarea name="word" rows="10" cols="40"></textarea></td>
+		<td><?php print $REL_LANG->_("Key");?><br />
+		<input type="text" name="key"></td>
+		<td><?php print $REL_LANG->_("Word");?><br />
+		<?php
+		$langs = $REL_DB->query("SELECT ltranslate FROM languages GROUP BY ltranslate");
+		while(list($l) = mysql_fetch_array($langs))
+		print $REL_LANG->_('Translation for %s',$l).'<textarea name="word['.$l.']" rows="5" cols="100"></textarea><br/>';
+		
+		?>
+		</td>
 		<td><input type="submit"
 			value="<?php print $REL_LANG->_("Continue");?>" /></td>
 	</tr>
@@ -207,7 +223,8 @@ function ajaxdel(key,lang) {
 	action=<?php print $REL_SEO->make_link('langadmin','editor','1','a','gensave');
 	?>
 	method="POST">
-<div id="pager_scrollbox"><table id="wordstable" width="100%">
+<div id="pager_scrollbox">
+<table id="wordstable" width="100%">
 	<tr>
 		<td class="colhead"><?php print $REL_LANG->_("Key");?></td>
 		<td class="colhead"><?php print $REL_LANG->_("Language");?></td>
@@ -230,7 +247,8 @@ function ajaxdel(key,lang) {
 	if (!pagercheck()) {
 		print '<tr><td colspan="4" align="right"><input type="submit" value="'.$REL_LANG->_("Save changes").'"/></td></tr>';
 		?>
-</table></div>
+</table>
+</div>
 </form>
 		<?php
 	}
