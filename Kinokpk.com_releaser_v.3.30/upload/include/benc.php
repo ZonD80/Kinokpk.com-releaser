@@ -469,9 +469,21 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 	//'Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2',
 	)
 	);
+	
+	if ($scheme=='udp'&&$method=='scrape') {
+		$scheme = 'http';
+		$http_path = '/scrape';
+	}
+	
 	$req_uri = $scheme.'://'.$http_host.$http_port.$http_path.($http_params ? '?'.$http_params : '');
 
-	if ( function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1 ) {
+	if ($scheme=='udp'&&$method=='announce') {
+		// here it is. Packets http://xbtt.sourceforge.net/udp_tracker_protocol.html
+		return array('tracker' => $http_host, 'state' => 'failed:udp_not_supported', 'method' => $method, 'remote_method' => 'not_supported');
+		
+	}
+
+	elseif ( function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1 ) {
 		$context = @stream_context_create($opts);
 		$result = @file_get_contents($req_uri , false, $context);
 		$remote_method = 'file';
