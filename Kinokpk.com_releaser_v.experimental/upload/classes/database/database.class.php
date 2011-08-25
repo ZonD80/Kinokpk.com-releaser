@@ -1,8 +1,8 @@
 <?php
 class REL_DB {
 	public $query, $conntection;
-	
-	
+
+
 	/**
 	 * Sets mode to non-gui debug. Query times and errors will be printed directly to page.
 	 */
@@ -45,14 +45,26 @@ class REL_DB {
 		$query_end_time = microtime(true); // End time
 		$query_time = ($query_end_time - $query_start_time);
 		if ($this->debug) {
-		$this->ttime = $this->ttime + $query_time;
-		print (mysql_errno()?"ERROR: ".mysql_errno()." - ".mysql_error().'<br/>':'')."$query<br/>took $query_time, total {$this->ttime}<hr/>";
-			
+			$this->ttime = $this->ttime + $query_time;
+			print (mysql_errno()?"ERROR: ".mysql_errno()." - ".mysql_error().'<br/>':'')."$query<br/>took $query_time, total {$this->ttime}<hr/>";
+				
 		}
 		$this->query[] = array("seconds" => $query_time, "query" => $query);
 		return $result;
 	}
-
+	/**
+	 * Escapes value to make safe sql_query
+	 * @param string $value Value to be escaped
+	 * @return string Escaped value
+	 * @see sql_query()
+	 */
+	function sqlesc($value) {
+		// Quote if not a number or a numeric string
+		if (!is_numeric($value)) {
+			$value = "'" . mysql_real_escape_string((string)$value) . "'";
+		}
+		return $value;
+	}
 	/**
 	 * Preforms a sql query, returning a results
 	 * @param string $query query to be executed
@@ -62,22 +74,22 @@ class REL_DB {
 	function query_return($query,$type='assoc') {
 		$res = $this->query($query);
 		if ($res) {
-		if ($type=='assoc')
-		while ($row = mysql_fetch_assoc($res)) {
-			$return[] = $row;
-		} 
-		elseif ($type=='array')
-		while ($row = mysql_fetch_array($res)) {
-			$return[] = $row;
-		} 
-		elseif ($type=='object')
-		while ($row = mysql_fetch_assoc($res)) {
-			$return[] = $row;
-		}
-		return $return;
+			if ($type=='assoc')
+			while ($row = mysql_fetch_assoc($res)) {
+				$return[] = $row;
+			}
+			elseif ($type=='array')
+			while ($row = mysql_fetch_array($res)) {
+				$return[] = $row;
+			}
+			elseif ($type=='object')
+			while ($row = mysql_fetch_assoc($res)) {
+				$return[] = $row;
+			}
+			return $return;
 		} else return false;
 	}
-	
+
 	/**
 	 * Preforms an sql query, returns first row
 	 * @param string $query query to be executed

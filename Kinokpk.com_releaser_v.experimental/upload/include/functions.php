@@ -422,6 +422,7 @@ function get_row_count($table, $suffix = "")
 }
 /**
  * Standart notification message
+ * @deprecated Use $REL_TPL->stdmsg() instead
  * @param string $heading Heading of a message, e.g. subject
  * @param string $text Content of a message, e.g. body
  * @param string $div Div to be displayed, default 'success'
@@ -436,6 +437,7 @@ function stdmsg($heading = '', $text = '', $div = 'success', $htmlstrip = false)
 
 /**
  * Standart error message with die
+ * @deprecated Use $REL_TPL->stderr() instead
  * @param string $heading Heading of a message, e.g. subject
  * @param string $text Content of a message, e.g. body
  * @param string $div Div to be displayed, default 'success'
@@ -1407,17 +1409,14 @@ function sent_mail($to,$fromname,$fromemail,$subject,$body,$multiplemail='') {
 }
 
 /**
- * Escapes value to make safe sql_query
+ * @deprecated USE $REL_DB->sqlesc instead
  * @param string $value Value to be escaped
  * @return string Escaped value
  * @see sql_query()
  */
 function sqlesc($value) {
-	// Quote if not a number or a numeric string
-	if (!is_numeric($value)) {
-		$value = "'" . mysql_real_escape_string((string)$value) . "'";
-	}
-	return $value;
+	global $REL_DB;
+	return $REL_DB->sqlesc($value);
 }
 
 /**

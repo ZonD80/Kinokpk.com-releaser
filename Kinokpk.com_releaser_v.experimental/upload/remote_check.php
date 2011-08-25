@@ -56,11 +56,11 @@ $id=(int)$_GET['id'];
 if ($id)  {
 
 	$anarray = mysql_query("SELECT torrents.info_hash, trackers.tracker FROM trackers LEFT JOIN torrents ON torrents.id=trackers.torrent WHERE trackers.torrent=$id AND trackers.tracker<>'localhost'") or sqlerr(__FILE__,__LINE__);
-
 	while (list($infohash,$url) = mysql_fetch_array($anarray)) {
 		$peers = get_remote_peers($url, $infohash);
-		mysql_query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", lastchecked=".time().", method='{$peers['method']}', remote_method='{$peers['remote_method']}', state=".sqlesc($peers['state'])." WHERE torrent=$id AND tracker=".sqlesc($url)) or sqlerr(__FILE__,__LINE__);
+		mysql_query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", lastchecked=".time().", method='{$peers['method']}', remote_method='{$peers['remote_method']}', state=".$REL_DB->sqlesc($peers['state'])." WHERE torrent=$id AND tracker=".$REL_DB->sqlesc($url)) or sqlerr(__FILE__,__LINE__);
 	}
+	die(base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="));
 }
 
 $cronrow = mysql_query("SELECT * FROM cron WHERE cron_name IN ('remotecheck_disabled','remotepeers_cleantime','in_remotecheck','remote_trackers')") or sqlerr(__FILE__,__LINE__);
