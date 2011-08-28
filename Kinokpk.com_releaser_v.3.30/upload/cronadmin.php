@@ -132,7 +132,7 @@ elseif (isset($_POST['save'])) {
 
 	if ($_POST['rating_enabled']) {
 		foreach ($rating_param as $param) {
-			if (!$_POST[$param] || !isset($_POST[$param])) { stdmsg($REL_LANG->say_by_key('error'),"Некоторые поля для рейтинговой системы не заполнены",'error'); $REL_TPL->stdfoot(); die; }
+			if (!isset($_POST[$param])) { stdmsg($REL_LANG->say_by_key('error'),"Некоторые поля для рейтинговой системы не заполнены",'error'); $REL_TPL->stdfoot(); die; }
 			$updateset[] = "UPDATE cron SET cron_value=".sqlesc($_POST[$param])." WHERE cron_name='$param'";
 		}
 	}

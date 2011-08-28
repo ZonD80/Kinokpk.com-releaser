@@ -53,7 +53,7 @@
         <div class="header2">
           <div class="logo"><a href="{$REL_CONFIG.defaultbaseurl}"><img src="themes/{$REL_CONFIG.ss_uri}/images/spacer.gif" height="60" width="217" border="0" alt="{$REL_LANG->_('Go to home page')}" title="{$REL_LANG->_('Go to home page')}" /></a></div>
           <div class="cp"></div>
-          <div class="banner"><a href="contact.php"><img src="http://dev.kinokpk.com/images/b468_dev.jpg" border="0" alt="ра" /></a></div>
+          <div class="banner"><a href="http://www.torrentsbook.com"><img src="http://dev.kinokpk.com/images/b468_dev.jpg" border="0" alt="TorrentsBook.com" title="TorrentsBook.com" /></a></div>
         </div>
       </div>
     </div>
