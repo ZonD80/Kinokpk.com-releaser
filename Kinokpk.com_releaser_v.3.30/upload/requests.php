@@ -237,7 +237,7 @@ if ($num["filled"] == '')
 	print("<input type=submit value=\"Выполнить запрос\">\n</form></td></tr>");
 }
 if (get_user_class() >= UC_MODERATOR || $CURUSER["id"] == $num["userid"])
-print("<tr><td align=left>Опции</td><td width=50% align=left><a OnClich=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('viewrequests','delreq[]',$id)."\">".$REL_LANG->say_by_key('delete')."</a> <b>|</b> <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$id)."\">Сбросить выполнение</a>  <b>|</b>  <a href=\"".$REL_SEO->make_link('requests','action','edit','id',$id)."\">".$REL_LANG->say_by_key('edit')."</a></center></td></tr>");
+print("<tr><td align=left>Опции</td><td width=50% align=left><a OnClick=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('viewrequests','delreq[]',$id)."\">".$REL_LANG->say_by_key('delete')."</a> <b>|</b> <a href=\"".$REL_SEO->make_link('requests','action','reset','requestid',$id)."\">Сбросить выполнение</a>  <b>|</b>  <a href=\"".$REL_SEO->make_link('requests','action','edit','id',$id)."\">".$REL_LANG->say_by_key('edit')."</a></center></td></tr>");
 
 $subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = $id AND type='req'");
 $subrow = mysql_fetch_array($subres);
