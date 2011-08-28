@@ -1,1 +1,2 @@
-<div class="offline"><img src="/themes/kinokpk/images/offline.png" width="1600" height="1000" border="0" alt="РЎР°Р№С‚ РІСЂРµРјРµРЅРЅРѕ РЅРµ СЂР°Р±РѕС‚Р°РµС‚"></div>
+Site offline.
+2 admin: set siteonoff to 1 and clear caches.
