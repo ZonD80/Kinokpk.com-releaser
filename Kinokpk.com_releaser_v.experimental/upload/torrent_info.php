@@ -15,13 +15,13 @@ require_once "include/benc.php";
  * Creates nice peers table
  * @param string $name Name of a table
  * @param array $arr Array to be processed
- * @param int $torrent ID of a torrent
+ * @param int $id ID of a torrent
  * @return string HTML code of a table
  */
-function dltable($name, $arr, $torrent)
+function dltable($name, $arr, $id)
 {
 
-	global $CURUSER, $REL_LANG, $REL_SEO;
+	global $CURUSER, $REL_LANG, $REL_SEO, $REL_DB;
 	$s = "<b>" . count($arr) . " $name</b>\n";
 	if (!count($arr))
 	return $s;
@@ -30,25 +30,30 @@ function dltable($name, $arr, $torrent)
 	$s .= "<tr><td class=colhead>".$REL_LANG->say_by_key('user')."</td>" .
           "<td class=colhead align=right>".$REL_LANG->say_by_key('ratio')."</td>" .
           "<td class=colhead align=right>".$REL_LANG->say_by_key('completed')."</td>".    
-          "<td class=colhead align=right>".$REL_LANG->say_by_key('idle')."</td>" .
-          "<td class=colhead align=left>".$REL_LANG->say_by_key('client')."</td></tr>\n";
+          "<td class=colhead align=right>".$REL_LANG->_('Last request')."</td>";
 	$mod = get_privilege('is_moderator',false);
-	foreach ($arr as $e) {
+			foreach ($arr as $e) {
 		// user/ip/port
 		// check if anyone has this ip
 		$s .= "<tr>\n";
+		$query = $REL_DB->query("SELECT ipa,port,mtime FROM xbt_announce_log WHERE info_hash = (SELECT info_hash FROM xbt_files WHERE fid=$id) AND uid = ".$e['uid']) or sqlerr(__FILE__, __LINE__);
+			while($subrow = mysql_fetch_array($query)) {
+				$e["ipa"] = long2ip($subrow["ipa"]);
+				$e["port"] = $subrow["port"];
+				//echo $e["ipa"];
+			}
 		if ($e["username"]) {
-			$user = $a;
-			$user['id'] = $user['userid'];
-		$s .= "<td><a href=\"".make_user_link($user).($mod ? "&nbsp;[<span title=\"{$e["ip"]}\" style=\"cursor: pointer\">IP</span>]" : "")."</td>\n";
+			$user = $e;
+			$user['id'] = $user['uid'];
+		$s .= "<td>".make_user_link($user).($mod ? "&nbsp;[{$e["ipa"]}:{$e["port"]}]" : "")."</td>\n";
 		}
 		else
-		$s .= "<td>" . ($mod ? $e["ip"] : preg_replace('/\.\d+$/', ".xxx", $e["ip"])) . "</td>\n";
-		$s .='<td nowrap>'.ratearea($e['ratingsum'],$e['userid'],'users',$CURUSER['id']).'</td>';
-		$s .="<td>".($e['seeder']?$REL_LANG->say_by_key('yes'):$REL_LANG->say_by_key('no'))."</td>";
-		$s .= "<td align=\"right\">" . get_elapsed_time($e["la"]) . "</td>\n";
-		$s .= "<td align=\"left\">" . substr($e["peer_id"],0,7) . "</td>\n";
+		$s .= "<td>" . ($mod ? long2ip($e["ipa"]) : preg_replace('/\.\d+$/', ".xxx", long2ip($e["ipa"]))) . "</td>\n";
+		$s .='<td nowrap>'.ratearea($e['ratingsum'],$e['uid'],'users',$CURUSER['id']).'</td>';
+		$s .="<td>".($e['left']=='0'?$REL_LANG->say_by_key('yes'):$REL_LANG->say_by_key('no'))."</td>";
+		$s .= "<td align=\"right\">" . get_elapsed_time($e["la"]) . " {$REL_LANG->_('ago')}</td>\n";
 		$s .= "</tr>\n";
+	// }
 	}
 	$s .= "</table>\n";
 	return $s;
@@ -63,13 +68,13 @@ loggedinorreturn();
 $id = (int)$_GET["id"];
 
 if (!$id)
-stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
-list($name,$nofr) = @mysql_fetch_array(sql_query("SELECT name,filename FROM torrents WHERE id=$id"));
-if ($nofr == 'nofile') die ("Блядь ну хули смотреть? Это не торрент релиз! Данных о торренте нет! <a href='".$REL_SEO->make_link('details','id',$id,'name',translit($name))."'>К описанию релиза</a>");
-elseif (!$nofr) 	stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+list($name,$nofr) = @mysql_fetch_array($REL_DB->query("SELECT name,filename FROM torrents WHERE id=$id"));
+if ($nofr == 'nofile') die ($REL_LANG->_('What fuck are you looking?! This is release without torrent. Go <a href="%s">back</a> now!',$REL_SEO->make_link('details','id',$id,'name',translit($name))));
+elseif (!$nofr) 	$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
-$nof = sql_query("SELECT tracker,lastchecked,state,method,remote_method,seeders,leechers,num_failed FROM trackers WHERE torrent = $id ORDER by lastchecked DESC");
+$nof = $REL_DB->query("SELECT tracker,lastchecked,state,method,remote_method,seeders,leechers,num_failed FROM trackers WHERE torrent = $id ORDER by lastchecked DESC");
 while (list($tracker,$lastchecked,$state,$method,$remote_method,$seeders,$leechers,$num_failed) = mysql_fetch_array($nof)) {
 	if ($tracker=='localhost') {
 		$data[$i]['tracker'] = $REL_CONFIG['defaultbaseurl'];
@@ -95,21 +100,21 @@ while (list($tracker,$lastchecked,$state,$method,$remote_method,$seeders,$leeche
 $REL_TPL->stdhead($REL_LANG->_("Information about torrent"));
 $REL_TPL->begin_frame($REL_LANG->_("Information about torrent"));
 print("<div id=\"tabs\"><ul>
-	<li class=\"tab2\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($name))."\"><span>Описание</span></a></li>
+	<li class=\"tab2\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($name))."\"><span>{$REL_LANG->_('Description')}</span></a></li>
 	<li nowrap=\"\" class=\"tab1\"><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name))."\"><span>{$REL_LANG->say_by_key('torrent_info')}</span></a></li>
 	<li nowrap=\"\" class=\"tab2\"><a href=\"".$REL_SEO->make_link('exportrelease','id',$id,'name',translit($name))."\"><span>{$REL_LANG->say_by_key('exportrelease_mname')}</span></a></li>
 	</ul></div>\n <br />");
-print('<table width="100%" style="float:left"><tr><td class="colhead">'.$REL_LANG->say_by_key('tracker').'</td><td class="colhead">Сидов</td><td class="colhead">Личей</td><td class="colhead">Всего</td><td class="colhead">Время проверки</td><td class="colhead">'.$REL_LANG->say_by_key('status').'</td><td class="colhead">'.$REL_LANG->_('Method of check').'</td>'.((get_privilege('is_administrator',false))?'<td class="colhead">'.$REL_LANG->_('Method of request').'</td><td class="colhead">'.$REL_LANG->_('Amount of fails').'</td>':'').'</tr>');
+print('<table width="100%" style="float:left"><tr><td class="colhead">'.$REL_LANG->say_by_key('tracker').'</td><td class="colhead">'.$REL_LANG->_('Seeders').'</td><td class="colhead">'.$REL_LANG->_('Leechers').'</td><td class="colhead">'.$REL_LANG->_('Total').'</td><td class="colhead">'.$REL_LANG->_('Check time').'</td><td class="colhead">'.$REL_LANG->say_by_key('status').'</td><td class="colhead">'.$REL_LANG->_('Method of check').'</td>'.((get_privilege('is_administrator',false))?'<td class="colhead">'.$REL_LANG->_('Method of request').'</td><td class="colhead">'.$REL_LANG->_('Amount of fails').'</td>':'').'</tr>');
 if ($data)
 foreach ($data as $tracker)
 print ("<tr><td>".$tracker['tracker']."</td><td>{$tracker['seeders']}</td><td>{$tracker['leechers']}</td><td>".($tracker['seeders']+$tracker['leechers'])."</td><td>{$tracker['lastchecked']}</td><td>".cleanhtml($tracker['state'])."</td><td>{$tracker['method']}</td>".((get_privilege('is_administrator',false))?"<td>{$tracker['remote_method']}</td><td>{$tracker['num_failed']}</td>":'')."</tr>");
 //print('</table>');
-else print ('<tr><td colspan="6" align="center">'.$REL_LANG->_('This release is announce or releaser without torrent').'</td></tr>');
+else print ('<tr><td colspan="6" align="center">'.$REL_LANG->_('This release is announce or release without torrent').'</td></tr>');
 print('</table>');
 $REL_TPL->end_frame();
 
 
-print('<h3><a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'info','').'">Посмотреть структуру торрент-файла</a> или <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'dllist','').'">Посмотреть списки пиров на сайте</a></h3>');
+print('<h3><a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'info','1').'">'.$REL_LANG->_('View .torrent file details').'</a> или <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'dllist','1').'">'.$REL_LANG->_('View realtime local tracker data').'</a></h3>');
 if (isset($_GET['info'])) {
 	/**
 	 * Prints Nice array
@@ -175,7 +180,7 @@ if (isset($_GET['info'])) {
 	$fn = "torrents/$id.torrent";
 
 	if (!is_readable($fn)) {
-		stdmsg($REL_LANG->say_by_key('error'),'Невозможно прочитать torrent-файл','error');   $REL_TPL->stdfoot(); die(); }
+		$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->_('Unable to read .torrent file'),'error');   $REL_TPL->stdfoot(); die(); }
 		?>
 
 <style type="text/css">
@@ -343,23 +348,25 @@ function getRealAddress(oOb) { return oOb.protocol + ( ( oOb.protocol.indexOf( '
 compactMenu('colapse',false,'');
 //--></script>
 
-		<?
+		<?php
 		// Standard html footers
 
 }
 elseif (isset($_GET['dllist'])) {
 	$downloaders = array();
 	$seeders = array();
-	$subres = sql_query("SELECT seeder, peers.ip, port, peer_id, peers.last_action AS la, peers.userid, users.username, users.ratingsum, users.class, users.donor, users.warned, users.enabled FROM peers INNER JOIN users ON peers.userid = users.id WHERE peers.torrent = $id") or sqlerr(__FILE__, __LINE__);
+	
+	$subres = $REL_DB->query("SELECT active, xbt_files_users.left, mtime AS la, xbt_files_users.uid, users.username, users.ratingsum, users.class, users.donor, users.warned, users.enabled FROM xbt_files_users INNER JOIN users ON xbt_files_users.uid = users.id WHERE xbt_files_users.fid = $id") or sqlerr(__FILE__, __LINE__);
 	while ($subrow = mysql_fetch_array($subres)) {
-		if ($subrow["seeder"])
+		if ($subrow["active"] && $subrow["left"]=='0')
 		$seeders[] = $subrow;
 		else
 		$downloaders[] = $subrow;
-	}
+	} 
+
 	print '<table>';
-	tr("<div id=\"seeders\"></div>".$REL_LANG->say_by_key('details_seeding'), dltable($REL_LANG->say_by_key('details_seeding'), $seeders, $row), 1);
-	tr("<div id=\"leechers\"></div>".$REL_LANG->say_by_key('details_leeching'), dltable($REL_LANG->say_by_key('details_leeching'), $downloaders, $row), 1);
+	tr("<div id=\"seeders\">".$REL_LANG->say_by_key('details_seeding')."</div>", dltable($REL_LANG->say_by_key('details_seeding'), $seeders, $id), 1);
+	tr("<div id=\"leechers\">".$REL_LANG->say_by_key('details_leeching')."</div>", dltable($REL_LANG->say_by_key('details_leeching'), $downloaders, $id), 1);
 	print '</table>';
 }
 $REL_TPL->stdfoot();

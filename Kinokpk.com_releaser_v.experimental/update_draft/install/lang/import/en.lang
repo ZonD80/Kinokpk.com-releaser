@@ -1,4 +1,4 @@
-// Kinokpk.com releaser 3.38 language tools
+// Kinokpk.com releaser 3.39 language tools
 about=About myself:
 abuse=Abuse
 Access level=Access level
@@ -39,7 +39,7 @@ Admin=Admin
 admin_search=Administrative search
 admin_view_profile=You are viewing private profile as administration member
 age=Age
-ago=Ago
+ago=ago
 agree_rules=I agree with this rules
 All=All
 all_db_q=All requests to the database took about %s seconds
@@ -474,7 +474,7 @@ interests=Interests:
 invaled_passed=invalid arguments passed
 invalid_filename=Invalid file name (perhaps this is not a picture or invalid image).
 invalid_format=Invalid e-mail or username format
-invalid_id=Invalid ID.
+invalid_id=Invalid ID
 invalid_idtype=The System has not found that, on what you subscribe
 invalid_invite_code=Invalid or incorrect Invite code. <a href="denied:javascript:history.go(-1);">Back</a>
 invalid_ip=Invalid IP address.
@@ -518,15 +518,20 @@ join_by_invite=You are about to subscribe to the release of the group "%s" (the 
 join_notice=You are about to subscribe to release private group "%s", a subscription to this release of the band are %s, to join this group you need to spend %s <a href="myrating.php?discount">farmed</a> (you have %s). If you want to join this group, click "Continue"
 Jump to=Jump to
 Key=Key
-langadmin_key=Key (optional, else MD5 of word)
-langadmin_remember=Add a new word. <b>Remember, that you must FIRST add ENGLISH translation, than another one!</b>
+of July=of July
+of August=of August
+langadmin_trans_for=Translation for %s
+of February=of February
+of March=of March
+of April=of April
 langfile_link=Language file as it is
 language administration tools=Language administration tools
 language debug=Language debug
 language editor=Language editor
 language tools=Language tools
 language_charset=windows-1251
-lang_imp_notice=Language to be imported, e.g. 'ru,en,ua'
+of May=of May
+of June=of June
 large_tags=Large tags
 Last=Last
 Last edited by=Last edited by
@@ -820,7 +825,7 @@ no_torrent_with_such_id=No torrent with such ID.
 no_type=Incorrectly selected type of present
 no_user=This user does not exist
 no_users=In this release group no subscribers
-no_user_id=No user with that ID
+no_user_id=No user with this ID
 no_value=Not specified one of the mandatory values of the form
 no_votes=No votes
 number_release=ID release:
@@ -1469,4 +1474,19 @@ classadmin_rating_desc=<b>rating</b> - class with this role will be setted to us
 classadmin_reg_desc=<b>reg</b> - class with this role will be setted to newly registered users
 classadmin_guest_desc=<b>guest</b> - class with this role will be associated with guests
 admincp_classconfig=Classes configuration
-// langfile (en) from http://www.torrentsbook.com created at 12/08/2011 16:19:06
+langadmin_import_results=Importing results
+List of releases=List of releases
+spam_total=Private messages (%s total)
+Delete selected=Delete selected
+spam_s_r=Sender/Receiver
+Text=Text
+View all messages=View all messages
+catadmin_you_del=You deleting "%s"
+catadmin_select_del=Select category to be associated to deleting category releases
+of January=of January
+of September=of September
+of October=of October
+of November=of November
+of December=of December
+langadmin_add=Add a new word
+// langfile (en) from http://www.torrentsbook.com created at 29/08/2011 10:10:13
