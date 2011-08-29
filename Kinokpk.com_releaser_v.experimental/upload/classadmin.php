@@ -25,7 +25,7 @@ function rolesdesc() {
 }
 
 function make_role_checkbox($currole,$name) {
-	
+
 	$roles = array('sysop','uploader','staffbegin','vip','rating','reg','guest');
 	$currole = explode(',',$currole);
 	foreach ($roles as $r) {
@@ -41,25 +41,32 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 
 		$keys = array('name','style','prior','remark');
 		foreach ($keys as $key) {
-		$val = $to_set[$key];
-		//var_Dump($val);
-				if ($key=='remark') {
-					$check = (array)$val;
-					if ($check) {
-					foreach ($check as $chk=>$chv) $check[$chk] = "FIND_IN_SET(".sqlesc($chv).",remark)";
-					$count = get_row_count("classes","WHERE ".implode(' OR ',$check));
-					if ($count) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Error. Selected roles already associated with another classes. Please <a href="javascript:history.go(-1);">try again</a> and select another roles'));
+			$val = $to_set[$key];
+			//var_Dump($val);
+			if ($key=='remark') {
+				$check = (array)$val;
+				if ($check) {
+					foreach ($check as $chk=>$chv) $check[$chk] = "FIND_IN_SET(".$REL_DB->sqlesc($chv).",remark)";
+					$cur_role = $REL_DB->query_return("SELECT id, remark FROM classes WHERE (".implode(' OR ',$check).")");
+						
+					if ($cur_role) {
+						$cur_role['remark'] = explode(',',$cur_role['remark']);
+						foreach ($cur_role['remark'] as $rid=>$rval) {
+							if ($rval==$chv) unset($cur_role['remark'][$rid]);
+						}
+						$REL_DB->query("UPDATE classes SET remark=".$REL_DB->sqlesc(implode(',',$cur_role['remark']))." WHERE id={$cur_role['id']}");
 					}
-					$val = implode(',',(array)$val);
 				}
-			$query[] = sqlesc($val);
+				$val = implode(',',(array)$val);
+			}
+			$query[] = $REL_DB->sqlesc($val);
 		}
 		if ($query) {
-		$REL_DB->query('INSERT INTO classes ('.implode(',',$keys).') VALUES ('.implode(', ', $query).")");
-		if (mysql_errno()==1062) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Class with this priority already exists. Please <a href="javascript:history.go(-1);">try again</a>'));
-		$REL_CACHE->clearCache('system','classes');
-		safe_redirect($REL_SEO->make_link('classadmin'),1);
-		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Class added'),'success');
+			$REL_DB->query('INSERT INTO classes ('.implode(',',$keys).') VALUES ('.implode(', ', $query).")");
+			if (mysql_errno()==1062) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Class with this priority already exists. Please <a href="javascript:history.go(-1);">try again</a>'));
+			$REL_CACHE->clearCache('system','classes');
+			safe_redirect($REL_SEO->make_link('classadmin'),1);
+			$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Class added'),'success');
 		} else $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Missing form data'));
 	}
 	elseif ($a=='del') {
@@ -73,30 +80,37 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Class deleted'),'success');
 	}
 	elseif ($a=='edit') {
-		
+
 		$to_set = (array)$_POST['c'];
 
 		$keys = array('name','style','prior','remark');
 		foreach ($keys as $key) {
-		$val = $to_set[$key];
-		//var_Dump($val);
-				if ($key=='remark') {
-					$check = (array)$val;
-					if ($check) {
-					foreach ($check as $chk=>$chv) $check[$chk] = "FIND_IN_SET(".sqlesc($chv).",remark)";
-					$count = get_row_count("classes","WHERE (".implode(' OR ',$check).") AND id<>$id");
-					if ($count) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Error. Selected roles already associated with another classes. Please <a href="javascript:history.go(-1);">try again</a> and select another roles'));
+			$val = $to_set[$key];
+			//var_Dump($val);
+			if ($key=='remark') {
+				$check = (array)$val;
+				if ($check) {
+					foreach ($check as $chk=>$chv) $check[$chk] = "FIND_IN_SET(".$REL_DB->sqlesc($chv).",remark) AND id<>$id";
+					$cur_role = $REL_DB->query_return("SELECT id, remark FROM classes WHERE (".implode(' OR ',$check).")");
+						
+					if ($cur_role) {
+						$cur_role['remark'] = explode(',',$cur_role['remark']);
+						foreach ($cur_role['remark'] as $rid=>$rval) {
+							if ($rval==$chv) unset($cur_role['remark'][$rid]);
+						}
+						$REL_DB->query("UPDATE classes SET remark=".$REL_DB->sqlesc(implode(',',$cur_role['remark']))." WHERE id={$cur_role['id']}");
 					}
-					$val = implode(',',(array)$val);
 				}
-			$query[] = "$key = ".sqlesc($val);
+				$val = implode(',',(array)$val);
+			}
+			$query[] = "$key = ".$REL_DB->sqlesc($val);
 		}
 		if ($query) {
-		$REL_DB->query('UPDATE classes SET '.implode(', ', $query)." WHERE id=$id");
-		if (mysql_errno()==1062) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Class with this priority already exists. Please <a href="javascript:history.go(-1);">try again</a>'));
-		$REL_CACHE->clearCache('system','classes');
-		safe_redirect($REL_SEO->make_link('classadmin'),1);
-		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Class updated'),'success');
+			$REL_DB->query('UPDATE classes SET '.implode(', ', $query)." WHERE id=$id");
+			if (mysql_errno()==1062) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Class with this priority already exists. Please <a href="javascript:history.go(-1);">try again</a>'));
+			$REL_CACHE->clearCache('system','classes');
+			safe_redirect($REL_SEO->make_link('classadmin'),1);
+			$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Class updated'),'success');
 		} else $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Missing form data'));
 	}
 	elseif ($a=='reorder') {
@@ -109,18 +123,25 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 			$key = (int)$key;
 			$check = (array)$ro_set[$key];
 			$roq = implode(',',$check);
-			
-							if ($check) {
-					foreach ($check as $chk=>$chv) $check[$chk] = "FIND_IN_SET(".sqlesc($chv).",remark)";
-					$count = get_row_count("classes","WHERE (".implode(' OR ',$check).") AND id<>$key");
-					if ($count) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Error. Selected roles for class "%s" are alredy associated with another classes. Please <a href="javascript:history.go(-1);">try again</a> and select another roles',$REL_LANG->_($classes[$key]['name'])));
+				
+			if ($check) {
+				foreach ($check as $chk=>$chv) $check[$chk] = "FIND_IN_SET(".$REL_DB->sqlesc($chv).",remark)";
+				$cur_role = $REL_DB->query_return("SELECT id, remark FROM classes WHERE (".implode(' OR ',$check).") AND id<>$key");
+					
+				if ($cur_role) {
+					$cur_role['remark'] = explode(',',$cur_role['remark']);
+					foreach ($cur_role['remark'] as $rid=>$rval) {
+						if ($rval==$chv) unset($cur_role['remark'][$rid]);
 					}
+					$REL_DB->query("UPDATE classes SET remark=".$REL_DB->sqlesc(implode(',',$cur_role['remark']))." WHERE id={$cur_role['id']}");
+				}
+			}
 			if (in_array($val,$vals)){ $prerror=$key; break; }
 			$vals[] = $val;
-			$query[] = "UPDATE classes SET prior=$val, remark=".sqlesc($roq)." WHERE id=$key";
+			$query[] = "UPDATE classes SET prior=$val, remark=".$REL_DB->sqlesc($roq)." WHERE id=$key";
 		}
 		if ($prerror) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Prioity for class "%s" is not unique',$REL_LANG->_($classes[$prerror]['name'])));
-		
+
 		if ($query) foreach ($query as $q) $REL_DB->query($q);
 		$REL_CACHE->clearCache('system','classes');
 		safe_redirect($REL_SEO->make_link('classadmin'),1);
@@ -131,17 +152,17 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 $REL_TPL->stdhead($REL_LANG->_('Classes control panel'));
 
 if ($a=='add'||$a=='edit') {
-		$id = (int)($_POST['id']?$_POST['id']:$_GET['id']);
-		if ($a=='edit') {
-			$c = $REL_DB->query_row("SELECT * FROM classes WHERE id=$id");
-			if (!$c) {
-				$REL_TPL->stdmsg($REL_LANG->_('Error'),$REL_LANG->_('Invalid id'));
-				$REL_TPL->stdfoot();
-				die();
-			}
-			$REL_TPL->assign('c',$c);
+	$id = (int)($_POST['id']?$_POST['id']:$_GET['id']);
+	if ($a=='edit') {
+		$c = $REL_DB->query_row("SELECT * FROM classes WHERE id=$id");
+		if (!$c) {
+			$REL_TPL->stdmsg($REL_LANG->_('Error'),$REL_LANG->_('Invalid id'));
+			$REL_TPL->stdfoot();
+			die();
 		}
-		$REL_TPL->assign('a',$a);
+		$REL_TPL->assign('c',$c);
+	}
+	$REL_TPL->assign('a',$a);
 	$REL_TPL->output('edit');
 }
 elseif ($a=='del') {
@@ -155,12 +176,12 @@ elseif ($a=='del') {
 }
 else {
 
-		$classes = $REL_DB->query_return("SELECT * FROM classes ORDER BY prior DESC");
-		foreach ($classes AS $class) {
-			$c[$class['id']] = $class;
-		}
+	$classes = $REL_DB->query_return("SELECT * FROM classes ORDER BY prior DESC");
+	foreach ($classes AS $class) {
+		$c[$class['id']] = $class;
+	}
 	$REL_TPL->assign('c',$c);
-	$REL_TPL->output();	
+	$REL_TPL->output();
 }
 $REL_TPL->stdfoot();
 
