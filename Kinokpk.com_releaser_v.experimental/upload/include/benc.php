@@ -482,11 +482,6 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 		return array('tracker' => $http_host, 'state' => 'failed:udp_not_supported', 'method' => $method, 'remote_method' => 'not_supported');
 		
 	}
-	elseif ( function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1 ) {
-		$context = @stream_context_create($opts);
-		$result = @file_get_contents($req_uri , false, $context);
-		$remote_method = 'file';
-	}
 	elseif ( function_exists('curl_init') ) {
 		if ($ch = @curl_init()) {
 			@curl_setopt($ch, CURLOPT_URL, $req_uri);
@@ -520,6 +515,11 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 			}
 		}
 		$remote_method = 'socket';
+	}
+	elseif ( function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1 ) {
+		$context = @stream_context_create($opts);
+		$result = @file_get_contents($req_uri , false, $context);
+		$remote_method = 'file';
 	}
 	if (!$result)
 	{
