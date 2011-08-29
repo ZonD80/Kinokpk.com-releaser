@@ -74,7 +74,7 @@ if (!$REL_CRON['remotecheck_disabled']) {
 	mysql_query("UPDATE cron SET cron_value=".time()." WHERE cron_name='last_remotecheck'") or sqlerr(__FILE__,__LINE__);
 	mysql_query("UPDATE cron SET cron_value=cron_value+1 WHERE cron_name='num_checked'") or sqlerr(__FILE__,__LINE__);
 	// delete stuck trackers
-	mysql_query("UPDATE trackers SET state='' WHERE lastchecked<".(time()-$REL_CRON['remotepeers_cleantime']-$REL_CRON['remote_trackers']*10)." AND state = 'in_check'") or sqlerr(__FILE__,__LINE__);
+	mysql_query("UPDATE trackers SET state='' WHERE lastchecked<".(time()-$REL_CRON['remotepeers_cleantime'])." AND state = 'in_check'") or sqlerr(__FILE__,__LINE__);
 	$res = mysql_query("SELECT trackers.id, trackers.tracker, torrents.info_hash FROM trackers LEFT JOIN torrents ON torrents.id=trackers.torrent WHERE ".($REL_CRON['remotepeers_cleantime']?"trackers.lastchecked<".(time()-$REL_CRON['remotepeers_cleantime'])." AND ":'')."trackers.tracker<>'localhost' AND trackers.state<>'in_check' ORDER BY trackers.lastchecked ASC".($REL_CRON['remote_trackers']?" LIMIT {$REL_CRON['remote_trackers']}":'')) or sqlerr(__FILE__,__LINE__);
 
 	//try {
