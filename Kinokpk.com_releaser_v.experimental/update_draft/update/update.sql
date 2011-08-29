@@ -510,3 +510,6 @@ ALTER TABLE  `classes` ADD UNIQUE (
 
 DELETE FROM `snt_tracker`.`cache_stats` WHERE `cache_stats`.`cache_name` = 'announce_interval';
 DELETE FROM `snt_tracker`.`cache_stats` WHERE `cache_stats`.`cache_name` = 'announce_packed';
+
+ALTER TABLE `torrents`
+  DROP `times_completed`;

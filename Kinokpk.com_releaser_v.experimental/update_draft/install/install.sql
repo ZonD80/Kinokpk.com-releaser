@@ -1123,7 +1123,6 @@ CREATE TABLE IF NOT EXISTS `torrents` (
   `comments` int(10) unsigned NOT NULL DEFAULT '0',
   `views` int(10) unsigned NOT NULL DEFAULT '0',
   `hits` int(10) unsigned NOT NULL DEFAULT '0',
-  `times_completed` int(10) unsigned NOT NULL DEFAULT '0',
   `last_action` int(10) NOT NULL DEFAULT '0',
   `last_reseed` int(10) NOT NULL DEFAULT '0',
   `visible` tinyint(1) NOT NULL DEFAULT '1',
