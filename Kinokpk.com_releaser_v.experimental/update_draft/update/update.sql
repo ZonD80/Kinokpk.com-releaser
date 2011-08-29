@@ -513,3 +513,7 @@ DELETE FROM `snt_tracker`.`cache_stats` WHERE `cache_stats`.`cache_name` = 'anno
 
 ALTER TABLE `torrents`
   DROP `times_completed`;
+
+ALTER TABLE  `trackers` ADD  `check_start` INT( 10 ) UNSIGNED NOT NULL DEFAULT  '0';
+alter table trackers add index (check_start,state);
+alter table trackers add index (state);

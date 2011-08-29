@@ -12,10 +12,13 @@ header("Content-Type: image/gif");
 @set_time_limit(0);
 @ignore_user_abort(1);
 date_default_timezone_set('UTC');
-//	@ini_set('default_socket_timeout', 3);
+@ini_set('default_socket_timeout', 3);
 
 define ("IN_ANNOUNCE",true);
 define ("ROOT_PATH",dirname(__FILE__).'/');
+
+$time = time();
+
 require_once(ROOT_PATH.'include/secrets.php');
 // connection closed
 /* @var database object */
@@ -71,11 +74,12 @@ if (!$REL_CRON['remotecheck_disabled']) {
 	$REL_CRON['remote_trackers'] = (int)$REL_CRON['remote_trackers'];
 
 	mysql_query("UPDATE cron SET cron_value=1 WHERE cron_name='in_remotecheck'") or sqlerr(__FILE__,__LINE__);
-	mysql_query("UPDATE cron SET cron_value=".time()." WHERE cron_name='last_remotecheck'") or sqlerr(__FILE__,__LINE__);
+	mysql_query("UPDATE cron SET cron_value=".$time." WHERE cron_name='last_remotecheck'") or sqlerr(__FILE__,__LINE__);
 	mysql_query("UPDATE cron SET cron_value=cron_value+1 WHERE cron_name='num_checked'") or sqlerr(__FILE__,__LINE__);
 	// delete stuck trackers
-	mysql_query("UPDATE trackers SET state='' WHERE lastchecked<".(time()-$REL_CRON['remotepeers_cleantime'])." AND state = 'in_check'") or sqlerr(__FILE__,__LINE__);
-	$res = mysql_query("SELECT trackers.id, trackers.tracker, torrents.info_hash FROM trackers LEFT JOIN torrents ON torrents.id=trackers.torrent WHERE ".($REL_CRON['remotepeers_cleantime']?"trackers.lastchecked<".(time()-$REL_CRON['remotepeers_cleantime'])." AND ":'')."trackers.tracker<>'localhost' AND trackers.state<>'in_check' ORDER BY trackers.lastchecked ASC".($REL_CRON['remote_trackers']?" LIMIT {$REL_CRON['remote_trackers']}":'')) or sqlerr(__FILE__,__LINE__);
+	mysql_query("UPDATE trackers SET state='' WHERE check_start<".($time-$REL_CRON['remotepeers_cleantime']-($REL_CRON['remote_trackers']*3))." AND state = 'in_check'") or sqlerr(__FILE__,__LINE__);
+
+	$res = mysql_query("SELECT trackers.id, trackers.tracker, torrents.info_hash FROM trackers LEFT JOIN torrents ON torrents.id=trackers.torrent WHERE ".($REL_CRON['remotepeers_cleantime']?"trackers.lastchecked<".($time-$REL_CRON['remotepeers_cleantime'])." AND ":'')."trackers.tracker<>'localhost' AND trackers.state<>'in_check' ORDER BY trackers.lastchecked ASC".($REL_CRON['remote_trackers']?" LIMIT {$REL_CRON['remote_trackers']}":'')) or sqlerr(__FILE__,__LINE__);
 
 	//try {
 	while ($row = mysql_fetch_assoc($res)) {
@@ -83,7 +87,7 @@ if (!$REL_CRON['remotecheck_disabled']) {
 		$parray[$row['id']] = array('info_hash'=>$row['info_hash'],'tracker'=>$row['tracker']); }
 
 		if ($parray) {
-			mysql_query("UPDATE trackers SET state = 'in_check' WHERE id IN (".implode(',',array_keys($parray)).")") or sqlerr(__FILE__,__LINE__);
+			mysql_query("UPDATE trackers SET state = 'in_check', check_start=$time WHERE id IN (".implode(',',array_keys($parray)).")") or sqlerr(__FILE__,__LINE__);
 			foreach ($parray as $id => $torrent) {
 				$hash = $torrent['info_hash'];
 				$url = $torrent['tracker'];
