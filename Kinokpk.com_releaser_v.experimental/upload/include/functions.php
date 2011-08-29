@@ -231,7 +231,21 @@ function remote_fsize($path)
  * @return void
  */
 function write_sys_msg($receiver,$msg,$subject) {
-	sql_query("INSERT INTO messages (receiver, added, msg, subject) VALUES($receiver, '" . time() . "', ".sqlesc($msg).", ".sqlesc($subject).")");// or sqlerr(__FILE__, __LINE__);
+	write_msg(0, $receiver, $msg, $subject);
+	return;
+}
+
+/**
+ * Writes message to selected user from another user
+ * @param int $sender id of sender
+ * @param int $receiver id of receiver
+ * @param string $msg message as it is
+ * @param string $subject subject of message
+ * @return void
+ */
+function write_msg($sender,$receiver,$msg,$subject) {
+	global $REL_DB;
+	$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, subject) VALUES($sender, $receiver, '" . time() . "', ".$REL_DB->sqlesc($msg).", ".$REL_DB->sqlesc($subject).")");// or sqlerr(__FILE__, __LINE__);
 	return;
 }
 
@@ -762,10 +776,11 @@ function rusdate($num,$type){
 }
 
 /**
- * Just alias to $REL_DB->sql_query();
+ * Just alias to $REL_DB->query();
  * @param string $query Query to be performed
  * @return resource Mysql resource
  * @todo Deprecate this shit!
+ * @deprecated Use $REL_DB->query(); instead
  */
 function sql_query($query) {
 	global $REL_DB;
