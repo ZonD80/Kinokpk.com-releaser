@@ -1387,3 +1387,4 @@ ALTER TABLE  `classes` ADD UNIQUE (
 ALTER TABLE  `trackers` ADD  `check_start` INT( 10 ) UNSIGNED NOT NULL DEFAULT  '0';
 alter table trackers add index (check_start,state);
 alter table trackers add index (state);
+alter table trackers add index (num_failed);

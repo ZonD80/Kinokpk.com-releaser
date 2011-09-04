@@ -508,8 +508,8 @@ ALTER TABLE  `classes` ADD UNIQUE (
 `prior`
 );
 
-DELETE FROM `snt_tracker`.`cache_stats` WHERE `cache_stats`.`cache_name` = 'announce_interval';
-DELETE FROM `snt_tracker`.`cache_stats` WHERE `cache_stats`.`cache_name` = 'announce_packed';
+DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` = 'announce_interval';
+DELETE FROM `cache_stats` WHERE `cache_stats`.`cache_name` = 'announce_packed';
 
 ALTER TABLE `torrents`
   DROP `times_completed`;
@@ -517,3 +517,4 @@ ALTER TABLE `torrents`
 ALTER TABLE  `trackers` ADD  `check_start` INT( 10 ) UNSIGNED NOT NULL DEFAULT  '0';
 alter table trackers add index (check_start,state);
 alter table trackers add index (state);
+alter table trackers add index (num_failed);

@@ -136,7 +136,7 @@ elseif ($action == "edituser") {
 			$updateset[] = "num_warned = $num_warned";
 		} else {
 			$warneduntil = (time() + $warnlength * 604800);
-			$dur = $warnlength . ($warnlength > 1 ? $REL_LANG->_('week') : $REL_LANG->_('weeks'));
+			$dur = $warnlength .' '. ($warnlength > 1 ? $REL_LANG->_('weeks') : $REL_LANG->_('week'));
 			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Warned by %s for %s with the following reason: "%s"',$CURUSER['username'],$dur,$warnpm)."\n" . $modcomment;
 			$msg = sqlesc($REL_LANG->_to($userid,'You got warned by %s for %s with the following reason: "%s"',make_user_link(),$dur,$warnpm));
 			$updateset[] = "warneduntil = $warneduntil";

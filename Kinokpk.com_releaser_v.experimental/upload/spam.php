@@ -72,7 +72,7 @@ $REL_TPL->stdhead($REL_LANG->_('Private messages viewer'));
 		if($arr["sender"] == 0){
 			$sender = "<font color=red><b>{$REL_LANG->_('System')}</b></font>";
 		} else {
-			$sender = make_user_link($arr2);
+			$sender = make_user_link($arr3);
 		}
 		$msg = format_comment($arr['msg']);
 		$added = mkprettytime($arr['added']);
