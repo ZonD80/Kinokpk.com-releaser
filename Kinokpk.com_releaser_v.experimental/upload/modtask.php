@@ -111,7 +111,7 @@ elseif ($action == "edituser") {
 		$subject = sqlesc($REL_LANG->_to($userid,'Notification about class changing'));
 		sql_query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES(0, $userid, $msg, $added, $subject)") or sqlerr(__FILE__, __LINE__);
 		$updateset[] = "class = $class";
-		$modcomment = date("Y-m-d") . ($REL_LANG->_to(0,'Class was setted to "%s" by %s',get_user_class_name($class),$CURUSER['username']))."\n". $modcomment;
+		$modcomment = date("Y-m-d") .' '. ($REL_LANG->_to(0,'Class was setted to "%s" by %s',get_user_class_name($class),$CURUSER['username']))."\n". $modcomment;
 	}
 
 	$num_warned = 1 + $arr["num_warned"];
@@ -136,7 +136,7 @@ elseif ($action == "edituser") {
 			$updateset[] = "num_warned = $num_warned";
 		} else {
 			$warneduntil = (time() + $warnlength * 604800);
-			$dur = $warnlength .' '. ($warnlength > 1 ? $REL_LANG->_('weeks') : $REL_LANG->_('week'));
+			$dur = $warnlength . ($warnlength > 1 ? $REL_LANG->_('week') : $REL_LANG->_('weeks'));
 			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Warned by %s for %s with the following reason: "%s"',$CURUSER['username'],$dur,$warnpm)."\n" . $modcomment;
 			$msg = sqlesc($REL_LANG->_to($userid,'You got warned by %s for %s with the following reason: "%s"',make_user_link(),$dur,$warnpm));
 			$updateset[] = "warneduntil = $warneduntil";
