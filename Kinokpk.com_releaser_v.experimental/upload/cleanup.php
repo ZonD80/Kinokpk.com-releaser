@@ -81,7 +81,7 @@ $res = $REL_DB->query("SELECT torrent, SUM(seeders) AS seeders, SUM(leechers) AS
 
 $torrents = array();
 while ($row = mysql_fetch_assoc($res)) {
-	$torrents["seeders={$row['seeders']}, leechers={$row['leechers']}"][] = $row['torrent'];
+	$torrents["seeders={$row['seeders']}, leechers={$row['leechers']}".($row['seeders']?", last_action=$time":'')][] = $row['torrent'];
 }
 if ($torrents) {
 	foreach ($torrents AS $to_set=> $to_ids) {
