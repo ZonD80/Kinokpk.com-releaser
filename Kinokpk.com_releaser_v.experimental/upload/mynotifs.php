@@ -115,7 +115,7 @@ if (!$type) {
 		$addition = 'reports.id, NULL, reports.type, reports.userid, users.username, users.class, reports.added'; $from = 'FROM reports LEFT JOIN users ON reports.userid=users.id ORDER BY reports.added DESC';
 	}
 	elseif ($type=='torrents'){
-		$addition = 'torrents.id, torrents.id, torrents.name, torrents.owner, users.username, users.class, torrents.added'; $from = 'FROM torrents LEFT JOIN users ON torrents.owner=users.id WHERE torrents.added>'.$CURUSER['last_login'].' ORDER BY torrents.added DESC';
+		$addition = 'torrents.id, torrents.id, torrents.name, torrents.owner, users.username, users.class, torrents.added'; $from = 'FROM torrents LEFT JOIN users ON torrents.owner=users.id WHERE torrents.added>'.$CURUSER['last_login'].' AND torrents.moderatedby<>0 ORDER BY torrents.added DESC';
 	}
 	elseif ($type=='unchecked') {
 		$addition = 'torrents.id, torrents.id, torrents.name, torrents.owner, users.username, users.class, torrents.added'; $from = 'FROM torrents LEFT JOIN users ON torrents.owner=users.id WHERE torrents.moderatedby=0 ORDER BY torrents.added DESC';

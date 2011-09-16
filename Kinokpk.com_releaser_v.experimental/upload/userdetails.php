@@ -456,7 +456,7 @@ function togglepic(bu, picid, formid)
 				$priority2 = get_class_priority($user['class']);
 				$classes = init_class_array();
 				foreach ($classes as $cid=>$cl) 
-					if ($cl['priority']<=$priority2||$cl['priority']>=$priority||!is_int($cid)) unset($classes[$cid]); else $classes[$cid] = "FIND_IN_SET($cid,classes_allowed)";
+					if ($cl['priority']<=$priority2||$cl['priority']>$priority||!is_int($cid)) unset($classes[$cid]); else $classes[$cid] = "FIND_IN_SET($cid,classes_allowed)";
 					
 				$privs = $REL_DB->query_return("SELECT name,description,classes_allowed FROM privileges WHERE ".implode(' OR ',$classes));
 				if ($privs) {
