@@ -1,9 +1,9 @@
 <?php
 if (!defined('BLOCK_FILE')) {
-	safe_redirect(" ../".$REL_SEO->make_link('index'));
+	safe_redirect($REL_SEO->make_link('index'));
 	exit;
 }
-global  $REL_LANG, $REL_SEO;
+global   $REL_LANG, $REL_SEO, $REL_DB;
 
 //$blocktitle = $REL_LANG->say_by_key('our_films');
 

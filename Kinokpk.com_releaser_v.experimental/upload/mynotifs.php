@@ -62,9 +62,9 @@ if (isset($_GET['settings'])) {
 		}
 		//die(var_dump($allowed_notifs));
 		// if ($allowed_emailnotifs || $allowed_notifs)
-		sql_query("UPDATE users SET notifs = ".sqlesc(@implode(',',$allowed_notifs)).', emailnotifs = '.sqlesc(@implode(',',$allowed_emailnotifs))." WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__,__LINE__);
+		$REL_DB->query("UPDATE users SET notifs = ".sqlesc(@implode(',',$allowed_notifs)).', emailnotifs = '.sqlesc(@implode(',',$allowed_emailnotifs))." WHERE id = {$CURUSER['id']}");
 		safe_redirect($REL_SEO->make_link('my'));
-		stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('notify_settigs_saved'),'success');
+		$REL_TPL->stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('notify_settigs_saved'),'success');
 	}
 }
 $REL_TPL->stdhead($REL_LANG->say_by_key('my_notifs'));
@@ -103,7 +103,7 @@ if (!$type) {
 } elseif (in_array($type,$allowed_types)) {
 
 	if ($type=='unread') { safe_redirect($REL_SEO->make_link('message'));
-	stdmsg($REL_LANG->_("Redirecting"),$REL_LANG->_("Now you will be redirected to your PM inbox"));
+	$REL_TPL->stdmsg($REL_LANG->_("Redirecting"),$REL_LANG->_("Now you will be redirected to your PM inbox"));
 	$REL_TPL->stdfoot();
 	die();
 	}
@@ -135,10 +135,10 @@ if (!$type) {
 		$addition = ($type<>'forumcomments'?"CONCAT_WS('#comm',comments.toid,comments.id) AS cid, NULL":'comments.toid AS cid, comments.id').", {$name_fields[$type]}, comments.user, users.username, users.class, comments.added"; $from = "FROM comments LEFT JOIN users ON comments.user = users.id{$leftjoin_fields[$type]} WHERE comments.added>{$CURUSER['last_login']} AND comments.type='$typeq'".($type=='forumcomments'?" AND FIND_IN_SET(".get_user_class().",forum_categories.class)":'')." ORDER BY comments.added DESC"; 
 	}
 	$limited = 50;
-	$count = @mysql_result(sql_query("SELECT SUM(1) $from"),0);
+	$count = @mysql_result($REL_DB->query("SELECT SUM(1) $from"),0);
 	$limit = "LIMIT 50";
 
-	$query = sql_query("SELECT $addition $from $limit");
+	$query = $REL_DB->query("SELECT $addition $from $limit");
 	print ('<h1>'.$REL_LANG->say_by_key("you_watching_$type").'</h1>');
 
 	print '<div id="mynotif">';
@@ -158,11 +158,11 @@ if (!$type) {
 }
 elseif (in_array($type,$types_diff)) {
 	safe_redirect($REL_SEO->make_link('mynotifs','settings',1),1);
-	stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->_('You did not subscribed to view %s notifications, please set up it in your <a href="%s">notifications configuration page</a> and try again. Redirecting you to notifications configuration',ucfirst($type),$REL_SEO->make_link('mynotifs','settings',1)),'error');
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->_('You did not subscribed to view %s notifications, please set up it in your <a href="%s">notifications configuration page</a> and try again. Redirecting you to notifications configuration',ucfirst($type),$REL_SEO->make_link('mynotifs','settings',1)),'error');
 }
 else {
 
-	stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'),'error');
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'),'error');
 }
 $REL_TPL->end_frame();
 //print_r($CURUSER);

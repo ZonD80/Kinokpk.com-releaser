@@ -16,12 +16,12 @@ loggedinorreturn();
 httpauth();
 
 if (isset($_COOKIE['override_class']) || !get_privilege('is_moderator',false))
-stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
+$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 
 if ($_GET['action'] == 'editclass') //Process the querystring - No security checks are done as a temporary class higher
 {                                   //than the actual class mean absoluetly nothing.
 $newclass = (int)$_GET['class'];
-if (get_class_priority($CURUSER['class']) < get_class_priority($newclass)) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('class_override_denied'));
+if (get_class_priority($CURUSER['class']) < get_class_priority($newclass)) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('class_override_denied'));
 
 $returnto = makesafe($_GET['returnto']);
 

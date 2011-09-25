@@ -69,7 +69,7 @@ elseif (isset($_POST['reset'])) {
 }
 elseif (isset($_POST['save'])) {
 
-	$reqparametres = array('cron_is_native','max_dead_torrent_time','signup_timeout','autoclean_interval','pm_delete_sys_days','pm_delete_user_days','ttl_days','remotecheck_disabled','announce_interval','delete_votes','remote_trackers','rating_enabled','remotecheck_interval');
+	$reqparametres = array('cron_is_native','max_dead_torrent_time','signup_timeout','autoclean_interval','pm_delete_sys_days','pm_delete_user_days','ttl_days','remotecheck_disabled','delete_votes','remote_trackers','rating_enabled','remotecheck_interval','remote_trackers_delete');
 
 	$multi_param = array('remotepeers_cleantime');
 

@@ -14,33 +14,24 @@ INIT();
 
 loggedinorreturn ();
 
-
-function bark($msg) {
-	global $REL_LANG, $REL_TPL;
-	$REL_TPL->stdhead( $REL_LANG->say_by_key('error') );
-	$REL_TPL->stdmsg ( $REL_LANG->say_by_key('error'), $msg );
-	$REL_TPL->stdfoot();
-	exit ();
-}
-
 $id = ( int ) $_GET ["id"];
 
 if (! is_valid_id ( $id )) $id = $CURUSER['id'];
 
-$r = @sql_query ( "SELECT * FROM users WHERE id=$id" ) or sqlerr ( __FILE__, __LINE__ );
-$user = mysql_fetch_array ( $r ) or bark ( "Нет пользователя с таким ID $id." );
+$r = @$REL_DB->query ( "SELECT * FROM users WHERE id=$id" );
+$user = mysql_fetch_array ( $r ) or $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No user with given ID'));
 if (! $user ["confirmed"])
-stderr ( $REL_LANG->say_by_key('error'), "Этот пользователь еще не подтвердил себя по e-mail, возможно, этот аккаунт вскоре будет удален" );
+$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('This user does not confirmed himself yet. It may be, that this account will be deleted soon.'));
 
 $user['custom_privileges'] = explode(',',$user['custom_privileges']);
 
 if (!pagercheck()) {
 	$cats = assoc_cats ();
-	$am_i_friend = ($id==$CURUSER['id']?true:@mysql_result(sql_query("SELECT 1 FROM friends WHERE (userid={$CURUSER['id']} AND friendid=$id) OR (friendid={$CURUSER['id']} AND userid=$id) AND confirmed=1"),0));
+	$am_i_friend = ($id==$CURUSER['id']?true:@mysql_result($REL_DB->query("SELECT 1 FROM friends WHERE (userid={$CURUSER['id']} AND friendid=$id) OR (friendid={$CURUSER['id']} AND userid=$id) AND confirmed=1"),0));
 	$disallow_view = ($user['privacy']=='highest'&&!$am_i_friend);
-	if ($disallow_view&&!get_privilege('view_private_user_profiles',false)) stderr($REL_LANG->_("Error"),$REL_LANG->_('This user uses privacy level, you need to <a href="%s">Become friend of %s</a> to view this page',$REL_SEO->make_link('friends','action','add','id',$id),get_user_class_color($user['class'],$user['username'])));
+	if ($disallow_view&&!get_privilege('view_private_user_profiles',false)) $REL_TPL->stderr($REL_LANG->_("Error"),$REL_LANG->_('This user uses privacy level, you need to <a href="%s">Become friend of %s</a> to view this page',$REL_SEO->make_link('friends','action','add','id',$id),get_user_class_color($user['class'],$user['username'])));
 
-	$it = sql_query ( "SELECT u.id, u.username, u.class, i.id AS invitedid, i.username AS invitedname, i.class AS invitedclass FROM users AS u LEFT JOIN users AS i ON i.id = u.invitedby WHERE u.invitedroot = $id OR u.invitedby = $id ORDER BY u.invitedby" );
+	$it = $REL_DB->query ( "SELECT u.id, u.username, u.class, i.id AS invitedid, i.username AS invitedname, i.class AS invitedclass FROM users AS u LEFT JOIN users AS i ON i.id = u.invitedby WHERE u.invitedroot = $id OR u.invitedby = $id ORDER BY u.invitedby" );
 	if (mysql_num_rows ( $it ) >= 1) {
 		while ( $inviter = mysql_fetch_array ( $it ) )
 		$invitetree .= "<a href=\"".$REL_SEO->make_link('userdetails','id',$inviter['id'],'username',translit($inviter ["username"]))."\">" . get_user_class_color ( $inviter ["class"], $inviter ["username"] ) . "</a> приглашен <a href=\"".$REL_SEO->make_link('userdetails','id',$inviter['invitedid'],'username',translit($inviter ["invitedname"]))."\">" . get_user_class_color ( $inviter ["invitedclass"], $inviter ["invitedname"] ) . "</a><br />";
@@ -76,7 +67,7 @@ if (!pagercheck()) {
 	}
 	// social activity
 	$presents = array();
-	$presentres = sql_query("SELECT presents.*, users.username, users.class FROM presents LEFT JOIN users ON presents.presenter=users.id WHERE userid=$id ORDER BY id DESC LIMIT 5");
+	$presentres = $REL_DB->query("SELECT presents.*, users.username, users.class FROM presents LEFT JOIN users ON presents.presenter=users.id WHERE userid=$id ORDER BY id DESC LIMIT 5");
 	while ($prrow = mysql_fetch_assoc($presentres)) {
 		$presents[] = $prrow;
 	}
@@ -103,7 +94,7 @@ if (!pagercheck()) {
 	$sql_query = "SELECT ".implode(', ', $sql_query);
 
 	//die($sql_query);
-	$socialsql = sql_query($sql_query);
+	$socialsql = $REL_DB->query($sql_query);
 	$social = mysql_fetch_assoc($socialsql);
 	foreach ($social as $type => $value)
 	{
@@ -118,7 +109,7 @@ if (!pagercheck()) {
 	//  $don = "<img src=pic/starbig.gif>";
 
 
-	$res = sql_query ( "SELECT name, flagpic FROM countries WHERE id = $user[country] LIMIT 1" ) or sqlerr ( __FILE__, __LINE__ );
+	$res = $REL_DB->query ( "SELECT name, flagpic FROM countries WHERE id = $user[country] LIMIT 1" );
 	if (mysql_num_rows ( $res ) == 1) {
 		$arr = mysql_fetch_assoc ( $res );
 		$country = "<img src=\"pic/flag/$arr[flagpic]\" alt=\"$arr[name]\" style=\"margin-left: 8pt\">";
@@ -173,7 +164,7 @@ if (!pagercheck()) {
 	if (! $enabled)
 	print ( "<p><b>Этот аккаунт отключен</b><br/>Причина: " . $user ['dis_reason'] . "</p>\n" );
 	elseif ($CURUSER ["id"] != $user ["id"]) {
-		$r = sql_query ( "SELECT id FROM friends WHERE (userid=$id AND friendid={$CURUSER['id']}) OR (friendid = $id AND userid={$CURUSER['id']})" ) or sqlerr ( __FILE__, __LINE__ );
+		$r = $REL_DB->query ( "SELECT id FROM friends WHERE (userid=$id AND friendid={$CURUSER['id']}) OR (friendid = $id AND userid={$CURUSER['id']})" );
 		list ( $friend ) = mysql_fetch_array ( $r );
 		if ($friend)
 		print ( "<p>(<a href=\"".$REL_SEO->make_link('friends','action','deny','id',$friend)."\">Убрать из друзей</a>)<br />(<a href=\"".$REL_SEO->make_link('present','id',$id)."\">Подарить подарок</a>)</p>\n" );
@@ -200,7 +191,7 @@ if (!pagercheck()) {
 	if (get_privilege('add_invites',false))
 	print ( "<tr><td class=\"rowhead\">Приглашений</td><td align=left><a href=\"".$REL_SEO->make_link('invite','id',$id)."\">" . $user ["invites"] . "</a></td></tr>" );
 	if ($user ["invitedby"] != 0) {
-		$inviter = mysql_fetch_assoc ( sql_query ( "SELECT username FROM users WHERE id = " . sqlesc ( $user ["invitedby"] ) ) );
+		$inviter = mysql_fetch_assoc ( $REL_DB->query ( "SELECT username FROM users WHERE id = " . sqlesc ( $user ["invitedby"] ) ) );
 		print ( "<tr><td class=\"rowhead\">Пригласил</td><td align=\"left\"><a href=\"".$REL_SEO->make_link('userdetails','id',$user['invitedby'],'username',translit($inviter['username']))."\">$inviter[username]</a></td></tr>" );
 	}
 	//}
@@ -275,7 +266,7 @@ if (!pagercheck()) {
 	print ( "<tr valign=\"top\"><td align=\"left\" colspan=\"2\" class=\"text\" bgcolor=\"#F4F4F0\">" . format_comment ( $user ["info"] ) . "</td></tr>\n" );
 
 	if ($user ["acceptpms"] == "friends") {
-		$r = sql_query ( "SELECT id FROM friends WHERE userid = $user[id] AND friendid = $CURUSER[id]" ) or sqlerr ( __FILE__, __LINE__ );
+		$r = $REL_DB->query ( "SELECT id FROM friends WHERE userid = $user[id] AND friendid = $CURUSER[id]" );
 		$showpmbutton = (mysql_num_rows ( $r ) == 1 ? 1 : 0);
 	} elseif ($CURUSER ["id"] != $user ["id"])
 	$showpmbutton = 1;
@@ -325,7 +316,7 @@ $FORM_TYPE = 'user';
 $REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 $REL_TPL->display('commenttable_form.tpl');
 
-$subres = sql_query ( "SELECT SUM(1) FROM comments WHERE toid = $id AND type='user'" );
+$subres = $REL_DB->query ( "SELECT SUM(1) FROM comments WHERE toid = $id AND type='user'" );
 $subrow = mysql_fetch_array ( $subres );
 $count = $subrow [0];
 
@@ -342,7 +333,7 @@ if (! $count) {
 } else {
 	$limit = ajaxpager(25, $count, array('userdetails','id',$id,'username',translit($user['username'])), 'comments-table > tbody:last');
 	//var_dump($count);
-	$subres = sql_query ( "SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " . "$id AND c.type='user' GROUP BY (c.id) ORDER BY c.id DESC $limit" ) or sqlerr ( __FILE__, __LINE__ );
+	$subres = $REL_DB->query ( "SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " . "$id AND c.type='user' GROUP BY (c.id) ORDER BY c.id DESC $limit" );
 	$allrows = prepare_for_commenttable($subres, $user['username'],$REL_SEO->make_link('userdetails','id',$id,'username',translit($user['username'])));
 	if (!pagercheck()) {
 		print ( "<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );

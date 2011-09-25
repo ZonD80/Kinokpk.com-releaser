@@ -15,7 +15,7 @@ INIT();
 
 loggedinorreturn();
 
-if (isset($_GET['id']) && !is_valid_id($_GET['id'])) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+if (isset($_GET['id']) && !is_valid_id($_GET['id'])) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 $id = (int) $_GET["id"];
 $type = unesc($_GET["type"]);
@@ -24,7 +24,7 @@ $invite = $_GET["invite"];
 $REL_TPL->stdhead("Приглашения");
 
 function bark($msg) {
-	stdmsg("Ошибка", $msg);
+	$REL_TPL->stdmsg("Ошибка", $msg);
 	$REL_TPL->stdfoot();
 }
 
@@ -49,20 +49,20 @@ if ($type == 'new') {
 	print (	"<tr class=tableb><td align=center colspan=2><input type=submit value=\"Создать\"></td></tr>".
 	"</form></table>");
 } elseif ($type == 'del') {
-	$ret = sql_query("SELECT * FROM invites WHERE invite = ".sqlesc($invite)) or sqlerr(__FILE__,__LINE__);
+	$ret = $REL_DB->query("SELECT * FROM invites WHERE invite = ".sqlesc($invite));
 	$num = mysql_fetch_assoc($ret);
 	if ($num[inviter]==$id) {
-		sql_query("DELETE FROM invites WHERE invite = ".sqlesc($invite)) or sqlerr(__FILE__,__LINE__);
-		stdmsg("Успешно", "Приглашение удалено.");
+		$REL_DB->query("DELETE FROM invites WHERE invite = ".sqlesc($invite));
+		$REL_TPL->stdmsg("Успешно", "Приглашение удалено.");
 	} else
-	stdmsg("Ошибка", "Вам не разрешено удалять приглашения.");
+	$REL_TPL->stdmsg("Ошибка", "Вам не разрешено удалять приглашения.");
 } else {
 	if (!get_privilege('is_moderator') && !($id == $CURUSER["id"])) {
 		bark("У вас нет права видеть приглашения этого пользователя.");
 	}
 
 
-	$ret = sql_query("SELECT u.id, u.username, u.class, u.email, u.ratingsum, u.warned, u.enabled, u.donor, invites.confirmed FROM invites LEFT JOIN users AS u ON u.id=invites.inviteid WHERE invitedby = $id") or sqlerr(__FILE__,__LINE__);
+	$ret = $REL_DB->query("SELECT u.id, u.username, u.class, u.email, u.ratingsum, u.warned, u.enabled, u.donor, invites.confirmed FROM invites LEFT JOIN users AS u ON u.id=invites.inviteid WHERE invitedby = $id");
 	$num = mysql_num_rows($ret);
 	print("<form method=post action=\"".$REL_SEO->make_link('takeconfirm','id',$id)."\"><table border=1 width=100% cellspacing=0 cellpadding=5>".
 	"<tr class=tabletitle><td colspan=7><b>Статус приглашенных вами</b> (".(int)$num.")</td></tr>");
@@ -105,10 +105,10 @@ if ($type == 'new') {
 	}
 	print("</table><br />");
 
-	$rul = sql_query("SELECT SUM(1) FROM invites WHERE inviter = $id") or sqlerr(__FILE__,__LINE__);
+	$rul = $REL_DB->query("SELECT SUM(1) FROM invites WHERE inviter = $id");
 	$arre = mysql_fetch_row($rul);
 	$number1 = $arre[0];
-	$rer = sql_query("SELECT invite, time_invited FROM invites WHERE inviter = $id AND confirmed=0") or sqlerr(__FILE__,__LINE__);
+	$rer = $REL_DB->query("SELECT invite, time_invited FROM invites WHERE inviter = $id AND confirmed=0");
 	$num1 = mysql_num_rows($rer);
 
 	print("<table border=1 width=100% cellspacing=0 cellpadding=5>".

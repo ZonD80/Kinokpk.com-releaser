@@ -15,17 +15,17 @@ INIT();
 
 loggedinorreturn();
 
-if (!is_valid_id($_GET['id'])) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+if (!is_valid_id($_GET['id'])) 			$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 $id = (int) $_GET['id'];
 $tree = make_tree();
 
-$res = sql_query("SELECT id,name,descr,tiger_hash,images,category,size,visible,banned,free,sticky,moderatedby,online,owner,relgroup,modcomm FROM torrents WHERE id = $id");
+$res = $REL_DB->query("SELECT id,name,descr,tiger_hash,images,category,size,visible,banned,free,sticky,moderatedby,online,owner,relgroup,modcomm FROM torrents WHERE id = $id");
 $row = mysql_fetch_array($res);
 if (!$row)
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
-$res = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
+$res = $REL_DB->query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
 while (list($tracker) = mysql_fetch_array($res)) $trackers[] = $tracker;
 if ($trackers) $trackers = implode("\n",$trackers);
 $REL_TPL->stdhead("Редактирование Релиза \"" . makesafe($row["name"]) . "\"");
@@ -41,7 +41,7 @@ function openwindow()
 <?php
 
 if (($CURUSER["id"] != $row["owner"]) && !get_privilege('edit_releases',false)) {
-	stdmsg($REL_LANG->say_by_key('error'),"Вы не можете редактировать этот торрент.");
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),"Вы не можете редактировать этот торрент.");
 } else {
 	print("<form name=\"edit\" method=post action=\"".$REL_SEO->make_link('takeedit')."\" enctype=multipart/form-data>\n");
 	print("<input type=\"hidden\" name=\"id\" value=\"$id\">\n");
@@ -70,7 +70,7 @@ if (($CURUSER["id"] != $row["owner"]) && !get_privilege('edit_releases',false)) 
 	print '<tr><td align="left"><b>'.$REL_LANG->say_by_key('description').'</b></td><td>'.textbbcode('descr',$row['descr'],1).'</td></tr>';
 
 	//relgroups
-	$rgarrayres = sql_query("SELECT id,name FROM relgroups ORDER BY added DESC");
+	$rgarrayres = $REL_DB->query("SELECT id,name FROM relgroups ORDER BY added DESC");
 	while($rgarrayrow = mysql_fetch_assoc($rgarrayres)) {
 		$rgarray[$rgarrayrow['id']] = $rgarrayrow['name'];
 	}

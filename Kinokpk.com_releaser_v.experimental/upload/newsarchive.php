@@ -16,7 +16,7 @@ $REL_TPL->stdhead("Архив новостей");
 $count = get_row_count("news");
 
 $limit = "LIMIT 50";
-$resource = sql_query("SELECT news.* , SUM(1) FROM news LEFT JOIN comments ON comments.toid = news.id WHERE comments.type='news' GROUP BY news.id ORDER BY news.added DESC $limit");
+$resource = $REL_DB->query("SELECT news.* , SUM(1) FROM news LEFT JOIN comments ON comments.toid = news.id WHERE comments.type='news' GROUP BY news.id ORDER BY news.added DESC $limit");
 
 print("<div id='news-table'>");
 print ("<table border='0' cellspacing='0' width='100%' cellpadding='5'>

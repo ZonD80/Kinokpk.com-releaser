@@ -17,10 +17,10 @@ get_privilege('view_logs');
 
 // delete items older than a week
 if (isset($_GET['truncate']) && get_privilege('truncate_logs',false)) {
-	sql_query("TRUNCATE TABLE sitelog") or sqlerr(__FILE__,__LINE__);
-	stderr($REL_LANG->say_by_key('success'),'Логи очищены <a href="'.$REL_SEO->make_link('log').'">К логам</a>','success');
+	$REL_DB->query("TRUNCATE TABLE sitelog");
+	$REL_TPL->stderr($REL_LANG->say_by_key('success'),'Логи очищены <a href="'.$REL_SEO->make_link('log').'">К логам</a>','success');
 
-} elseif (isset($_GET['truncate'])) 	stderr($REL_LANG->say_by_key('error'),'Логи могут быть очищены только системным администратором');
+} elseif (isset($_GET['truncate'])) 	$REL_TPL->stderr($REL_LANG->say_by_key('error'),'Логи могут быть очищены только системным администратором');
 
 $type = htmlspecialchars(trim((string)$_GET["type"]));
 
@@ -30,7 +30,7 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('logs'));
 if(!$type) {
 	print ('<h1><a href="'.$REL_SEO->make_link('log','truncate','').'">Очистить логи</a></h1>');
 	print("<p align=center>");
-	$logs = sql_query("SELECT type FROM sitelog GROUP BY type");
+	$logs = $REL_DB->query("SELECT type FROM sitelog GROUP BY type");
 	while (list($logt) = mysql_fetch_array($logs)) {
 		print (' |<a href="'.$REL_SEO->make_link('log','type',$logt).'">'.$logt.'</a>| ');
 	}
@@ -40,13 +40,13 @@ if(!$type) {
 }
 
 }
-$count = @mysql_result(sql_query("SELECT SUM(1) FROM `sitelog` WHERE type = ".sqlesc($type)),0);
+$count = @mysql_result($REL_DB->query("SELECT SUM(1) FROM `sitelog` WHERE type = ".sqlesc($type)),0);
 
 if (!$count) print("<b>".$REL_LANG->say_by_key('log_file_empty')."</b>\n");
 else
 {
 	$limit = ajaxpager(25, $count, array('log','type',$type), 'logtable > tbody:last');
-	$res = sql_query("SELECT txt, added FROM `sitelog` WHERE type = ".sqlesc($type)." ORDER BY `added` DESC LIMIT 50") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT txt, added FROM `sitelog` WHERE type = ".sqlesc($type)." ORDER BY `added` DESC LIMIT 50");
 	if (!pagercheck()) {
 	print("<h1>".$REL_LANG->say_by_key('logs')."| <a href=\"".$REL_SEO->make_link('log')."\">к типам логов</a></h1>\n");
 	print("<div id=\"pager_scrollbox\"><table id=\"logtable\" border=1 cellspacing=0 cellpadding=5>\n");

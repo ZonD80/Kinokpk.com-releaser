@@ -19,10 +19,10 @@ if (!pagercheck()) {
 	if (isset($_GET['deletevote']) && is_valid_id($_GET['vid']) && get_privilege('polls_operation',false)) {
 		$vid = (int)$_GET['vid'];
 
-		sql_query("DELETE FROM polls_votes WHERE vid=$vid");
+		$REL_DB->query("DELETE FROM polls_votes WHERE vid=$vid");
 
 		$REL_CACHE->clearGroupCache("block-polls");
-		stderr($REL_LANG->say_by_key('success'),"Голос удален");
+		$REL_TPL->stderr($REL_LANG->say_by_key('success'),"Голос удален");
 	}
 	loggedinorreturn();
 
@@ -30,32 +30,32 @@ if (!pagercheck()) {
 	$spend = "</div></div>";
 
 	if (isset($_GET['vote'])  && ($_SERVER['REQUEST_METHOD'] == 'POST')){
-		if ((isset($_POST["vote"]) && !is_valid_id($_POST["vote"])) || !is_valid_id($pid)) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+		if ((isset($_POST["vote"]) && !is_valid_id($_POST["vote"])) || !is_valid_id($pid)) 			$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 		$voteid = (int)$_POST['vote'];
 
-		$pexprow = sql_query("SELECT exp FROM polls WHERE id=$pid");
+		$pexprow = $REL_DB->query("SELECT exp FROM polls WHERE id=$pid");
 		list($pexp) = mysql_fetch_array($pexprow);
-		if (!is_null($pexp) && ($pexp < time())) stderr($REL_LANG->say_by_key('error'),"Срок действия опроса или вопроса истек, вы не можете голосовать");
+		if (!is_null($pexp) && ($pexp < time())) $REL_TPL->stderr($REL_LANG->say_by_key('error'),"Срок действия опроса или вопроса истек, вы не можете голосовать");
 
 
 
-		$votedrow = sql_query("SELECT sid FROM polls_votes WHERE user=".$CURUSER['id']." AND pid=$pid");
+		$votedrow = $REL_DB->query("SELECT sid FROM polls_votes WHERE user=".$CURUSER['id']." AND pid=$pid");
 		list($voted) = mysql_fetch_array($votedrow);
-		if ($voted) stderr($REL_LANG->say_by_key('error'),"Вы уже голосовали в этом опросе");
+		if ($voted) $REL_TPL->stderr($REL_LANG->say_by_key('error'),"Вы уже голосовали в этом опросе");
 
-		sql_query("INSERT INTO polls_votes (sid,user,pid) VALUES ($voteid,".$CURUSER['id'].",$pid)");
+		$REL_DB->query("INSERT INTO polls_votes (sid,user,pid) VALUES ($voteid,".$CURUSER['id'].",$pid)");
 
 		$REL_CACHE->clearGroupCache("block-polls");
 		safe_redirect($REL_SEO->make_link('polloverview','id',$pid));
 
 	}
 
-	if (!is_valid_id($pid)) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+	if (!is_valid_id($pid)) 			$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 
 	$id = $pid;
-	$poll = sql_query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class,users.warned,users.donor, users.enabled FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
+	$poll = $REL_DB->query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class,users.warned,users.donor, users.enabled FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
 	$pquestion = array();
 	$pstart = array();
 	$pexp = array();
@@ -82,7 +82,7 @@ if (!pagercheck()) {
 	}
 	$pstart = @array_unique($pstart);
 	$pstart = $pstart[0];
-	if (!$pstart) stderr($REL_LANG->say_by_key('error'), "Такого опроса не существует");
+	if (!$pstart) $REL_TPL->stderr($REL_LANG->say_by_key('error'), "Такого опроса не существует");
 	$pexp = @array_unique($pexp);
 	$pexp = $pexp[0];
 	$pquestion = @array_unique($pquestion);
@@ -191,7 +191,7 @@ $REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Poll'));
 $FORM_TYPE = 'poll';
 $REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 $REL_TPL->display('commenttable_form.tpl');
-$subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = ".$pid." AND type='poll'");
+$subres = $REL_DB->query("SELECT SUM(1) FROM comments WHERE toid = ".$pid." AND type='poll'");
 $subrow = mysql_fetch_array($subres);
 $count = $subrow[0];
 
@@ -209,9 +209,9 @@ if (!$count) {
 else {
 	
 	$limit = ajaxpager(25, $count, array('polloverview','id',$pid), 'comments-table > tbody:last');
-	$subres = sql_query("SELECT pc.type, pc.id, pc.ip, pc.ratingsum, pc.text, pc.user, pc.added, pc.editedby, pc.editedat, u.avatar, u.warned, ".
+	$subres = $REL_DB->query("SELECT pc.type, pc.id, pc.ip, pc.ratingsum, pc.text, pc.user, pc.added, pc.editedby, pc.editedat, u.avatar, u.warned, ".
                   "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS pc LEFT JOIN users AS u ON pc.user = u.id LEFT JOIN sessions ON pc.user=sessions.uid LEFT JOIN users AS e ON pc.editedby = e.id WHERE pc.toid = " .
-                  "".$id." AND pc.type='poll' GROUP BY pc.id ORDER BY pc.id DESC $limit") or sqlerr(__FILE__, __LINE__);
+                  "".$id." AND pc.type='poll' GROUP BY pc.id ORDER BY pc.id DESC $limit");
 	$allrows = prepare_for_commenttable($subres,$pquestion,$REL_SEO->make_link('polloverview','id',$pid));
 	if (!pagercheck()) {
 		print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >");

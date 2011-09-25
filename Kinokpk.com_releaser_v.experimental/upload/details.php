@@ -14,10 +14,10 @@ INIT();
 
 
 if (! is_valid_id ( $_GET ['id'] ))
-stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
+$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 $id = ( int ) $_GET ["id"];
 
-$res = sql_query ("SELECT torrents.category, torrents.free, torrents.ratingsum, torrents.descr, torrents.seeders, torrents.leechers, torrents.banned, torrents.info_hash, torrents.tiger_hash, torrents.filename, torrents.last_action AS lastseed, torrents.name, torrents.owner, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.id, torrents.ismulti, torrents.numfiles, torrents.images, torrents.online, torrents.moderatedby, torrents.freefor, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, users.username, users.ratingsum AS userrating, users.class, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed FROM torrents LEFT JOIN users ON torrents.owner = users.id LEFT JOIN relgroups ON torrents.relgroup=relgroups.id WHERE torrents.id = $id" ) or sqlerr ( __FILE__, __LINE__ );
+$res = $REL_DB->query ("SELECT torrents.category, torrents.free, torrents.ratingsum, torrents.descr, torrents.seeders, torrents.leechers, torrents.banned, torrents.info_hash, torrents.tiger_hash, torrents.filename, torrents.last_action AS lastseed, torrents.name, torrents.owner, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.id, torrents.ismulti, torrents.numfiles, torrents.images, torrents.online, torrents.moderatedby, torrents.freefor, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, users.username, users.ratingsum AS userrating, users.class, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed FROM torrents LEFT JOIN users ON torrents.owner = users.id LEFT JOIN relgroups ON torrents.relgroup=relgroups.id WHERE torrents.id = $id" );
 $row = mysql_fetch_array ( $res );
 $owned = $moderator = 0;
 if (get_privilege('edit_releases',false))
@@ -26,12 +26,12 @@ elseif ($CURUSER ["id"] == $row ["owner"])
 $owned = 1;
 
 if (! $row || ($row ["banned"] && ! $moderator))
-stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_torrent_with_such_id') );
+$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_torrent_with_such_id') );
 else {
 	if (!pagercheck()) {
 		if ($row['rgid']) $rgcontent = "<a href=\"".$REL_SEO->make_link('relgroups','id',$row['rgid'],'name',translit($row['rgname']))."\">".($row['rgimage']?"<img style=\"border:none;\" title=\"Релиз группы {$row['rgname']}\" src=\"{$row['rgimage']}\"/>":'Релиз группы '.$row['rgname'])."</a>&nbsp;";
 
-		if ((!get_privilege('access_to_private_relgroups',false)) && !$row['relgroup_allowed'] && $row['rgid']) stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('private_release_access_denied'),$rgcontent));
+		if ((!get_privilege('access_to_private_relgroups',false)) && !$row['relgroup_allowed'] && $row['rgid']) $REL_TPL->stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('private_release_access_denied'),$rgcontent));
 
 		$REL_TPL->stdhead( $row ["name"]." - {$REL_LANG->say_by_key('torrent_details')}" );
 
@@ -155,7 +155,7 @@ else {
 
 				$s = "<table class=main border=\"1\" cellspacing=0 cellpadding=\"5\">\n";
 
-				$subres = sql_query("SELECT * FROM files WHERE torrent = $id ORDER BY id");
+				$subres = $REL_DB->query("SELECT * FROM files WHERE torrent = $id ORDER BY id");
 				$s.="<tr><td class=colhead>".$REL_LANG->say_by_key('path')."</td><td class=colhead align=right>".$REL_LANG->say_by_key('size')."</td></tr>\n";
 				while ($subrow = mysql_fetch_array($subres)) {
 					$s .= "<tr><td>" .$subrow["filename"] .
@@ -220,7 +220,7 @@ return no_ajax;
 	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 	$REL_TPL->display('commenttable_form.tpl');
 	
-	$subres = sql_query ( "SELECT SUM(1) FROM comments WHERE toid = $id AND type='rel'" );
+	$subres = $REL_DB->query ( "SELECT SUM(1) FROM comments WHERE toid = $id AND type='rel'" );
 	$subrow = mysql_fetch_array ( $subres );
 	$count = $subrow [0];
 
@@ -236,7 +236,7 @@ return no_ajax;
 
 	} else {
 		$limit = ajaxpager(25, $count, array('details','id',$id,'name',translit($row['name'])), 'comments-table > tbody:last');
-		$subres = sql_query ( "SELECT c.id, c.type, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = " . "$id AND c.type='rel' GROUP BY c.id ORDER BY c.id DESC $limit" ) or sqlerr ( __FILE__, __LINE__ );
+		$subres = $REL_DB->query ( "SELECT c.id, c.type, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = " . "$id AND c.type='rel' GROUP BY c.id ORDER BY c.id DESC $limit" );
 		$allrows = prepare_for_commenttable($subres,$row['name'],$REL_SEO->make_link('details','id',$id,'name',translit($row['name'])));
 
 		if (!pagercheck()) {
@@ -258,7 +258,7 @@ return no_ajax;
 		}
 	}
 
-	sql_query ( "UPDATE torrents SET views = views + 1 WHERE id = $id" );
+	$REL_DB->query ( "UPDATE torrents SET views = views + 1 WHERE id = $id" );
 	set_visited('torrents',$id);
 	$REL_TPL->stdfoot();
 }

@@ -1,6 +1,6 @@
 <?php
 
-global $REL_CACHE, $REL_SEO, $REL_LANG;
+global  $REL_CACHE, $REL_SEO, $REL_LANG, $REL_DB;
 
 if (!defined('BLOCK_FILE')) {
 	safe_redirect($REL_SEO->make_link('index'));
@@ -16,7 +16,7 @@ $reqarray = $REL_CACHE->get('block-req', 'query');
 if ($reqarray===false) {
 
 	$reqarray = array();
-	$req=sql_query("SELECT requests.* FROM requests INNER JOIN categories ON requests.cat = categories.id WHERE requests.filled = '' ORDER BY added DESC LIMIT 3");
+	$req=$REL_DB->query("SELECT requests.* FROM requests INNER JOIN categories ON requests.cat = categories.id WHERE requests.filled = '' ORDER BY added DESC LIMIT 3");
 
 	while ($reqres = @mysql_fetch_array($req))
 	$reqarray[]=$reqres;

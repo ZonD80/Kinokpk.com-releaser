@@ -14,8 +14,8 @@ require_once(ROOT_PATH."include/benc.php");
 ini_set("upload_max_filesize",$REL_CONFIG['max_torrent_size']);
 
 function bark($msg) {
-	global $REL_LANG;
-	stderr($REL_LANG->say_by_key('error'), $msg." <a href=\"javascript:history.go(-1);\">{$REL_LANG->say_by_key('ago')}</a>");
+	global  $REL_LANG, $REL_DB;
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $msg." <a href=\"javascript:history.go(-1);\">{$REL_LANG->say_by_key('ago')}</a>");
 }
 
 INIT();
@@ -60,7 +60,7 @@ if ($_POST['nofile']) {} else {
 	bark("Неверное имя файла (не .torrent).");
 	$shortfname = $torrent = $matches[1];
 	$tiger_hash = trim((string)$_POST['tiger_hash']);
-	if ((!preg_match("/[^a-zA-Z0-9]/",$tiger_hash) || (mb_strlen($tiger_hash)<>38)) && $tiger_hash) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_tiger_hash'));
+	if ((!preg_match("/[^a-zA-Z0-9]/",$tiger_hash) || (mb_strlen($tiger_hash)<>38)) && $tiger_hash) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_tiger_hash'));
 }
 
 if ($_POST['multi']) $multi=1; else $multi=0;
@@ -112,7 +112,7 @@ if ($_POST['nofile']) {} else {
 
 	} else $anarray = get_announce_urls($dict);
 
-	if ($multi && !$anarray) stderr($REL_LANG->say_by_key('error'),'Этот торрент-файл не является мультитрекерным. <a href="javascript:history.go(-1);">Назад</a>');
+	if ($multi && !$anarray) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Этот торрент-файл не является мультитрекерным. <a href="javascript:history.go(-1);">Назад</a>');
 
 	$dict=bdec(benc($dict)); // double up on the becoding solves the occassional misgenerated infohash
 
@@ -153,7 +153,7 @@ if ($_POST['nofile']) {} else {
 			$filelist[] = array($ffe, $ll);
 			/*	if ($ffe == 'Thumbs.db')
 			 {
-			 stderr("Ошибка", "В торрентах запрещено держать файлы Thumbs.db!");
+			 $REL_TPL->stderr("Ошибка", "В торрентах запрещено держать файлы Thumbs.db!");
 			 die;
 			 }*/
 		}
@@ -196,10 +196,10 @@ for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
 
 	if (!empty($_POST['img'.$x])) {
 		$img=trim(htmlspecialchars((string)$_POST['img'.$x]));
-		if (strpos($img,',') || strpos($img,'?')) stderr($REL_LANG->say_by_key('error'),'Динамические изображения запрещены');
+		if (strpos($img,',') || strpos($img,'?')) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Динамические изображения запрещены');
 
 		if (!preg_match('/^(.+)\.(gif|png|jpeg|jpg)$/si', $img))
-		stderr($REL_LANG->say_by_key('error'),'Загружаемая картинка '.($x+1).' - не картинка');
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'),'Загружаемая картинка '.($x+1).' - не картинка');
 
 		//$check = remote_fsize($img);
 		if ($image_upload[$x]) {
@@ -232,7 +232,7 @@ if ($image_upload[0]) $image = $REL_CONFIG['defaultbaseurl'].'/'.$image;
 // FORUMDESC will be used in email notifs
 if (!$image) $forumdesc = "<div align=\"center\"><img src=\"{$REL_CONFIG['defaultbaseurl']}/pic/noimage.gif\" border=\"0\" class=\"linked-image\" /></div><br />";
 if ($image) $forumdesc = "<div align=\"center\"><a href=\"$image\" target=\"_blank\"><img alt=\"Постер для релиза (кликните для просмотра полного изображения)\" src=\"$image\" border=\"0\" class=\"linked-image\" /></a></div><br />";
-$catssql= sql_query("SELECT name FROM categories WHERE id IN ($catsstr)");
+$catssql= $REL_DB->query("SELECT name FROM categories WHERE id IN ($catsstr)");
 while (list($catname) = mysql_fetch_array($catssql)) $forumcats[]=$catname;
 $forumcats = implode(', ',$forumcats);
 $forumdesc .= "<table width=\"100%\" border=\"1\"><tr><td valign=\"top\"><b>Тип (жанр):</b></td><td>".$forumcats."</td></tr><tr><td><b>Название:</b></td><td>" . sqlesc($torrent) ."</td></tr>";
@@ -245,7 +245,7 @@ if ($_POST['nofile']) {
 
 	$descr = (string) $_POST['descr'];
 
-	if (!$descr) stderr($REL_LANG->say_by_key('error'),'Вы не ввели описание');
+	if (!$descr) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Вы не ввели описание');
 
 	//////////////////////////////////////////////
 
@@ -253,9 +253,9 @@ if ($_POST['nofile']) {
 	$relgroup = (int)$_POST['relgroup'];
 
 	if ($relgroup) {
-		$relgroup = @mysql_result(sql_query("SELECT id FROM relgroups WHERE id=$relgroup"),0);
+		$relgroup = @mysql_result($REL_DB->query("SELECT id FROM relgroups WHERE id=$relgroup"),0);
 
-		if (!$relgroup) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroup'));
+		if (!$relgroup) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroup'));
 	}
 
 	/// get kinopoisk.ru trailer!
@@ -275,12 +275,12 @@ if ($_POST['nofile']) {
 
 		$totallen = (float)($nofilesize*1024*1024);
 
-		$ret = sql_query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, tiger_hash, name, descr, size, free, images, category, online, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby, moderated':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], 1, $sticky, $infohash, $tiger_hash, $torrent, $descr, $totallen, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('is_releaser',false))?', '.$CURUSER['id'].', 1':'').")");
+		$ret = $REL_DB->query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, tiger_hash, name, descr, size, free, images, category, online, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], 1, $sticky, $infohash, $tiger_hash, $torrent, $descr, $totallen, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('post_releases_approved',false))?', '.$CURUSER['id']:'').")");
 	} else {
 
 		$torrent = htmlspecialchars(str_replace("_", " ", $torrent));
 
-		$ret = sql_query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, name, descr, size, numfiles, ismulti, free, images, category, online, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby, moderated':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], 1, $sticky, $infohash, $torrent, $descr, $totallen, count($filelist), $type, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('is_releaser',false))?', '.$CURUSER['id'].', 1':'').")");
+		$ret = $REL_DB->query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, name, descr, size, numfiles, ismulti, free, images, category, online, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], 1, $sticky, $infohash, $torrent, $descr, $totallen, count($filelist), $type, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('post_releases_approved',false))?', '.$CURUSER['id']:'').")");
 	}
 	if (!$ret) {
 		if (mysql_errno() == 1062)
@@ -292,11 +292,11 @@ if ($_POST['nofile']) {
 	$REL_DB->query("INSERT INTO xbt_files (fid,info_hash) VALUES ($id,".sqlesc(pack('H*', $infohash)).")");
 
 	//insert localhost tracker
-	if (!$_POST['nofile']) sql_query("INSERT INTO trackers (torrent,tracker) VALUES ($id,'localhost')");
+	if (!$_POST['nofile']) $REL_DB->query("INSERT INTO trackers (torrent,tracker) VALUES ($id,'localhost')");
 
 	// Insert remote trackers //
 	if ($anarray) {
-		foreach ($anarray as $anurl) sql_query("INSERT INTO trackers (torrent,tracker) VALUES ($id,".sqlesc(strip_tags($anurl)).")");
+		foreach ($anarray as $anurl) $REL_DB->query("INSERT INTO trackers (torrent,tracker) VALUES ($id,".sqlesc(strip_tags($anurl)).")");
 	}
 	// trackers insert end
 
@@ -313,18 +313,18 @@ if ($_POST['nofile']) {
 
 	$REL_CACHE->clearGroupCache('block-indextorrents');
 
-	sql_query("INSERT INTO notifs (checkid, userid, type) VALUES ($id, $CURUSER[id], 'relcomments')") or sqlerr(__FILE__,__LINE__);
-	@sql_query("DELETE FROM files WHERE torrent = $id");
+	$REL_DB->query("INSERT INTO notifs (checkid, userid, type) VALUES ($id, $CURUSER[id], 'relcomments')");
+	@$REL_DB->query("DELETE FROM files WHERE torrent = $id");
 
 	if ($_POST['nofile']) {
 	} else   {
 		foreach ($filelist as $file) {
-			@sql_query("INSERT INTO files (torrent, filename, size) VALUES ($id, ".sqlesc($file[0]).",".$file[1].")");
+			@$REL_DB->query("INSERT INTO files (torrent, filename, size) VALUES ($id, ".sqlesc($file[0]).",".$file[1].")");
 		}
 	}
 	if ($_POST['nofile']) {} else {
 		$fp = @file_put_contents("torrents/$id.torrent", benc($dict['value']['info']));
-		if (!$fp) stderr($REL_LANG->say_by_key('error'),'Загрузка torrent файла не удалась');
+		if (!$fp) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Загрузка torrent файла не удалась');
 	}
 
 	write_log("Торрент номер $id ($torrent) был залит пользователем " . $CURUSER["username"],"torrent");
@@ -366,7 +366,7 @@ if (!get_privilege('post_releases_approved',false)) {
 
 
 $announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/".$REL_SEO->make_link('announce','passkey',$CURUSER['passkey']);
-$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
+$announce_sql = $REL_DB->query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
 while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
 
 $retrackers = get_retrackers();
@@ -381,6 +381,6 @@ else $msg = sprintf($REL_LANG->say_by_key('upload_notice_norating'),$id,$link);
 
 
 safe_redirect($REL_SEO->make_link('details','id',$id,'name',$torrent),3);
-stderr($REL_LANG->say_by_key('uploaded'),$msg.($anarray?"<img src=\"".$REL_SEO->make_link('remote_check','id',$id)."\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
+$REL_TPL->stderr($REL_LANG->say_by_key('uploaded'),$msg.($anarray?"<img src=\"".$REL_SEO->make_link('remote_check','id',$id)."\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
 
 ?>

@@ -20,10 +20,10 @@ httpauth();
 
 if(is_array($_POST["delmp"])) {
 	foreach ($_POST['delmp'] as $delid)
-	if (!is_valid_id($delid)) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+	if (!is_valid_id($delid)) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 	$do = "DELETE FROM messages WHERE id IN (".implode(", ", $_POST[delmp]).")";
-	$res=sql_query($do);
+	$res=$REL_DB->query($do);
 	safe_redirect($REL_SEO->make_link('spam'));
 } else {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('error'));

@@ -18,14 +18,14 @@ loggedinorreturn();
 if ($_GET[requestid])
 {
 	$requestid = (int) $_GET[requestid];
-	$res2 = sql_query("SELECT SUM(1) FROM addedrequests INNER JOIN users ON addedrequests.userid = users.id INNER JOIN requests ON addedrequests.requestid = requests.id WHERE addedrequests.requestid = ".sqlesc($requestid)." GROUP BY requests.id") or die(mysql_error());
+	$res2 = $REL_DB->query("SELECT SUM(1) FROM addedrequests INNER JOIN users ON addedrequests.userid = users.id INNER JOIN requests ON addedrequests.requestid = requests.id WHERE addedrequests.requestid = ".sqlesc($requestid)." GROUP BY requests.id") or die(mysql_error());
 	$row = mysql_fetch_array($res2);
 	$count = $row[0];
 	$perpage = 50;
 	$limit = pager($perpage, $count, array('votesview') );
-	$res = sql_query("SELECT users.id as userid,users.username, users.ratingsum, users.class, users.enabled, users.warned, users.donor requests.id as requestid, requests.request FROM addedrequests INNER JOIN users ON addedrequests.userid = users.id INNER JOIN requests ON addedrequests.requestid = requests.id WHERE addedrequests.requestid =$requestid $limit") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT users.id as userid,users.username, users.ratingsum, users.class, users.enabled, users.warned, users.donor requests.id as requestid, requests.request FROM addedrequests INNER JOIN users ON addedrequests.userid = users.id INNER JOIN requests ON addedrequests.requestid = requests.id WHERE addedrequests.requestid =$requestid $limit");
 	$REL_TPL->stdhead("Голосовавшие");
-	$res2 = sql_query("SELECT request FROM requests WHERE id=$requestid");
+	$res2 = $REL_DB->query("SELECT request FROM requests WHERE id=$requestid");
 	$arr2 = mysql_fetch_assoc($res2);
 
 	print("<h1>Голосовавшие для <a href=\"".$REL_SEO->make_link('requests','id',$requestid)."\"><b>$arr2[request]</b></a></h1>");

@@ -17,7 +17,7 @@ logoutcookie();
 unset($CURUSER);
 
 $REL_TPL->stdhead($REL_LANG->say_by_key('succ_logout'));
-stdmsg($REL_LANG->say_by_key('you_succ_logout'),"<a href=\"".$REL_CONFIG['defaultbaseurl']."\">".$REL_LANG->say_by_key('continue')."</a>");
+$REL_TPL->stdmsg($REL_LANG->say_by_key('you_succ_logout'),"<a href=\"".$REL_CONFIG['defaultbaseurl']."\">".$REL_LANG->say_by_key('continue')."</a>");
 $REL_TPL->stdfoot();
 
 ?>

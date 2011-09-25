@@ -19,10 +19,10 @@ require_once("include/benc.php");
 
 $id = (int) $_POST['id'];
 if (!$id) $id = (int) $_GET['id'];
-$res = sql_query("SELECT torrents.id, torrents.name, torrents.owner, torrents.info_hash, torrents.filename, torrents.images, torrents.modcomm, torrents.moderated, torrents.moderatedby, torrents.descr FROM torrents WHERE torrents.id = $id");
+$res = $REL_DB->query("SELECT torrents.id, torrents.name, torrents.owner, torrents.info_hash, torrents.filename, torrents.images, torrents.modcomm, torrents.moderated, torrents.moderatedby, torrents.descr FROM torrents WHERE torrents.id = $id");
 $row = mysql_fetch_array($res);
 if (!$row)
-stderr($REL_LANG->say_by_key("error"),$REL_LANG->say_by_key("invalid_id"));
+$REL_TPL->stderr($REL_LANG->say_by_key("error"),$REL_LANG->say_by_key("invalid_id"));
 
 
 if (isset($_GET['checkonly'])) {
@@ -37,14 +37,14 @@ if (isset($_GET['checkonly'])) {
 	$REL_CACHE->clearGroupCache('block-indextorrents');
 
 	if ($row['moderatedby']) {
-		sql_query("UPDATE torrents SET moderatedby=0 WHERE id=$id");
+		$REL_DB->query("UPDATE torrents SET moderatedby=0 WHERE id=$id");
 		die($REL_LANG->say_by_key('not_yet_checked').' <a onclick="return ajaxcheck();" href="'.$REL_SEO->make_link('takeedit','checkonly','','id',$id).'">'.$REL_LANG->say_by_key('check').'</a>'.$return);
 	}
 	else {
-		sql_query("UPDATE torrents SET moderatedby={$CURUSER['id']}, moderated=1 WHERE id=$id");
+		$REL_DB->query("UPDATE torrents SET moderatedby={$CURUSER['id']}, moderated=0 WHERE id=$id");
 		// send notifs
 		if (!$row['moderated']) {
-			sql_query("UPDATE users SET ratingsum = ratingsum + {$REL_CRON['rating_perrelease']} WHERE id={$row['owner']}");
+			$REL_DB->query("UPDATE users SET ratingsum = ratingsum + {$REL_CRON['rating_perrelease']} WHERE id={$row['owner']}");
 			$bfooter = <<<EOD
 Чтобы посмотреть релиз, перейдите по этой ссылке:
 
@@ -60,13 +60,13 @@ EOD;
 } elseif(isset($_POST['add_trackers'])) {
 	get_privilege('edit_releases');
 
-	if (!isset($_POST['trackers'])) stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Missing form data'));
+	if (!isset($_POST['trackers'])) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Missing form data'));
 	$POSTtrackers = explode("\n",trim((string)$_POST['trackers']));
-	if (!$POSTtrackers) stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Unable to get tracker list'));
+	if (!$POSTtrackers) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Unable to get tracker list'));
 
 	$POSTtrackers = array_map("trim",$POSTtrackers);
 	$POSTtrackers = array_map("makesafe",$POSTtrackers);
-	$res = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'") or sqlerr(__FILE__,__LINE__);
+	$res = $REL_DB->query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
 	$trackers = array();
 	while (list($tracker) = mysql_fetch_array($res)) $trackers[] = $tracker;
 	$trackers_to_delete = array_diff($trackers,$POSTtrackers);
@@ -77,7 +77,7 @@ EOD;
 	if ($trackers_to_delete)
 	foreach ($trackers_to_delete as $tracker) {
 		if ($tracker)
-		sql_query("DELETE FROM trackers WHERE tracker=".sqlesc($tracker)." AND torrent=$id") or sqlerr(__FILE__,__LINE__);
+		$REL_DB->query("DELETE FROM trackers WHERE tracker=".sqlesc($tracker)." AND torrent=$id");
 		$state[$tracker] = 'deleted';
 	}
 	if ($trackers_to_add)
@@ -86,8 +86,8 @@ EOD;
 			$peers = get_remote_peers($tracker, $row['info_hash']);
 			$reason[$tracker] = makesafe($peers['state']);
 			if ($peers['state']=='ok') {
-				sql_query("INSERT INTO trackers (tracker,torrent) VALUES (".sqlesc(strip_tags($tracker)).",$id)");// or sqlerr(__FILE__,__LINE__);
-				sql_query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", lastchecked=".time().", state=".sqlesc($peers['state']).", method='{$peers['method']}', remote_method='{$peers['remote_method']}', state=".sqlesc($peers['state'])." WHERE torrent=$id AND tracker=".sqlesc($tracker)) or sqlerr(__FILE__,__LINE__);
+				$REL_DB->query("INSERT INTO trackers (tracker,torrent) VALUES (".sqlesc(strip_tags($tracker)).",$id)");//;
+				$REL_DB->query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", lastchecked=".time().", state=".sqlesc($peers['state']).", method='{$peers['method']}', remote_method='{$peers['remote_method']}', state=".sqlesc($peers['state'])." WHERE torrent=$id AND tracker=".sqlesc($tracker));
 				$state[$tracker] = 'added';
 			} else $state[$tracker] = 'failed';
 		}
@@ -99,7 +99,7 @@ EOD;
 		print ("<tr><td>$tracker</td><td>{$REL_LANG->say_by_key('tracker_'.$status)}{$reason[$tracker]}</td></tr>");
 	}
 	print "</table>";
-	stdmsg($REL_LANG->say_by_key('success'),'<h1><a href="'.$REL_SEO->make_link('details','id', $row['id'] ,'name',translit($row['name'])).'">'.$REL_LANG->say_by_key('back_to_details').'</a>');
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('success'),'<h1><a href="'.$REL_SEO->make_link('details','id', $row['id'] ,'name',translit($row['name'])).'">'.$REL_LANG->say_by_key('back_to_details').'</a>');
 	$REL_TPL->stdfoot();
 	write_log(make_user_link()." отредактировал трекера торрента с ID <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\">$id</a>",'torrent');
 	die();
@@ -107,8 +107,8 @@ EOD;
 
 
 function bark($msg) {
-	global $REL_LANG;
-	stderr($REL_LANG->say_by_key('error'), $msg." <a href=\"javascript:history.go(-1);\">{$REL_LANG->say_by_key('ago')}</a>");
+	global  $REL_LANG, $REL_DB;
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $msg." <a href=\"javascript:history.go(-1);\">{$REL_LANG->say_by_key('ago')}</a>");
 }
 
 foreach(explode(":","type:name") as $v) {
@@ -134,7 +134,7 @@ if ($_POST['nofile']) {} else {
 	if (isset($_FILES["tfile"]) && !empty($_FILES["tfile"]["name"]))
 	$update_torrent = true;
 	$tiger_hash = trim((string)$_POST['tiger_hash']);
-	if ((!preg_match("/[^a-zA-Z0-9]/",$tiger_hash) || (mb_strlen($tiger_hash)<>38)) && $tiger_hash) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_tiger_hash'));
+	if ((!preg_match("/[^a-zA-Z0-9]/",$tiger_hash) || (mb_strlen($tiger_hash)<>38)) && $tiger_hash) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_tiger_hash'));
 	$updateset[] = "tiger_hash = ".sqlesc($tiger_hash);
 }
 
@@ -168,10 +168,10 @@ for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
 
 	if (!empty($_POST['img'.$x])) {
 		$img=trim(htmlspecialchars((string)$_POST['img'.$x]));
-		if (strpos($img,',') || strpos($img,'?')) stderr($REL_LANG->say_by_key('error'),'Динамические изображения запрещены');
+		if (strpos($img,',') || strpos($img,'?')) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Динамические изображения запрещены');
 
 		if (!preg_match('/^(.+)\.(gif|png|jpeg|jpg)$/si', $img))
-		stderr($REL_LANG->say_by_key('error'),'Загружаемая картинка '.($x+1).' - не картинка');
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'),'Загружаемая картинка '.($x+1).' - не картинка');
 
 		//$check = remote_fsize($img);
 		if ($image_upload[$x]) {
@@ -257,7 +257,7 @@ if ($update_torrent) {
 			$filelist[] = array($ffe, $ll);
 			if ($ffe == 'Thumbs.db')
 			{
-				stderr("Ошибка", "В торрентах запрещено держать файлы Thumbs.db!");
+				$REL_TPL->stderr("Ошибка", "В торрентах запрещено держать файлы Thumbs.db!");
 				die;
 			}
 		}
@@ -283,7 +283,7 @@ if ($update_torrent) {
 
 	} else $anarray = get_announce_urls($dict);
 
-	if ($multi && !$anarray) stderr($REL_LANG->say_by_key('error'),'Этот торрент-файл не является мультитрекерным. <a href="javascript:history.go(-1);">Назад</a>');
+	if ($multi && !$anarray) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Этот торрент-файл не является мультитрекерным. <a href="javascript:history.go(-1);">Назад</a>');
 
 	$dict=bdec(benc($dict)); // double up on the becoding solves the occassional misgenerated infohash
 
@@ -296,18 +296,18 @@ if ($update_torrent) {
 	$updateset[] = "info_hash = " . sqlesc($infohash);
 	$update_xbt_query = "UPDATE xbt_files SET info_hash=".sqlesc(pack('H*', $infohash))." WHERE fid=$id";
 	$updateset[] = "filename = " . sqlesc($fname);
-	sql_query("DELETE FROM files WHERE torrent = $id");
-	sql_query("DELETE FROM trackers WHERE torrent = ".$id);
+	$REL_DB->query("DELETE FROM files WHERE torrent = $id");
+	$REL_DB->query("DELETE FROM trackers WHERE torrent = ".$id);
 	// insert localhost tracker
-	if ($update_torrent) sql_query("INSERT INTO trackers (torrent,tracker) VALUES ($id,'localhost')");
+	if ($update_torrent) $REL_DB->query("INSERT INTO trackers (torrent,tracker) VALUES ($id,'localhost')");
 	// Insert remote trackers //
 	if ($anarray) {
-		foreach ($anarray as $anurl) sql_query("INSERT INTO trackers (torrent,tracker) VALUES ($id,".sqlesc(strip_tags($anurl)).")");
+		foreach ($anarray as $anurl) $REL_DB->query("INSERT INTO trackers (torrent,tracker) VALUES ($id,".sqlesc(strip_tags($anurl)).")");
 	}
 	// trackers insert end
 	$nf = count($filelist);
 
-	sql_query("INSERT INTO files (torrent, filename, size) VALUES ($id, ".sqlesc($dname).",".$totallen.")");
+	$REL_DB->query("INSERT INTO files (torrent, filename, size) VALUES ($id, ".sqlesc($dname).",".$totallen.")");
 	$updateset[] = "size = ".$totallen;
 	$updateset[] = "numfiles = ".$nf;
 	$updateset[] = "ismulti = ".$torrent_type;
@@ -327,14 +327,14 @@ $updateset[] = "category = " . sqlesc($catsstr);
 
 if ($_POST['nofile']) {
 
-	$wastor = sql_query("SELECT filename FROM torrents WHERE id =".$id);
+	$wastor = $REL_DB->query("SELECT filename FROM torrents WHERE id =".$id);
 	$wastor = mysql_result($wastor,0);
 
 	if ($wastor != 'nofile') {
-		sql_query("DELETE FROM files WHERE torrent = ".$id);
-		sql_query("DELETE FROM peers WHERE torrent = ".$id);
-		sql_query("DELETE FROM snatched WHERE torrent = ".$id);
-		sql_query("DELETE FROM trackers WHERE torrent = ".$id);
+		$REL_DB->query("DELETE FROM files WHERE torrent = ".$id);
+		$REL_DB->query("DELETE FROM peers WHERE torrent = ".$id);
+		$REL_DB->query("DELETE FROM snatched WHERE torrent = ".$id);
+		$REL_DB->query("DELETE FROM trackers WHERE torrent = ".$id);
 		$updateset[] = "filename = 'nofile'";
 
 		$ff = "torrents/" . $id.".torrent";
@@ -350,9 +350,9 @@ if ($_POST['nofile']) {
 $relgroup = (int)$_POST['relgroup'];
 
 if ($relgroup) {
-	$relgroup = @mysql_result(sql_query("SELECT id FROM relgroups WHERE id=$relgroup"),0);
+	$relgroup = @mysql_result($REL_DB->query("SELECT id FROM relgroups WHERE id=$relgroup"),0);
 
-	if (!$relgroup) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroup'));
+	if (!$relgroup) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroup'));
 
 }
 $updateset[] = "relgroup = $relgroup";
@@ -369,7 +369,7 @@ if(get_privilege('edit_releases',false)) {
 
 if ((get_privilege('edit_releases',false)) && isset($_POST['approve'])) {
 	if (!$row['moderated']) {
-		sql_query("UPDATE users SET ratingsum = ratingsum + {$REL_CRON['rating_perrelease']} WHERE id={$row['owner']}");
+		$REL_DB->query("UPDATE users SET ratingsum = ratingsum + {$REL_CRON['rating_perrelease']} WHERE id={$row['owner']}");
 	}
 	$updateset[] = "moderated = 1";
 	$updateset[] = "moderatedby = ".$CURUSER["id"];
@@ -399,8 +399,8 @@ if ($online) $updateset[] = 'online = '.sqlesc($online);
 
 if ($_POST['upd']) $updateset[] = "added = '" . time() . "'";
 
-sql_query("UPDATE torrents SET " . join(",", $updateset) . " WHERE id = $id");
-if (mysql_errno() == 1062) stderr($REL_LANG->say_by_key('error'),'Torrent already uploaded!'); elseif (mysql_errno()) sqlerr(__FILE__,__LINE__);
+$REL_DB->query("UPDATE torrents SET " . join(",", $updateset) . " WHERE id = $id");
+if (mysql_errno() == 1062) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Torrent already uploaded!');
 
 $REL_DB->query($update_xbt_query);
 
@@ -415,6 +415,6 @@ $returl .= "&returnto=" . strip_tags($_POST["returnto"]);
 
 safe_redirect($returl,1);
 
-stderr($REL_LANG->say_by_key('success'),"Релиз успешно обновлен, сейчас вы перейдете к его деталям".($anarray?"<img src=\"".$REL_SEO->make_link('remote_check','id',$id)."\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
+$REL_TPL->stderr($REL_LANG->say_by_key('success'),"Релиз успешно обновлен, сейчас вы перейдете к его деталям".($anarray?"<img src=\"".$REL_SEO->make_link('remote_check','id',$id)."\" width=\"0px\" height=\"0px\" border=\"0\"/>":''),'success');
 
 ?>

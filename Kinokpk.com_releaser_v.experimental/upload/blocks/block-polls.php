@@ -1,5 +1,5 @@
 <?php
-global $CURUSER, $REL_LANG, $REL_CACHE, $REL_SEO, $REL_CONFIG;
+global  $CURUSER, $REL_LANG, $REL_CACHE, $REL_SEO, $REL_CONFIG, $REL_DB;
 if (!defined('BLOCK_FILE')) {
 	safe_redirect($REL_SEO->make_link('index'));
 	exit;
@@ -11,7 +11,7 @@ if ($CURUSER) {
 	$id = $REL_CACHE->get('block-polls', 'id');
 
 	if ($id===false) {
-		$id = sql_query("SELECT id FROM polls ORDER BY id DESC LIMIT 1");
+		$id = $REL_DB->query("SELECT id FROM polls ORDER BY id DESC LIMIT 1");
 		$id = @mysql_result($id,0);
 		$REL_CACHE->set('block-polls', 'id', $id);
 
@@ -36,7 +36,7 @@ if ($CURUSER) {
 
 		$pollres = $REL_CACHE->get('block-polls', 'query');
 		if($pollres===false){
-			$poll = sql_query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class, users.donor, users.warned, users.enabled FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
+			$poll = $REL_DB->query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class, users.donor, users.warned, users.enabled FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
 
 			while ($pollarray = mysql_fetch_array($poll))
 			$pollres[] = $pollarray;

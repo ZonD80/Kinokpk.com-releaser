@@ -19,7 +19,7 @@ $action = trim((string)$_GET['a']);
 if ($action=='recountorrents') {
 	do {
 
-		$res = sql_query("SELECT id, filename FROM torrents") or sqlerr(__FILE__,__LINE__);
+		$res = $REL_DB->query("SELECT id, filename FROM torrents");
 		$ar = array();
 		while ($row = mysql_fetch_array($res)) {
 			$id = $row[0];
@@ -62,18 +62,18 @@ if ($action=='recountorrents') {
 		foreach ($delids as $did) deletetorrent($did);
 	} while (0);
 	safe_redirect($REL_SEO->make_link('recountadmin'),3);
-	stderr($REL_LANG->say_by_key('success'),sprintf($REL_LANG->say_by_key('torrent_recounted'),count($delids)),'success');
+	$REL_TPL->stderr($REL_LANG->say_by_key('success'),sprintf($REL_LANG->say_by_key('torrent_recounted'),count($delids)),'success');
 }
 elseif ($action=='recountcomments') {
 	$allowed_types = array(''=>'torrents','poll'=>'polls','news'=>'news','user'=>'users','req'=>'requests','rg'=>'relgroups','rgnews'=>'rgnews','forum'=>'forum_topics');
 	foreach ($allowed_types AS $ctype=>$table) {
-		sql_query("UPDATE $table SET comments = (SELECT SUM(1) FROM comments WHERE type='$ctype' AND toid=$table.id) WHERE $table.id=$table.id");
+		$REL_DB->query("UPDATE $table SET comments = (SELECT SUM(1) FROM comments WHERE type='$ctype' AND toid=$table.id) WHERE $table.id=$table.id");
 		$num_changed = mysql_affected_rows();
 		if ($num_changed) clear_comment_caches($ctype.'comments');
 		$to_msg .= $REL_LANG->_("Difference in %s was %s<br/>",$REL_LANG->_($ctype.'comments'),$num_changed);
 	}
 	safe_redirect($REL_SEO->make_link('recountadmin'),3);
-	stderr($REL_LANG->_("Successfull"),$to_msg,'success');
+	$REL_TPL->stderr($REL_LANG->_("Successfull"),$to_msg,'success');
 }
 
 $REL_TPL->stdhead($REL_LANG->_('Recounter'));

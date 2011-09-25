@@ -30,19 +30,6 @@ unset($db);
 require_once(ROOT_PATH."include/benc.php");
 
 /**
- * Generates SQL error message sending notification to site log
- * @param string $file File where error begins __FILE__
- * @param string $line Line where error begins __LINE__
- * @return void
- */
-function sqlerr($file = '', $line = '') {
-	$err = mysql_error();
-	$text = ("SQL error, mysql server said: " . $err . ($file != '' && $line != '' ? " file: $file, line: $line" : ""));
-	write_log("Remote_check SQL ERROR: $text",'sql_errors');
-	return;
-}
-
-/**
  * Writes event to sitelog
  * @param stirng $text Message to be writed to log
  * @param string $type Type of log record, default 'tracker'
@@ -52,7 +39,7 @@ function write_log($text, $type = "tracker") {
 	$type = mysql_real_escape_string($type);
 	$text =  mysql_real_escape_string($text);
 	$added = time();
-	$REL_DB->query("INSERT INTO sitelog (added, txt, type) VALUES($added, '$text', '$type')") or sqlerr(__FILE__,__LINE__);
+	$REL_DB->query("INSERT INTO sitelog (added, txt, type) VALUES($added, '$text', '$type')");
 	return;
 }
 
@@ -90,16 +77,16 @@ if (!$id) $id=(int)$_POST['id'];
 if ($id)  {
 
 	
-	$anarray = $REL_DB->query("SELECT torrents.info_hash, trackers.tracker FROM trackers LEFT JOIN torrents ON torrents.id=trackers.torrent WHERE trackers.torrent=$id AND trackers.tracker<>'localhost'") or sqlerr(__FILE__,__LINE__);
+	$anarray = $REL_DB->query("SELECT torrents.info_hash, trackers.tracker FROM trackers LEFT JOIN torrents ON torrents.id=trackers.torrent WHERE trackers.torrent=$id AND trackers.tracker<>'localhost'");
 
 	while (list($infohash,$url) = mysql_fetch_array($anarray)) {
 		$peers = get_remote_peers($url, $infohash);
-		$REL_DB->query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", check_start=".time().", lastchecked=".time().", method='{$peers['method']}', remote_method='{$peers['remote_method']}', state=".$REL_DB->sqlesc($peers['state'])." WHERE torrent=$id AND tracker=".$REL_DB->sqlesc($url)) or sqlerr(__FILE__,__LINE__);
+		$REL_DB->query("UPDATE LOW_PRIORITY trackers SET seeders=".(int)$peers['seeders'].", leechers=".(int)$peers['leechers'].", check_start=".time().", lastchecked=".time().", method='{$peers['method']}', remote_method='{$peers['remote_method']}', state=".$REL_DB->sqlesc($peers['state'])." WHERE torrent=$id AND tracker=".$REL_DB->sqlesc($url));
 	}
 	die(base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="));
 }
 
-$cronrow = $REL_DB->query("SELECT * FROM cron WHERE cron_name IN ('remotecheck_disabled','remotepeers_cleantime','in_remotecheck','remote_trackers','remote_trackers_delete')") or sqlerr(__FILE__,__LINE__);
+$cronrow = $REL_DB->query("SELECT * FROM cron WHERE cron_name IN ('remotecheck_disabled','remotepeers_cleantime','in_remotecheck','remote_trackers','remote_trackers_delete')");
 while ($cronres = mysql_fetch_array($cronrow)) $REL_CRON[$cronres['cron_name']] = $cronres['cron_value'];
 
 if (!$REL_CRON['remotecheck_disabled']) {
@@ -113,19 +100,19 @@ if (!$REL_CRON['remotecheck_disabled']) {
 	$REL_CRON['remote_lastchecked'] = (int)$REL_CRON['remote_lastchecked'];
 	$REL_CRON['remote_trackers'] = (int)$REL_CRON['remote_trackers'];
 
-	$REL_DB->query("UPDATE cron SET cron_value=1 WHERE cron_name='in_remotecheck'") or sqlerr(__FILE__,__LINE__);
-	$REL_DB->query("UPDATE cron SET cron_value=".$time." WHERE cron_name='last_remotecheck'") or sqlerr(__FILE__,__LINE__);
-	$REL_DB->query("UPDATE cron SET cron_value=cron_value+1 WHERE cron_name='num_checked'") or sqlerr(__FILE__,__LINE__);
+	$REL_DB->query("UPDATE cron SET cron_value=1 WHERE cron_name='in_remotecheck'");
+	$REL_DB->query("UPDATE cron SET cron_value=".$time." WHERE cron_name='last_remotecheck'");
+	$REL_DB->query("UPDATE cron SET cron_value=cron_value+1 WHERE cron_name='num_checked'");
 	// delete stuck trackers
-	$REL_DB->query("UPDATE trackers SET state='' WHERE check_start<".($time-$REL_CRON['remotepeers_cleantime']-($REL_CRON['remote_trackers']*3))." AND state = 'in_check'") or sqlerr(__FILE__,__LINE__);
+	$REL_DB->query("UPDATE trackers SET state='' WHERE check_start<".($time-$REL_CRON['remotepeers_cleantime']-($REL_CRON['remote_trackers']*3))." AND state = 'in_check'");
 
-	$res = $REL_DB->query("SELECT torrent FROM trackers WHERE ".($REL_CRON['remotepeers_cleantime']?"trackers.lastchecked<".($time-$REL_CRON['remotepeers_cleantime'])." AND ":'')."trackers.tracker<>'localhost' AND trackers.state<>'in_check' ORDER BY trackers.lastchecked ASC".($REL_CRON['remote_trackers']?" LIMIT {$REL_CRON['remote_trackers']}":'')) or sqlerr(__FILE__,__LINE__);
+	$res = $REL_DB->query("SELECT torrent FROM trackers WHERE ".($REL_CRON['remotepeers_cleantime']?"trackers.lastchecked<".($time-$REL_CRON['remotepeers_cleantime'])." AND ":'')."trackers.tracker<>'localhost' AND trackers.state<>'in_check' ORDER BY trackers.lastchecked ASC".($REL_CRON['remote_trackers']?" LIMIT {$REL_CRON['remote_trackers']}":''));
 
 	while (list($id)=mysql_fetch_array($res)) {
 		exec_script("{$REL_CONFIG['defaultbaseurl']}/remote_check.php",array('id'=>$id));
 	}
 
-	$REL_DB->query("UPDATE cron SET cron_value=0 WHERE cron_name='in_remotecheck'") or sqlerr(__FILE__,__LINE__);
+	$REL_DB->query("UPDATE cron SET cron_value=0 WHERE cron_name='in_remotecheck'");
 }
 print base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
 

@@ -20,11 +20,11 @@ if (!$mode) $mode = trim((string)$_POST['mode']);
 if ($mode=='wm') {
 	if (isset($_GET['okay'])) {
 		safe_redirect($REL_SEO->make_link('myrating'),1);
-		stderr($REL_LANG->say_by_key('success'),"Платеж успешно завершен",'success');
+		$REL_TPL->stderr($REL_LANG->say_by_key('success'),"Платеж успешно завершен",'success');
 	}
 	if (isset($_GET['failed'])) {
 		safe_redirect($REL_SEO->make_link('donate'),3);
-		stderr($REL_LANG->say_by_key('failed'),'При проведении платежа возникли ошибки. <a href="'.$REL_SEO->make_link('donate').'">Попробуйте еще раз</a>.');
+		$REL_TPL->stderr($REL_LANG->say_by_key('failed'),'При проведении платежа возникли ошибки. <a href="'.$REL_SEO->make_link('donate').'">Попробуйте еще раз</a>.');
 	}
 
 	if (isset($_GET['process']))
@@ -41,11 +41,11 @@ if ($mode=='wm') {
 	}
 	else {
 		if ($discount) {
-			sql_query("UPDATE users SET discount=discount+$discount, modcomment=CONCAT(".sqlesc(date("Y-m-d") . "Купил $discount откупа\n").",modcomment) WHERE id=".(int)$_POST['id']);
+			$REL_DB->query("UPDATE users SET discount=discount+$discount, modcomment=CONCAT(".sqlesc(date("Y-m-d") . "Купил $discount откупа\n").",modcomment) WHERE id=".(int)$_POST['id']);
 
 		} else {
-			sql_query("UPDATE users SET class=".$classes['vip'].", modcomment=CONCAT(".sqlesc(date("Y-m-d") . "Купил VIP\n").",modcomment) WHERE class<".$classes['vip']." AND id=".(int)$_POST['id']);
-			sql_query("UPDATE users SET dis_reason='', enabled=1 WHERE id = ".(int)$_POST['id']);
+			$REL_DB->query("UPDATE users SET class=".$classes['vip'].", modcomment=CONCAT(".sqlesc(date("Y-m-d") . "Купил VIP\n").",modcomment) WHERE class<".$classes['vip']." AND id=".(int)$_POST['id']);
+			$REL_DB->query("UPDATE users SET dis_reason='', enabled=1 WHERE id = ".(int)$_POST['id']);
 
 		}
 		die('YES');
@@ -238,7 +238,7 @@ Merchant в автоматическом режиме<br />
 	$REL_TPL->stdfoot();
 	die();
 }
-elseif (($amount<>1) && ($amount<>3) && ($amount<>10)) stderr($REL_LANG->say_by_key('error'),'Неверная сумма пожертвования');
+elseif (($amount<>1) && ($amount<>3) && ($amount<>10)) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Неверная сумма пожертвования');
 // поддерживаются: cp1251, koi, utf8
 $encoding = 'cp1251';
 // привязать sms ключ к URL
@@ -288,15 +288,15 @@ if (!$result_code) {
 
 
 if ($discount) {
-	sql_query("UPDATE users SET discount=discount+$discount, modcomment=".sqlesc(date("Y-m-d") . "Купил $discount откупа\n").$CURUSER['modcomment']." WHERE id={$CURUSER['id']}");
+	$REL_DB->query("UPDATE users SET discount=discount+$discount, modcomment=".sqlesc(date("Y-m-d") . "Купил $discount откупа\n").$CURUSER['modcomment']." WHERE id={$CURUSER['id']}");
 
 	safe_redirect($REL_SEO->make_link('myrating'),1);
-	stderr($REL_LANG->say_by_key('success'),'Спасибо, вам успешно прибавлено '.$discount.' единиц откупа, сейчас вы перейдете к странице "Мой рейтинг"','success');
+	$REL_TPL->stderr($REL_LANG->say_by_key('success'),'Спасибо, вам успешно прибавлено '.$discount.' единиц откупа, сейчас вы перейдете к странице "Мой рейтинг"','success');
 } else {
-	sql_query("UPDATE users SET class=".$classes['vip'].", modcomment=".sqlesc(date("Y-m-d") . "Купил VIP\n").$CURUSER['modcomment']." WHERE class<".$classes['vip']." AND id={$CURUSER['id']}");
-	if ($CURUSER['dis_reason'] == 'Your rating was too low.') sql_query("UPDATE users SET dis_reason='', enabled=1 WHERE id = {$CURUSER['id']}");
+	$REL_DB->query("UPDATE users SET class=".$classes['vip'].", modcomment=".sqlesc(date("Y-m-d") . "Купил VIP\n").$CURUSER['modcomment']." WHERE class<".$classes['vip']." AND id={$CURUSER['id']}");
+	if ($CURUSER['dis_reason'] == 'Your rating was too low.') $REL_DB->query("UPDATE users SET dis_reason='', enabled=1 WHERE id = {$CURUSER['id']}");
 
 	safe_redirect($REL_SEO->make_link('myrating'),1);
-	stderr($REL_LANG->say_by_key('success'),'Спасибо, вам успешно установен VIP статус, сейчас вы перейдете к странице "Мой рейтинг"','success');
+	$REL_TPL->stderr($REL_LANG->say_by_key('success'),'Спасибо, вам успешно установен VIP статус, сейчас вы перейдете к странице "Мой рейтинг"','success');
 }
 ?>

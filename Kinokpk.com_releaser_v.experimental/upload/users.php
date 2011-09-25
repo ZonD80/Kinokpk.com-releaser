@@ -52,7 +52,7 @@ if ((get_privilege('is_moderator',false)) && $_GET['act']) {
 		echo "<tr><td class=colhead align=left>Пользователь</td><td class=colhead>Рейтинг</td><td class=colhead>IP</td><td class=colhead>Зарегистрирован</td><td class=colhead>Последний раз был на трекере</td>"/*<td class=colhead>Скачанно</td><td class=colhead>Раздает</td>*/."</tr>";
 
 
-		$result = sql_query ("SELECT users.id,users.username,users.class,users.ratingsum,users.added,users.last_access,users.ip,users.warned,users.enabled,users.donor"/*, (SELECT SUM(1) FROM peers WHERE seeder=1 AND userid=users.id) AS seeding, (SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE snatched.finished=1 AND torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid=users.id AND snatched.userid<>torrents.owner) AS downloaded*/." FROM users WHERE ratingsum<0 AND enabled = 1 ORDER BY ratingsum DESC");
+		$result = $REL_DB->query ("SELECT users.id,users.username,users.class,users.ratingsum,users.added,users.last_access,users.ip,users.warned,users.enabled,users.donor"/*, (SELECT SUM(1) FROM peers WHERE seeder=1 AND userid=users.id) AS seeding, (SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE snatched.finished=1 AND torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid=users.id AND snatched.userid<>torrents.owner) AS downloaded*/." FROM users WHERE ratingsum<0 AND enabled = 1 ORDER BY ratingsum DESC");
 		while ($row = mysql_fetch_array($result)) {
 			$records = true;
 			$ratio = ratearea($row['ratingsum'],$row['id'],'users', $CURUSER['id']);
@@ -60,7 +60,7 @@ if ((get_privilege('is_moderator',false)) && $_GET['act']) {
 
 
 		}
-		if (!$records) stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error');
+		if (!$records) $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error');
 
 		echo "</table>";
 		$REL_TPL->end_frame(); }
@@ -71,7 +71,7 @@ if ((get_privilege('is_moderator',false)) && $_GET['act']) {
 			echo '<table width="100%" border="0" align="center" cellpadding="2" cellspacing="0">';
 			echo "<tr><td class=colhead align=left>Пользователь</td><td class=colhead>Рейтинг</td><td class=colhead>IP</td><td class=colhead>Зарегистрирован</td><td class=colhead>Последний&nbsp;раз&nbsp;был&nbsp;на&nbsp;трекере</td></tr>";
 
-			$result = sql_query ("SELECT * FROM users WHERE enabled = 1 AND confirmed=1 ORDER BY added DESC LIMIT 100");
+			$result = $REL_DB->query ("SELECT * FROM users WHERE enabled = 1 AND confirmed=1 ORDER BY added DESC LIMIT 100");
 			while($row = mysql_fetch_array($result)) {
 				$records = true;
 				$ratio = ratearea($row['ratingsum'],$row['id'],'users', $CURUSER['id']);
@@ -79,7 +79,7 @@ if ((get_privilege('is_moderator',false)) && $_GET['act']) {
 
 
 			}
-			if (!$records) stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error');
+			if (!$records) $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error');
 			echo "</table>";
 			$REL_TPL->end_frame(); }
 
@@ -88,7 +88,7 @@ if ((get_privilege('is_moderator',false)) && $_GET['act']) {
 
 				echo '<table width="100%" border="0" align="center" cellpadding="2" cellspacing="0">';
 				echo "<tr><td class=colhead align=left>Пользователь</td><td class=colhead>Рейтинг</td><td class=colhead>IP</td><td class=colhead>Зарегистрирован</td><td class=colhead>Последний раз был</td></tr>";
-				$result = sql_query ("SELECT * FROM users WHERE enabled = 0 ORDER BY last_access DESC ");
+				$result = $REL_DB->query ("SELECT * FROM users WHERE enabled = 0 ORDER BY last_access DESC ");
 				if ($row = mysql_fetch_array($result)) {
 					do {
 						$ratio = ratearea($row['ratingsum'],$row['id'],'users', $CURUSER['id']);
@@ -113,15 +113,15 @@ elseif (!isset($_GET['act'])) {
 		print("</form>\n");
 		print("</div>\n");
 	}
-	$res = sql_query("SELECT SUM(1) FROM users$query") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT SUM(1) FROM users$query");
 	$count = mysql_result($res,0);
-	if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!$count) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); $REL_TPL->stdfoot(); die(); }
 
 	$limit = ajaxpager(25, $count, array('users'), 'userst > tbody:last');
 
 
 
-	$res = sql_query("SELECT u.*, c.name, c.flagpic FROM users AS u LEFT JOIN countries AS c ON c.id = u.country$query ORDER BY id DESC $limit") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT u.*, c.name, c.flagpic FROM users AS u LEFT JOIN countries AS c ON c.id = u.country$query ORDER BY id DESC $limit");
 	$num = mysql_num_rows($res);
 
 	if (!pagercheck()) {

@@ -17,7 +17,7 @@ INIT();
 loggedinorreturn();
 get_privilege('upload_releases');
 
-//stderr('Загрузка релизов временно отключена','Загрузка новых релизов временно отключена администрацией');
+//$REL_TPL->stderr('Загрузка релизов временно отключена','Загрузка новых релизов временно отключена администрацией');
 $REL_TPL->stdhead($REL_LANG->say_by_key('upload_torrent'));
 $tree = make_tree();
 
@@ -37,13 +37,13 @@ if (!isset($_GET['type'])) {
 	die();
 }
 
-elseif (!is_valid_id($_GET["type"])) {			stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id')); $REL_TPL->stdfoot();   exit;}
+elseif (!is_valid_id($_GET["type"])) {			$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id')); $REL_TPL->stdfoot();   exit;}
 
 $type = (int) $_GET['type'];
 
 
 $cat = get_cur_branch($tree,$type);
-if (!$cat) {			stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id')); $REL_TPL->stdfoot();   exit;}
+if (!$cat) {			$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id')); $REL_TPL->stdfoot();   exit;}
 
 
 if (mb_strlen($CURUSER['passkey']) != 32) {
@@ -92,7 +92,7 @@ function checkname() {
 	tr($REL_LANG->say_by_key('description').'<br/>'.$REL_LANG->say_by_key('description_notice'),textbbcode("descr"),1);
 
 	/// RELEASE group
-	$rgarrayres = sql_query("SELECT id,name FROM relgroups ORDER BY added DESC");
+	$rgarrayres = $REL_DB->query("SELECT id,name FROM relgroups ORDER BY added DESC");
 	while($rgarrayrow = mysql_fetch_assoc($rgarrayres)) {
 		$rgarray[$rgarrayrow['id']] = $rgarrayrow['name'];
 	}

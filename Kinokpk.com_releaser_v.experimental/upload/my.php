@@ -51,7 +51,7 @@ print("<h1>".$REL_LANG->say_by_key('my_mail_updated')."</h1>\n");
 <div id="my_table_1"><?php
 
 
-$ss_r = sql_query("SELECT * FROM stylesheets ORDER by id ASC") or die;
+$ss_r = $REL_DB->query("SELECT * FROM stylesheets ORDER by id ASC") or die;
 $ss_sa = array();
 while ($ss_a = mysql_fetch_array($ss_r)) {
 	$ss_id = $ss_a["id"];
@@ -65,7 +65,7 @@ while (list($ss_name, $ss_id) = each($ss_sa)) {
 }
 
 $countries = "<option value=0>---- ".$REL_LANG->say_by_key('my_unset')." ----</option>\n";
-$ct_r = sql_query("SELECT id,name FROM countries ORDER BY name") or die;
+$ct_r = $REL_DB->query("SELECT id,name FROM countries ORDER BY name") or die;
 while ($ct_a = mysql_fetch_array($ct_r))
 $countries .= "<option value=$ct_a[id]" . ($CURUSER["country"] == $ct_a['id'] ? " selected" : "") . ">$ct_a[name]</option>\n";
 

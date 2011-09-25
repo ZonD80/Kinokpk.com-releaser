@@ -22,7 +22,7 @@ if (substr($mask,0,1) == "/")
 	$n = substr($mask, 1, mb_strlen($mask) - 1);
 	if (!is_numeric($n) or $n < 0 or $n > 32)
 	{
-		stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_subnet'));
+		$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_subnet'));
 		$REL_TPL->stdfoot();
 		die();
 	}
@@ -31,11 +31,11 @@ if (substr($mask,0,1) == "/")
 }
 elseif (!preg_match($regex, $mask))
 {
-	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_subnet'));
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_subnet'));
 	$REL_TPL->stdfoot();
 	die();
 }
-$res = sql_query("SELECT id, username, class, last_access, added, ratingsum, warned, enabled, donor FROM users WHERE enabled=1 AND confirmed=1 AND id <> $CURUSER[id] AND INET_ATON(ip) & INET_ATON('$mask') = INET_ATON('$ip') & INET_ATON('$mask')") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT id, username, class, last_access, added, ratingsum, warned, enabled, donor FROM users WHERE enabled=1 AND confirmed=1 AND id <> $CURUSER[id] AND INET_ATON(ip) & INET_ATON('$mask') = INET_ATON('$ip') & INET_ATON('$mask')");
 if (mysql_num_rows($res)){
 	$REL_TPL->stdhead($REL_LANG->say_by_key('network_neighbot') );
 
@@ -56,5 +56,5 @@ if (mysql_num_rows($res)){
 	print("</table>");
 	$REL_TPL->stdfoot();}
 	else
-	stderr($REL_LANG->say_by_key('information'), $REL_LANG->say_by_key('not_found_neighbot'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('information'), $REL_LANG->say_by_key('not_found_neighbot'));
 	?>

@@ -20,7 +20,7 @@ $action=(string) $_GET['action'];
 
 $allowedsort = array('ratingsum','users','added','private');
 
-if ($sort && !in_array($sort,$allowedsort)) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('ivalid_sort'));
+if ($sort && !in_array($sort,$allowedsort)) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('ivalid_sort'));
 
 if (!$sort) $sort = 'ratingsum';
 foreach ($allowedsort as $asort) {
@@ -31,14 +31,14 @@ if (!$id) {
 	if ($action=='invite') {
 		die ('TODO: listing invites to all relgroups');
 	}
-	$res = sql_query("SELECT relgroups.id,name,added,spec,image,"/*owners,members,*/."ratingsum,private,page_pay,subscribe_length, COUNT(rg_subscribes.id) AS users FROM relgroups LEFT JOIN rg_subscribes ON relgroups.id=rg_subscribes.rgid GROUP BY relgroups.id ORDER BY $sort ".($up[$sort]?"DESC":"ASC")) or sqlerr(__FILE__,__LINE__);
+	$res = $REL_DB->query("SELECT relgroups.id,name,added,spec,image,"/*owners,members,*/."ratingsum,private,page_pay,subscribe_length, COUNT(rg_subscribes.id) AS users FROM relgroups LEFT JOIN rg_subscribes ON relgroups.id=rg_subscribes.rgid GROUP BY relgroups.id ORDER BY $sort ".($up[$sort]?"DESC":"ASC"));
 	$uidsarray = array();
 	while ($row=mysql_fetch_array($res)) {
 		$rgarray[] = $row;
 		//$uidsarray[$row['id']] = $row['owners'];
 		//if ($row['members']) $memarray[$row['id']] = $row['members'];
 	}
-	if (!$rgarray) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroups'));
+	if (!$rgarray) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroups'));
 
 	$REL_TPL->stdhead($REL_LANG->say_by_key('relgroups'));
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('relgroups'));
@@ -72,7 +72,7 @@ if (!$id) {
 	<li><a href="<?=$REL_SEO->make_link('relgroups','id',$row['id']);?>">Просмотр</a></li>
 	<?php
 	if ($row['private']) {
-		$i_subscribed = mysql_fetch_row(sql_query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$row['id']}"));
+		$i_subscribed = mysql_fetch_row($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$row['id']}"));
 
 		$open_relgroup=false;
 	}
@@ -94,19 +94,19 @@ if (!$id) {
 	$REL_TPL->stdfoot();
 }
 else {
-	$res = sql_query("SELECT relgroups.*, (SELECT SUM(1) FROM rg_subscribes WHERE rgid=$id) AS users, (SELECT 1 FROM rg_subscribes WHERE rgid=$id AND userid={$CURUSER['id']}) AS relgroup_allowed, (SELECT SUM(1) FROM torrents WHERE relgroup=$id) AS releases FROM relgroups WHERE id=$id GROUP BY id") or sqlerr(__FILE__,__LINE__);
+	$res = $REL_DB->query("SELECT relgroups.*, (SELECT SUM(1) FROM rg_subscribes WHERE rgid=$id) AS users, (SELECT 1 FROM rg_subscribes WHERE rgid=$id AND userid={$CURUSER['id']}) AS relgroup_allowed, (SELECT SUM(1) FROM torrents WHERE relgroup=$id) AS releases FROM relgroups WHERE id=$id GROUP BY id");
 	$row = mysql_fetch_array($res);
-	if (!$row) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+	if (!$row) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 
 	if(!$action) {
-	if (!$row['relgroup_allowed'] && $row['private'] && (!get_privilege('access_to_private_relgroups',false))) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_access_priv_rg'));
+	if (!$row['relgroup_allowed'] && $row['private'] && (!get_privilege('access_to_private_relgroups',false))) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_access_priv_rg'));
 		
 		if (!pagercheck()) {
 			$REL_TPL->stdhead(sprintf($REL_LANG->say_by_key('relgroup_title'),$row['name'],$row['spec']));
 
 			if ($row['owners']||$row['members']) {
-				$ownersres = sql_query("SELECT id, username, class, donor, warned, enabled FROM users WHERE id IN(".$row['owners'].($row['members']?','.$row['members']:'').")") or sqlerr(__FILE__,__LINE__);
+				$ownersres = $REL_DB->query("SELECT id, username, class, donor, warned, enabled FROM users WHERE id IN(".$row['owners'].($row['members']?','.$row['members']:'').")");
 				if ($row['members']) $row['members'] = explode(',',$row['members']);
 
 				while($ownersrow = mysql_fetch_assoc($ownersres)) if ($row['members'] && in_array($ownersrow['id'],$row['members'])) $members[$ownersrow['id']] = make_user_link($ownersrow); else $owners[$ownersrow['id']] = make_user_link($ownersrow);
@@ -136,9 +136,9 @@ else {
 
 <div id="input_right" class="relgroups_input_right"><? //print (int)$row['users'].'&nbsp;';
 			//ПЕРЕДЕЛАТЬ
-			//$i_subscribed = @mysql_result(sql_query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid=$id"),0);
+			//$i_subscribed = @mysql_result($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid=$id"),0);
 			if ($row['private'])
-			$i_subscribed = mysql_fetch_row(sql_query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$row['id']}"));
+			$i_subscribed = mysql_fetch_row($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$row['id']}"));
 			if ($i_subscribed) print ("<li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','deny')."\">Отписаться от группы</a></li><li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','invite')."\">{$REL_LANG->say_by_key('create_invite')}</a></li>");
 			else print ("<li>".(($row['private']&&$row['only_invites'])?$REL_LANG->say_by_key('private_group_friend_subscribe'):"<a href=\"".($row['page_pay']?$row['page_pay']:$REL_SEO->make_link('relgroups','id',$id,'action','suggest'))."\">Подписаться на релизы</a>")."</li>");
 			?></div>
@@ -210,7 +210,7 @@ else {
 </div>
 </div>
 	<?php if ($row['private']) {
-		$subscribessql = sql_query("SELECT rg_subscribes.userid, users.class, users.username, users.id, users.donor, users.warned, users.enabled FROM rg_subscribes LEFT JOIN users ON rg_subscribes.userid=users.id WHERE rg_subscribes.rgid={$id} ORDER BY rg_subscribes.id DESC LIMIT 10") or sqlerr(__FILE__,__LINE__);
+		$subscribessql = $REL_DB->query("SELECT rg_subscribes.userid, users.class, users.username, users.id, users.donor, users.warned, users.enabled FROM rg_subscribes LEFT JOIN users ON rg_subscribes.userid=users.id WHERE rg_subscribes.rgid={$id} ORDER BY rg_subscribes.id DESC LIMIT 10");
 		while ($rgsubs = mysql_fetch_assoc($subscribessql)) {
 			$rgusers[] = make_user_link($rgsubs);
 		}
@@ -235,7 +235,7 @@ else {
 	if ($resource===false) {
 
 		$resource = array();
-		$resourcerow = sql_query("SELECT * FROM rgnews WHERE rgnews.relgroup=$id ORDER BY rgnews.added DESC LIMIT 3") or sqlerr(__FILE__, __LINE__);
+		$resourcerow = $REL_DB->query("SELECT * FROM rgnews WHERE rgnews.relgroup=$id ORDER BY rgnews.added DESC LIMIT 3");
 		while ($res = mysql_fetch_array($resourcerow))
 		$resource[] = $res;
 
@@ -310,9 +310,9 @@ else {
 		}
 		else {
 			$limit = ajaxpager(25, $count, array('relgroups','id',$id), 'comments-table > tbody:last');
-			$subres = sql_query("SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
+			$subres = $REL_DB->query("SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
 												  "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .
-												  "$id AND c.type='rg' GROUP BY c.id ORDER BY c.id DESC $limit") or sqlerr(__FILE__, __LINE__);
+												  "$id AND c.type='rg' GROUP BY c.id ORDER BY c.id DESC $limit");
 			$allrows = prepare_for_commenttable($subres,$row['name'],$REL_SEO->make_link('relgroups','id',$id));
 			if (!pagercheck()) {
 				print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=\"rgcomm\" cellspacing=\"0\" cellPadding=\"5\">");
@@ -350,7 +350,7 @@ else {
 		if ($resource===false) {
 
 			$resource = array();
-			$resourcerow = sql_query("SELECT * FROM rgnews WHERE rgnews.relgroup=$id ORDER BY rgnews.added DESC LIMIT 3") or sqlerr(__FILE__, __LINE__);
+			$resourcerow = $REL_DB->query("SELECT * FROM rgnews WHERE rgnews.relgroup=$id ORDER BY rgnews.added DESC LIMIT 3");
 			while ($res = mysql_fetch_array($resourcerow))
 			$resource[] = $res;
 
@@ -397,10 +397,10 @@ else {
 		//die('fuck!');
 		$invitecode = htmlspecialchars(trim((string)($_GET['invitecode']?$_GET['invitecode']:$_POST['invitecode'])));
 
-		if (!$row) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+		if (!$row) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 		if ($row['page_pay']) safe_redirect($row['page_pay'],0);
-		//if ($row['only_invites'] && !$invitecode) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('only_invites_enabled'));
-		if (!$row['private']) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('subscribe_unneeded'));
+		//if ($row['only_invites'] && !$invitecode) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('only_invites_enabled'));
+		if (!$row['private']) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('subscribe_unneeded'));
 
 		if ($_SERVER['REQUEST_METHOD']<>'POST') {
 			$message = '';
@@ -409,43 +409,43 @@ else {
 			else
 			$message .= sprintf($REL_LANG->say_by_key('join_by_invite'),$row['name'],($row['subscribe_length']?"{$row['subscribe_length']} дней":$REL_LANG->say_by_key('lifetime')),$invitecode,$row['name']);
 			$message .= "<br/><div align=\"center\"><form action=\"".$REL_SEO->make_link('relgroups','id',$id,'action','suggest')."\" method=\"POST\"><input type=\"hidden\" name=\"invitecode\" value=\"$invitecode\"><input type=\"submit\" value=\"{$REL_LANG->say_by_key('continue')}\"></form><hr/><form action=\"".$REL_SEO->make_link('relgroups','id',$id,'action','suggest')."\" method=\"POST\">{$REL_LANG->say_by_key('enter_invite_code')}<input type=\"text\" name=\"invitecode\" size=\"32\" maxlength=\"32\" value=\"$invitecode\">&nbsp;<input type=\"submit\" value=\"{$REL_LANG->say_by_key('continue')}\"></form></div>";
-			stderr($REL_LANG->say_by_key('rginvite_my'),$message,'success');
+			$REL_TPL->stderr($REL_LANG->say_by_key('rginvite_my'),$message,'success');
 		}
 
 		else {
 			if ($invitecode) {
-				$check = @mysql_result(sql_query("SELECT 1 FROM rg_invites WHERE invite=".sqlesc($invitecode)),0);
+				$check = @mysql_result($REL_DB->query("SELECT 1 FROM rg_invites WHERE invite=".sqlesc($invitecode)),0);
 				if (!$check)
-				stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_invite_code'));
-				sql_query("DELETE FROM invites WHERE invite=".sqlesc($invitecode));
+				$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_invite_code'));
+				$REL_DB->query("DELETE FROM invites WHERE invite=".sqlesc($invitecode));
 			}
 			else {
-				if ($CURUSER['discount']<$row['amount']) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_discount'));
-				sql_query("UPDATE users SET discount=discount-{$row['amount']} WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__,__LINE__);
+				if ($CURUSER['discount']<$row['amount']) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_discount'));
+				$REL_DB->query("UPDATE users SET discount=discount-{$row['amount']} WHERE id = {$CURUSER['id']}");
 			}
-			sql_query("INSERT INTO rg_subscribes (userid,rgid,valid_until) VALUES ({$CURUSER['id']},$id,{$row['subscribe_length']}*86400)");
-			if (mysql_errno()==1062) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('fail_invite'));
+			$REL_DB->query("INSERT INTO rg_subscribes (userid,rgid,valid_until) VALUES ({$CURUSER['id']},$id,{$row['subscribe_length']}*86400)");
+			if (mysql_errno()==1062) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('fail_invite'));
 
 			safe_redirect($REL_SEO->make_link('relgroups','id',$id),1);
-			stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('success_invite'),'success');
+			$REL_TPL->stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('success_invite'),'success');
 
 		}
 	}
 	elseif ($action=='deny') {
-		sql_query("DELETE FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid=$id");
+		$REL_DB->query("DELETE FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid=$id");
 		safe_redirect($REL_SEO->make_link('relgroups'),1);
-		stderr($REL_LANG->say_by_key('rginvite_deny'),$REL_LANG->say_by_key('deny_success'),'success');
+		$REL_TPL->stderr($REL_LANG->say_by_key('rginvite_deny'),$REL_LANG->say_by_key('deny_success'),'success');
 	}
 	elseif ($action=='invite') {
 
-		if (!$row) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+		if (!$row) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 		if ($row['page_pay']) safe_redirect($row['page_pay'],0);
-		if (!$row['private']) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('subscribe_unneeded'));
+		if (!$row['private']) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('subscribe_unneeded'));
 		if ($_SERVER['REQUEST_METHOD']<>'POST') {
 
 			$REL_TPL->stdhead($REL_LANG->say_by_key('invite_code')." \"{$row['name']}\"");
 			$REL_TPL->begin_frame($REL_LANG->say_by_key('invite_code')." \"{$row['name']}\"");
-			$invsql = sql_query("SELECT invite,time_invited FROM rg_invites WHERE rgid=$id AND inviter={$CURUSER['id']}");
+			$invsql = $REL_DB->query("SELECT invite,time_invited FROM rg_invites WHERE rgid=$id AND inviter={$CURUSER['id']}");
 			print ("<table width=\"100%\"><tr><td class=\"colhead\">{$REL_LANG->say_by_key('invite_code')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('invite_added')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('invite_per')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('invite_link')}</td></tr>");
 			while ($invite = mysql_fetch_assoc($invsql)) {
 				print ("<tr><td><strong>{$invite['invite']}</strong></td><td>".mkprettytime($invite['time_invited'])."</td><td>".($row['subscribe_length']?mkprettytime($invite['time_invited']+($row['subscribe_length']*86400)):$REL_LANG->say_by_key('lifetime'))."</td><td><input type=\"text\" value=\"{$REL_SEO->make_link('relgroups','id',$id,'action','suggest','invitecode',$invite['invite'])}\" onclick=\"javascript:this.select();\"></td></tr>");
@@ -456,22 +456,22 @@ else {
 			die();
 		} else {
 			if (!isset($_GET['ok'])) {
-				stderr($REL_LANG->say_by_key('invite_code'),sprintf($REL_LANG->say_by_key('invite_notice_rg'),$row['name'],($row['subscribe_length']?"{$row['subscribe_length']} дней":$REL_LANG->say_by_key('lifetime')),$row['amount'],$CURUSER['discount'])
+				$REL_TPL->stderr($REL_LANG->say_by_key('invite_code'),sprintf($REL_LANG->say_by_key('invite_notice_rg'),$row['name'],($row['subscribe_length']?"{$row['subscribe_length']} дней":$REL_LANG->say_by_key('lifetime')),$row['amount'],$CURUSER['discount'])
 				. "<br/><div align=\"center\"><form action=\"".$REL_SEO->make_link('relgroups','id',$id,'action','invite','ok','')."\" method=\"POST\"><input type=\"submit\" value=\"{$REL_LANG->say_by_key('continue')}\"></form></div>",'success');
 			} else {
-				if ($CURUSER['discount']<$row['amount']) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_discount_invite'));
+				if ($CURUSER['discount']<$row['amount']) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_discount_invite'));
 				$code = md5(microtime()+rand(0,100));
-				sql_query("INSERT INTO rg_invites (inviter,rgid,invite,time_invited) VALUES ({$CURUSER['id']},$id,'$code',".time().")") or sqlerr(__FILE__,__LINE__);
-				sql_query("UPDATE users SET discount=discount-{$row['amount']} WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__,__LINE__);
+				$REL_DB->query("INSERT INTO rg_invites (inviter,rgid,invite,time_invited) VALUES ({$CURUSER['id']},$id,'$code',".time().")");
+				$REL_DB->query("UPDATE users SET discount=discount-{$row['amount']} WHERE id = {$CURUSER['id']}");
 				safe_redirect($REL_SEO->make_link('relgroups','id',$id,'action','invite'),1);
-				stderr($REL_LANG->say_by_key('success'),sprintf($REL_LANG->say_by_key('inivite_code_created'),$code,$row['name']),'success');
+				$REL_TPL->stderr($REL_LANG->say_by_key('success'),sprintf($REL_LANG->say_by_key('inivite_code_created'),$code,$row['name']),'success');
 
 			}
 		}
 
 	}
 
-	else stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+	else $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 }
 
 ?>

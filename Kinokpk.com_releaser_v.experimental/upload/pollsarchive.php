@@ -19,13 +19,13 @@ $count = get_row_count("polls");
 
 $limit = "LIMIT 50";
 
-$pollsrow = sql_query("SELECT id FROM polls ORDER BY id DESC $limit");
+$pollsrow = $REL_DB->query("SELECT id FROM polls ORDER BY id DESC $limit");
 
 $REL_TPL->stdhead("Архив опросов");
 print('<table width="100%" border="1">');
 while (list($id) = mysql_fetch_array($pollsrow)) {
 
-	$poll = sql_query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class,users.warned,users.donor, users.enabled FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
+	$poll = $REL_DB->query("SELECT polls.*, polls_structure.value, polls_structure.id AS sid,polls_votes.vid,polls_votes.user,users.username,users.class,users.warned,users.donor, users.enabled FROM polls LEFT JOIN polls_structure ON polls.id = polls_structure.pollid LEFT JOIN polls_votes ON polls_votes.sid=polls_structure.id LEFT JOIN users ON users.id=polls_votes.user WHERE polls.id = $id ORDER BY sid ASC");
 	$pquestion = array();
 	$pstart = array();
 	$pexp = array();
@@ -53,7 +53,7 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
 
 	$pstart = @array_unique($pstart);
 	$pstart = $pstart[0];
-	if (!$pstart) stderr($REL_LANG->say_by_key('error'), "Такого опроса не существует");
+	if (!$pstart) $REL_TPL->stderr($REL_LANG->say_by_key('error'), "Такого опроса не существует");
 	$pexp = @array_unique($pexp);
 	$pexp = $pexp[0];
 	$pquestion = @array_unique($pquestion);

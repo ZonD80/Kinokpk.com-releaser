@@ -20,7 +20,7 @@ get_privilege('view_sql_stats');
 httpauth();
 
 
-$GLOBALS["byteUnits"] = array('байт', 'КБ', 'МБ', 'ГБ', 'ТБ', 'ПБ', 'EБ');
+$global S["byteUnits"] = array('байт', 'КБ', 'МБ', 'ГБ', 'ТБ', 'ПБ', 'EБ'), $REL_DB;
 
 $day_of_week = array('Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота');
 $month = array('Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря');
@@ -34,12 +34,12 @@ function formatByteDown($value, $limes = 6, $comma = 0)
 	$dh           = pow(10, $comma);
 	$li           = pow(10, $limes);
 	$return_value = $value;
-	$unit         = $GLOBALS['byteUnits'][0];
+	$unit         = $global S['byteUnits'][0], $REL_DB;
 
 	for ( $d = 6, $ex = 15; $d >= 1; $d--, $ex-=3 ) {
 		if (isset($GLOBALS['byteUnits'][$d]) && $value >= $li * pow(10, $ex)) {
 			$value = round($value / ( pow(1024, $d) / $dh) ) /$dh;
-			$unit = $GLOBALS['byteUnits'][$d];
+			$unit = $global S['byteUnits'][$d], $REL_DB;
 			break 1;
 		} // end if
 	} // end for
@@ -75,7 +75,7 @@ function timespanFormat($seconds)
 
 function localisedDate($timestamp = -1, $format = '')
 {
-	global $datefmt, $month, $day_of_week;
+	global  $datefmt, $month, $day_of_week, $REL_DB;
 
 	if ($format == '') {
 		$format = $datefmt;
@@ -97,7 +97,7 @@ function localisedDate($timestamp = -1, $format = '')
 $REL_TPL->stdhead("Статистка Mysql");
 echo '<h2>'."\n".'Статус базы данных (MYSQL)'."\n".'</h2><br />'."\n";
 
-$res = @sql_query('SHOW STATUS') or Die(mysql_error());
+$res = @$REL_DB->query('SHOW STATUS') or Die(mysql_error());
 while ($row = mysql_fetch_row($res)) {
 	$serverStatus[$row[0]] = $row[1];
 }
@@ -106,7 +106,7 @@ unset($res);
 unset($row);
 
 // просчет времени
-$res = @sql_query('SELECT UNIX_TIMESTAMP() - ' . $serverStatus['Uptime']);
+$res = @$REL_DB->query('SELECT UNIX_TIMESTAMP() - ' . $serverStatus['Uptime']);
 $row = mysql_fetch_row($res);
 //echo sprintf("Server Status Uptime", timespanFormat($serverStatus['Uptime']), localisedDate($row[0])) . "\n";
 ?>
@@ -118,7 +118,7 @@ $row = mysql_fetch_row($res);
 
 		$dbname = $mysql_db;
 
-		$result = sql_query("SHOW TABLES FROM ".$dbname."");
+		$result = $REL_DB->query("SHOW TABLES FROM ".$dbname."");
 		$content = "";
 		while (list($name) = mysql_fetch_array($result)) $content .= "<option value=\"".$name."\" selected>".$name."</option>";
 		echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"3\" align=\"center\">"
@@ -132,7 +132,7 @@ $row = mysql_fetch_row($res);
 		."<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"Выполнить действие\"></td></tr></form></table>";
 
 		if ($_POST['type'] == "Optimize") {
-			$result = sql_query("SHOW TABLE STATUS FROM ".$dbname."");
+			$result = $REL_DB->query("SHOW TABLE STATUS FROM ".$dbname."");
 			$tables = array();
 			while ($row = mysql_fetch_array($result)) {
 				$total = $row['Data_length'] + $row['Index_length'];
@@ -141,21 +141,21 @@ $row = mysql_fetch_row($res);
 				$totalfree += $free;
 				$i++;
 				$otitle = (!$free) ? "<font color=\"#FF0000\">Не нуждается</font>" : "<font color=\"#009900\">Оптимизирована</font>";
-				//sql_query("OPTIMIZE TABLE ".$row[0]."");
+				//$REL_DB->query("OPTIMIZE TABLE ".$row[0]."");
 				$tables[] = $row[0];
 				$content3 .= "<tr class=\"bgcolor1\"><td align=\"center\">".$i."</td><td>".$row[0]."</td><td>".mksize($total)."</td><td align=\"center\">".$otitle."</td><td align=\"center\">".mksize($free)."</td></tr>";
 			}
-			sql_query("OPTIMIZE TABLE ".implode(", ", $tables));
+			$REL_DB->query("OPTIMIZE TABLE ".implode(", ", $tables));
 			echo "<center><font class=\"option\">Оптимизация базы данных: ".$dbname."<br />Общий размер базы данных: ".mksize($totaltotal)."<br />Общие накладные расходы: ".mksize($totalfree)."<br /><br />"
 			."<table border=\"0\" cellpadding=\"3\" cellspacing=\"1\" width=\"100%\"><tr><td class=\"colhead\" align=\"center\">№</td><td class=\"colhead\">Таблица</td><td class=\"colhead\">Размер</td><td class=\"colhead\">Статус</td><td class=\"colhead\">Накладные расходы</td></tr>"
 			."".$content3."</table>";
 		} elseif ($_POST['type'] == "Repair") {
-			$result = sql_query("SHOW TABLE STATUS FROM ".$dbname."");
+			$result = $REL_DB->query("SHOW TABLE STATUS FROM ".$dbname."");
 			while ($row = mysql_fetch_array($result)) {
 				$total = $row['Data_length'] + $row['Index_length'];
 				$totaltotal += $total;
 				$i++;
-				$rresult = sql_query("REPAIR TABLE ".$row[0]."");
+				$rresult = $REL_DB->query("REPAIR TABLE ".$row[0]."");
 				$otitle = (!$rresult) ? "<font color=\"#FF0000\">Ошибка</font>" : "<font color=\"#009900\">OK</font>";
 				$content4 .= "<tr class=\"bgcolor1\"><td align=\"center\">".$i."</td><td>".$row[0]."</td><td>".mksize($total)."</td><td align=\"center\">".$otitle."</td></tr>";
 			}

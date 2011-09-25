@@ -19,22 +19,22 @@ loggedinorreturn();
 $REL_TPL->stdhead($REL_LANG->say_by_key('my_releases'));
 
 $where = "WHERE owner = " . $CURUSER["id"] . " AND banned=0";
-$res = sql_query("SELECT SUM(1) FROM torrents $where");
+$res = $REL_DB->query("SELECT SUM(1) FROM torrents $where");
 $row = mysql_fetch_array($res);
 $count = $row[0];
 
 if (!$count) {
-	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_releases'),'error');
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_releases'),'error');
 	$REL_TPL->stdfoot();
 	die();
 }
 else {
 
 	$tree = make_tree();
-	$res = sql_query("SELECT torrents.images, torrents.comments, torrents.leechers, torrents.seeders, torrents.id, torrents.name, filename, numfiles, added, size, views, visible, free, hits, times_completed, category FROM torrents $where GROUP BY id ORDER BY id DESC $limit");
+	$res = $REL_DB->query("SELECT torrents.images, torrents.comments, torrents.leechers, torrents.seeders, torrents.id, torrents.name, filename, numfiles, added, size, views, visible, free, hits, category FROM torrents $where GROUP BY id ORDER BY id DESC $limit");
 	$resarray = prepare_for_torrenttable($res);
 
-	if (!$resarray) {stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_releases'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!$resarray) {$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_releases'),'error'); $REL_TPL->stdfoot(); die(); }
 
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('my_releases'));
 	print('<div id="releases-table">');

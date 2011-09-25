@@ -18,15 +18,15 @@ loggedinorreturn();
 if (!pagercheck()) {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('topten'));
 }
-$res = sql_query("SELECT SUM(1) FROM users") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT SUM(1) FROM users");
 $count = mysql_result($res,0);
-if (!$count) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); $REL_TPL->stdfoot(); die(); }
+if (!$count) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); $REL_TPL->stdfoot(); die(); }
 
 $limit = ajaxpager(10, $count, array('topten'), 'userst > tbody:last');
 
 
 
-$res = sql_query("SELECT u.*, c.name, c.flagpic FROM users AS u LEFT JOIN countries AS c ON c.id = u.country ORDER BY ratingsum DESC $limit") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT u.*, c.name, c.flagpic FROM users AS u LEFT JOIN countries AS c ON c.id = u.country ORDER BY ratingsum DESC $limit");
 $num = mysql_num_rows($res);
 
 

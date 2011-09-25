@@ -54,10 +54,10 @@ $REL_TPL->stdhead($REL_LANG->_('Private messages viewer'));
 	<?php
 }
 
-	$res = sql_query("SELECT * FROM messages $where ORDER BY id DESC $limit") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT * FROM messages $where ORDER BY id DESC $limit");
 	while ($arr = mysql_fetch_assoc($res))
 	{
-		$res2 = sql_query("SELECT username, class, id, warned, donor, enabled FROM users WHERE id=".$arr["receiver"]) or sqlerr(__FILE__, __LINE__);
+		$res2 = $REL_DB->query("SELECT username, class, id, warned, donor, enabled FROM users WHERE id=".$arr["receiver"]);
 		$arr2 = mysql_fetch_assoc($res2);
 
 		if($arr["receiver"] == 0 or !$arr["receiver"]){
@@ -66,7 +66,7 @@ $REL_TPL->stdhead($REL_LANG->_('Private messages viewer'));
 			$receiver = make_user_link($arr2);
 		}
 
-		$res3 = sql_query("SELECT username, class, id, warned, donor, enabled FROM users WHERE id=".$arr["sender"]) or sqlerr(__FILE__, __LINE__);
+		$res3 = $REL_DB->query("SELECT username, class, id, warned, donor, enabled FROM users WHERE id=".$arr["sender"]);
 		$arr3 = mysql_fetch_assoc($res3);
 
 		if($arr["sender"] == 0){

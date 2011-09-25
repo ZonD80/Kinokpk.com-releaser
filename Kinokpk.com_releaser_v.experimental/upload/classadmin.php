@@ -20,7 +20,7 @@ httpauth();
 $a = (string)$_GET['a'];
 
 function rolesdesc() {
-	global $REL_TPL;
+	global  $REL_TPL, $REL_DB;
 	return $REL_TPL->fetch('modules/classadmin/rolesdesc.tpl');
 }
 

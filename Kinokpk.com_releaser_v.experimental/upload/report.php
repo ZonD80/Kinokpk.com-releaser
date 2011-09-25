@@ -33,14 +33,14 @@ $reportform = '<form action="'.$REL_SEO->make_link('report','id',$id,'type',$typ
 if (! $motive)
 $REL_TPL->stderr ( $REL_LANG->say_by_key('reason'), $reportform, 'success' );
 
-$check = @mysql_result ( sql_query ( "SELECT 1 FROM ".(in_array($type,$comment_types)?"comments WHERE type='$type' AND":"$type WHERE")." id=$id" ), 0 );
+$check = @mysql_result ( $REL_DB->query ( "SELECT 1 FROM ".(in_array($type,$comment_types)?"comments WHERE type='$type' AND":"$type WHERE")." id=$id" ), 0 );
 
 if (! $check)
 $REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 
 $reason = sqlesc ( $motive );
 
-sql_query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ($id,{$CURUSER['id']},'$type',$reason," . time () . ")" );
+$REL_DB->query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ($id,{$CURUSER['id']},'$type',$reason," . time () . ")" );
 $_SESSION['already_reported'][$type][$id] = $motive;
 if (mysql_errno () == 1062)
 $REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('already_report') );

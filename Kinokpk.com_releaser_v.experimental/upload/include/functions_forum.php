@@ -17,7 +17,7 @@
  */
 
 function make_forum_tree($class) {
-	global $CURUSER;
+	global  $CURUSER, $REL_DB;
 	return make_tree('forum_categories',"WHERE FIND_IN_SET($class,class)");
 }
 
@@ -30,7 +30,7 @@ function make_forum_tree($class) {
  */
 function assoc_full_forum_cats($tree,$class) {
 	if (!$tree) $tree = make_forum_tree($class);
-	global $CURUSER;
+	global  $CURUSER, $REL_DB;
 	$return = assoc_full_cats('forum_categories');
 	foreach ($return as $id=>$cat) {
 		if (!in_array($class,$cat['class'])) unset($return[$id]);
@@ -47,7 +47,7 @@ function assoc_full_forum_cats($tree,$class) {
  * @return array Associative array for template
  */
 function prepare_for_forumtable($cats,$curcat = array('id'=>0)) {
-	global $tree,$CURUSER, $REL_DB, $REL_CACHE, $REL_SEO;
+	global  $tree,$CURUSER, $REL_DB, $REL_CACHE, $REL_SEO, $REL_DB;
 	// making forums structure
 
 	$return = $REL_CACHE->get('forums',"forum_structure_{$curcat['id']}-".get_user_class());
@@ -79,7 +79,7 @@ function prepare_for_forumtable($cats,$curcat = array('id'=>0)) {
 	}
 	// end, now making post counts and another
 
-	$res = $REL_DB->query("SELECT forum_topics.category, SUM(forum_topics.comments) AS posts, SUM(1) AS topics, forum_topics.id, forum_topics.lastposted_id, forum_topics.subject, comments.user, comments.added, users.username, users.class, users.donor, users.warned, users.enabled FROM (SELECT * FROM forum_topics ORDER BY started DESC) AS forum_topics LEFT JOIN comments ON forum_topics.lastposted_id=comments.id LEFT JOIN users ON comments.user = users.id WHERE comments.type='forum' GROUP BY forum_topics.category") or sqlerr(__FILE__,__LINE__);
+	$res = $REL_DB->query("SELECT forum_topics.category, SUM(forum_topics.comments) AS posts, SUM(1) AS topics, forum_topics.id, forum_topics.lastposted_id, forum_topics.subject, comments.user, comments.added, users.username, users.class, users.donor, users.warned, users.enabled FROM (SELECT * FROM forum_topics ORDER BY started DESC) AS forum_topics LEFT JOIN comments ON forum_topics.lastposted_id=comments.id LEFT JOIN users ON comments.user = users.id WHERE comments.type='forum' GROUP BY forum_topics.category");
 	while ($row = mysql_fetch_assoc($res)) {
 		$user = $row;
 		$user['id'] = $user['user'];

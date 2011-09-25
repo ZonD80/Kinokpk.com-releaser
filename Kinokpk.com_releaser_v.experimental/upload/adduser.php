@@ -19,9 +19,9 @@ get_privilege('add_users');
 if ($_SERVER["REQUEST_METHOD"] == "POST")
 {
 	if ($_POST["username"] == "" || $_POST["password"] == "" || $_POST["email"] == "")
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('missing_form_data'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('missing_form_data'));
 	if ($_POST["password"] != $_POST["password2"])
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('password_mismatch'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('password_mismatch'));
 	$username = (htmlspecialchars((string)$_POST["username"]));
 	$password = (string)$_POST["password"];
 	$email = sqlesc(htmlspecialchars(trim((string)$_POST["email"])));
@@ -29,9 +29,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$passhash = sqlesc(md5($secret . $password . $secret));
 	$secret = sqlesc($secret);
 	$classes = init_class_array();
-	sql_query("INSERT INTO users (class, added, last_access, secret, username, passhash, notifs, emailnotifs, confirmed, email) VALUES({$classes['reg']},".time().", ".time().", $secret, ".sqlesc($username).", $passhash, '{$REL_CONFIG['default_notifs']}', '{$REL_CONFIG['default_emailnotifs']}', 1, $email)");
+	$REL_DB->query("INSERT INTO users (class, added, last_access, secret, username, passhash, notifs, emailnotifs, confirmed, email) VALUES({$classes['reg']},".time().", ".time().", $secret, ".sqlesc($username).", $passhash, '{$REL_CONFIG['default_notifs']}', '{$REL_CONFIG['default_emailnotifs']}', 1, $email)");
 	if (mysql_errno()==1062)
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('unable_to_create_account'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('unable_to_create_account'));
 	$id = mysql_insert_id();
 	
 	$REL_DB->query("INSERT INTO xbt_users (uid) VALUES ($id)");

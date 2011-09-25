@@ -1,4 +1,5 @@
 <?php
+global  $REL_LANG, $REL_CACHE, $REL_CONFIG, $CURUSER, $REL_SEO, $REL_DB;
 
 if ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'&& $_GET["AJAXPAGER"]) {
 	$pager=true;
@@ -6,9 +7,6 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'&& $_GET["AJAXPAGER"]) 
 	INIT();
 	$page=(int)$_GET['page'];
 } else {
-global $REL_LANG, $REL_CACHE, $REL_CONFIG, $CURUSER, $REL_SEO;
-
-
 
 if (!defined('BLOCK_FILE')) {
 	safe_redirect($REL_SEO->make_link('index'));
@@ -22,6 +20,7 @@ $blocktitle = "<span>{$REL_LANG->_('Releases')}</span>".(get_privilege('upload_r
 }
 
 $count = $REL_CACHE->get('block-indextorrents','count');
+
 if ($count===false) {
 	$count = get_row_count('torrents'," WHERE visible=1 AND banned=0 AND moderatedby<>0");
 	$REL_CACHE->set('block-indextorrents','count',$count);
@@ -36,7 +35,7 @@ if (!$count) { $content = "<div align=\"center\">{$REL_LANG->_('No releases yet'
 	$limit = ajaxpager(12, $count, array('blocks/block-indextorrents'), 'releases-table > tbody:last');
 	if ($resarray===false) {
 		$resarray=array();
-		$res = sql_query("SELECT id,name,images,free,category FROM torrents WHERE visible=1 AND banned=0 AND moderatedby<>0 ORDER BY added DESC $limit") or sqlerr(__FILE__, __LINE__);
+		$res = $REL_DB->query("SELECT id,name,images,free,category FROM torrents WHERE visible=1 AND banned=0 AND moderatedby<>0 ORDER BY added DESC $limit");
 		while ($row = mysql_fetch_assoc($res)) $resarray[] = $row;
 		$REL_CACHE->set('block-indextorrents','page'.($page?$page:''),$resarray);
 	}

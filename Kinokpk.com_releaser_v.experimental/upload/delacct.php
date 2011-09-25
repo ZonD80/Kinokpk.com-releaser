@@ -17,19 +17,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$email = trim((string)$_POST["email"]);
 	$password = trim((string)$_POST["password"]);
 	if (!$email || !$password)
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('fill_form'));
-	$res = sql_query("SELECT * FROM users WHERE email=" . sqlesc($email) .
-  " AND passhash=md5(concat(secret,concat(" . sqlesc($password) . ",secret)))") or sqlerr(__FILE__, __LINE__);
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('fill_form'));
+	$res = $REL_DB->query("SELECT * FROM users WHERE email=" . sqlesc($email) .
+  " AND passhash=md5(concat(secret,concat(" . sqlesc($password) . ",secret)))");
 	if (mysql_num_rows($res) != 1)
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_username'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_username'));
 	$arr = mysql_fetch_assoc($res);
 	get_privilege('delete_site_users');
 	$id = $arr['id'];
 	$avatar = $arr['avatar'];
 	delete_user($id);
 	@unlink(ROOT_PATH.$avatar);
-	// if (mysql_affected_rows() != 1)     stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('cant_del_acc'));
-	stderr($REL_LANG->say_by_key('success'), $REL_LANG->say_by_key('account_deleted'));
+	// if (mysql_affected_rows() != 1)     $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('cant_del_acc'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('success'), $REL_LANG->say_by_key('account_deleted'));
 }
 $REL_TPL->stdhead($REL_LANG->say_by_key('delete_account'));
 ?>

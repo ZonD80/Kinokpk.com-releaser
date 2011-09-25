@@ -90,7 +90,7 @@ class REL_LANG {
 	 * @return string String of a language file
 	 */
 	public function say_by_key_to($id, $value,$language = '') {
-		global $REL_DB;
+		global  $REL_DB;
 		$return = '';
 		if (!$language) {
 			$language = @mysql_result($REL_DB->query("SELECT language FROM users WHERE id={$id}"),0);
@@ -109,11 +109,11 @@ class REL_LANG {
 	 * @param string $language Language to parse
 	 */
 	private function parse_db($language='en') {
-		global $REL_CACHE,$REL_SEO, $CURUSER;
+		global  $REL_CACHE,$REL_SEO, $CURUSER, $REL_DB;
 		if ($this->lang[$language]) return;
 		$this->lang[$language] = $REL_CACHE->get('languages',$language);
 		if ($this->lang[$language]===false) {
-			$res = sql_query("SELECT lkey,lvalue FROM languages WHERE ltranslate='$language'");
+			$res = $REL_DB->query("SELECT lkey,lvalue FROM languages WHERE ltranslate='$language'");
 			while ($row = mysql_fetch_assoc($res))
 			$this->lang[$language][$row['lkey']] = $row['lvalue'];
 			if (!$this->lang[$language]) {
@@ -132,7 +132,7 @@ class REL_LANG {
 	 * @return boolean False on error & prints error message
 	 */
 	private function parse_langfile($file,$language='en') {
-		global $REL_SEO;
+		global  $REL_SEO, $REL_DB;
 		if (@in_array($file,$this->parsed_langs[$language])) return;
 		$parse = @file($file,FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
 		if (!$parse) {
@@ -156,7 +156,7 @@ class REL_LANG {
 
 		$parse = @file($file,FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
 		if (!$parse) return false;
-		$res = sql_query("SELECT lkey,lvalue FROM languages WHERE ltranslate='$language'");
+		$res = $REL_DB->query("SELECT lkey,lvalue FROM languages WHERE ltranslate='$language'");
 		while ($row = mysql_fetch_assoc($res))
 		$check[$row['lkey']] = $row['lvalue'];
 		foreach ($parse as $string) {
@@ -171,14 +171,14 @@ class REL_LANG {
 		//if ($return['errors']) return $return;
 
 		foreach ($to_database as $key=>$value) {
-			sql_query("INSERT INTO languages (lkey,ltranslate,lvalue) VALUES (".sqlesc(makesafe($key)).",'$language',".sqlesc(makesafe($value)).")".($override?" ON DUPLICATE KEY UPDATE lvalue=".sqlesc(makesafe($value)):''));
+			$REL_DB->query("INSERT INTO languages (lkey,ltranslate,lvalue) VALUES (".sqlesc(makesafe($key)).",'$language',".sqlesc(makesafe($value)).")".($override?" ON DUPLICATE KEY UPDATE lvalue=".sqlesc(makesafe($value)):''));
 			if (!mysql_errno()) $return['words'][] = "$key : $value";
 		}
 		return $return;
 	}
 
 	public function export_langfile($lang) {
-		global $REL_CONFIG;
+		global  $REL_CONFIG, $REL_DB;
 		header("Content-type: text/plain");
 		header("Content-Disposition: attachment;filename=$lang.lang");
 		header("Content-Transfer-Encoding: binary");
@@ -248,9 +248,9 @@ class REL_LANG {
 	 * @return string|string Formatted string
 	 */
 	public function _to() {
-		/*global $REL_DATABASE;
+		/*global  $REL_DATABASE, $REL_DB;
 		 if (!$REL_DATABASE) die("FATAL ERROR: No database");*/
-		global $REL_DB;
+		global  $REL_DB;
 		$args = func_get_args();
 		if ($args[0]==0) $langauge = $this->language; else
 		$langauge = @mysql_result($REL_DB->query("SELECT language FROM users WHERE id={$args[0]}"),0);

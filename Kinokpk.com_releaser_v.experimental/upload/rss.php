@@ -22,7 +22,7 @@ $feeds->setLink($REL_CONFIG['defaultbaseurl']);
 $feeds->setDescription($REL_CONFIG['sitename'].$REL_LANG->_("News"));
 $feeds->setID($REL_CONFIG['defaultbaseurl']."/rss.php");
 
-$res = sql_query("SELECT torrents.id,torrents.name,torrents.descr,torrents.images, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage, IF((torrents.relgroup=0) OR (relgroups.private=0),1,0) AS relgroup_allowed FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id WHERE visible=1 AND banned=0 AND moderatedby<>0 ORDER BY torrents.added DESC LIMIT 5");
+$res = $REL_DB->query("SELECT torrents.id,torrents.name,torrents.descr,torrents.images, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage, IF((torrents.relgroup=0) OR (relgroups.private=0),1,0) AS relgroup_allowed FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id WHERE visible=1 AND banned=0 AND moderatedby<>0 ORDER BY torrents.added DESC LIMIT 5");
 
 while ($row = mysql_fetch_assoc($res)) {
 	if ((!$row['relgroup_allowed'] && $row['rgid'])) {

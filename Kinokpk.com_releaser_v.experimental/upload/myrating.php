@@ -16,7 +16,7 @@ loggedinorreturn();
 
 if ($CURUSER['ratingsum']>0) $znak='+';
 
-$query = sql_query("SELECT (SELECT SUM(1) FROM peers WHERE seeder=1 AND userid={$CURUSER['id']}) AS seeding, (SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid={$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']}) AS downloaded");
+$query = $REL_DB->query("SELECT (SELECT SUM(1) FROM peers WHERE seeder=1 AND userid={$CURUSER['id']}) AS seeding, (SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid={$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']}) AS downloaded");
 
 list($seeding,$downloaded) = mysql_fetch_array($query);
 $seeding = (int)$seeding;
@@ -43,24 +43,24 @@ if (isset($_GET['discount'])) {
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$discount = (int)$_POST['discountamount'];
 
-		if (($discount>=$CURUSER['ratingsum']) || ($discount<=0)) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_rating'));
+		if (($discount>=$CURUSER['ratingsum']) || ($discount<=0)) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_rating'));
 		$devision = (($rateup>$REL_CRON['rating_discounttorrent'])?$rateup:$REL_CRON['rating_discounttorrent']);
 
 		$to_discount = round($discount/$devision);
 		if ($to_discount>$max_discount) {
 			safe_redirect($REL_SEO->make_link('myrating','discount',''),3);
-			stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('discount_limit'));
+			$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('discount_limit'));
 		}
 		$to_ratingsum = $to_discount*$devision;
-		sql_query("UPDATE users SET discount=discount+$to_discount, ratingsum=ratingsum-$to_ratingsum WHERE id={$CURUSER['id']}");
+		$REL_DB->query("UPDATE users SET discount=discount+$to_discount, ratingsum=ratingsum-$to_ratingsum WHERE id={$CURUSER['id']}");
 		safe_redirect($REL_SEO->make_link('myrating'),1);
-		stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('rating_changed'),'success');
+		$REL_TPL->stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('rating_changed'),'success');
 
 	} else {
 		$REL_TPL->stdhead($REL_LANG->say_by_key('my_discount'));
 		if ($CURUSER['discount']>$downloaded) {
 			safe_redirect($REL_SEO->make_link('myrating'),3);
-			stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('cannot_discount'),'error');
+			$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('cannot_discount'),'error');
 			$REL_TPL->stdfoot();
 			die();
 		}

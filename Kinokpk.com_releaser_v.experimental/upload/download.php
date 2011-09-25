@@ -19,8 +19,8 @@ if (!$action) $action = trim((string)$_POST['a']);
 
 
 if ($action=='my') {
-	$r = sql_query ( "SELECT snatched.torrent AS id, torrents.name, users.username AS owner, torrents.added, torrents.owner AS userid FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent LEFT JOIN users ON torrents.owner=users.id WHERE snatched.userid = {$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']} GROUP BY id ORDER BY id" ) or sqlerr ( __FILE__, __LINE__ );
-	if (!mysql_num_rows ( $r ))	stderr($REL_LANG->_("Error"),$REL_LANG->_("You have not downloaded any releases yet"));
+	$r = $REL_DB->query ( "SELECT snatched.torrent AS id, torrents.name, users.username AS owner, torrents.added, torrents.owner AS userid FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent LEFT JOIN users ON torrents.owner=users.id WHERE snatched.userid = {$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']} GROUP BY id ORDER BY id" );
+	if (!mysql_num_rows ( $r ))	$REL_TPL->stderr($REL_LANG->_("Error"),$REL_LANG->_("You have not downloaded any releases yet"));
 	$fileDir = './';
 
 	require_once(ROOT_PATH."classes/zip/Zip.php");
@@ -40,14 +40,14 @@ if ($action=='my') {
 
 	while  ($row = mysql_fetch_assoc($r)) {
 		$fn = "torrents/{$row['id']}.torrent";
-		sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = ".($row['id']));
+		$REL_DB->query("UPDATE torrents SET hits = hits + 1 WHERE id = ".($row['id']));
 			
 		if ($REL_CONFIG['use_xbt']) {
 			$announce_urls_list[] = ($xbt_config['listen_ipa']=='*'?$REL_CONFIG['defaultbaseurl']:"http://{$xbt_config['listen_ipa']}").":{$xbt_config['listen_port']}/".($xbt_config['auto_register']?'':"{$CURUSER['passkey']}/")."announce";
 		} else {
 			$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/announce.php?passkey=".$CURUSER['passkey'];
 		}
-		$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent={$row['id']} AND tracker<>'localhost'");
+		$announce_sql = $REL_DB->query("SELECT tracker FROM trackers WHERE torrent={$row['id']} AND tracker<>'localhost'");
 		while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
 
 		//var_dump($retrackers);
@@ -76,44 +76,44 @@ if ($action=='my') {
 	$zip->sendZip("torrents-".date('d.m.Y-H.i')."-{$_SERVER['HTTP_HOST']}.zip");
 	die();
 }
-if (!is_valid_id($_GET['id'])) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+if (!is_valid_id($_GET['id'])) 			$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 $readed = isset($_GET['ok']);
 
 $id = (int) $_GET["id"];
 
 
-$res = sql_query("SELECT torrents.filename, torrents.info_hash, torrents.tiger_hash, torrents.size, torrents.name, torrents.added, torrents.owner AS userid, torrents.freefor, torrents.free, users.username AS owner,torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage, IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']})) AS relgroup_allowed FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id LEFT JOIN users ON users.id = torrents.owner WHERE torrents.id = ".sqlesc($id)) or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT torrents.filename, torrents.info_hash, torrents.tiger_hash, torrents.size, torrents.name, torrents.added, torrents.owner AS userid, torrents.freefor, torrents.free, users.username AS owner,torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage, IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']})) AS relgroup_allowed FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id LEFT JOIN users ON users.id = torrents.owner WHERE torrents.id = ".sqlesc($id));
 $row = mysql_fetch_array($res);
 if (!$row)
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 if ($row['rgid']) $rgcontent = "<a href=\"relgroups.php?id={$row['rgid']}\">".($row['rgimage']?"<img style=\"border:none;\" title=\"Релиз группы {$row['rgname']}\" src=\"{$row['rgimage']}\"/>":'Релиз группы '.$row['rgname'])."</a>&nbsp;";
 
-if ((!get_privilege('access_to_private_relgroups',false)) && !$row['relgroup_allowed'] && $row['rgid']) stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('private_release_access_denied'),$rgcontent));
+if ((!get_privilege('access_to_private_relgroups',false)) && !$row['relgroup_allowed'] && $row['rgid']) $REL_TPL->stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('private_release_access_denied'),$rgcontent));
 
 
 
-if ($row["filename"] == 'nofile') stderr ("Сообщение","Это релиз без TORRENT файла! Скачать его с нашего сервера невозможно, посмотрите ссылки в описаниии релиза <a href='details.php?id=".$id."'>К описанию релиза</a>");
+if ($row["filename"] == 'nofile') $REL_TPL->stderr ("Сообщение","Это релиз без TORRENT файла! Скачать его с нашего сервера невозможно, посмотрите ссылки в описаниии релиза <a href='details.php?id=".$id."'>К описанию релиза</a>");
 
 if ($row['freefor']) {
 	$row['freefor']=explode(',',$row['freefor']);
 	if (in_array($CURUSER['id'],$row['freefor'])) $userfree=true;
 }
 
-$already_downloaded = @mysql_result(sql_query("SELECT 1 FROM snatched WHERE torrent = $id AND userid = {$CURUSER['id']}"),0);
+$already_downloaded = @mysql_result($REL_DB->query("SELECT 1 FROM snatched WHERE torrent = $id AND userid = {$CURUSER['id']}"),0);
 
 $rating_enabled = (($REL_CRON['rating_enabled'] && ((time()-$CURUSER['added'])>($REL_CRON['rating_freetime']*86400)) && ($row['userid']<>$CURUSER['id']) && (!get_privilege('is_vip')) && !$userfree && !$row['free'] && !$already_downloaded)?true:false);
 
 
-if ($rating_enabled && ($CURUSER['ratingsum']<$REL_CRON['rating_downlimit'])) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('rating_low'));
+if ($rating_enabled && ($CURUSER['ratingsum']<$REL_CRON['rating_downlimit'])) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('rating_low'));
 
 $currating = $CURUSER['ratingsum']-$REL_CRON['rating_perdownload'];
 if ($currating>0) $znak='+';
 /* @var $hubs Get dchubs to display or not dchubs link form */
 $hubs = get_retrackers(false,'dchubs');
 
-if (!$readed) stderr($REL_LANG->say_by_key('downloading_torrent'),($rating_enabled?sprintf($REL_LANG->say_by_key('download_notice'),$REL_CRON['rating_perdownload'],$znak.$currating,$REL_CRON['rating_downlimit']).'<br />':'').'<div align="center"><form action="download.php"><input type="hidden" name="id" value="'.$id.'"><input type="hidden" name="ok" value=""><input type="submit" value="'.$REL_LANG->say_by_key('download_torrent').'">&nbsp;<input type="submit" name="magnet" value="'.$REL_LANG->say_by_key('as_magnet').'">'.(($REL_CONFIG['use_dc']&&$hubs&&$row['tiger_hash'])?'&nbsp;<input type="submit" name="dc_magnet" value="'.$REL_LANG->say_by_key('as_dc_magnet').'">':'').'</form></div>'.(!REL_AJAX?sprintf($REL_LANG->say_by_key('to_details'),$id):''),'success');
+if (!$readed) $REL_TPL->stderr($REL_LANG->say_by_key('downloading_torrent'),($rating_enabled?sprintf($REL_LANG->say_by_key('download_notice'),$REL_CRON['rating_perdownload'],$znak.$currating,$REL_CRON['rating_downlimit']).'<br />':'').'<div align="center"><form action="download.php"><input type="hidden" name="id" value="'.$id.'"><input type="hidden" name="ok" value=""><input type="submit" value="'.$REL_LANG->say_by_key('download_torrent').'">&nbsp;<input type="submit" name="magnet" value="'.$REL_LANG->say_by_key('as_magnet').'">'.(($REL_CONFIG['use_dc']&&$hubs&&$row['tiger_hash'])?'&nbsp;<input type="submit" name="dc_magnet" value="'.$REL_LANG->say_by_key('as_dc_magnet').'">':'').'</form></div>'.(!REL_AJAX?sprintf($REL_LANG->say_by_key('to_details'),$id):''),'success');
 if ($_GET['magnet']) $magnet = true; else $magnet=false;
 if ($_GET['dc_magnet']) $dc_magnet = true; else $dc_magnet=false;
 
@@ -129,21 +129,21 @@ if (!$magnet && !$dc_magnet) {
 	$fn = "torrents/$id.torrent";
 
 	if (!$row || !is_file($fn) || !is_readable($fn))
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('unable_to_read_torrent'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('unable_to_read_torrent'));
 }
 
-sql_query("UPDATE torrents SET hits = hits + 1 WHERE id = ".sqlesc($id));
-if ($rating_enabled) sql_query("UPDATE users SET ratingsum = ratingsum-{$REL_CRON['rating_perdownload']} WHERE id={$CURUSER['id']}");
+$REL_DB->query("UPDATE torrents SET hits = hits + 1 WHERE id = ".sqlesc($id));
+if ($rating_enabled) $REL_DB->query("UPDATE users SET ratingsum = ratingsum-{$REL_CRON['rating_perdownload']} WHERE id={$CURUSER['id']}");
 
 $REL_DB->query("INSERT INTO snatched (userid,torrent,completedat) VALUES ({$CURUSER['id']},$id,".time().")");
 
 if ($dc_magnet) {
-	if (!$row['tiger_hash']) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_tiger'));
+	if (!$row['tiger_hash']) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_tiger'));
 	// look upstairs
-	if (!$hubs) stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('no_dchubs'),$id,$id));
+	if (!$hubs) $REL_TPL->stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('no_dchubs'),$id,$id));
 	$link = make_dc_magnet($row['tiger_hash'],$row['name'],$row['size'],$hubs);
 	$message = $REL_LANG->say_by_key('this_is_dc_magnet').'<h1><a href="'.$link.'">'.$REL_LANG->say_by_key('magnet').'</a></h1>'.(!REL_AJAX?sprintf($REL_LANG->say_by_key('to_details'),$id):'');
-	stderr($REL_LANG->say_by_key('this_is_magnet_title'),$message,'success');
+	$REL_TPL->stderr($REL_LANG->say_by_key('this_is_magnet_title'),$message,'success');
 }
 
 if (mb_strlen($CURUSER['passkey']) != 32) {
@@ -161,7 +161,7 @@ if ($REL_CONFIG['use_xbt']) {
 	$announce_urls_list[] = $REL_CONFIG['defaultbaseurl']."/announce.php?passkey=".$CURUSER['passkey'];
 }
 
-$announce_sql = sql_query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
+$announce_sql = $REL_DB->query("SELECT tracker FROM trackers WHERE torrent=$id AND tracker<>'localhost'");
 while (list($announce) = mysql_fetch_array($announce_sql)) $announce_urls_list[] = $announce;
 
 $retrackers = get_retrackers();
@@ -172,7 +172,7 @@ if (!in_array($announce,$announce_urls_list)) $announce_urls_list[] = $announce;
 if ($magnet) {
 	$link = make_magnet($row['info_hash'],$row['name'],$announce_urls_list);
 	$message = $REL_LANG->say_by_key('this_is_magnet').'<h1><a href="'.$link.'">'.$REL_LANG->say_by_key('magnet').'</a></h1>'.(!REL_AJAX?sprintf($REL_LANG->say_by_key('to_details'),$id):'');
-	stderr($REL_LANG->say_by_key('this_is_magnet_title'),$message,'success');
+	$REL_TPL->stderr($REL_LANG->say_by_key('this_is_magnet_title'),$message,'success');
 }
 put_announce_urls($dict,$announce_urls_list);
 

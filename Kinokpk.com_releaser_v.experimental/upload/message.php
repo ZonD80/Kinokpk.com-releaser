@@ -99,9 +99,9 @@ if ($action == "viewmailbox") {
 	$dt_all = time() - $secs_all; // Сегодня минус количество дней
 
 	if ($mailbox != PM_SENTBOX) {
-		$res = sql_query ( "SELECT m.*, u.username AS sender_username, friends.id AS fid, friends.confirmed AS fconf FROM messages AS m LEFT JOIN users AS u ON m.sender = u.id LEFT JOIN friends ON (friends.userid=m.sender AND friends.friendid={$CURUSER['id']}) OR (friends.friendid=m.sender AND friends.userid={$CURUSER['id']}) WHERE receiver=" . sqlesc ( $CURUSER ['id'] ) . " AND location=" . sqlesc ( $mailbox ) . " AND IF(m.archived_receiver=1, 1=1, IF(m.sender=0,m.added>$dt_system,m.added>$dt_all)) ORDER BY id DESC" ) or sqlerr ( __FILE__, __LINE__ );
+		$res = $REL_DB->query ( "SELECT m.*, u.username AS sender_username, friends.id AS fid, friends.confirmed AS fconf FROM messages AS m LEFT JOIN users AS u ON m.sender = u.id LEFT JOIN friends ON (friends.userid=m.sender AND friends.friendid={$CURUSER['id']}) OR (friends.friendid=m.sender AND friends.userid={$CURUSER['id']}) WHERE receiver=" . sqlesc ( $CURUSER ['id'] ) . " AND location=" . sqlesc ( $mailbox ) . " AND IF(m.archived_receiver=1, 1=1, IF(m.sender=0,m.added>$dt_system,m.added>$dt_all)) ORDER BY id DESC" );
 	} else {
-		$res = sql_query ( "SELECT m.*, u.username AS receiver_username, friends.id AS fid, friends.confirmed AS fconf FROM messages AS m LEFT JOIN users AS u ON m.receiver = u.id LEFT JOIN friends ON (friends.userid=m.receiver AND friends.friendid={$CURUSER['id']}) OR (friends.friendid=m.receiver AND friends.userid={$CURUSER['id']}) WHERE sender=" . sqlesc ( $CURUSER ['id'] ) . " AND saved=1 AND IF(m.archived_receiver<>1, 1=1, IF(m.sender=0,m.added>$dt_system,m.added>$dt_all)) ORDER BY id DESC" ) or sqlerr ( __FILE__, __LINE__ );
+		$res = $REL_DB->query ( "SELECT m.*, u.username AS receiver_username, friends.id AS fid, friends.confirmed AS fconf FROM messages AS m LEFT JOIN users AS u ON m.receiver = u.id LEFT JOIN friends ON (friends.userid=m.receiver AND friends.friendid={$CURUSER['id']}) OR (friends.friendid=m.receiver AND friends.userid={$CURUSER['id']}) WHERE sender=" . sqlesc ( $CURUSER ['id'] ) . " AND saved=1 AND IF(m.archived_receiver<>1, 1=1, IF(m.sender=0,m.added>$dt_system,m.added>$dt_all)) ORDER BY id DESC" );
 	}
 
 	if (mysql_num_rows ( $res ) == 0) {
@@ -201,20 +201,20 @@ if ($action == "viewmailbox") {
 // начало просмотр тела сообщения
 elseif ($action == "viewmessage") {
 	if (! is_valid_id ( $_GET ["id"] ))
-	stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 	$pm_id = (int)$_GET ['id'];
 
 	// Get the message
 	if (!get_privilege('view_pms',false)) {
-		$res = sql_query ( 'SELECT * FROM messages WHERE messages.id=' . sqlesc ( $pm_id ) . ' AND (messages.receiver=' . sqlesc ( $CURUSER ['id'] ) . ' OR (messages.sender=' . sqlesc ( $CURUSER ['id'] ) . ' AND messages.saved=1)) LIMIT 1' ) or sqlerr ( __FILE__, __LINE__ );
+		$res = $REL_DB->query ( 'SELECT * FROM messages WHERE messages.id=' . sqlesc ( $pm_id ) . ' AND (messages.receiver=' . sqlesc ( $CURUSER ['id'] ) . ' OR (messages.sender=' . sqlesc ( $CURUSER ['id'] ) . ' AND messages.saved=1)) LIMIT 1' );
 		if (mysql_num_rows ( $res ) == 0) {
-			stderr ( $REL_LANG->say_by_key('error'), "Такого сообщения не существует." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Такого сообщения не существует." );
 		}
 
 	} else {
-		$res = sql_query ( 'SELECT * FROM messages WHERE messages.id=' . sqlesc ( $pm_id ) );
+		$res = $REL_DB->query ( 'SELECT * FROM messages WHERE messages.id=' . sqlesc ( $pm_id ) );
 		if (mysql_num_rows ( $res ) == 0) {
-			stderr ( $REL_LANG->say_by_key('error'), "Такого сообщения не существует." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Такого сообщения не существует." );
 		}
 		$adminview = 1;
 	}
@@ -223,7 +223,7 @@ elseif ($action == "viewmessage") {
 	$message = mysql_fetch_assoc ( $res );
 	if ($message ['sender'] == $CURUSER ['id']) {
 		// Display to
-		$res2 = sql_query ( "SELECT username FROM users WHERE id=" . sqlesc ( $message ['receiver'] ) ) or sqlerr ( __FILE__, __LINE__ );
+		$res2 = $REL_DB->query ( "SELECT username FROM users WHERE id=" . sqlesc ( $message ['receiver'] ) );
 		$sender = mysql_fetch_array ( $res2 );
 		$sender = "<A href=\"".$REL_SEO->make_link('userdetails','id',$message['receiver'],'username',translit($sender [0]))."\">" . $sender [0] . "</A>";
 		$reply = "";
@@ -234,7 +234,7 @@ elseif ($action == "viewmessage") {
 			$sender = "Системное";
 			$reply = "";
 		} else {
-			$res2 = sql_query ( "SELECT username FROM users WHERE id=" . sqlesc ( $message ['sender'] ) ) or sqlerr ( __FILE__, __LINE__ );
+			$res2 = $REL_DB->query ( "SELECT username FROM users WHERE id=" . sqlesc ( $message ['sender'] ) );
 			$sender = mysql_fetch_array ( $res2 );
 			$sender = "<A href=\"".$REL_SEO->make_link('userdetails','id',$message['sender'],'username',translit($sender [0]))."\">{$sender [0]}</A>";
 			$reply = " [ <A href=\"".$REL_SEO->make_link('message','action','sendmessage','receiver',$message['sender'],'replyto',$pm_id)."\">Ответить</A> ]";
@@ -251,7 +251,7 @@ elseif ($action == "viewmessage") {
 	// Mark message unread
 	if ($adminview && ($CURUSER ['id'] != $message ['receiver']) && ($CURUSER ['id'] != $message ['sender'])) {
 	} else
-	sql_query ( "UPDATE messages SET unread=0 WHERE id=" . sqlesc ( $pm_id ) . " AND receiver=" . sqlesc ( $CURUSER ['id'] ) . " LIMIT 1" );
+	$REL_DB->query ( "UPDATE messages SET unread=0 WHERE id=" . sqlesc ( $pm_id ) . " AND receiver=" . sqlesc ( $CURUSER ['id'] ) . " LIMIT 1" );
 	// Display message
 	$REL_TPL->stdhead( "Личное Сообщение (Тема: $subject)" );
 	?>
@@ -276,7 +276,7 @@ elseif ($action == "viewmessage") {
 	<TR>
 		<TD align="right" colspan=2><?php
 		if ($adminview && ($CURUSER ['id'] != $message ['receiver']) && ($CURUSER ['id'] != $message ['sender'])) {
-			$a_receiver = sql_query ( "SELECT username FROM users WHERE id = " . $message ['receiver'] );
+			$a_receiver = $REL_DB->query ( "SELECT username FROM users WHERE id = " . $message ['receiver'] );
 			$a_receiver = mysql_result ( $a_receiver, 0 );
 
 			print ( '<font color="red">Вы просматриваете это сообщение от прав администратора!</font> Получатель: <a href="'.$REL_SEO->make_link('userdetails','id',$message['receiver'],'username',translit($a_receiver)).'">' . $a_receiver . '</a><br />' );
@@ -295,25 +295,25 @@ elseif ($action == "viewmessage") {
 elseif ($action == "sendmessage") {
 
 	if (! is_valid_id ( $_GET ["receiver"] ))
-	stderr ( $REL_LANG->say_by_key('error'), "Неверное ID получателя" );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Неверное ID получателя" );
 	$receiver = ( int ) $_GET ["receiver"];
 
 	if ($_GET ['replyto'] && ! is_valid_id ( $_GET ["replyto"] ))
-	stderr ( $REL_LANG->say_by_key('error'), "Неверное ID сообщения" );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Неверное ID сообщения" );
 	$replyto = ( int ) $_GET ["replyto"];
 
-	$res = sql_query ( "SELECT * FROM users WHERE id=$receiver" ) or die ( mysql_error () );
+	$res = $REL_DB->query ( "SELECT * FROM users WHERE id=$receiver" ) or die ( mysql_error () );
 	$user = mysql_fetch_assoc ( $res );
 	if (! $user)
-	stderr ( $REL_LANG->say_by_key('error'), "Пользователя с таким ID не существует." );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Пользователя с таким ID не существует." );
 
 	if ($replyto) {
-		$res = sql_query ( "SELECT * FROM messages WHERE id=$replyto" ) or sqlerr ( __FILE__, __LINE__ );
+		$res = $REL_DB->query ( "SELECT * FROM messages WHERE id=$replyto" );
 		$msga = mysql_fetch_assoc ( $res );
 		if ($msga ["receiver"] != $CURUSER ["id"])
-		stderr ( $REL_LANG->say_by_key('error'), "Вы пытаетесь ответить не на свое сообщение!" );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Вы пытаетесь ответить не на свое сообщение!" );
 
-		$res = sql_query ( "SELECT username FROM users WHERE id=" . $msga ["sender"] ) or sqlerr ( __FILE__, __LINE__ );
+		$res = $REL_DB->query ( "SELECT username FROM users WHERE id=" . $msga ["sender"] );
 		$usra = mysql_fetch_assoc ( $res );
 		$body .= "<blockquote>" . format_comment ( $msga ['msg'] ) . "</blockquote><cite>$usra[username]</cite><hr /><br /><br />";
 		// Change
@@ -418,16 +418,16 @@ elseif ($action == 'takemessage') {
 	$archive = $_POST ["archive"];
 	$returnto = urlencode ( $_POST ["returnto"] );
 	if (! is_valid_id ( $receiver ) || ($origmsg && ! is_valid_id ( $origmsg )))
-	stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 	$msg = trim ( $_POST ["msg"] );
 	if (! $msg)
-	stderr ( $REL_LANG->say_by_key('error'), "Пожалуйста введите сообщение!" );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Пожалуйста введите сообщение!" );
 	$subject = trim ( $_POST ['subject'] );
 	if (! $subject)
-	stderr ( $REL_LANG->say_by_key('error'), "Пожалуйста введите тему сообщения!" );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Пожалуйста введите тему сообщения!" );
 
 	// ANTISPAM SYSTEM BEGIN
-	$last_pmres = sql_query ( "SELECT " . time () . "-added AS seconds, msg,id FROM messages WHERE sender=" . $CURUSER ['id'] . " OR poster=" . $CURUSER ['id'] . " ORDER BY added DESC LIMIT 4" );
+	$last_pmres = $REL_DB->query ( "SELECT " . time () . "-added AS seconds, msg,id FROM messages WHERE sender=" . $CURUSER ['id'] . " OR poster=" . $CURUSER ['id'] . " ORDER BY added DESC LIMIT 4" );
 	while ( $last_pmresrow = mysql_fetch_array ( $last_pmres ) ) {
 		$last_pmrow [] = $last_pmresrow;
 		$msgids [] = $last_pmresrow ['id'];
@@ -436,7 +436,7 @@ elseif ($action == 'takemessage') {
 	if ($last_pmrow [0]) {
 		if (($REL_CONFIG ['as_timeout'] > round ( $last_pmrow [0] ['seconds'] )) && $REL_CONFIG ['as_timeout']) {
 			$seconds = $REL_CONFIG ['as_timeout'] - round ( $last_pmrow [0] ['seconds'] );
-			stderr ( $REL_LANG->say_by_key('error'), "На нашем сайте стоит защита от флуда, пожалуйста, повторите попытку через $seconds секунд. <a href=\"javascript: history.go(-1)\">Назад</a>" );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "На нашем сайте стоит защита от флуда, пожалуйста, повторите попытку через $seconds секунд. <a href=\"javascript: history.go(-1)\">Назад</a>" );
 		}
 
 		if ($REL_CONFIG ['as_check_messages'] && ($last_pmrow [0] ['msg'] == $msg) && ($last_pmrow [1] ['msg'] == $msg) && ($last_pmrow [2] ['msg'] == $msg) && ($last_pmrow [3] ['msg'] == $msg)) {
@@ -444,58 +444,58 @@ elseif ($action == 'takemessage') {
 			foreach ( $msgids as $msgid ) {
 				$msgview .= "\n<a href=\"".$REL_SEO->make_link('message','action','viewmessage','id',$msgid)."\">Сообщение с ID={$msgid}</a> от пользователя " . $CURUSER ['username'];
 			}
-			$modcomment = sql_query ( "SELECT modcomment FROM users WHERE id=" . $CURUSER ['id'] );
+			$modcomment = $REL_DB->query ( "SELECT modcomment FROM users WHERE id=" . $CURUSER ['id'] );
 			$modcomment = mysql_result ( $modcomment, 0 );
 			if (strpos ( $modcomment, "Maybe spammer" ) === false) {
 				$reason = sqlesc("Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER ['id'],'username',translit($CURUSER['username']))."\">" . $CURUSER ['username'] . "</a> может быть спамером, т.к. его 5 последних посланных сообщений полностью совпадают.$msgview");
-				sql_query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
+				$REL_DB->query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
 				$modcomment .= "\n" . time () . " - Maybe spammer";
-				sql_query ( "UPDATE users SET modcomment = " . sqlesc ( $modcomment ) . " WHERE id =" . $CURUSER ['id'] );
-				stderr ( $REL_LANG->say_by_key('error'), "На нашем сайте стоит защита от спама, ваши 5 последних сообщений совпадают. В отсылке личного сообщения отказано. <b><u>ВНИМАНИЕ! ЕСЛИ ВЫ ЕЩЕ РАЗ ПОПЫТАЕТЕСЬ ОТПРАВИТЬ ИДЕНТИЧНОЕ СООБЩЕНИЕ, ВЫ БУДЕТЕ АВТОМАТИЧЕСКИ ЗАБЛОКИРОВАНЫ СИСТЕМОЙ!!!</u></b> <a href=\"javascript: history.go(-1)\">Назад</a>" );
+				$REL_DB->query ( "UPDATE users SET modcomment = " . sqlesc ( $modcomment ) . " WHERE id =" . $CURUSER ['id'] );
+				$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "На нашем сайте стоит защита от спама, ваши 5 последних сообщений совпадают. В отсылке личного сообщения отказано. <b><u>ВНИМАНИЕ! ЕСЛИ ВЫ ЕЩЕ РАЗ ПОПЫТАЕТЕСЬ ОТПРАВИТЬ ИДЕНТИЧНОЕ СООБЩЕНИЕ, ВЫ БУДЕТЕ АВТОМАТИЧЕСКИ ЗАБЛОКИРОВАНЫ СИСТЕМОЙ!!!</u></b> <a href=\"javascript: history.go(-1)\">Назад</a>" );
 					
 			} else {
-				sql_query ( "UPDATE users SET enabled=0, dis_reason='Spam' WHERE id=" . $CURUSER ['id'] );
+				$REL_DB->query ( "UPDATE users SET enabled=0, dis_reason='Spam' WHERE id=" . $CURUSER ['id'] );
 
 				$reason = sqlesc("Пользователь ".make_user_link()." забанен системой за спам, его IP адрес (" . $CURUSER ['ip'] . ")");
-				sql_query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
-				stderr ( "Поздравляем!", "Вы успешно забанены системой за спам в Личных Сообщениях! Если вы не согласны с решением системы, <a href=\"".$REL_SEO->make_link('contact')."\">подайте жалобу админам</a>." );
+				$REL_DB->query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
+				$REL_TPL->stderr ( "Поздравляем!", "Вы успешно забанены системой за спам в Личных Сообщениях! Если вы не согласны с решением системы, <a href=\"".$REL_SEO->make_link('contact')."\">подайте жалобу админам</a>." );
 			}
 		}
 		
 	}
 	// ANTISPAM SYSTEM END
-	$pms = sql_query ( "SELECT SUM(1) FROM messages WHERE (receiver = $receiver AND location=1) OR (sender = $receiver AND saved = 1)" );
+	$pms = $REL_DB->query ( "SELECT SUM(1) FROM messages WHERE (receiver = $receiver AND location=1) OR (sender = $receiver AND saved = 1)" );
 	$pms = (int)mysql_result ( $pms, 0 );
 	if ($pms >= $REL_CONFIG ['pm_max'])
-	stderr ( $REL_LANG->say_by_key('error'), "Ящик личных сообщений получателя заполнен, вы не можете отправить ему сообщение." );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Ящик личных сообщений получателя заполнен, вы не можете отправить ему сообщение." );
 
 	if ($save) {
-		$pms = sql_query ( "SELECT SUM(1) FROM messages WHERE (receiver = " . $CURUSER ['id'] . " AND location=1) OR (sender = " . $CURUSER ['id'] . " AND saved = 1)" );
+		$pms = $REL_DB->query ( "SELECT SUM(1) FROM messages WHERE (receiver = " . $CURUSER ['id'] . " AND location=1) OR (sender = " . $CURUSER ['id'] . " AND saved = 1)" );
 		$pms = (int)mysql_result ( $pms, 0 );
 		if ($pms >= $REL_CONFIG ['pm_max'])
-		stderr ( "Невозможно сохранить сообщение", "Ваш ящик личных сообщений заполнен, максимальное кол-во {$REL_CONFIG['pm_max']}. Вы не можете отправить сообщение, вам необходимо очистить ящик личных сообщений" );
+		$REL_TPL->stderr ( "Невозможно сохранить сообщение", "Ваш ящик личных сообщений заполнен, максимальное кол-во {$REL_CONFIG['pm_max']}. Вы не можете отправить сообщение, вам необходимо очистить ящик личных сообщений" );
 	}
 
 	// Change
 	$save = ($save) ? 1 : 0;
 	$archive = ($archive) ? 1 : 0;
 	// End of Change
-	$res = sql_query ( "SELECT email, acceptpms, notifs, last_access AS la FROM users WHERE id=$receiver" ) or sqlerr ( __FILE__, __LINE__ );
+	$res = $REL_DB->query ( "SELECT email, acceptpms, notifs, last_access AS la FROM users WHERE id=$receiver" );
 	$user = mysql_fetch_assoc ( $res );
 	if (! $user)
-	stderr ( $REL_LANG->say_by_key('error'), "Нет пользователя с таким ID $receiver." );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Нет пользователя с таким ID $receiver." );
 	//Make sure recipient wants this message
 
 	if (!get_privilege('is_moderator',false)) {
 		if ($user ["acceptpms"] == "friends") {
-			$res2 = sql_query ( "SELECT * FROM friends WHERE userid=$receiver AND friendid=" . $CURUSER ["id"] ) or sqlerr ( __FILE__, __LINE__ );
+			$res2 = $REL_DB->query ( "SELECT * FROM friends WHERE userid=$receiver AND friendid=" . $CURUSER ["id"] );
 			if (mysql_num_rows ( $res2 ) != 1)
-			stderr ( "Отклонено", "Этот пользователь принимает сообщение только из списка своих друзей" );
+			$REL_TPL->stderr ( "Отклонено", "Этот пользователь принимает сообщение только из списка своих друзей" );
 		} elseif ($user ["acceptpms"] == "no")
-		stderr ( "Отклонено", "Этот пользователь не принимает сообщения." );
+		$REL_TPL->stderr ( "Отклонено", "Этот пользователь не принимает сообщения." );
 	}
-	sql_query ( "INSERT INTO messages (poster, sender, receiver, added, msg, subject, saved, location, archived) VALUES(" . $CURUSER ["id"] . ", " . $CURUSER ["id"] . ",
-	$receiver, '" . time () . "', " . sqlesc ( ($msg) ) . ", " . sqlesc ( $subject ) . ", " . sqlesc ( $save ) . ",  1, " . sqlesc ( $archive ) . ")" ) or sqlerr ( __FILE__, __LINE__ );
+	$REL_DB->query ( "INSERT INTO messages (poster, sender, receiver, added, msg, subject, saved, location, archived) VALUES(" . $CURUSER ["id"] . ", " . $CURUSER ["id"] . ",
+	$receiver, '" . time () . "', " . sqlesc ( ($msg) ) . ", " . sqlesc ( $subject ) . ", " . sqlesc ( $save ) . ",  1, " . sqlesc ( $archive ) . ")" );
 	$sended_id = mysql_insert_id ();
 
 	$username = $CURUSER ["username"];
@@ -517,15 +517,15 @@ elseif ($action == 'takemessage') {
 	if ($origmsg) {
 		if ($delete) {
 			// Make sure receiver of $origmsg is current user
-			$res = sql_query ( "SELECT * FROM messages WHERE id=$origmsg" ) or sqlerr ( __FILE__, __LINE__ );
+			$res = $REL_DB->query ( "SELECT * FROM messages WHERE id=$origmsg" );
 			if (mysql_num_rows ( $res ) == 1) {
 				$arr = mysql_fetch_assoc ( $res );
 				if ($arr ["receiver"] != $CURUSER ["id"])
-				stderr ( $REL_LANG->say_by_key('error'), "Вы пытаетесь удалить не свое сообщение!" );
+				$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Вы пытаетесь удалить не свое сообщение!" );
 				if (! $arr ["saved"])
-				sql_query ( "DELETE FROM messages WHERE id=$origmsg" ) or sqlerr ( __FILE__, __LINE__ );
+				$REL_DB->query ( "DELETE FROM messages WHERE id=$origmsg" );
 				elseif ($arr ["saved"])
-				sql_query ( "UPDATE messages SET location = '0' WHERE id=$origmsg" ) or sqlerr ( __FILE__, __LINE__ );
+				$REL_DB->query ( "UPDATE messages SET location = '0' WHERE id=$origmsg" );
 			}
 		}
 		if (! $returnto)
@@ -536,7 +536,7 @@ elseif ($action == 'takemessage') {
 		die ();
 	} else {
 		safe_redirect($REL_SEO->make_link('message'),2);
-		stderr ( $REL_LANG->say_by_key('success'), $REL_LANG->_("Message was successfuly sent") ,'success');
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('success'), $REL_LANG->_("Message was successfuly sent") ,'success');
 	}
 
 } // конец прием посланного сообщения
@@ -546,7 +546,7 @@ elseif ($action == 'takemessage') {
 elseif ($action == 'mass_pm') {
 	get_privilege('mass_pm');
 	if (! is_valid_id ( $_POST ['n_pms'] ))
-	stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 	$n_pms = ( int ) $_POST ['n_pms'];
 	$pmees = htmlspecialchars ( $_POST ['pmees'] );
 
@@ -614,7 +614,7 @@ elseif ($action == 'takemass_pm') {
 	get_privilege('mass_pm');
 	$msg = trim ( $_POST ["msg"] );
 	if (! $msg)
-	stderr ( $REL_LANG->say_by_key('error'), "Пожалуйста введите сообщение." );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Пожалуйста введите сообщение." );
 	$sender_id = ($_POST ['sender'] == 'system' ? 0 : $CURUSER ['id']);
 	$n_pms = ( int ) $_POST ['n_pms'];
 	$comment = ( string ) $_POST ['comment'];
@@ -623,11 +623,11 @@ elseif ($action == 'takemass_pm') {
 	$subject = trim ( $_POST ['subject'] );
 	$query = "INSERT INTO messages (sender, receiver, added, msg, subject, location, poster) " . "SELECT $sender_id, u.id, " . time () . ", " . sqlesc (  $msg ) . ", " . sqlesc ( $subject ) . ", 1, $sender_id " . $from_is;
 	// End of Change
-	sql_query ( $query ) or sqlerr ( __FILE__, __LINE__ );
+	$REL_DB->query ( $query );
 	$n = mysql_affected_rows ();
 	// add a custom text or stats snapshot to comments in profile
 	if ($comment) {
-		$res = sql_query ( "SELECT u.id, u.modcomment " . $from_is ) or sqlerr ( __FILE__, __LINE__ );
+		$res = $REL_DB->query ( "SELECT u.id, u.modcomment " . $from_is );
 		if (mysql_num_rows ( $res ) > 0) {
 			$l = 0;
 			while ( $user = mysql_fetch_array ( $res ) ) {
@@ -637,75 +637,75 @@ elseif ($action == 'takemass_pm') {
 				$new = $comment;
 
 				$new .= $old ? ("\n" . $old) : $old;
-				sql_query ( "UPDATE users SET modcomment = " . sqlesc ( $new ) . " WHERE id = " . $user ['id'] ) or sqlerr ( __FILE__, __LINE__ );
+				$REL_DB->query ( "UPDATE users SET modcomment = " . sqlesc ( $new ) . " WHERE id = " . $user ['id'] );
 				if (mysql_affected_rows ())
 				$l ++;
 			}
 		}
 	}
 	safe_redirect($REL_SEO->make_link('message'),3);
-	stderr ( $REL_LANG->say_by_key('success'), (($n_pms > 1) ? "$n сообщений из $n_pms было" : "Сообщение было") . " успешно отправлено!" . ($l ? " $l комментарий(ев) в профиле " . (($l > 1) ? "были" : " был") . " обновлен!" : ""), 'success' );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('success'), (($n_pms > 1) ? "$n сообщений из $n_pms было" : "Сообщение было") . " успешно отправлено!" . ($l ? " $l комментарий(ев) в профиле " . (($l > 1) ? "были" : " был") . " обновлен!" : ""), 'success' );
 } //конец прием сообщений из массовой рассылки
 
 
 //начало перемещение, помечание как прочитанного
 elseif ($action == "moveordel") {
 	if (isset ( $_POST ["id"] ) && ! is_valid_id ( $_POST ["id"] ))
-	stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 	$pm_id = $_POST ['id'];
 
 	$pm_box = ( int ) $_POST ['box'];
 	if (! is_array ( $_POST ['messages'] ))
-	stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 	$pm_messages = $_POST ['messages'];
 	if ($_POST ['move']) {
 		if ($pm_id) {
 			// Move a single message
-			@sql_query ( "UPDATE messages SET location=" . sqlesc ( $pm_box ) . ", saved = 1 WHERE id=" . sqlesc ( $pm_id ) . " AND receiver=" . $CURUSER ['id'] . " LIMIT 1" );
+			@$REL_DB->query ( "UPDATE messages SET location=" . sqlesc ( $pm_box ) . ", saved = 1 WHERE id=" . sqlesc ( $pm_id ) . " AND receiver=" . $CURUSER ['id'] . " LIMIT 1" );
 		} else {
 			// Move multiple messages
-			@sql_query ( "UPDATE messages SET location=" . sqlesc ( $pm_box ) . ", saved = 1 WHERE id IN (" . implode ( ", ", array_map ( "sqlesc", array_map ( "intval", $pm_messages ) ) ) . ') AND receiver=' . $CURUSER ['id'] );
+			@$REL_DB->query ( "UPDATE messages SET location=" . sqlesc ( $pm_box ) . ", saved = 1 WHERE id IN (" . implode ( ", ", array_map ( "sqlesc", array_map ( "intval", $pm_messages ) ) ) . ') AND receiver=' . $CURUSER ['id'] );
 		}
 		// Check if messages were moved
 		if (@mysql_affected_rows () == 0) {
-			stderr ( $REL_LANG->say_by_key('error'), "Не возможно переместить сообщения!" );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Не возможно переместить сообщения!" );
 		}
 		safe_redirect($REL_SEO->make_link('message','action','viewmailbox','box',$pm_box));
 		exit ();
 	} elseif ($_POST ['delete']) {
 		if ($pm_id) {
 			// Delete a single message
-			$res = sql_query ( "SELECT * FROM messages WHERE id=" . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+			$res = $REL_DB->query ( "SELECT * FROM messages WHERE id=" . sqlesc ( $pm_id ) );
 			$message = mysql_fetch_assoc ( $res );
 			if ($message ['receiver'] == $CURUSER ['id'] && ! $message ['saved']) {
-				sql_query ( "DELETE FROM messages WHERE id=" . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+				$REL_DB->query ( "DELETE FROM messages WHERE id=" . sqlesc ( $pm_id ) );
 			} elseif ($message ['sender'] == $CURUSER ['id'] && $message ['location'] == PM_DELETED) {
-				sql_query ( "DELETE FROM messages WHERE id=" . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+				$REL_DB->query ( "DELETE FROM messages WHERE id=" . sqlesc ( $pm_id ) );
 			} elseif ($message ['receiver'] == $CURUSER ['id'] && $message ['saved']) {
-				sql_query ( "UPDATE messages SET location=0 WHERE id=" . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+				$REL_DB->query ( "UPDATE messages SET location=0 WHERE id=" . sqlesc ( $pm_id ) );
 			} elseif ($message ['sender'] == $CURUSER ['id'] && $message ['location'] != PM_DELETED) {
-				sql_query ( "UPDATE messages SET saved=0 WHERE id=" . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+				$REL_DB->query ( "UPDATE messages SET saved=0 WHERE id=" . sqlesc ( $pm_id ) );
 			}
 		} else {
 			// Delete multiple messages
 			if (is_array ( $pm_messages ))
 			foreach ( $pm_messages as $id ) {
-				$res = sql_query ( "SELECT * FROM messages WHERE id=" . sqlesc ( ( int ) $id ) );
+				$res = $REL_DB->query ( "SELECT * FROM messages WHERE id=" . sqlesc ( ( int ) $id ) );
 				$message = mysql_fetch_assoc ( $res );
 				if ($message ['receiver'] == $CURUSER ['id'] && ! $message ['saved']) {
-					sql_query ( "DELETE FROM messages WHERE id=" . sqlesc ( ( int ) $id ) ) or sqlerr ( __FILE__, __LINE__ );
+					$REL_DB->query ( "DELETE FROM messages WHERE id=" . sqlesc ( ( int ) $id ) );
 				} elseif ($message ['sender'] == $CURUSER ['id'] && $message ['location'] == PM_DELETED) {
-					sql_query ( "DELETE FROM messages WHERE id=" . sqlesc ( ( int ) $id ) ) or sqlerr ( __FILE__, __LINE__ );
+					$REL_DB->query ( "DELETE FROM messages WHERE id=" . sqlesc ( ( int ) $id ) );
 				} elseif ($message ['receiver'] == $CURUSER ['id'] && $message ['saved']) {
-					sql_query ( "UPDATE messages SET location=0 WHERE id=" . sqlesc ( ( int ) $id ) ) or sqlerr ( __FILE__, __LINE__ );
+					$REL_DB->query ( "UPDATE messages SET location=0 WHERE id=" . sqlesc ( ( int ) $id ) );
 				} elseif ($message ['sender'] == $CURUSER ['id'] && $message ['location'] != PM_DELETED) {
-					sql_query ( "UPDATE messages SET saved=0 WHERE id=" . sqlesc ( ( int ) $id ) ) or sqlerr ( __FILE__, __LINE__ );
+					$REL_DB->query ( "UPDATE messages SET saved=0 WHERE id=" . sqlesc ( ( int ) $id ) );
 				}
 			}
 		}
 		// Check if messages were moved
 		if (@mysql_affected_rows () == 0) {
-			stderr ( $REL_LANG->say_by_key('error'), "Сообщение не может быть удалено!" );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Сообщение не может быть удалено!" );
 		} else {
 			safe_redirect($REL_SEO->make_link('message','action','viewmailbox','box',$pm_box));
 			exit ();
@@ -713,14 +713,14 @@ elseif ($action == "moveordel") {
 	} elseif ($_POST ["markread"]) {
 		//помечаем одно сообщение
 		if ($pm_id) {
-			sql_query ( "UPDATE messages SET unread=0 WHERE id = " . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+			$REL_DB->query ( "UPDATE messages SET unread=0 WHERE id = " . sqlesc ( $pm_id ) );
 		} //помечаем множество сообщений
 		else {
 			if (is_array ( $pm_messages ))
 			foreach ( $pm_messages as $id ) {
-				$res = sql_query ( "SELECT * FROM messages WHERE id=" . sqlesc ( ( int ) $id ) );
+				$res = $REL_DB->query ( "SELECT * FROM messages WHERE id=" . sqlesc ( ( int ) $id ) );
 				$message = mysql_fetch_assoc ( $res );
-				sql_query ( "UPDATE messages SET unread=0 WHERE id = " . sqlesc ( ( int ) $id ) ) or sqlerr ( __FILE__, __LINE__ );
+				$REL_DB->query ( "UPDATE messages SET unread=0 WHERE id = " . sqlesc ( ( int ) $id ) );
 			}
 		}
 		// Проверяем, были ли помечены сообщения
@@ -731,39 +731,39 @@ elseif ($action == "moveordel") {
 	} elseif ($_POST ["archive"]) {
 		//архивируем одно сообщение
 		if ($pm_id) {
-			sql_query ( "UPDATE messages SET archived=IF(sender={$CURUSER['id']},1,archived), archived_receiver=IF(sender={$CURUSER['id']},archived_receiver,1) WHERE id = " . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+			$REL_DB->query ( "UPDATE messages SET archived=IF(sender={$CURUSER['id']},1,archived), archived_receiver=IF(sender={$CURUSER['id']},archived_receiver,1) WHERE id = " . sqlesc ( $pm_id ) );
 		} //архивируем множество сообщений
 		else {
 			if (is_array ( $pm_messages ))
 			foreach ( $pm_messages as $id ) {
-				$res = sql_query ( "SELECT * FROM messages WHERE id=" . sqlesc ( ( int ) $id ) );
+				$res = $REL_DB->query ( "SELECT * FROM messages WHERE id=" . sqlesc ( ( int ) $id ) );
 				$message = mysql_fetch_assoc ( $res );
-				sql_query ( "UPDATE messages SET archived=IF(sender={$CURUSER['id']},1,archived), archived_receiver=IF(sender={$CURUSER['id']},archived_receiver,1) WHERE id = " . sqlesc ( ( int ) $id ) ) or sqlerr ( __FILE__, __LINE__ );
+				$REL_DB->query ( "UPDATE messages SET archived=IF(sender={$CURUSER['id']},1,archived), archived_receiver=IF(sender={$CURUSER['id']},archived_receiver,1) WHERE id = " . sqlesc ( ( int ) $id ) );
 			}
 		}
 
 		safe_redirect($REL_SEO->make_link('message','action','viewmailbox','box',$pm_box),1 );
-		stderr($REL_LANG->say_by_key('success'), "Сообщение(я) архивировано(ы)!",'success');
+		$REL_TPL->stderr($REL_LANG->say_by_key('success'), "Сообщение(я) архивировано(ы)!",'success');
 
 	} elseif ($_POST ["unarchive"]) {
 		//архивируем одно сообщение
 		if ($pm_id) {
-			sql_query ( "UPDATE messages SET archived=IF(sender={$CURUSER['id']},0,archived), archived_receiver=IF(sender={$CURUSER['id']},archived_receiver,0) AND id = " . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+			$REL_DB->query ( "UPDATE messages SET archived=IF(sender={$CURUSER['id']},0,archived), archived_receiver=IF(sender={$CURUSER['id']},archived_receiver,0) AND id = " . sqlesc ( $pm_id ) );
 		} //архивируем множество сообщений
 		else {
 			if (is_array ( $pm_messages ))
 			foreach ( $pm_messages as $id ) {
-				$res = sql_query ( "SELECT * FROM messages WHERE id=" . sqlesc ( ( int ) $id ) );
+				$res = $REL_DB->query ( "SELECT * FROM messages WHERE id=" . sqlesc ( ( int ) $id ) );
 				$message = mysql_fetch_assoc ( $res );
-				sql_query ( "UPDATE messages SET archived=IF(sender={$CURUSER['id']},0,archived), archived_receiver=IF(sender={$CURUSER['id']},archived_receiver,0) AND id = " . sqlesc ( ( int ) $id ) ) or sqlerr ( __FILE__, __LINE__ );
+				$REL_DB->query ( "UPDATE messages SET archived=IF(sender={$CURUSER['id']},0,archived), archived_receiver=IF(sender={$CURUSER['id']},archived_receiver,0) AND id = " . sqlesc ( ( int ) $id ) );
 			}
 		}
 
 		safe_redirect($REL_SEO->make_link('message','action','viewmailbox','box',$pm_box),1 );
-		stderr($REL_LANG->say_by_key('success'), "Сообщение(я) разархивировано(ы)!",'success');
+		$REL_TPL->stderr($REL_LANG->say_by_key('success'), "Сообщение(я) разархивировано(ы)!",'success');
 	}
 
-	stderr ( $REL_LANG->say_by_key('error'), "Нет действия." );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Нет действия." );
 } //конец перемещение, помечание как прочитанного
 
 
@@ -772,17 +772,17 @@ elseif ($action == "forward") {
 	if ($_SERVER ['REQUEST_METHOD'] == 'GET') {
 		// Display form
 		if (! is_valid_id ( $_GET ["id"] ))
-		stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 		$pm_id = $_GET ['id'];
 
 		// Get the message
-		$res = sql_query ( 'SELECT * FROM messages WHERE id=' . sqlesc ( $pm_id ) . ' AND (receiver=' . sqlesc ( $CURUSER ['id'] ) . ' OR sender=' . sqlesc ( $CURUSER ['id'] ) . ') LIMIT 1' ) or sqlerr ( __FILE__, __LINE__ );
+		$res = $REL_DB->query ( 'SELECT * FROM messages WHERE id=' . sqlesc ( $pm_id ) . ' AND (receiver=' . sqlesc ( $CURUSER ['id'] ) . ' OR sender=' . sqlesc ( $CURUSER ['id'] ) . ') LIMIT 1' );
 
 		if (! $res) {
-			stderr ( $REL_LANG->say_by_key('error'), "У вас нет разрешения пересылать это сообщение." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "У вас нет разрешения пересылать это сообщение." );
 		}
 		if (mysql_num_rows ( $res ) == 0) {
-			stderr ( $REL_LANG->say_by_key('error'), "У вас нет разрешения пересылать это сообщение." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "У вас нет разрешения пересылать это сообщение." );
 		}
 		$message = mysql_fetch_assoc ( $res );
 
@@ -795,7 +795,7 @@ elseif ($action == "forward") {
 		$from = $message ['sender'];
 		$orig = $message ['receiver'];
 
-		$res = sql_query ( "SELECT id,username,class,donor,warned,enabled FROM users WHERE id=" . sqlesc ( $orig ) . " OR id=" . sqlesc ( $from ) ) or sqlerr ( __FILE__, __LINE__ );
+		$res = $REL_DB->query ( "SELECT id,username,class,donor,warned,enabled FROM users WHERE id=" . sqlesc ( $orig ) . " OR id=" . sqlesc ( $from ) );
 
 		$orig2 = mysql_fetch_assoc ( $res );
 		$orig_name = make_user_link($orig2);
@@ -856,17 +856,17 @@ elseif ($action == "forward") {
 
 		// Forward the message
 		if (! is_valid_id ( $_POST ["id"] ))
-		stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 		$pm_id = $_POST ['id'];
 
 		// Get the message
-		$res = sql_query ( 'SELECT * FROM messages WHERE id=' . sqlesc ( $pm_id ) . ' AND (receiver=' . sqlesc ( $CURUSER ['id'] ) . ' OR sender=' . sqlesc ( $CURUSER ['id'] ) . ') LIMIT 1' ) or sqlerr ( __FILE__, __LINE__ );
+		$res = $REL_DB->query ( 'SELECT * FROM messages WHERE id=' . sqlesc ( $pm_id ) . ' AND (receiver=' . sqlesc ( $CURUSER ['id'] ) . ' OR sender=' . sqlesc ( $CURUSER ['id'] ) . ') LIMIT 1' );
 		if (! $res) {
-			stderr ( $REL_LANG->say_by_key('error'), "У вас нет разрешения пересылать это сообщение." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "У вас нет разрешения пересылать это сообщение." );
 		}
 
 		if (mysql_num_rows ( $res ) == 0) {
-			stderr ( $REL_LANG->say_by_key('error'), "У вас нет разрешения пересылать это сообщение." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "У вас нет разрешения пересылать это сообщение." );
 		}
 
 		$message = mysql_fetch_assoc ( $res );
@@ -876,12 +876,12 @@ elseif ($action == "forward") {
 		// Try finding a user with specified name
 
 
-		$res = sql_query ( "SELECT id FROM users WHERE LOWER(username)=LOWER(" . sqlesc ( $username ) . ") LIMIT 1" );
+		$res = $REL_DB->query ( "SELECT id FROM users WHERE LOWER(username)=LOWER(" . sqlesc ( $username ) . ") LIMIT 1" );
 		if (! $res) {
-			stderr ( $REL_LANG->say_by_key('error'), "Пользователя, с таким именем не существует." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Пользователя, с таким именем не существует." );
 		}
 		if (mysql_num_rows ( $res ) == 0) {
-			stderr ( $REL_LANG->say_by_key('error'), "Пользователя, с таким именем не существует." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Пользователя, с таким именем не существует." );
 		}
 
 		$to = mysql_fetch_array ( $res );
@@ -891,7 +891,7 @@ elseif ($action == "forward") {
 		if ($message ['sender'] == 0) {
 			$from = "Системное";
 		} else {
-			$res = sql_query ( "SELECT * FROM users WHERE id=" . sqlesc ( $message ['sender'] ) ) or sqlerr ( __FILE__, __LINE__ );
+			$res = $REL_DB->query ( "SELECT * FROM users WHERE id=" . sqlesc ( $message ['sender'] ) );
 			$from = mysql_fetch_assoc ( $res );
 			$from = $from ['username'];
 		}
@@ -907,21 +907,21 @@ elseif ($action == "forward") {
 		//Make sure recipient wants this message
 		if (get_privilege('is_moderator',false)) {
 			if ($from ["acceptpms"] == "friends") {
-				$res2 = sql_query ( "SELECT * FROM friends WHERE userid=$to AND friendid=" . $CURUSER ["id"] ) or sqlerr ( __FILE__, __LINE__ );
+				$res2 = $REL_DB->query ( "SELECT * FROM friends WHERE userid=$to AND friendid=" . $CURUSER ["id"] );
 				if (mysql_num_rows ( $res2 ) != 1)
-				stderr ( "Отклонено", "Этот пользователь принимает сообщение только из списка своих друзей." );
+				$REL_TPL->stderr ( "Отклонено", "Этот пользователь принимает сообщение только из списка своих друзей." );
 			}
 
 			elseif ($from ["acceptpms"] == "no")
-			stderr ( "Отклонено", "Этот пользователь не принимает сообщения." );
+			$REL_TPL->stderr ( "Отклонено", "Этот пользователь не принимает сообщения." );
 		}
 
-		$pms = sql_query ( "SELECT SUM(1) FROM messages WHERE (receiver = " . ($receiver ? $receiver : $to) . " AND location=1) OR (sender = " . ($receiver ? $receiver : $to) . " AND saved = 1) GROUP BY messages.id" );
+		$pms = $REL_DB->query ( "SELECT SUM(1) FROM messages WHERE (receiver = " . ($receiver ? $receiver : $to) . " AND location=1) OR (sender = " . ($receiver ? $receiver : $to) . " AND saved = 1) GROUP BY messages.id" );
 		$pms = mysql_result ( $pms, 0 );
 		if ($pms >= $REL_CONFIG ['pm_max'])
-		stderr ( $REL_LANG->say_by_key('error'), "Ящик личных сообщений получателя заполнен, вы не можете переслать ему сообщение." );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Ящик личных сообщений получателя заполнен, вы не можете переслать ему сообщение." );
 
-		sql_query ( "INSERT INTO messages (poster, sender, receiver, added, subject, msg, location, saved) VALUES(" . $CURUSER ["id"] . ", " . $CURUSER ["id"] . ", $to, '" . time () . "', " . sqlesc ( $subject ) . "," . sqlesc ( ($body) ) . ", " . sqlesc ( PM_INBOX ) . ", " . sqlesc ( $save ) . ")" ) or sqlerr ( __FILE__, __LINE__ );
+		$REL_DB->query ( "INSERT INTO messages (poster, sender, receiver, added, subject, msg, location, saved) VALUES(" . $CURUSER ["id"] . ", " . $CURUSER ["id"] . ", $to, '" . time () . "', " . sqlesc ( $subject ) . "," . sqlesc ( ($body) ) . ", " . sqlesc ( PM_INBOX ) . ", " . sqlesc ( $save ) . ")" );
 		stdmsg ( "Удачно", "ЛС переслано." );
 	}
 } //конец пересылка
@@ -930,37 +930,37 @@ elseif ($action == "forward") {
 //начало удаление сообщения
 elseif ($action == "deletemessage") {
 	if (! is_valid_id ( $_GET ["id"] ))
-	stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 	$pm_id = $_GET ['id'];
 
 	// Delete message
-	$res = sql_query ( "SELECT * FROM messages WHERE id=" . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+	$res = $REL_DB->query ( "SELECT * FROM messages WHERE id=" . sqlesc ( $pm_id ) );
 	if (! $res) {
-		stderr ( $REL_LANG->say_by_key('error'), "Сообщения с таким ID не существует." );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Сообщения с таким ID не существует." );
 	}
 	if (mysql_num_rows ( $res ) == 0) {
-		stderr ( $REL_LANG->say_by_key('error'), "Сообщения с таким ID не существует." );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Сообщения с таким ID не существует." );
 	}
 	$message = mysql_fetch_assoc ( $res );
 	if ($message ['receiver'] == $CURUSER ['id'] && ! $message ['saved']) {
-		$res2 = sql_query ( "DELETE FROM messages WHERE id=" . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+		$res2 = $REL_DB->query ( "DELETE FROM messages WHERE id=" . sqlesc ( $pm_id ) );
 	} elseif ($message ['sender'] == $CURUSER ['id'] && $message ['location'] == PM_DELETED) {
-		$res2 = sql_query ( "DELETE FROM messages WHERE id=" . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+		$res2 = $REL_DB->query ( "DELETE FROM messages WHERE id=" . sqlesc ( $pm_id ) );
 	} elseif ($message ['receiver'] == $CURUSER ['id'] && $message ['saved']) {
-		$res2 = sql_query ( "UPDATE messages SET location=0 WHERE id=" . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+		$res2 = $REL_DB->query ( "UPDATE messages SET location=0 WHERE id=" . sqlesc ( $pm_id ) );
 	} elseif ($message ['sender'] == $CURUSER ['id'] && $message ['location'] != PM_DELETED) {
-		$res2 = sql_query ( "UPDATE messages SET saved=0 WHERE id=" . sqlesc ( $pm_id ) ) or sqlerr ( __FILE__, __LINE__ );
+		$res2 = $REL_DB->query ( "UPDATE messages SET saved=0 WHERE id=" . sqlesc ( $pm_id ) );
 	}
 	if (! $res2) {
-		stderr ( $REL_LANG->say_by_key('error'), "Невозможно удалить сообщение." );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Невозможно удалить сообщение." );
 	}
 	if (mysql_affected_rows () == 0) {
-		stderr ( $REL_LANG->say_by_key('error'), "Невозможно удалить сообщение." );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Невозможно удалить сообщение." );
 	} else {
 		safe_redirect($REL_SEO->make_link('message','action','viewmailbox','id',$message['location']));
 		exit ();
 	}
 	//конец удаление сообщения
 }
-//else stderr("Access Denied.","Unknown action");
+//else $REL_TPL->stderr("Access Denied.","Unknown action");
 ?>

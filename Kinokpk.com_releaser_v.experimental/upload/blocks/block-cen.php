@@ -1,7 +1,7 @@
 <?php
-global  $REL_LANG, $REL_CACHE, $REL_SEO;
+global   $REL_LANG, $REL_CACHE, $REL_SEO, $REL_DB;
 if (!defined('BLOCK_FILE')) {
-	safe_redirect(" ../".$REL_SEO->make_link('index'));
+	safe_redirect($REL_SEO->make_link('index'));
 	exit;
 }
 
@@ -11,7 +11,7 @@ $content .= "<table border=\"1\" width=\"100%\"><tr><td align=\"center\"><a href
 $ctorrents = $REL_CACHE->get('block-cen', 'query');
 
 if ($ctorrents===false) {
-	$ctorrentsrow=sql_query("SELECT * FROM censoredtorrents ORDER BY id DESC LIMIT 3");
+	$ctorrentsrow=$REL_DB->query("SELECT * FROM censoredtorrents ORDER BY id DESC LIMIT 3");
 	$ctorrents = array();
 	while ($ctres = mysql_fetch_array($ctorrentsrow))
 	$ctorrents[] = $ctres;

@@ -16,16 +16,15 @@ loggedinorreturn();
 
 
 
-if (!is_valid_id($_GET['id'])) stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+if (!is_valid_id($_GET['id'])) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 $id = (int) $_GET['id'];
 
-$res = sql_query("SELECT torrents.banned, torrents.name, torrents.descr, torrents.size, torrents.id, torrents.images, torrents.category FROM torrents WHERE torrents.id = $id")
-or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT torrents.banned, torrents.name, torrents.descr, torrents.size, torrents.id, torrents.images, torrents.category FROM torrents WHERE torrents.id = $id");
 $row = mysql_fetch_array($res);
 
 if (!$row || $row["banned"])
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_torrent_with_such_id'));
+$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_torrent_with_such_id'));
 
 
 if ($row['images']) $image = array_shift(explode(",",$row['images']));

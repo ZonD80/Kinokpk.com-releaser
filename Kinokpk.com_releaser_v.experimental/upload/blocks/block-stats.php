@@ -1,7 +1,7 @@
 <?php
-global $REL_LANG, $REL_CONFIG, $REL_CACHE, $REL_SEO;
+global  $REL_LANG, $REL_CONFIG, $REL_CACHE, $REL_SEO, $REL_DB;
 if (!defined('BLOCK_FILE')) {
-	safe_redirect(" ../".$REL_SEO->make_link('index'));
+	safe_redirect($REL_SEO->make_link('index'));
 	exit;
 }
 
@@ -9,7 +9,7 @@ $block_online=$REL_CACHE->get('block-stats', 'queries',300);
 $classes =init_class_array();
 // UPDATE CACHES:
 if ($block_online===false) {
-	$res=sql_query("(SELECT SUM(1) FROM users) UNION ALL
+	$res=$REL_DB->query("(SELECT SUM(1) FROM users) UNION ALL
      (SELECT SUM(1) FROM users WHERE confirmed=0) UNION ALL
       (SELECT SUM(1) FROM users WHERE gender=1) UNION ALL
        (SELECT SUM(1) FROM users WHERE gender=2) UNION ALL
@@ -56,7 +56,7 @@ $female = $block_online['females'];
 $torrents = $block_online['torrents'];
 $nofiler = $block_online['torrents_nofile'];
 $dead = $block_online['torrents_dead'];
-$peersrow = sql_query("(SELECT SUM(1) AS peers FROM peers WHERE seeder=1) UNION (SELECT SUM(1) AS peers FROM peers WHERE seeder=0)");
+$peersrow = $REL_DB->query("(SELECT SUM(1) AS peers FROM peers WHERE seeder=1) UNION (SELECT SUM(1) AS peers FROM peers WHERE seeder=0)");
 while (list($peersarray) = mysql_fetch_array($peersrow))
 $peers[] = $peersarray;
 $seeders = $peers[0];

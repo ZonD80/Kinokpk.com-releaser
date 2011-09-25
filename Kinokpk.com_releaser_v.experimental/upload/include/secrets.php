@@ -25,4 +25,5 @@ define("COOKIE_SECRET",'');
  * @var string
  */
 define("REL_CACHEDRIVER",'native');
+
 ?>

@@ -15,7 +15,7 @@
  * @return string Formatted data
  */
 function maketable($res) {
-	global $REL_LANG, $REL_CONFIG, $cats, $REL_SEO, $disallow_view;
+	global  $REL_LANG, $REL_CONFIG, $cats, $REL_SEO, $disallow_view, $REL_DB;
 	if ($disallow_view&&get_privilege('view_private_user_profiles',false)) $ret.="<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
 	$ret .= "<table class=main border=1 cellspacing=0 cellpadding=5>" . "<tr><td class=colhead align=left>" . $REL_LANG->say_by_key('type') . "</td><td class=colhead>" . $REL_LANG->say_by_key('name') . "</td>" . ($REL_CONFIG ['use_ttl'] ? "<td class=colhead align=center>" . $REL_LANG->say_by_key('ttl') . "</td>" : "") . "<td class=colhead align=center>" . $REL_LANG->say_by_key('size') . "</td><td class=colhead align=right>" . $REL_LANG->say_by_key('details_seeding') . "</td><td class=colhead align=right>" . $REL_LANG->say_by_key('details_leeching') . "</td></tr>\n";
 	while ( $arr = mysql_fetch_assoc ( $res ) ) {
@@ -43,7 +43,7 @@ function maketable($res) {
  * @return void
  */
 function print_content($content) {
-	global $REL_LANG, $id, $user, $type, $REL_TPL, $disallow_view;
+	global  $REL_LANG, $id, $user, $type, $REL_TPL, $disallow_view, $REL_DB;
 	$REL_TPL->stdhead($REL_LANG->say_by_key('history_'.$type));
 	if ($disallow_view&&get_privilege('view_private_user_profiles',false)) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('history_'.$type).sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
@@ -75,17 +75,17 @@ $perpage = $REL_CONFIG['torrentsperpage'];
 
 $allowed_types = array ('relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments', 'friends','seeding','leeching','downloaded','uploaded','presents','nicknames');
 
-$user = mysql_fetch_assoc(sql_query("SELECT username,class,privacy FROM users WHERE id=$id"));
+$user = mysql_fetch_assoc($REL_DB->query("SELECT username,class,privacy FROM users WHERE id=$id"));
 
-$am_i_friend = ($id==$CURUSER['id']?true:@mysql_result(sql_query("SELECT 1 FROM friends WHERE (userid={$CURUSER['id']} AND friendid=$id) OR (friendid={$CURUSER['id']} AND userid=$id) AND confirmed=1"),0));
+$am_i_friend = ($id==$CURUSER['id']?true:@mysql_result($REL_DB->query("SELECT 1 FROM friends WHERE (userid={$CURUSER['id']} AND friendid=$id) OR (friendid={$CURUSER['id']} AND userid=$id) AND confirmed=1"),0));
 $disallow_view = (($user['privacy']=='highest'||$user['privacy']=='strong')&&!$am_i_friend);
-if ($disallow_view&&!get_privilege('view_private_user_profiles',false)) stderr($REL_LANG->_("Error"),$REL_LANG->_('This user uses privacy level, you need to <a href="%s">Become friend of %s</a> to view this page',$REL_SEO->make_link('friends','action','add','id',$id),get_user_class_color($user['class'],$user['username'])));
+if ($disallow_view&&!get_privilege('view_private_user_profiles',false)) $REL_TPL->stderr($REL_LANG->_("Error"),$REL_LANG->_('This user uses privacy level, you need to <a href="%s">Become friend of %s</a> to view this page',$REL_SEO->make_link('friends','action','add','id',$id),get_user_class_color($user['class'],$user['username'])));
 
 if (in_array($type,$allowed_types))
 {
 	if ($type=='uploaded') {
 		$cats = assoc_cats ();
-		$r = sql_query ( "SELECT torrents.id, torrents.name, torrents.seeders, torrents.added, torrents.leechers, torrents.category FROM torrents WHERE owner=$id ORDER BY id DESC" ) or sqlerr ( __FILE__, __LINE__ );
+		$r = $REL_DB->query ( "SELECT torrents.id, torrents.name, torrents.seeders, torrents.added, torrents.leechers, torrents.category FROM torrents WHERE owner=$id ORDER BY id DESC" );
 		if (mysql_num_rows ( $r )) {
 			$torrents = "<table class=main border=1 cellspacing=0 cellpadding=5>\n" . "<tr><td class=colhead>" . $REL_LANG->say_by_key('type') . "</td><td class=colhead>" . $REL_LANG->say_by_key('name') . "</td>" . ($REL_CONFIG ['use_ttl'] ? "<td class=colhead align=center>" . $REL_LANG->say_by_key('ttl') . "</td>" : "") . "<td class=colhead>" . $REL_LANG->say_by_key('tracker_seeders') . "</td><td class=colhead>" . $REL_LANG->say_by_key('tracker_leechers') . "</td></tr>\n";
 			while ( $a = mysql_fetch_assoc ( $r ) ) {
@@ -104,12 +104,12 @@ if (in_array($type,$allowed_types))
 			}
 			if ($hastorrents) $torrents .= "</table>";
 		}
-		if (!$torrents) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
+		if (!$torrents) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
 		print_content($torrents);
 	}
 	elseif ($type=='downloaded') {
 		$cats = assoc_cats ();
-		$r = sql_query ( "SELECT snatched.torrent AS id, snatched.completedat, torrents.name, torrents.seeders, torrents.leechers, torrents.category FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent WHERE snatched.userid = $id AND torrents.owner<>$id GROUP BY id ORDER BY id" ) or sqlerr ( __FILE__, __LINE__ );
+		$r = $REL_DB->query ( "SELECT snatched.torrent AS id, snatched.completedat, torrents.name, torrents.seeders, torrents.leechers, torrents.category FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent WHERE snatched.userid = $id AND torrents.owner<>$id GROUP BY id ORDER BY id" );
 		if (mysql_num_rows ( $r )) {
 			$completed = "<table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n" . "<tr><td class=\"colhead\">Тип</td><td class=\"colhead\">Название</td><td class=\"colhead\">Раздающих</td><td class=\"colhead\">Качающих</td><td class=\"colhead\">{$REL_LANG->_('Date')}</td></tr>\n";
 			if ($id==$CURUSER['id']) $completed.= ('<tr><td align="center" colspan="5">'.$REL_LANG->_('You can download all previous releases in one ZIP-archive without rating decrease<br/><a href="%s">View downloaded releases</a> or <a href="%s">Download ZIP-archive with torrents</a>',$REL_SEO->make_link('userhistory','id',$id,'type','downloaded'),$REL_SEO->make_link('download','a','my')).'</td></tr>');
@@ -123,23 +123,23 @@ if (in_array($type,$allowed_types))
 			}
 			if ($hastorrents) $completed .= "</table>";
 		}
-		if (!$completed) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
+		if (!$completed) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
 		print_content($completed);
 	}
 	elseif ($type=='leeching') {
 		$cats = assoc_cats ();
-		$res = sql_query ( "SELECT peers.torrent, added, torrents.name AS torrentname, size, category, torrents.seeders, torrents.leechers FROM peers LEFT JOIN torrents ON peers.torrent = torrents.id WHERE userid = $id AND seeder=0 GROUP BY peers.torrent" ) or sqlerr ( __FILE__, __LINE__ );
+		$res = $REL_DB->query ( "SELECT peers.torrent, added, torrents.name AS torrentname, size, category, torrents.seeders, torrents.leechers FROM peers LEFT JOIN torrents ON peers.torrent = torrents.id WHERE userid = $id AND seeder=0 GROUP BY peers.torrent" );
 		if (mysql_num_rows ( $res ) > 0)
 		$leeching = maketable ( $res );
-		if (!$leeching) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
+		if (!$leeching) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
 		print_content($leeching);
 	}
 	elseif ($type=='seeding') {
 		$cats = assoc_cats ();
-		$res = sql_query ( "SELECT peers.torrent, added, torrents.name AS torrentname, size, category, torrents.seeders, torrents.leechers FROM peers LEFT JOIN torrents ON peers.torrent = torrents.id WHERE userid = $id AND seeder=1 GROUP BY peers.torrent" ) or sqlerr ( __FILE__, __LINE__ );
+		$res = $REL_DB->query ( "SELECT peers.torrent, added, torrents.name AS torrentname, size, category, torrents.seeders, torrents.leechers FROM peers LEFT JOIN torrents ON peers.torrent = torrents.id WHERE userid = $id AND seeder=1 GROUP BY peers.torrent" );
 		if (mysql_num_rows ( $res ) > 0)
 		$seeding = maketable ( $res );
-		if (!$seeding) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
+		if (!$seeding) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
 		print_content($seeding);
 	}
 
@@ -173,12 +173,12 @@ if (in_array($type,$allowed_types))
 	else $from_select = 'comments';
 	$query = "SELECT SUM(1) FROM ".$from_select."{$leftjoin[$type]} WHERE $where ORDER BY $order";
 
-	$res = sql_query($query) or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query($query);
 
-	$arr = mysql_fetch_row($res) or stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('nothing_found'));
+	$arr = mysql_fetch_row($res) or $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('nothing_found'));
 
 	$count = $arr[0];
-	if (!$count) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
+	if (!$count) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
 
 	$limit = "LIMIT 50";
 
@@ -192,7 +192,7 @@ if (in_array($type,$allowed_types))
 
 		$limit = ajaxpager(25, $count, array('userhistory','id',$id,'name',$user['username'],'type',$type), 'comments-table > tbody:last');
 		$query = "SELECT comments.id, comments.toid, comments.type, comments.ip, comments.ratingsum, comments.text, comments.user, comments.added, comments.editedby, comments.editedat, users.avatar, users.warned, users.username, users.title, users.class, users.donor, users.enabled, users.ratingsum AS urating, users.gender, users.last_access, e.username AS editedbyname, $name[$type] FROM comments LEFT JOIN users ON comments.user = users.id LEFT JOIN users AS e ON comments.editedby = e.id{$leftjoin[$type]} WHERE $where ORDER BY $order $limit";
-		$res = sql_query($query) or sqlerr(__FILE__,__LINE__);
+		$res = $REL_DB->query($query);
 		$commentsarray = prepare_for_commenttable($res);
 		if (!pagercheck()) {
 			print ( "<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
@@ -215,7 +215,7 @@ if (in_array($type,$allowed_types))
 
 	}
 	elseif ($type=='presents') {
-		$presentres = sql_query("SELECT presents.*,users.username,users.class FROM presents LEFT JOIN users ON users.id=presenter WHERE userid=$id ORDER BY id DESC $limit");
+		$presentres = $REL_DB->query("SELECT presents.*,users.username,users.class FROM presents LEFT JOIN users ON users.id=presenter WHERE userid=$id ORDER BY id DESC $limit");
 		while ($prrow = mysql_fetch_assoc($presentres)) {
 			$presents[] = $prrow;
 		}
@@ -246,7 +246,7 @@ if (in_array($type,$allowed_types))
 
 		$REL_TPL->begin_frame($REL_LANG->say_by_key('history_friends').' '.$user['username'].sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 
-		$res = sql_query("SELECT IF (friends.userid={$id},friends.friendid,friends.userid) AS friend, (SELECT 1 FROM friends WHERE (userid=friend AND friendid={$CURUSER['id']}) OR (friendid=friend AND userid={$CURUSER['id']})) AS myfriend, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON IF (friends.userid={$id},u.id=friendid,u.id=userid) LEFT JOIN countries AS c ON c.id = u.country WHERE $where ORDER BY friends.id DESC $limit") or sqlerr(__FILE__, __LINE__);
+		$res = $REL_DB->query("SELECT IF (friends.userid={$id},friends.friendid,friends.userid) AS friend, (SELECT 1 FROM friends WHERE (userid=friend AND friendid={$CURUSER['id']}) OR (friendid=friend AND userid={$CURUSER['id']})) AS myfriend, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON IF (friends.userid={$id},u.id=friendid,u.id=userid) LEFT JOIN countries AS c ON c.id = u.country WHERE $where ORDER BY friends.id DESC $limit");
 
 		print ('<div id="users-table">');
 		print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
@@ -310,5 +310,5 @@ elseif (!isset($_GET['type'])) {
 	$REL_TPL->stdfoot();
 	die();
 }
-else stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_type'));
+else $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_type'));
 ?>

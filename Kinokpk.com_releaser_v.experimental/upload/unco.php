@@ -19,7 +19,7 @@ $REL_TPL->begin_main_frame();
 $REL_TPL->begin_frame($REL_LANG->say_by_key('not_confirmed_users'));
 
 
-$res = sql_query("SELECT * FROM users WHERE confirmed=0 ORDER BY username" ) or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT * FROM users WHERE confirmed=0 ORDER BY username" );
 if( mysql_num_rows($res) != 0 )
 {
 	print'<br /><table width=100% border=1 cellspacing=0 cellpadding=5>';

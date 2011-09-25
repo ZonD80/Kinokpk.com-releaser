@@ -22,7 +22,7 @@ $level = get_class_priority($classes['staffbegin']);
 foreach ($classes as $cid=>$class) {
 	if (is_int($cid)&&$class['priority']&&$class['priority']>=$level) $to_select[] = $cid;
 }
-$res = sql_query("SELECT id,username,class, donor, warned, enabled, (SELECT SUM(1) FROM sessions WHERE uid=users.id AND time>$dt) AS online FROM users WHERE class IN (".implode(',',$to_select).") AND confirmed=1 GROUP BY users.id ORDER BY class DESC, username ASC" ) or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT id,username,class, donor, warned, enabled, (SELECT SUM(1) FROM sessions WHERE uid=users.id AND time>$dt) AS online FROM users WHERE class IN (".implode(',',$to_select).") AND confirmed=1 GROUP BY users.id ORDER BY class DESC, username ASC" );
 
 while ($arr = mysql_fetch_assoc($res))
 {
@@ -90,7 +90,7 @@ $REL_TPL->begin_frame("Администрация");
 
 	// LIST ALL FIRSTLINE SUPPORTERS
 	// Search User Database for Firstline Support and display in alphabetical order
-	$res = sql_query("SELECT users.id, users.enabled, users.last_access, users.username, users.class, users.donor, users.warned, users.supportfor, users.country, countries.name AS name, countries.flagpic AS flagpic FROM users LEFT JOIN countries ON users.country = countries.id WHERE supportfor<>'' AND confirmed=1 ORDER BY username LIMIT 10") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT users.id, users.enabled, users.last_access, users.username, users.class, users.donor, users.warned, users.supportfor, users.country, countries.name AS name, countries.flagpic AS flagpic FROM users LEFT JOIN countries ON users.country = countries.id WHERE supportfor<>'' AND confirmed=1 ORDER BY username LIMIT 10");
 	while ($arr = mysql_fetch_assoc($res))
 	{
 

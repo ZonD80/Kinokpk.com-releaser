@@ -15,32 +15,32 @@ loggedinorreturn();
 
 $rgnewsid = (int) $_GET['id'];
 if (!is_valid_id($rgnewsid))
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 //$action = $_GET["action"];
 //$returnto = $_GET["returnto"];
 
 
 
 
-$sql = sql_query("SELECT * FROM rgnews WHERE id = {$rgnewsid} ORDER BY id DESC") or sqlerr(__FILE__, __LINE__);
+$sql = $REL_DB->query("SELECT * FROM rgnews WHERE id = {$rgnewsid} ORDER BY id DESC");
 
 if (mysql_num_rows($sql) == 0) {
-	stderr($REL_LANG->say_by_key('error'),'Извините...Нет новости с таким ID!');
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'),'Извините...Нет новости с таким ID!');
 
 }
 
 $rgnews = mysql_fetch_assoc($sql);
 
 if (!pagercheck()) {
-	$relgroup = sql_query("SELECT id,name,owners,private FROM relgroups WHERE id={$rgnews['relgroup']}") or sqlerr(__FILE__,__LINE__);
+	$relgroup = $REL_DB->query("SELECT id,name,owners,private FROM relgroups WHERE id={$rgnews['relgroup']}");
 	$relgroup = mysql_fetch_assoc($relgroup);
 
-	if (!$relgroup) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+	if (!$relgroup) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 	if (in_array($CURUSER['id'],@explode(',',$relgroup['owners'])) || (get_privilege('edit_relgroups',false))) $I_OWNER=true;
 
 	if ($relgroup['private']) {
-		if (!$I_OWNER && !in_array($CURUSER['id'],@explode(',',$relgroup['onwers']))) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_access_priv_rg'));
+		if (!$I_OWNER && !in_array($CURUSER['id'],@explode(',',$relgroup['onwers']))) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_access_priv_rg'));
 	}
 
 	$REL_TPL->stdhead("Комментирование новости");
@@ -60,9 +60,9 @@ if (!pagercheck()) {
 	title="<?=makesafe($relgroup['name'])?>" /><? $REL_LANG->say_by_key('no_image')?>
 <div id="input_right" class="relgroups_input_right"><? //print (int)$relgroup['users'].'&nbsp;';
 	//ПЕРЕДЕЛАТЬ
-	//$i_subscribed = @mysql_result(sql_query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid=$id"),0);
+	//$i_subscribed = @mysql_result($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid=$id"),0);
 	if ($relgroup['private'])
-	$i_subscribed = mysql_fetch_row(sql_query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$relgroup['id']}"));
+	$i_subscribed = mysql_fetch_row($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$relgroup['id']}"));
 	if ($i_subscribed) print ("<li><a href=\"".$REL_SEO->make_link('relgroups','id',$relgroup['id'],'action','deny')."\">Отписаться от группы</a></li><li><a href=\"".$REL_SEO->make_link('relgroups','id',$relgroup['id'],'action','invite')."\">{$REL_LANG->say_by_key('create_invite')}</a></li>");
 	else print ("<li>".(($relgroup['private']&&$relgroup['only_invites'])?$REL_LANG->say_by_key('private_group_friend_subscribe'):"<a href=\"".($relgroup['page_pay']?$relgroup['page_pay']:$REL_SEO->make_link('relgroups','id',$id,'action','suggest"'))."\">Подписаться на релизы</a>")."</li>");
 	?></div>
@@ -135,7 +135,7 @@ $FORM_TYPE = 'rgnews';
 $REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 $REL_TPL->display('commenttable_form.tpl');
 
-$subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = ".$rgnewsid." AND type='rgnews'");
+$subres = $REL_DB->query("SELECT SUM(1) FROM comments WHERE toid = ".$rgnewsid." AND type='rgnews'");
 $subrow = mysql_fetch_array($subres);
 $count = $subrow[0];
 
@@ -153,9 +153,9 @@ if (!$count) {
 }
 else {
 
-	$subres = sql_query("SELECT nc.type, nc.id, nc.ip, nc.text, nc.ratingsum, nc.user, nc.added, nc.editedby, nc.editedat, u.avatar, u.warned, ".
+	$subres = $REL_DB->query("SELECT nc.type, nc.id, nc.ip, nc.text, nc.ratingsum, nc.user, nc.added, nc.editedby, nc.editedat, u.avatar, u.warned, ".
                   "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS nc LEFT JOIN users AS u ON nc.user = u.id LEFT JOIN sessions ON nc.user=sessions.uid LEFT JOIN users AS e ON nc.editedby = e.id WHERE nc.toid = " .
-                  "".$rgnewsid." AND nc.type='rgnews' ORDER BY nc.id DESC $limit") or sqlerr(__FILE__, __LINE__);
+                  "".$rgnewsid." AND nc.type='rgnews' ORDER BY nc.id DESC $limit");
 	$allrows = prepare_for_commenttable($subres,$rgnews['subject'],$REL_SEO->make_link('rgnewsoverview','id',$rgnewsid));
 	if (!pagercheck()) {
 		print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >");

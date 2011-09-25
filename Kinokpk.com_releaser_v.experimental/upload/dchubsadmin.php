@@ -20,7 +20,7 @@ if (!isset($_GET['action'])) {
 	$REL_TPL->stdhead($REL_LANG->_('Direct Connect Hubs admincp'));
 	print("<div algin=\"center\"><h1>{$REL_LANG->_('Direct Connect Hubs admincp')}</h1></div>");
 	print("<table width=\"100%\" border=\"0\"><tr><td><a href=\"".$REL_SEO->make_link('dchubsadmin','action','add')."\">{$REL_LANG->_('Add a DC hub')}</a></td></tr></table>");
-	$rtarray = sql_query("SELECT * FROM dchubs ORDER BY sort ASC");
+	$rtarray = $REL_DB->query("SELECT * FROM dchubs ORDER BY sort ASC");
 	print("<form name=\"saveids\" action=\"".$REL_SEO->make_link('dchubsadmin','action','saveids')."\" method=\"post\"><table width=\"100%\" border=\"1\"><tr><td align=\"center\" colspan=\"5\">{$REL_LANG->_('This is panel for Direct Connect Hubs administration, you can enable/disable DC feature <a href="%s">in main configuration</a>',$REL_SEO->make_link('configadmin'))}</td></tr><tr><td class=\"colhead\">ID</td><td class=\"colhead\">{$REL_LANG->say_by_key('order')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('announce_url')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('subnet_mask')}</td><td class=\"colhead\">{$REL_LANG->say_by_key('edit_delete')}</td></tr>");
 	while($rt = mysql_fetch_array($rtarray)) {
 		print("<tr><td>".$rt['id']."</td><td><input type=\"text\" name=\"sort[".$rt['id']."]\" size=\"4\" value=\"".$rt['sort']."\"></td><td>{$rt['announce_url']}</td><td>{$rt['mask']}</td><td><a href=\"".$REL_SEO->make_link('dchubsadmin','action','edit','id',$rt['id'])."\">E</a> | <a onClick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}')\" href=\"".$REL_SEO->make_link('dchubsadmin','action','delete','id',$rt['id'])."\">D</a></td></tr>");
@@ -35,7 +35,7 @@ elseif ($_GET['action'] == 'saveids') {
 
 		foreach ($_POST['sort'] as $id => $s) {
 
-			sql_query("UPDATE dchubs SET sort = ".(int)$s."  WHERE id = " . (int)$id);
+			$REL_DB->query("UPDATE dchubs SET sort = ".(int)$s."  WHERE id = " . (int)$id);
 		}
 		safe_redirect($REL_SEO->make_link('dchubsadmin'));
 		exit();
@@ -51,7 +51,7 @@ elseif ($_GET['action'] == 'add') {
 
 elseif ($_GET['action'] == 'delete') {
 	if ((!isset($_GET['id'])) || ($_GET['id'] == "") || (!is_numeric($_GET['id']))) bark("Wrong ID");
-	sql_query("DELETE FROM dchubs WHERE id = ".(int) $_GET['id']);
+	$REL_DB->query("DELETE FROM dchubs WHERE id = ".(int) $_GET['id']);
 	safe_redirect($REL_SEO->make_link('dchubsadmin'));
 	exit();
 
@@ -60,7 +60,7 @@ elseif ($_GET['action'] == 'delete') {
 elseif ($_GET['action'] == 'edit') {
 	if ((!isset($_GET['id'])) || ($_GET['id'] == "") || (!is_numeric($_GET['id']))) bark("Wrong ID");
 
-	$rtarray = sql_query("SELECT * FROM dchubs WHERE id=".(int)$_GET['id']);
+	$rtarray = $REL_DB->query("SELECT * FROM dchubs WHERE id=".(int)$_GET['id']);
 	list($id,$sort,$announce_url,$mask) = mysql_fetch_array($rtarray);
 
 	$REL_TPL->stdhead($REL_LANG->say_by_key('editing_retracker'));
@@ -69,13 +69,13 @@ elseif ($_GET['action'] == 'edit') {
 }
 
 elseif ($_GET['action'] == 'saveedit') {
-	sql_query("UPDATE dchubs SET announce_url = ".sqlesc(htmlspecialchars((string)$_POST['retracker'])).", mask = ".sqlesc(htmlspecialchars((string)$_POST['mask'])).", sort = ".intval($_POST['sort'])." WHERE id = ".intval($_POST['id']));
+	$REL_DB->query("UPDATE dchubs SET announce_url = ".sqlesc(htmlspecialchars((string)$_POST['retracker'])).", mask = ".sqlesc(htmlspecialchars((string)$_POST['mask'])).", sort = ".intval($_POST['sort'])." WHERE id = ".intval($_POST['id']));
 	safe_redirect($REL_SEO->make_link('dchubsadmin'));
 	exit();
 }
 elseif ($_GET['action'] == 'saveadd') {
 
-	sql_query("INSERT INTO dchubs (announce_url,sort,mask) VALUES (".sqlesc(htmlspecialchars((string)$_POST['retracker'])).", ".intval($_POST['sort']).", ".sqlesc(htmlspecialchars((string)$_POST['mask'])).")");
+	$REL_DB->query("INSERT INTO dchubs (announce_url,sort,mask) VALUES (".sqlesc(htmlspecialchars((string)$_POST['retracker'])).", ".intval($_POST['sort']).", ".sqlesc(htmlspecialchars((string)$_POST['mask'])).")");
 	safe_redirect($REL_SEO->make_link('dchubsadmin'));
 	exit();
 }

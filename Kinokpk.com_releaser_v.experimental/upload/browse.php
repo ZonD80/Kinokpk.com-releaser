@@ -35,7 +35,7 @@ $addparam[] = 'browse';
 if (($cat!=0) && is_valid_id($cat)) {
 
 	$cats = get_full_childs_ids($tree,$cat);
-	if (!$cats) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+	if (!$cats) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 	else {
 		foreach ($cats as $catid) $catq[] = " FIND_IN_SET($catid,torrents.category) ";
 
@@ -75,7 +75,7 @@ if ($relgroup) {
 
 if (get_privilege('is_moderator',false)) { $modview=true; }
 
-if ($unchecked && !$modview) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('unchecked_only_moders'));
+if ($unchecked && !$modview) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('unchecked_only_moders'));
 
 
 if (!is_array($wherea) || !$modview) $wherea[] = "torrents.visible=1 AND torrents.banned=0 AND torrents.moderatedby<>0";
@@ -93,7 +93,7 @@ if (is_array($wherea)) $where = implode(" AND ", $wherea);
 
 // CACHE SYSTEM REMOVED UNTIL 2.75
 
-$res = sql_query("SELECT SUM(1) FROM torrents".($where?" WHERE $where":'')) or sqlerr(__FILE__,__LINE__);
+$res = $REL_DB->query("SELECT SUM(1) FROM torrents".($where?" WHERE $where":''));
 $row = mysql_fetch_array($res);
 $count = $row[0];
 
@@ -101,12 +101,12 @@ $limit = ajaxpager($REL_CONFIG['torrentsperpage'], $count, $addparam, "torrentta
 
 $query = "SELECT torrents.id, torrents.comments, torrents.seeders, torrents.leechers, torrents.freefor,".($modview?" torrents.moderated, torrents.moderatedby, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, torrents.visible, torrents.banned,":'')." torrents.category, torrents.images, torrents.free, torrents.name, torrents.size, torrents.added, torrents.numfiles, torrents.filename, torrents.sticky, torrents.owner, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed, " .
         "users.username, users.class, users.donor, users.enabled, users.warned FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id LEFT JOIN users ON torrents.owner = users.id".($where?" WHERE $where":'')." ORDER BY torrents.sticky DESC, torrents.added DESC $limit";
-$res = sql_query($query) or sqlerr(__FILE__,__LINE__);
+$res = $REL_DB->query($query);
 
 
 $resarray = prepare_for_torrenttable($res);
 
-if (!$resarray) stderr($REL_LANG->say_by_key('error'),"Ничего не найдено. <a href=\"javascript: history.go(-1)\">Назад</a>");
+if (!$resarray) $REL_TPL->stderr($REL_LANG->say_by_key('error'),"Ничего не найдено. <a href=\"javascript: history.go(-1)\">Назад</a>");
 
 if (!pagercheck()) {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('browse'));
@@ -114,7 +114,7 @@ if (!pagercheck()) {
 	$REL_TPL->begin_frame('Список релизов '.($modview?'[<a href="'.$REL_SEO->make_link('browse','unchecked','').'">Показать непроверенные релизы отдельно</a>]':''));
 
 
-	$rgarrayres = sql_query("SELECT id,name FROM relgroups ORDER BY added DESC");
+	$rgarrayres = $REL_DB->query("SELECT id,name FROM relgroups ORDER BY added DESC");
 	while($rgarrayrow = mysql_fetch_assoc($rgarrayres)) {
 		$rgarray[$rgarrayrow['id']] = $rgarrayrow['name'];
 	}

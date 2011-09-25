@@ -20,7 +20,7 @@ $lang_export = substr(trim((string)$_GET['lang_export']),0,2);
 if (isset($_GET['del'])) {
 	$lang = sqlesc(substr(trim((string)$_GET['language']),0,2));
 	$key = sqlesc((trim((string)$_GET['key'])));
-	sql_query("DELETE FROM languages WHERE lkey=$key AND ltranslate=$lang");
+	$REL_DB->query("DELETE FROM languages WHERE lkey=$key AND ltranslate=$lang");
 	$REL_CACHE->clearCache('languages',$lang);
 	$REL_TPL->stderr($REL_LANG->_("Successful"),$REL_LANG->_("Deleted"));
 	//if (!REL_AJAX) safe_redirect(($_SERVER['HTTP_REFERER']),1);
@@ -54,7 +54,7 @@ if (!pagercheck()) {
 
 if (isset($_GET['clearcache'])) {
 	$REL_CACHE->clearGroupCache('languages');
-	stdmsg($REL_LANG->_("Successful"),$REL_LANG->_("Language cache cleared"));
+	$REL_TPL->stdmsg($REL_LANG->_("Successful"),$REL_LANG->_("Language cache cleared"));
 	$REL_TPL->stdfoot();
 	die();
 }
@@ -106,17 +106,17 @@ elseif (isset($_GET['import'])) {
 		$lang = substr(trim((string)$_POST['language']),0,2);
 		$f = $_FILES["langfile"];
 		if (!is_uploaded_file($f["tmp_name"])||!filesize($f["tmp_name"])) {
-			stdmsg($REL_LANG->_("Error"),$REL_LANG->_("File upload error or file size 0 bytes"));
+			$REL_TPL->stdmsg($REL_LANG->_("Error"),$REL_LANG->_("File upload error or file size 0 bytes"));
 			$REL_TPL->stdfoot();
 			die();
 		}
 		$result = $REL_LANG->import_langfile($f["tmp_name"],$lang,$_POST['override']);
 		print ("<h1>{$REL_LANG->_("Importing results")}</h1>");
 		if ($result['errors']) {
-			stdmsg($REL_LANG->_("Error"),implode('<br/>',$result['errors']),'error');
+			$REL_TPL->stdmsg($REL_LANG->_("Error"),implode('<br/>',$result['errors']),'error');
 		}
 		if ($result['words']) {
-			stdmsg($REL_LANG->_("Successfully imported"),implode('<br/>',$result['words']));
+			$REL_TPL->stdmsg($REL_LANG->_("Successfully imported"),implode('<br/>',$result['words']));
 		}
 		$REL_CACHE->clearCache('languages',$lang);
 	}
@@ -135,10 +135,10 @@ elseif (isset($_GET['editor'])) {
 			foreach ($lang as $l=>$word) {
 				$word = (trim((string)$word));
 				$l = substr($l,0,2);
-				sql_query("INSERT INTO languages (lkey,ltranslate,lvalue) VALUES (".sqlesc($key).",".sqlesc($l).",".sqlesc($word).")");
-				if (mysql_errno()==1062) { stdmsg($REL_LANG->_("Error"),'REDECLARATED KEY:"'.$key.'"','error'); $REL_TPL->stdfoot(); die();
+				$REL_DB->query("INSERT INTO languages (lkey,ltranslate,lvalue) VALUES (".sqlesc($key).",".sqlesc($l).",".sqlesc($word).")");
+				if (mysql_errno()==1062) { $REL_TPL->stdmsg($REL_LANG->_("Error"),'REDECLARATED KEY:"'.$key.'"','error'); $REL_TPL->stdfoot(); die();
 				}
-				stdmsg($REL_LANG->_("Successful"),"$l: $key : $word");
+				$REL_TPL->stdmsg($REL_LANG->_("Successful"),"$l: $key : $word");
 			}
 			safe_redirect($REL_SEO->make_link('langadmin','editor','1'),2);
 			$REL_CACHE->clearGroupCache('languages');
@@ -152,15 +152,15 @@ elseif (isset($_GET['editor'])) {
 					if (is_array($chkey)) {
 						foreach ($chkey as $lang=>$keyvalue) {
 							$lang = substr(trim($lang),0,2);
-							sql_query("UPDATE languages SET lkey=".sqlesc($keyvalue).", lvalue=".sqlesc($_POST['val'][$key][$lang])." WHERE lkey=".sqlesc($key)." AND ltranslate = ".sqlesc($lang));
+							$REL_DB->query("UPDATE languages SET lkey=".sqlesc($keyvalue).", lvalue=".sqlesc($_POST['val'][$key][$lang])." WHERE lkey=".sqlesc($key)." AND ltranslate = ".sqlesc($lang));
 							if (mysql_errno()==1062) $fail[] = ($key<>$keyvalue?"{$key}-&gt;{$keyvalue}":$key)." : {$_POST['val'][$key][$lang]}";
 							else
 							$success[] = ($key<>$keyvalue?"{$key}-&gt;{$keyvalue}":$key)." : {$_POST['val'][$key][$lang]}";
 						}
 					}
 				}
-				if ($fail) stdmsg($REL_LANG->_("Error"),implode("<br/>",$fail),'error');
-				if ($success) stdmsg($REL_LANG->_("Successful"),implode("<br/>",$success));
+				if ($fail) $REL_TPL->stdmsg($REL_LANG->_("Error"),implode("<br/>",$fail),'error');
+				if ($success) $REL_TPL->stdmsg($REL_LANG->_("Successful"),implode("<br/>",$success));
 				$REL_CACHE->clearGroupCache('languages');
 				$REL_TPL->stdfoot();
 				die();
@@ -237,12 +237,12 @@ function ajaxdel(key,lang) {
 
 	$limit = ajaxpager(25, $count, array('langadmin','editor','1','search',$search), 'wordstable > tbody:last');
 
-	$res = sql_query("SELECT * FROM languages".($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":'')." ORDER BY lkey DESC $limit");
+	$res = $REL_DB->query("SELECT * FROM languages".($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":'')." ORDER BY lkey DESC $limit");
 
 	while ($row = mysql_fetch_assoc($res)) {
 		print "<tr id=\"{$row['lkey']}-{$row['ltranslate']}\"><td><input type=\"text\" name=\"key[{$row['lkey']}][{$row['ltranslate']}]\" value=\"{$row['lkey']}\" maxlength=\"255\"/></td>".
 	"<td>{$row['ltranslate']}</td>".
-	"<td><textarea name=\"val[".addslashes($row['lkey'])."][{$row['ltranslate']}]\">{$row['lvalue']}</textarea></td><td><a onclick=\"return ajaxdel('".addslashes($row['lkey'])."','{$row['ltranslate']}');\" href=\"{$REL_SEO->make_link("langadmin",'del','','key',$row['lkey'],'language',$row['ltranslate'])}\">{$REL_LANG->_("Delete")}</a></td></tr>";
+	"<td><textarea rows=\"5\" cols=\"100\" name=\"val[".addslashes($row['lkey'])."][{$row['ltranslate']}]\">{$row['lvalue']}</textarea></td><td><a onclick=\"return ajaxdel('".addslashes($row['lkey'])."','{$row['ltranslate']}');\" href=\"{$REL_SEO->make_link("langadmin",'del','','key',$row['lkey'],'language',$row['ltranslate'])}\">{$REL_LANG->_("Delete")}</a></td></tr>";
 	}
 	if (!pagercheck()) {
 		print '<tr><td colspan="4" align="right"><input type="submit" value="'.$REL_LANG->_("Save changes").'"/></td></tr>';

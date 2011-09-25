@@ -75,7 +75,7 @@ if (!$type) {
 	die();
 }
 
-if (!in_array($type,$allowed_types)) stderr($REL_LANG->_("Error"),$REL_LANG->_("Invalid present type or currently you can not to present this, e.g. rating system is inactive."));
+if (!in_array($type,$allowed_types)) $REL_TPL->stderr($REL_LANG->_("Error"),$REL_LANG->_("Invalid present type or currently you can not to present this, e.g. rating system is inactive."));
 
 if (!is_valid_id($to)) {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('presents'));
@@ -140,14 +140,14 @@ $query = $querycount." GROUP BY friends.id";
 	print("<input type=\"submit\" value=\"{$REL_LANG->say_by_key('go')}\">\n");
 	print("</form>\n");
 
-	$res = sql_query("SELECT SUM(1) FROM friends$query") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT SUM(1) FROM friends$query");
 	$count = @mysql_result($res,0);
-	if (!$count) { $REL_TPL->end_frame(); stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_friends'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!$count) { $REL_TPL->end_frame(); $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_friends'),'error'); $REL_TPL->stdfoot(); die(); }
 	//$limit
 
 
 
-	$res = sql_query("(SELECT friends.friendid AS friend, 0 AS init, friends.confirmed AS fconf, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON u.id=friendid LEFT JOIN countries AS c ON c.id = u.country$query_data friends.userid={$CURUSER['id']}) UNION (SELECT friends.userid AS friend, 1 AS init, friends.confirmed AS fconf, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON u.id=userid LEFT JOIN countries AS c ON c.id = u.country$query_data friends.friendid={$CURUSER['id']})") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("(SELECT friends.friendid AS friend, 0 AS init, friends.confirmed AS fconf, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON u.id=friendid LEFT JOIN countries AS c ON c.id = u.country$query_data friends.userid={$CURUSER['id']}) UNION (SELECT friends.userid AS friend, 1 AS init, friends.confirmed AS fconf, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON u.id=userid LEFT JOIN countries AS c ON c.id = u.country$query_data friends.friendid={$CURUSER['id']})");
 
 	print ('<div id="users-table">');
 	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\" width=\"100%\">\n");
@@ -210,40 +210,40 @@ if (!$reason) {
 	$REL_TPL->stdfoot();
 	die();
 }
-$friendres = sql_query("SELECT IF (friends.userid={$CURUSER['id']},friends.friendid,friends.userid) AS friend, users.class, users.username FROM friends LEFT JOIN users ON IF (friends.userid={$CURUSER['id']},users.id=friendid,users.id=userid) WHERE (userid=$fid AND friendid={$CURUSER['id']}) OR (friendid=$fid AND userid={$CURUSER['id']}) AND friends.confirmed=1") or sqlerr(__FILE__,__LINE__);
+$friendres = $REL_DB->query("SELECT IF (friends.userid={$CURUSER['id']},friends.friendid,friends.userid) AS friend, users.class, users.username FROM friends LEFT JOIN users ON IF (friends.userid={$CURUSER['id']},users.id=friendid,users.id=userid) WHERE (userid=$fid AND friendid={$CURUSER['id']}) OR (friendid=$fid AND userid={$CURUSER['id']}) AND friends.confirmed=1");
 $friend = mysql_fetch_assoc($friendres);
-if (!$friend) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_friend'), 'error'); $REL_TPL->stdfoot(); die(); }
+if (!$friend) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_friend'), 'error'); $REL_TPL->stdfoot(); die(); }
 $friendname = '<a href="'.$REL_SEO->make_link('userdetails','id',$friend['friend'],'username',translit($friend['username'])).'">'.get_user_class_color($friend['class'],$friend['username']).'</a>';
 $curusername = make_user_link();
 
 if ($type=='torrent') {
 
 
-	$freerow = sql_query("SELECT name,freefor,owner,orig_owner FROM torrents WHERE id=$to AND NOT FIND_IN_SET($fid,freefor)") or sqlerr(__FILE__,__LINE__);
-	if (!mysql_num_rows($freerow)) {$REL_TPL->end_frame(); stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_present_torrent'),'error'); $REL_TPL->stdfoot(); die(); }
+	$freerow = $REL_DB->query("SELECT name,freefor,owner,orig_owner FROM torrents WHERE id=$to AND NOT FIND_IN_SET($fid,freefor)");
+	if (!mysql_num_rows($freerow)) {$REL_TPL->end_frame(); $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_present_torrent'),'error'); $REL_TPL->stdfoot(); die(); }
 
 	$freeres = mysql_fetch_assoc($freerow);
-	if (($fid==$freeres['owner']) || ($fid==$freeres['orig_owner'])) {$REL_TPL->end_frame(); stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_present_torrent'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (($fid==$freeres['owner']) || ($fid==$freeres['orig_owner'])) {$REL_TPL->end_frame(); $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_present_torrent'),'error'); $REL_TPL->stdfoot(); die(); }
 
 	if (!$freeres['freefor'])
-	sql_query("UPDATE torrents SET freefor=$fid WHERE id=$to") or sqlerr(__FILE__,__LINE__);
+	$REL_DB->query("UPDATE torrents SET freefor=$fid WHERE id=$to");
 	else
-	sql_query("UPDATE torrents SET freefor='{$freeres['freefor']},$fid' WHERE id=$to") or sqlerr(__FILE__,__LINE__);
-	sql_query("UPDATE users SET ratingsum=ratingsum-{$REL_CRON['rating_perdownload']} WHERE id={$CURUSER['id']}") or sqlerr(__FILE__,__LINE__);
+	$REL_DB->query("UPDATE torrents SET freefor='{$freeres['freefor']},$fid' WHERE id=$to");
+	$REL_DB->query("UPDATE users SET ratingsum=ratingsum-{$REL_CRON['rating_perdownload']} WHERE id={$CURUSER['id']}");
 
 }
 
 else {
-	if ($to>=$CURUSER[$type]) {  $REL_TPL->end_frame(); stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_money_'.$type),'error'); $REL_TPL->stdfoot(); die(); }
+	if ($to>=$CURUSER[$type]) {  $REL_TPL->end_frame(); $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_money_'.$type),'error'); $REL_TPL->stdfoot(); die(); }
 
-	sql_query("UPDATE users SET $type=$type+$to WHERE id=$fid") or sqlerr(__FILE__,__LINE__);
-	sql_query("UPDATE users SET $type=$type-$to WHERE id={$CURUSER['id']}") or sqlerr(__FILE__,__LINE__);
+	$REL_DB->query("UPDATE users SET $type=$type+$to WHERE id=$fid");
+	$REL_DB->query("UPDATE users SET $type=$type-$to WHERE id={$CURUSER['id']}");
 }
 
-sql_query("INSERT INTO presents (userid,presenter,type,msg) VALUES ($fid,{$CURUSER['id']},".sqlesc($type).",".sqlesc($reason).")");
+$REL_DB->query("INSERT INTO presents (userid,presenter,type,msg) VALUES ($fid,{$CURUSER['id']},".sqlesc($type).",".sqlesc($reason).")");
 write_sys_msg($fid,sprintf($REL_LANG->say_by_key_to($fid,'presented'),$curusername,sprintf($REL_LANG->say_by_key_to($fid,'presented_'.$type),(($type=='torrent')?"<a href=\"".$REL_SEO->make_link('details','id',$to)."\">{$freeres['name']}</a>":$to)),$CURUSER['id']),$REL_LANG->say_by_key_to($fid,'presents'));
 
-stdmsg($REL_LANG->say_by_key('success'),sprintf($REL_LANG->say_by_key('you_success_presented'),$friendname));
+$REL_TPL->stdmsg($REL_LANG->say_by_key('success'),sprintf($REL_LANG->say_by_key('you_success_presented'),$friendname));
 $REL_TPL->stdfoot();
 
 ?>

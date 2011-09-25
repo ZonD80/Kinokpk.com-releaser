@@ -14,7 +14,7 @@ INIT();
 
 
 if ($CURUSER)
-stderr($REL_LANG->say_by_key('error'), "Вы уже вошли на {$REL_CONFIG['sitename']}!");
+$REL_TPL->stderr($REL_LANG->say_by_key('error'), "Вы уже вошли на {$REL_CONFIG['sitename']}!");
 
 $REL_TPL->stdhead("Вход");
 

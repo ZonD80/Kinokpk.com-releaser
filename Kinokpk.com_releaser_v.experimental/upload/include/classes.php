@@ -15,7 +15,7 @@ if (!defined("IN_TRACKER") && !defined("IN_ANNOUNCE")) die('Direct access to thi
  * @return array Class array
  */
 function init_class_array() {
-	global $REL_CACHE,$REL_DB;
+	global  $REL_CACHE,$REL_DB;
 	$classes = $REL_CACHE->get('system', 'classes');
 	if ($classes===false) {
 		$classes = $REL_DB->query_return("SELECT * FROM classes ORDER BY prior DESC");
@@ -40,7 +40,7 @@ function init_class_array() {
  * @return int User class priority
  */
 function get_class_priority($class=false) {
-	global $CURUSER;
+	global  $CURUSER, $REL_DB;
 	if (!$class && $CURUSER) {
 		return get_class_priority($CURUSER['class']);
 	}
@@ -56,7 +56,7 @@ function get_class_priority($class=false) {
  * @return int User class id
  */
 function get_user_class() {
-	global $CURUSER;
+	global  $CURUSER, $REL_DB;
 	$classes = init_class_array();
 	if ($CURUSER && $classes[$CURUSER['class']]) return $CURUSER['class'];
 	else return $classes['guest'];
@@ -71,7 +71,7 @@ function get_user_class() {
  */
 function get_user_class_color($class, $username)
 {
-	global $REL_LANG;
+	global  $REL_LANG, $REL_DB;
 	$classes = init_class_array();
 	$cl = $classes[$class];
 	if ($cl['style']) {
@@ -91,7 +91,7 @@ function get_user_class_color($class, $username)
  * @return string HTML for form
  */
 function make_classes_checkbox($name,$selected='',$max=false) {
-	global $REL_LANG;
+	global  $REL_LANG, $REL_DB;
 	if ($max) $max = get_class_priority($max);
 	$selected = explode(',',$selected);
 	$classes = init_class_array();
@@ -110,7 +110,7 @@ function make_classes_checkbox($name,$selected='',$max=false) {
  * @return string HTML for select
  */
 function make_classes_select($name='class',$selected=NULL,$max=false) {
-	global $REL_LANG;
+	global  $REL_LANG, $REL_DB;
 	if ($max)  $max = get_class_priority($max);
 	$return .=("<select name=\"class\">\n");
 	$return .=("<option value=\"-\">({$REL_LANG->_('All levels')})</option>\n");
@@ -129,7 +129,7 @@ function make_classes_select($name='class',$selected=NULL,$max=false) {
  * @return string class name
  */
 function get_user_class_name($class) {
-	global $REL_LANG;
+	global  $REL_LANG, $REL_DB;
 	$classes = init_class_array();
 	$cl = $classes[$class];
 	if (!$cl) return $REL_LANG->_('ERROR:No class with id %s',$class);
@@ -149,10 +149,10 @@ function is_valid_user_class($class) {
  * Returns true or false, or dies. Function used to get privileges on privilege given by name
  * @param string $name privilege name
  * @param boolean $die Die or not on false, default true
- * @return boolean True or false on $die=false or generating template stderr/stdmsg event.
+ * @return boolean True or false on $die=false or generating template $REL_TPL->stderr/stdmsg event.
  */
 function get_privilege($name,$die=true) {
-	global $REL_LANG,$REL_CACHE, $REL_DB, $REL_TPL, $CURUSER;
+	global  $REL_LANG,$REL_CACHE, $REL_DB, $REL_TPL, $CURUSER, $REL_DB;
 
 	$privs = $REL_CACHE->get('system', 'privileges');
 	if ($privs===false) {
@@ -200,7 +200,7 @@ function get_privilege($name,$die=true) {
  * @return boolean True on success, false on fail
  */
 function add_privilege($id,$name,$monopoly=false) {
-	global $REL_DB;
+	global  $REL_DB;
 	if (!$monopoly) {
 		$privs = @explode(',',$REL_DB->query_row("SELECT custom_privileges FROM users WHERE id=$id"));
 
@@ -218,7 +218,7 @@ function add_privilege($id,$name,$monopoly=false) {
  * @return boolean True on success, false on fail
  */
 function del_privilege($id,$name) {
-	global $REL_DB;
+	global  $REL_DB;
 	$privs = @explode(',',$REL_DB->query_row("SELECT custom_privileges FROM users WHERE id=$id"));
 
 	if ($privs) {
@@ -238,7 +238,7 @@ function del_privilege($id,$name) {
  * @return boolean True on success, false on fail
  */
 function register_privilege($name,$classes_allowed,$desc,$overwrite=false) {
-	global $REL_DB,$REL_LANG,$REL_CACHE;
+	global  $REL_DB,$REL_LANG,$REL_CACHE, $REL_DB;
 	$classes_allowed = array_map("intval",(array)$classes_allowed);
 
 	$REL_DB->query("INSERT INTO privileges (name,classes_allowed,description) VALUES (".sqlesc(htmlspecialchars($name)).",".sqlesc(implode(",",$classes_allowed)).",".sqlesc(htmlspecialchars($desc)).")".($owerwrite?" ON DUPLICATE KEY UPDATE classes_allowed=".sqlesc(implode(",",$classes_allowed)):''));
@@ -254,7 +254,7 @@ function register_privilege($name,$classes_allowed,$desc,$overwrite=false) {
  * @param string $name Privilege name
  */
 function unregister_privilege($name) {
-	global $REL_DB,$REL_CACHE;
+	global  $REL_DB,$REL_CACHE, $REL_DB;
 	$REL_DB->query("DELETE FROM privileges WHERE name=".sqlesc($name));
 	$uar = $REL_DB->query_return("SELECT id,custom_privileges FROM users WHERE FIND_IN_SET(".sqlesc($name).",custom_privileges)");
 	if ($uar) {

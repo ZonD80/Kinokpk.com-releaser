@@ -21,7 +21,7 @@ require_once "include/benc.php";
 function dltable($name, $arr, $id)
 {
 
-	global $CURUSER, $REL_LANG, $REL_SEO, $REL_DB;
+	global  $CURUSER, $REL_LANG, $REL_SEO, $REL_DB;
 	$s = "<b>" . count($arr) . " $name</b>\n";
 	if (!count($arr))
 	return $s;
@@ -36,7 +36,7 @@ function dltable($name, $arr, $id)
 		// user/ip/port
 		// check if anyone has this ip
 		$s .= "<tr>\n";
-		$query = $REL_DB->query("SELECT ipa,port,mtime FROM xbt_announce_log WHERE info_hash = (SELECT info_hash FROM xbt_files WHERE fid=$id) AND uid = ".$e['uid']) or sqlerr(__FILE__, __LINE__);
+		$query = $REL_DB->query("SELECT ipa,port,mtime FROM xbt_announce_log WHERE info_hash = (SELECT info_hash FROM xbt_files WHERE fid=$id) AND uid = ".$e['uid']);
 			while($subrow = mysql_fetch_array($query)) {
 				$e["ipa"] = long2ip($subrow["ipa"]);
 				$e["port"] = $subrow["port"];
@@ -356,7 +356,7 @@ elseif (isset($_GET['dllist'])) {
 	$downloaders = array();
 	$seeders = array();
 	
-	$subres = $REL_DB->query("SELECT active, xbt_files_users.left, mtime AS la, xbt_files_users.uid, users.username, users.ratingsum, users.class, users.donor, users.warned, users.enabled FROM xbt_files_users INNER JOIN users ON xbt_files_users.uid = users.id WHERE xbt_files_users.fid = $id") or sqlerr(__FILE__, __LINE__);
+	$subres = $REL_DB->query("SELECT active, xbt_files_users.left, mtime AS la, xbt_files_users.uid, users.username, users.ratingsum, users.class, users.donor, users.warned, users.enabled FROM xbt_files_users INNER JOIN users ON xbt_files_users.uid = users.id WHERE xbt_files_users.fid = $id");
 	while ($subrow = mysql_fetch_array($subres)) {
 		if ($subrow["active"] && $subrow["left"]=='0')
 		$seeders[] = $subrow;

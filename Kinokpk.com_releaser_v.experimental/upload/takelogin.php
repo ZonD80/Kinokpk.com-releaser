@@ -10,31 +10,30 @@
 
 require_once("include/bittorrent.php");
 
-if (!mkglobal("email:password"))
-die();
-
 INIT();
 
 
 
 function bark($text = '')
 {
-	global $REL_LANG;
+	global  $REL_LANG, $REL_TPL;
 	if (!$text) $text = $REL_LANG->_("E-mail or password is invalid");
-	stderr($REL_LANG->_("Login error"), $text);
+	$REL_TPL->stderr($REL_LANG->_("Login error"), $text);
 }
 
-$email = (string)$email;
+$email = (string)$_POST['email'];
+$password = (string)$_POST['password'];
+
 if (!validemail($email) && !validusername($email)) bark($REL_LANG->_("Invalid e-mail or username format"));
 
 //var_dump($password);
-$res = sql_query("SELECT * FROM users WHERE email = " . sqlesc($email)." OR username = ". sqlesc($email));
+$res = $REL_DB->query("SELECT * FROM users WHERE email = " . sqlesc($email)." OR username = ". sqlesc($email));
 $row = @mysql_fetch_array($res);
 
 
 
 if (!$row) {
-	stderr($REL_LANG->_('Error'),$REL_LANG->_('You have not registered on this site yet, or this combination of e-mail and password is invalid. You can <a href="%s">Register now</a> or <a href="javascript:history.go(-1);">Try again</a>.',$REL_SEO->make_link("signup")));
+	$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('You have not registered on this site yet, or this combination of e-mail and password is invalid. You can <a href="%s">Register now</a> or <a href="javascript:history.go(-1);">Try again</a>.',$REL_SEO->make_link("signup")));
 }
 
 
@@ -60,9 +59,9 @@ $returnto = strip_tags(trim((string)$_POST['returnto']));
 
 $REL_TPL->stdhead($REL_LANG->_("Successful login"));
 if ($returnto)
-stdmsg($REL_LANG->_("Successful login"),"<a href=\"".$returnto."\">{$REL_LANG->_("Continue")}</a>");
+$REL_TPL->stdmsg($REL_LANG->_("Successful login"),"<a href=\"".$returnto."\">{$REL_LANG->_("Continue")}</a>");
 else
-stdmsg($REL_LANG->_("Successful login"),"<a href=\"".$REL_CONFIG['defaultbaseurl']."\">{$REL_LANG->_("Continue")}</a>");
+$REL_TPL->stdmsg($REL_LANG->_("Successful login"),"<a href=\"".$REL_CONFIG['defaultbaseurl']."\">{$REL_LANG->_("Continue")}</a>");
 $REL_TPL->stdfoot();
 
 ?>

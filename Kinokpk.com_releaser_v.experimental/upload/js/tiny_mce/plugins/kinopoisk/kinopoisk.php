@@ -47,7 +47,7 @@ function search($source,$text)
 function get_content($text, $option)
 
 {
-	global $id;
+	global  $id, $REL_DB;
 	if ($option == 'rusname') {
 		$search = "#class=\"moviename-big\"\>(.*?)\</h1\>#si";
 	}

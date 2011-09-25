@@ -1,7 +1,7 @@
 <?php
-global $REL_LANG, $REL_SEO, $REL_DB;
+global  $REL_LANG, $REL_SEO, $REL_DB;
 if (!defined('BLOCK_FILE')) {
-	safe_redirect(" ../".$REL_SEO->make_lank('index'));
+	safe_redirect($REL_SEO->make_lank('index'));
 	exit;
 }
 

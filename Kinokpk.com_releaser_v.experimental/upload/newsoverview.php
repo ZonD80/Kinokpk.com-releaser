@@ -12,7 +12,7 @@ INIT();
 loggedinorreturn();
 
 $newsid = (int) $_GET['id'];
-if (!is_valid_id($newsid)) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+if (!is_valid_id($newsid)) 			$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 //$action = $_GET["action"];
 //$returnto = $_GET["returnto"];
 
@@ -21,9 +21,9 @@ $REL_TPL->stdhead("Комментирование новости");
 
 if (isset($_GET['id'])) {
 
-	$sql = sql_query("SELECT * FROM news WHERE id = {$newsid} ORDER BY id DESC") or sqlerr(__FILE__, __LINE__);
+	$sql = $REL_DB->query("SELECT * FROM news WHERE id = {$newsid} ORDER BY id DESC");
 	$news = mysql_fetch_assoc($sql);
-	if (!$news) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+	if (!$news) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 	if (!pagercheck()) {
 		$added = mkprettytime($news['added']) . " (" . (get_elapsed_time($news["added"],false)) . " {$REL_LANG->say_by_key('ago')})";
 		print("<h1>{$news['subject']}</h1>\n");
@@ -45,7 +45,7 @@ if (isset($_GET['id'])) {
 	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 	$REL_TPL->display('commenttable_form.tpl');
 	
-	$subres = sql_query("SELECT SUM(1) FROM comments WHERE toid = ".$newsid." AND type='news'");
+	$subres = $REL_DB->query("SELECT SUM(1) FROM comments WHERE toid = ".$newsid." AND type='news'");
 	$subrow = mysql_fetch_array($subres);
 	$count = $subrow[0];
 
@@ -65,9 +65,9 @@ if (isset($_GET['id'])) {
 
 		$limit = ajaxpager(25, $count, array('newsoverview','id',$newsid), 'comments-table > tbody:last');
 
-		$subres = sql_query("SELECT nc.type, nc.id, nc.ip, nc.text, nc.ratingsum, nc.user, nc.added, nc.editedby, nc.editedat, u.avatar, u.warned, ".
+		$subres = $REL_DB->query("SELECT nc.type, nc.id, nc.ip, nc.text, nc.ratingsum, nc.user, nc.added, nc.editedby, nc.editedat, u.avatar, u.warned, ".
                   "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS nc LEFT JOIN users AS u ON nc.user = u.id LEFT JOIN sessions ON nc.user=sessions.uid LEFT JOIN users AS e ON nc.editedby = e.id WHERE nc.toid = " .
-                  "".$newsid." AND nc.type='news' GROUP BY nc.id ORDER BY nc.id DESC $limit") or sqlerr(__FILE__, __LINE__);
+                  "".$newsid." AND nc.type='news' GROUP BY nc.id ORDER BY nc.id DESC $limit");
 		$allrows = prepare_for_commenttable($subres,$news['subject'],$REL_SEO->make_link('newsoverview','id',$newsid));
 		if (!pagercheck()) {
 			print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" style=\"float:left;\">");

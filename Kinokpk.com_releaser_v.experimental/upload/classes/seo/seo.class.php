@@ -11,7 +11,7 @@
 class REL_SEO {
 	private $SR, $SO, $SU;
 	function __construct() {
-		global $REL_CACHE, $REL_DB;
+		global  $REL_CACHE, $REL_DB;
 		$cache = $REL_CACHE->get('system','seorules');
 
 		if ($cache===false) {
@@ -37,7 +37,7 @@ class REL_SEO {
 	 * @return string
 	 */
 	public function make_link() {
-		global $REL_CONFIG;
+		global  $REL_CONFIG, $REL_DB;
 
 		$linkar = func_get_args();
 		if (is_array($linkar[0]))

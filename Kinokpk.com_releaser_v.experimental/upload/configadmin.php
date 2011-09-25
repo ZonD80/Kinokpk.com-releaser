@@ -44,13 +44,13 @@ elseif ($_GET['action'] == 'save'){
 	$updateset = array();
 
 	foreach ($reqparametres as $param) {
-		if (!isset($_POST[$param]) && ($param != 'pron_cats')) stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Field %s does not filled',$param));
+		if (!isset($_POST[$param]) && ($param != 'pron_cats')) $REL_TPL->stderr($REL_LANG->say_by_key('error'),"Некоторые поля не заполнены ($param)");
 		$updateset[] = "UPDATE cache_stats SET cache_value=".sqlesc($_POST[$param])." WHERE cache_name='$param'";
 	}
 
 	if ($_POST['use_captcha'] == 1) {
 		foreach ($captcha_param as $param) {
-			if (!$_POST[$param] || !isset($_POST[$param])) stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Private and public keys of ReCaptcha was not defined'));
+			if (!$_POST[$param] || !isset($_POST[$param])) $REL_TPL->stderr($REL_LANG->say_by_key('error'),"Приватный или публичный ключи капчи не определены");
 			$updateset[] = "UPDATE cache_stats SET cache_value=".sqlesc($_POST[$param])." WHERE cache_name='$param'";
 		}
 	}
@@ -61,7 +61,7 @@ elseif ($_GET['action'] == 'save'){
 		$updateset[] = "UPDATE xbt_config SET value=".sqlesc($value)." WHERE name=".sqlesc($key);
 	}
 
-	foreach ($updateset as $query) sql_query($query);
+	foreach ($updateset as $query) $REL_DB->query($query);
 
 	$REL_CACHE->clearCache('system','config');
 
@@ -69,6 +69,6 @@ elseif ($_GET['action'] == 'save'){
 
 }
 
-else stderr($REL_LANG->say_by_key('error'),$REL_LANG->_("Unknown action"));
+else $REL_TPL->stderr($REL_LANG->say_by_key('error'),"Unknown action");
 
 ?>

@@ -58,9 +58,9 @@ function make_dc_magnet($tiger_hash,$filename,$filesize,$hubs){
  * @return array Array of retrackers or empty array if no retrackers present
  */
 function get_retrackers($all = false, $table = 'retrackers') {
-	global $IPCHECK;
+	global  $IPCHECK, $REL_DB;
 	$ip = getip();
-	$res = sql_query("SELECT announce_url, mask FROM $table ORDER BY sort ASC");
+	$res = $REL_DB->query("SELECT announce_url, mask FROM $table ORDER BY sort ASC");
 	while ($row = mysql_fetch_assoc($res)) {
 		$masks = explode(',',$row['mask']);
 		foreach ($masks as $mask)
@@ -346,7 +346,7 @@ function get_announce_urls($dict){
  * @return void Uses global $dict
  */
 function put_announce_urls($dict,$anarray){
-	global $dict;
+	global  $dict, $REL_DB;
 	$liststring = '';
 	unset($dict['value']['announce']);
 	unset($dict['value']['announce-list']);
@@ -465,7 +465,7 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 	array(
         'method' => 'GET',
     	'header' => 'User-Agent: uTorrent/1820',
-    	'timeout' => 10
+    	'timeout' => 3
 	//'Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2',
 	)
 	);
@@ -489,7 +489,7 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 			@curl_setopt($ch, CURLOPT_HEADER, false);
 			@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 			@curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			@curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+			@curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
 			@curl_setopt($ch, CURLOPT_BUFFERSIZE, 1000);
 			@curl_setopt($ch, CURLOPT_USERAGENT, 'uTorrent/1820');
 
@@ -498,7 +498,7 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 		}
 		$remote_method = 'curl';
 	} 	elseif ( function_exists('fsockopen') ){
-		if ($fp = fsockopen($http_host, preg_replace("#[\D]#i", "", $http_port), $errno, $errstr, 10)) {
+		if ($fp = fsockopen($http_host, preg_replace("#[\D]#i", "", $http_port), $errno, $errstr, 3)) {
 			$h  = "GET ".$http_path.($http_params ? '?'.$http_params : '')." HTTP/1.0\r\n";
 			$h .= "Host: {$http_host}\r\n";
 			$h .= "Connection: close\r\n";

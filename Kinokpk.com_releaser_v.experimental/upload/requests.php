@@ -35,13 +35,13 @@ if ($action == 'new') {
 		$request = $REL_DB->sqlesc($request);
 		$descr = $REL_DB->sqlesc($descr);
 		$cat = $REL_DB->sqlesc($cat);
-		sql_query("INSERT INTO requests (hits,userid, cat, request, descr, added) VALUES(1,$CURUSER[id], $cat, $request, $descr, '" . time() . "')") or sqlerr(__FILE__,__LINE__);
+		$REL_DB->query("INSERT INTO requests (hits,userid, cat, request, descr, added) VALUES(1,$CURUSER[id], $cat, $request, $descr, '" . time() . "')");
 		$id = mysql_insert_id();
 
 
 		$REL_CACHE->clearGroupCache("block-req");
 
-		@sql_query("INSERT INTO addedrequests VALUES(0, $id, $CURUSER[id])") or sqlerr(__FILE__, __LINE__);
+		@$REL_DB->query("INSERT INTO addedrequests VALUES(0, $id, $CURUSER[id])");
 		safe_redirect($REL_SEO->make_link('requests','id',$id));
 		die;
 	}
@@ -92,7 +92,7 @@ if ($action == 'edit') {
 		$descr = $REL_DB->sqlesc($descr);
 		$cat = $REL_DB->sqlesc($cat);
 
-		sql_query("UPDATE requests SET cat=$cat, request=$name, descr=$descr WHERE id=$id") or sqlerr(__FILE__, __LINE__);
+		$REL_DB->query("UPDATE requests SET cat=$cat, request=$name, descr=$descr WHERE id=$id");
 
 
 		$REL_CACHE->clearGroupCache("block-req");
@@ -103,7 +103,7 @@ if ($action == 'edit') {
 	if (!is_valid_id($_GET["id"])) 			$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	$id = (int) $_GET["id"];
 
-	$res = sql_query("SELECT * FROM requests WHERE id = $id");
+	$res = $REL_DB->query("SELECT * FROM requests WHERE id = $id");
 	$row = mysql_fetch_array($res);
 	if ($CURUSER["id"] != $row["userid"])
 	{
@@ -114,7 +114,7 @@ if ($action == 'edit') {
 	if (!$row)
 	die();
 	$where = "WHERE userid = " . $CURUSER["id"] . "";
-	$res2 = sql_query("SELECT * FROM requests $where") or sqlerr(__FILE__, __LINE__);
+	$res2 = $REL_DB->query("SELECT * FROM requests $where");
 	$num2 = mysql_num_rows($res2);
 	print("<form method=post name=form action=\"".$REL_SEO->make_link('requests')."\"></a>\n");
 	print("<table border=1 width=560 cellspacing=0 cellpadding=5>\n");
@@ -138,11 +138,11 @@ if ($action=='reset')
 {
 	if (!is_valid_id($_GET["requestid"])) 			$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	$requestid = (int) $_GET["requestid"];
-	$res = sql_query("SELECT userid, filledby FROM requests WHERE id =$requestid") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT userid, filledby FROM requests WHERE id =$requestid");
 	$arr = mysql_fetch_assoc($res);
 	if (($CURUSER[id] == $arr[userid]) || (get_privilege('requests_operation',false)) || ($CURUSER[id] == $arr[filledby]))
 	{
-		@sql_query("UPDATE requests SET filled='', filledby=0 WHERE id=$requestid") or sqlerr(__FILE__, __LINE__);
+		@$REL_DB->query("UPDATE requests SET filled='', filledby=0 WHERE id=$requestid");
 
 
 		$REL_CACHE->clearGroupCache("block-req");
@@ -164,14 +164,14 @@ if ($action=='filled')
 		$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	}
 
-	$res = sql_query("SELECT users.username, users.id, users.warned, users.donor, users.class, users.enabled, requests.userid, requests.request FROM requests INNER JOIN users ON requests.userid = users.id WHERE requests.id = " . $REL_DB->sqlesc($requestid)) or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT users.username, users.id, users.warned, users.donor, users.class, users.enabled, requests.userid, requests.request FROM requests INNER JOIN users ON requests.userid = users.id WHERE requests.id = " . $REL_DB->sqlesc($requestid));
 	$arr = mysql_fetch_assoc($res);
 	$filledurl = htmlspecialchars($filledurl);
 	$msg = $REL_LANG->_to($arr['userid'],'Your request, <a href="%s"><b>%s</b></a> was done by %s. You can view it by <a href="%s"><b>visiting this link</b></a>. Please do not forget to rate this user and release. If this is not what you requested, or there are some reasons why this does not satisfy you, <a href="%s">visit this link</a>',$REL_SEO->make_link('requests','id',$requestid),$arr['request'],make_user_link(),$filledurl,$REL_SEO->make_link('requests','action','reset','requestid',$requestid));
 	$subject = $REL_LANG->_to($arr['userid'],'Your request is done');
-	sql_query ("UPDATE requests SET filled = " . $REL_DB->sqlesc($filledurl) . ", filledby = $CURUSER[id] WHERE id = " . $REL_DB->sqlesc($requestid)) or sqlerr(__FILE__, __LINE__);
+	$REL_DB->query ("UPDATE requests SET filled = " . $REL_DB->sqlesc($filledurl) . ", filledby = $CURUSER[id] WHERE id = " . $REL_DB->sqlesc($requestid));
 
-	if ($REL_CRON['rating_enabled']) sql_query("UPDATE users SET ratingsum=ratingsum+{$REL_CRON['rating_perrequest']} WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__,__LINE__);
+	if ($REL_CRON['rating_enabled']) $REL_DB->query("UPDATE users SET ratingsum=ratingsum+{$REL_CRON['rating_perrequest']} WHERE id = {$CURUSER['id']}");
 
 	$REL_CACHE->clearGroupCache("block-req");
 
@@ -184,14 +184,14 @@ if ($action == 'vote')
 	if (!is_valid_id($_GET["voteid"])) 			$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	$requestid = (int) $_GET["voteid"];
 	$userid = $CURUSER["id"];
-	$res = sql_query("SELECT * FROM addedrequests WHERE requestid=$requestid AND userid = $userid") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT * FROM addedrequests WHERE requestid=$requestid AND userid = $userid");
 	$arr = mysql_fetch_assoc($res);
 	$voted = $arr;
 	if ($voted) {
 		$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('<p>You already woted for this request. Only one vote per request is allowed.</p><p>Go back to <a href="%s"><b>requests</b></a></p>',$REL_SEO->make_link('viewrequests')));
 	} else {
-		sql_query("UPDATE requests SET hits = hits + 1 WHERE id=$requestid") or sqlerr(__FILE__, __LINE__);
-		@sql_query("INSERT INTO addedrequests VALUES(0, $requestid, $userid)") or sqlerr(__FILE__, __LINE__);
+		$REL_DB->query("UPDATE requests SET hits = hits + 1 WHERE id=$requestid");
+		@$REL_DB->query("INSERT INTO addedrequests VALUES(0, $requestid, $userid)");
 
 
 		$REL_CACHE->clearGroupCache("block-req");
@@ -203,7 +203,7 @@ if ($action == 'vote')
 if (!is_valid_id($_GET["id"])) 			$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 $id = (int) $_GET["id"];
 
-$res = sql_query("SELECT * FROM requests WHERE id = $id") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT * FROM requests WHERE id = $id");
 $num = mysql_fetch_array($res);
 
 if (mysql_num_rows($res) == 0)
@@ -220,7 +220,7 @@ if (!pagercheck()) {
 	print("<tr><td align=left>{$REL_LANG->_('Description')}</td><td width=90% align=left>" . format_comment($num["descr"]) . "</td></tr>");
 	print("<tr><td align=left>{$REL_LANG->_('Added')}</td><td width=90% align=left>".mkprettytime($num[added])."</td></tr>");
 
-	$cres = sql_query("SELECT username, id, class, warned, donor, enabled FROM users WHERE id=$num[userid]");
+	$cres = $REL_DB->query("SELECT username, id, class, warned, donor, enabled FROM users WHERE id=$num[userid]");
 
 	$carr = mysql_fetch_assoc($cres);
 	$username = $carr['username'];
@@ -266,9 +266,9 @@ if (!$count) {
 
 } else {
 	$limit = ajaxpager(25, $count, array('requests','id',$id), 'comments-table > tbody:last');
-	$subres = sql_query("SELECT c.type, c.id, c.ip, c.text, c.ratingsum, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
+	$subres = $REL_DB->query("SELECT c.type, c.id, c.ip, c.text, c.ratingsum, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
 		"u.username, u.title, u.info, u.class, u.donor, u.ratingsum AS urating, u.enabled, s.time AS last_access, e.username AS editedbyname FROM comments c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .
-		"$id AND c.type='req' GROUP BY c.id ORDER BY c.id DESC $limit") or sqlerr(__FILE__, __LINE__);
+		"$id AND c.type='req' GROUP BY c.id ORDER BY c.id DESC $limit");
 	$allrows = prepare_for_commenttable($subres, $s,$REL_SEO->make_link('requests','id',$id));
 	if (!pagercheck()) {
 		print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=main cellSpacing=\"0\" cellPadding=\"5\" width=\"100%\" >");

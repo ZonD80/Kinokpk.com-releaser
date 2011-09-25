@@ -13,12 +13,12 @@ INIT();
 loggedinorreturn();
 
 if (!is_valid_id($_GET["id"]))
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 $id = (int) $_GET["id"];
 
-$res = sql_query("SELECT username, class, email FROM users WHERE id=$id");
-$arr = mysql_fetch_assoc($res) or stderr($REL_LANG->say_by_key('error'), "Нет такого пользователя.");
+$res = $REL_DB->query("SELECT username, class, email FROM users WHERE id=$id");
+$arr = mysql_fetch_assoc($res) or $REL_TPL->stderr($REL_LANG->say_by_key('error'), "Нет такого пользователя.");
 $username = $arr["username"];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST")
@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 	$from_email = substr(trim($_POST["from_email"]), 0, 80);
 	if ($from_email == "") $from_email = $REL_CONFIG['siteemail'];
-	if (!strpos($from_email, "@")) stderr($REL_LANG->say_by_key('error'), "Введеный e-mail адрес не похож на верный.");
+	if (!strpos($from_email, "@")) $REL_TPL->stderr($REL_LANG->say_by_key('error'), "Введеный e-mail адрес не похож на верный.");
 
 	$from = "$from <$from_email>";
 
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	if ($subject == "") $subject = "(Без темы)";
 
 	$message = trim($_POST["message"]);
-	if ($message == "") stderr($REL_LANG->say_by_key('error'), "Вы не ввели сообщение!");
+	if ($message == "") $REL_TPL->stderr($REL_LANG->say_by_key('error'), "Вы не ввели сообщение!");
 
 	$message = "Сообщение отправлено от пользователя ".$CURUSER['username']." в " . date("Y-m-d H:i:s") . " GMT.\n" .
 		"Внимание: Отвечая на это письмо, вы раскроете ваш e-mail адрес.\n" .
@@ -49,9 +49,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$success = sent_mail($to, $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], $subject, $message);
 
 	if ($success)
-	stderr($REL_LANG->say_by_key('success'), "E-mail успешно отправлен.");
+	$REL_TPL->stderr($REL_LANG->say_by_key('success'), "E-mail успешно отправлен.");
 	else
-	stderr($REL_LANG->say_by_key('error'), "Письмо не может быть отправлено. Пожалуйтса, попробуйте позже.");
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), "Письмо не может быть отправлено. Пожалуйтса, попробуйте позже.");
 }
 
 $REL_TPL->stdhead("Отправить e-mail");

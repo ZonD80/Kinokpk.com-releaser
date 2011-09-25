@@ -18,13 +18,13 @@ $secs = 1 * 300;//Время выборки (5 последних минут)
 $dt = time() - $secs;
 
 
-$res = sql_query("SELECT SUM(1) FROM sessions $searchs WHERE time > $dt");
+$res = $REL_DB->query("SELECT SUM(1) FROM sessions $searchs WHERE time > $dt");
 $row = mysql_fetch_array($res);
 $count = $row[0];
 $per_list = 100;
 
 $limit = "LIMIT 50";
-$spy_res = sql_query("SELECT url, uid, username, class, ip, useragent FROM sessions WHERE time > $dt ORDER BY uid ASC $limit");
+$spy_res = $REL_DB->query("SELECT url, uid, username, class, ip, useragent FROM sessions WHERE time > $dt ORDER BY uid ASC $limit");
 
 echo "<table  class=\"embedded\" cellspacing=\"0\" cellpadding=\"3\" width=\"100%\"><tr><td class=\"colhead\" align=\"center\" colspan=\"3\">Где находятся пользователи (активность за последние 5 минут)</td></tr>";
 

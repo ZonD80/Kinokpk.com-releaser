@@ -51,18 +51,18 @@ $REL_SEO = new REL_SEO();
 require_once(ROOT_PATH . 'classes/lang/lang.class.php');
 $REL_LANG = new REL_LANG($REL_CONFIG);
 
-$cronrow = $REL_DB->query("SELECT * FROM cron WHERE cron_name IN ('in_cleanup','autoclean_interval','max_dead_torrent_time','pm_delete_sys_days','pm_delete_user_days','signup_timeout','ttl_days','announce_interval','delete_votes','rating_freetime','rating_enabled','rating_perleech','rating_perseed','rating_checktime','rating_dislimit','promote_rating','rating_max')") or sqlerr(__FILE__,__LINE__);
+$cronrow = $REL_DB->query("SELECT * FROM cron WHERE cron_name IN ('in_cleanup','autoclean_interval','max_dead_torrent_time','pm_delete_sys_days','pm_delete_user_days','signup_timeout','ttl_days','announce_interval','delete_votes','rating_freetime','rating_enabled','rating_perleech','rating_perseed','rating_checktime','rating_dislimit','promote_rating','rating_max')");
 
 while ($cronres = mysql_fetch_assoc($cronrow)) $REL_CRON[$cronres['cron_name']] = $cronres['cron_value'];
 
 if ($REL_CRON['in_cleanup']) die('Cleanup already running');
 
-$REL_DB->query("UPDATE cron SET cron_value=".time()." WHERE cron_name='last_cleanup'") or sqlerr(__FILE__,__LINE__);
+$REL_DB->query("UPDATE cron SET cron_value=".time()." WHERE cron_name='last_cleanup'");
 
-$REL_DB->query("UPDATE cron SET cron_value=1 WHERE cron_name='in_cleanup'") or sqlerr(__FILE__,__LINE__);
+$REL_DB->query("UPDATE cron SET cron_value=1 WHERE cron_name='in_cleanup'");
 
 $torrents = array();
-$res = $REL_DB->query('SELECT fid,seeders,leechers FROM xbt_files') or sqlerr(__FILE__,__LINE__);
+$res = $REL_DB->query('SELECT fid,seeders,leechers FROM xbt_files');
 while ($row = mysql_fetch_assoc($res)) {
 	$torrents["seeders = {$row['seeders']}, leechers={$row['leechers']}, lastchecked={$time}"][] = $row['fid'];
 }
@@ -70,14 +70,14 @@ while ($row = mysql_fetch_assoc($res)) {
 if ($torrents) {
 	$ids = array();
 	foreach ($torrents AS $to_set=> $to_ids) {
-		$REL_DB->query("UPDATE trackers SET $to_set WHERE torrent IN (".implode(',',$to_ids).") AND tracker='localhost'") or sqlerr(__FILE__,__LINE__);
+		$REL_DB->query("UPDATE trackers SET $to_set WHERE torrent IN (".implode(',',$to_ids).") AND tracker='localhost'");
 		$ids = array_merge($ids,$to_ids);
 	}
 }
 
-$REL_DB->query("UPDATE trackers SET seeders=0, leechers=0, lastchecked=$time WHERE tracker='localhost'".($ids?" AND torrent NOT IN (".implode(',',$ids).")":'')) or sqlerr(__FILE__,__LINE__);
+$REL_DB->query("UPDATE trackers SET seeders=0, leechers=0, lastchecked=$time WHERE tracker='localhost'".($ids?" AND torrent NOT IN (".implode(',',$ids).")":''));
 
-$res = $REL_DB->query("SELECT torrent, SUM(seeders) AS seeders, SUM(leechers) AS leechers FROM trackers GROUP BY torrent") or sqlerr(__FILE__,__LINE__);
+$res = $REL_DB->query("SELECT torrent, SUM(seeders) AS seeders, SUM(leechers) AS leechers FROM trackers GROUP BY torrent");
 
 $torrents = array();
 while ($row = mysql_fetch_assoc($res)) {
@@ -85,7 +85,7 @@ while ($row = mysql_fetch_assoc($res)) {
 }
 if ($torrents) {
 	foreach ($torrents AS $to_set=> $to_ids) {
-		$REL_DB->query("UPDATE torrents SET $to_set WHERE id IN (".implode(',',$to_ids).")") or sqlerr(__FILE__,__LINE__);
+		$REL_DB->query("UPDATE torrents SET $to_set WHERE id IN (".implode(',',$to_ids).")");
 			
 	}
 }
@@ -93,7 +93,7 @@ if ($torrents) {
  $secs = 31*86400;
  $dt = time() - $secs;
  $maxclass = UC_POWER_USER;
- $res = $REL_DB->query("SELECT id,avatar FROM users WHERE confirmed=1 AND class <= $maxclass AND last_access < $dt AND last_access <> 0") or sqlerr(__FILE__,__LINE__);
+ $res = $REL_DB->query("SELECT id,avatar FROM users WHERE confirmed=1 AND class <= $maxclass AND last_access < $dt AND last_access <> 0");
  while ($arr = mysql_fetch_assoc($res)) {
  $avatar = $arr['avatar'];
  delete_user($arr['id']);
@@ -105,16 +105,16 @@ if ($torrents) {
 //Удаляем системные прочтенные сообщения старше n дней
 $secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
 $dt_system = time() - $secs_system; // Сегодня минус количество дней
-$REL_DB->query("DELETE FROM messages WHERE sender = 0 AND archived = 0 AND archived_receiver = 0 AND unread = 0 AND added < $dt_system") or sqlerr(__FILE__, __LINE__);
+$REL_DB->query("DELETE FROM messages WHERE sender = 0 AND archived = 0 AND archived_receiver = 0 AND unread = 0 AND added < $dt_system");
 //Удаляем ВСЕ прочтенные сообщения старше n дней
 $secs_all = $REL_CRON['pm_delete_user_days']*86400; // Количество дней
 $dt_all = time() - $secs_all; // Сегодня минус количество дней
-$REL_DB->query("DELETE FROM messages WHERE unread = 0 AND archived = 0 AND archived_receiver = 0 AND added < $dt_all") or sqlerr(__FILE__, __LINE__);
+$REL_DB->query("DELETE FROM messages WHERE unread = 0 AND archived = 0 AND archived_receiver = 0 AND added < $dt_all");
 
 
 // delete unconfirmed users if timeout.
 $deadtime = time() - ($REL_CRON['signup_timeout']*86400);
-$res = $REL_DB->query("SELECT id FROM users WHERE confirmed=0 AND last_access < $deadtime") or sqlerr(__FILE__,__LINE__);
+$res = $REL_DB->query("SELECT id FROM users WHERE confirmed=0 AND last_access < $deadtime");
 if (mysql_num_rows($res) > 0) {
 	while ($arr = mysql_fetch_array($res)) {
 		delete_user($arr['id']);
@@ -123,12 +123,12 @@ if (mysql_num_rows($res) > 0) {
 	}
 }
 //отключение предупрежденных пользователей (у тех у кого 5 звезд)
-/*$res = $REL_DB->query("SELECT id, username, modcomment FROM users WHERE num_warned > 4 AND enabled = 1 ") or sqlerr(__FILE__,__LINE__);
+/*$res = $REL_DB->query("SELECT id, username, modcomment FROM users WHERE num_warned > 4 AND enabled = 1 ");
  $num = mysql_num_rows($res);
  while ($arr = mysql_fetch_assoc($res)) {
  $modcom = sqlesc(date("Y-m-d") . " - Отключен системой (5 и более предупреждений) " . "\n". $arr[modcomment]);
- $REL_DB->query("UPDATE users SET enabled = 0, dis_reason = 'Отключен системой (5 и более предупреждений)' WHERE id = $arr[id]") or sqlerr(__FILE__, __LINE__);
- $REL_DB->query("UPDATE users SET modcomment = $modcom WHERE id = $arr[id]") or sqlerr(__FILE__, __LINE__);
+ $REL_DB->query("UPDATE users SET enabled = 0, dis_reason = 'Отключен системой (5 и более предупреждений)' WHERE id = $arr[id]");
+ $REL_DB->query("UPDATE users SET modcomment = $modcom WHERE id = $arr[id]");
  write_log("Пользователь $arr[username] был отключен системой (5 и более предупреждений)","tracker");
  }
  */
@@ -174,8 +174,8 @@ if (mysql_num_rows($res) > 0) {
 $now = time();
 $modcomment = sqlesc(date("Y-m-d") . " - Предупреждение снято системой по таймауту.\n");
 $msg = sqlesc("Ваше предупреждение снято по таймауту. Постарайтесь больше не получать предупреждений и следовать правилам.\n");
-$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster) SELECT 0, id, $now, $msg, 0 FROM users WHERE warned=1 AND warneduntil < ".time()." AND warneduntil <> 0") or sqlerr(__FILE__,__LINE__);
-$REL_DB->query("UPDATE users SET warned=0, warneduntil = 0, modcomment = CONCAT($modcomment, modcomment) WHERE warned=1 AND warneduntil < ".time()." AND warneduntil <> 0") or sqlerr(__FILE__,__LINE__);
+$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster) SELECT 0, id, $now, $msg, 0 FROM users WHERE warned=1 AND warneduntil < ".time()." AND warneduntil <> 0");
+$REL_DB->query("UPDATE users SET warned=0, warneduntil = 0, modcomment = CONCAT($modcomment, modcomment) WHERE warned=1 AND warneduntil < ".time()." AND warneduntil <> 0");
 
 // promote power users
 /* MODIFY TO CLASS SYSTEM & XBT
@@ -183,20 +183,20 @@ $REL_DB->query("UPDATE users SET warned=0, warneduntil = 0, modcomment = CONCAT(
  $msg = sqlesc("Наши поздравления, вы были авто-повышены до ранга <b>Опытный пользовать</b>.");
  $subject = sqlesc("Вы были повышены");
  $modcomment = sqlesc(date("Y-m-d") . " - Повышен до уровня \"".$REL_LANG->say_by_key("class_power_user")."\" системой.\n");
- $REL_DB->query("UPDATE users SET class = ".UC_POWER_USER.", modcomment = CONCAT($modcomment, modcomment) WHERE class = ".UC_USER." AND ratingsum>={$REL_CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
- $REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, id, $now, $msg, 0, $subject FROM users WHERE class = ".UC_USER." AND ratingsum>={$REL_CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
+ $REL_DB->query("UPDATE users SET class = ".UC_POWER_USER.", modcomment = CONCAT($modcomment, modcomment) WHERE class = ".UC_USER." AND ratingsum>={$REL_CRON['promote_rating']}");
+ $REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, id, $now, $msg, 0, $subject FROM users WHERE class = ".UC_USER." AND ratingsum>={$REL_CRON['promote_rating']}");
 
  // demote power users
  $msg = sqlesc("Вы были авто-понижены с ранга <b>Опытный пользователь</b> до ранга <b>Пользователь</b> потому-что ваш рейтинг упал ниже <b>+{$REL_CRON['promote_rating']}</b>.");
  $subject = sqlesc("Вы были понижены");
  $modcomment = sqlesc(date("Y-m-d") . " - Понижен до уровня \"".$REL_LANG->say_by_key("class_user")."\" системой.\n");
- $REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, id, $now, $msg, 0, $subject FROM users WHERE class = 1 AND ratingsum<{$REL_CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
- $REL_DB->query("UPDATE users SET class = ".UC_USER.", modcomment = CONCAT($modcomment, modcomment) WHERE class = ".UC_POWER_USER." AND ratingsum<{$REL_CRON['promote_rating']}") or sqlerr(__FILE__,__LINE__);
+ $REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, id, $now, $msg, 0, $subject FROM users WHERE class = 1 AND ratingsum<{$REL_CRON['promote_rating']}");
+ $REL_DB->query("UPDATE users SET class = ".UC_USER.", modcomment = CONCAT($modcomment, modcomment) WHERE class = ".UC_POWER_USER." AND ratingsum<{$REL_CRON['promote_rating']}");
  }
  // delete old torrents MODIFY TO XBT!
  /*if ($REL_CRON['use_ttl']) {
  $dt = time() - ($REL_CRON['ttl_days'] * 86400);
- $res = $REL_DB->query("SELECT id, name FROM torrents WHERE last_action < $dt") or sqlerr(__FILE__,__LINE__);
+ $res = $REL_DB->query("SELECT id, name FROM torrents WHERE last_action < $dt");
  while ($arr = mysql_fetch_assoc($res))
  {
  deletetorrent($arr['id']);

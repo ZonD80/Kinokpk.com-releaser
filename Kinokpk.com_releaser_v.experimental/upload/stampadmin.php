@@ -11,8 +11,8 @@
 require_once "include/bittorrent.php";
 
 function bark($msg) {
-	global $REL_LANG;
-	stderr($REL_LANG->say_by_key('error'), $msg);
+	global  $REL_LANG, $REL_DB;
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $msg);
 }
 
 INIT();
@@ -24,7 +24,7 @@ if (!isset($_GET['action'])) {
 	$REL_TPL->stdhead("Админка штампов и печатей");
 	print("<div algin=\"center\"><h1>Админка штампов</h1></div>");
 	print("<table width=\"100%\" border=\"0\"><tr><td><a href=\"".$REL_SEO->make_link('stampadmin','action','add')."\">Добавить штамп</a></td></tr></table>");
-	$stamparray = sql_query("SELECT * FROM stamps ORDER BY id ASC");
+	$stamparray = $REL_DB->query("SELECT * FROM stamps ORDER BY id ASC");
 	print("<form name=\"saveids\" action=\"".$REL_SEO->make_link('stampadmin','action','saveids')."\" method=\"post\"><table width=\"100%\" border=\"1\"><tr><td class=\"colhead\">ID</td><td class=\"colhead\">Картинка</td><td class=\"colhead\">Порядок</td><td class=\"colhead\">Класс доступа</td><td class=\"colhead\">Ред/Уд</td></tr>");
 	while($stamp = mysql_fetch_array($stamparray)) {
 		print("<tr><td>".$stamp['id']."</td><td><img src=\"pic/stamp/".$stamp['image']."\"></td><td><input type=\"text\" name=\"sort[".$stamp['id']."]\" size=\"4\" value=\"".$stamp['sort']."\"></td><td>".get_user_class_name($stamp['class'])."</td><td><a href=\"".$REL_SEO->make_link('stampadmin','action','edit','id',$stamp['id'])."\">E</a> | <a onClick=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('stampadmin','action','delete','id',$stamp['id'])."\">D</a></td></tr>");
@@ -39,7 +39,7 @@ elseif ($_GET['action'] == 'saveids') {
 
 		foreach ($_POST['sort'] as $id => $s) {
 
-			sql_query("UPDATE stamps SET sort = ".intval($s)."  WHERE id = " . $id);
+			$REL_DB->query("UPDATE stamps SET sort = ".intval($s)."  WHERE id = " . $id);
 		}
 		safe_redirect($REL_SEO->make_link('stampadmin'));
 		exit();
@@ -64,7 +64,7 @@ elseif ($_GET['action'] == 'add') {
 
 elseif ($_GET['action'] == 'delete') {
 	if ((!isset($_GET['id'])) || ($_GET['id'] == "") || (!is_numeric($_GET['id']))) bark("Wrong ID");
-	sql_query("DELETE FROM stamps WHERE id = ".$_GET['id']);
+	$REL_DB->query("DELETE FROM stamps WHERE id = ".$_GET['id']);
 	safe_redirect($REL_SEO->make_link('stampadmin'));
 	exit();
 
@@ -73,7 +73,7 @@ elseif ($_GET['action'] == 'delete') {
 elseif ($_GET['action'] == 'edit') {
 	if ((!isset($_GET['id'])) || ($_GET['id'] == "") || (!is_numeric($_GET['id']))) bark("Wrong ID");
 
-	$stamparray = sql_query("SELECT * FROM stamps WHERE id=".$_GET['id']);
+	$stamparray = $REL_DB->query("SELECT * FROM stamps WHERE id=".$_GET['id']);
 	list($id,$sort,$class,$image) = mysql_fetch_array($stamparray);
 
 	$REL_TPL->stdhead("Редактирование штампа");
@@ -91,13 +91,13 @@ elseif ($_GET['action'] == 'edit') {
 }
 
 elseif ($_GET['action'] == 'saveedit') {
-	sql_query("UPDATE stamps SET image=".sqlesc(htmlspecialchars((string)$_POST['image'])).",sort=".intval($_POST['sort']).",class=".intval($_POST['class'])." WHERE id=".intval($_POST['id']));
+	$REL_DB->query("UPDATE stamps SET image=".sqlesc(htmlspecialchars((string)$_POST['image'])).",sort=".intval($_POST['sort']).",class=".intval($_POST['class'])." WHERE id=".intval($_POST['id']));
 	safe_redirect($REL_SEO->make_link('stampadmin'));
 	exit();
 }
 elseif ($_GET['action'] == 'saveadd') {
 
-	sql_query("INSERT INTO stamps (image,sort,class) VALUES (".sqlesc(htmlspecialchars((string)$_POST['image'])).",".intval($_POST['sort']).",".intval($_POST['class']).")");
+	$REL_DB->query("INSERT INTO stamps (image,sort,class) VALUES (".sqlesc(htmlspecialchars((string)$_POST['image'])).",".intval($_POST['sort']).",".intval($_POST['class']).")");
 	safe_redirect($REL_SEO->make_link('stampadmin'));
 	exit();
 }

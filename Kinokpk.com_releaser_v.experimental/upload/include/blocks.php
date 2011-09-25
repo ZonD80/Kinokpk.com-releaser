@@ -28,7 +28,7 @@ function render_content($text) {
  * @return void
  */
 function show_blocks($position) {
-	global $CURUSER, $REL_CONFIG, $REL_CACHE, $REL_TPL, $REL_LANG, $orbital_blocks;
+	global  $CURUSER, $REL_CONFIG, $REL_CACHE, $REL_TPL, $REL_LANG, $orbital_blocks, $REL_DB;
 
 	if (!$REL_CONFIG['use_blocks']) return '';
 
@@ -36,14 +36,14 @@ function show_blocks($position) {
 		$orbital_blocks = $REL_CACHE->get('blocks', 'query');
 		if($orbital_blocks===false){
 			$orbital_blocks = array();
-			$blocks_res = sql_query("SELECT * FROM orbital_blocks WHERE active = 1 ORDER BY weight ASC") or sqlerr(__FILE__,__LINE__);
+			$blocks_res = $REL_DB->query("SELECT * FROM orbital_blocks WHERE active = 1 ORDER BY weight ASC");
 			while ($blocks_row = mysql_fetch_array($blocks_res))
 			$orbital_blocks[] = $blocks_row;
 			$REL_CACHE->set('blocks', 'query', $orbital_blocks);
 		}
 	}
 
-	//$blocks = sql_query("SELECT * FROM orbital_blocks WHERE bposition = ".sqlesc($position)." AND active = 1 ORDER BY weight ASC") or sqlerr(__FILE__,__LINE__);
+	//$blocks = $REL_DB->query("SELECT * FROM orbital_blocks WHERE bposition = ".sqlesc($position)." AND active = 1 ORDER BY weight ASC");
 	foreach ( $orbital_blocks as $block ) {
 		$bid = $block ["bid"];
 		$title = $block ["title"];

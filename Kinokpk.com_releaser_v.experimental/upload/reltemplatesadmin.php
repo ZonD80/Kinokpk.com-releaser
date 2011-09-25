@@ -28,7 +28,7 @@ $action = (string)$_GET['action'];
 if (!$action) {
 	print('<table width="100%">');
 	print('<tr><td class="colhead">ID</td><td class="colhead">'.$REL_LANG->say_by_key('name').'</td><td class="colhead">'.$REL_LANG->say_by_key('content').'</td><td class="colhead">'.$REL_LANG->say_by_key('actions').'</td></tr>');
-	$reltemplatesq = sql_query("SELECT * FROM reltemplates");
+	$reltemplatesq = $REL_DB->query("SELECT * FROM reltemplates");
 	while ($reltemplate = mysql_fetch_assoc($reltemplatesq))
 	print ("<tr><td>{$reltemplate['id']}</td><td>{$reltemplate['name']}</td><td>".format_comment($reltemplate['content'])."</td><td><a href=\"".$REL_SEO->make_link('reltemplatesadmin','action','edit','id',$reltemplate['id'])."\">{$REL_LANG->say_by_key('edit')}</a><br /><a onclick=\"return confirm('{$REL_LANG->say_by_key('are_you_sure')}');\" href=\"".$REL_SEO->make_link('reltemplatesadmin','action','delete','id',$reltemplate['id'])."\">{$REL_LANG->say_by_key('del')}</a></td></tr>");
 	print('</table>');
@@ -41,20 +41,20 @@ elseif ($action=='add') {
 	tr('','<input type="submit" value="'.$REL_LANG->say_by_key('add').'"/>',1);
 	print('</table></form>');
 } elseif ($action=='saveadd') {
-	if (!$_POST['tname'] || !$_POST['tcontent']) {stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('some_fields_blank'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!$_POST['tname'] || !$_POST['tcontent']) {$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('some_fields_blank'),'error'); $REL_TPL->stdfoot(); die(); }
 
-	sql_query("INSERT INTO reltemplates (name,content) VALUES (".sqlesc(htmlspecialchars($_POST['tname'])).",".sqlesc($_POST['tcontent']).")");
-	stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('editing_succ'));
+	$REL_DB->query("INSERT INTO reltemplates (name,content) VALUES (".sqlesc(htmlspecialchars($_POST['tname'])).",".sqlesc($_POST['tcontent']).")");
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('editing_succ'));
 }
 
 elseif ($action=='edit') {
 	$id=(int)$_GET['id'];
-	if (!$id) {stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!$id) {$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
 
-	$res = sql_query("SELECT name,content FROM reltemplates WHERE id=$id");
+	$res = $REL_DB->query("SELECT name,content FROM reltemplates WHERE id=$id");
 	$row = mysql_fetch_assoc($res);
 
-	if (!$row){stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!$row){$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
 
 	print('<form action="'.$REL_SEO->make_link('reltemplatesadmin','action','saveedit','id',$id).'" method="POST"><table width="100%">');
 	tr($REL_LANG->say_by_key('name'),'<input type="text" name="tname" size="100" value="'.$row['name'].'"/>',1);
@@ -64,17 +64,17 @@ elseif ($action=='edit') {
 	print('</table></form>');
 } elseif ($action=='saveedit') {
 	$id=(int)$_GET['id'];
-	if (!$id) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!$id) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
 
-	if (!$_POST['tname'] || !$_POST['tcontent']) {stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('some_fields_blank'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!$_POST['tname'] || !$_POST['tcontent']) {$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('some_fields_blank'),'error'); $REL_TPL->stdfoot(); die(); }
 
-	sql_query("UPDATE reltemplates SET name=".sqlesc(htmlspecialchars($_POST['tname'])).", content=".sqlesc($_POST['tcontent'])." WHERE id=$id");
-	stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('editing_succ'));
+	$REL_DB->query("UPDATE reltemplates SET name=".sqlesc(htmlspecialchars($_POST['tname'])).", content=".sqlesc($_POST['tcontent'])." WHERE id=$id");
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('editing_succ'));
 } elseif ($action=='delete') {
 	$id=(int)$_GET['id'];
-	if (!$id) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
-	sql_query("DELETE FROM reltemplates WHERE id=$id");
-	stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('editing_succ'));
+	if (!$id) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
+	$REL_DB->query("DELETE FROM reltemplates WHERE id=$id");
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('editing_succ'));
 }
 $REL_TPL->end_frame();
 $REL_TPL->stdfoot();

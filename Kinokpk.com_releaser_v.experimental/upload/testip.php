@@ -21,15 +21,15 @@ else
 $ip = htmlspecialchars(trim((string)$_GET["ip"]));
 if ($ip)
 {
-	$res = sql_query("SELECT mask FROM bans");
+	$res = $REL_DB->query("SELECT mask FROM bans");
 	while (list($mask) = mysql_fetch_array($res))
 	$maskres[] = $mask;
 	$ipsniff = new IPAddressSubnetSniffer($maskres);
 	if (!$ipsniff->ip_is_allowed($ip) )
-	stderr($REL_LANG->say_by_key('result'), "".$REL_LANG->say_by_key('ip_address')." <b>$ip</b> ".$REL_LANG->say_by_key('not_banned')."");
+	$REL_TPL->stderr($REL_LANG->say_by_key('result'), "".$REL_LANG->say_by_key('ip_address')." <b>$ip</b> ".$REL_LANG->say_by_key('not_banned')."");
 	else
 	{
-		stderr($REL_LANG->say_by_key('result'), "".$REL_LANG->say_by_key('ip_address')." <b>$ip ".$REL_LANG->say_by_key('banned')."</b>");
+		$REL_TPL->stderr($REL_LANG->say_by_key('result'), "".$REL_LANG->say_by_key('ip_address')." <b>$ip ".$REL_LANG->say_by_key('banned')."</b>");
 	}
 }
 $REL_TPL->stdhead($REL_LANG->say_by_key('check_ip'));

@@ -22,7 +22,7 @@ httpauth();
 $tree = make_tree('forum_categories');
 
 $REL_TPL->stdhead($REL_LANG->_("Forum categories administration"));
-$catsrow = sql_query("SELECT id,name,seo_name,class FROM forum_categories ORDER BY sort ASC");
+$catsrow = $REL_DB->query("SELECT id,name,seo_name,class FROM forum_categories ORDER BY sort ASC");
 while ($catres= mysql_fetch_assoc($catsrow)) $cats[$catres['id']]=get_cur_position_str($tree,$catres['id']);
 
 print("<h1><a href=\"forumadmin.php\">{$REL_LANG->_("Forum categories administration")}</a></h1>\n");
@@ -31,21 +31,21 @@ print("<br /><a href=\"forumadmin.php?add\">{$REL_LANG->say_by_key('add_new_cate
 ///////////////////// D E L E T E  CATEGORY \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 if (isset($_GET['delid'])) {
-	if (!is_valid_id($_GET['delid'])) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!is_valid_id($_GET['delid'])) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
 
 	$delid = (int) $_GET['delid'];
 
-	sql_query("DELETE FROM forum_categories WHERE id=" .sqlesc($delid) . " LIMIT 1");
+	$REL_DB->query("DELETE FROM forum_categories WHERE id=" .sqlesc($delid) . " LIMIT 1");
 	$REL_CACHE->clearGroupCache('trees');
 	$REL_CACHE->clearGroupCache('forums');
-	stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->_("Forum category deleted"));
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->_("Forum category deleted"));
 	$REL_TPL->stdfoot();
 	die();
 }
 
 ///////////////////// E  D  I  T  A  CATEGORY \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 elseif (isset($_GET['edited'])) {
-	if (!is_valid_id($_GET['id'])) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!is_valid_id($_GET['id'])) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
 
 	$category_name = sqlesc(htmlspecialchars((string)$_POST['category_name']));
 	$category_id = sqlesc((int)$_GET['id']);
@@ -54,10 +54,10 @@ elseif (isset($_GET['edited'])) {
 	$category_class = sqlesc(implode(',',(array)$_POST['category_class']));
 	$category_sort = sqlesc((int)$_POST['category_sort']);
 	$category_seo = sqlesc(htmlspecialchars((string)$_POST['category_seo']));
-	sql_query("UPDATE forum_categories SET
+	$REL_DB->query("UPDATE forum_categories SET
 name = $category_name,
-parent_id = $category_parent, class=$category_class, image=$category_pic, sort=$category_sort,seo_name=$category_seo WHERE id=$category_id") or sqlerr(__FILE__,__LINE__);
-	stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->_("Forum category successfully edited"));
+parent_id = $category_parent, class=$category_class, image=$category_pic, sort=$category_sort,seo_name=$category_seo WHERE id=$category_id");
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->_("Forum category successfully edited"));
 	$REL_CACHE->clearGroupCache('trees');
 	$REL_CACHE->clearGroupCache('forums');
 	$REL_TPL->stdfoot();
@@ -65,9 +65,9 @@ parent_id = $category_parent, class=$category_class, image=$category_pic, sort=$
 }
 
 elseif (isset($_GET['editid'])) {
-	if (!is_valid_id($_GET['editid'])) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!is_valid_id($_GET['editid'])) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
 	$cid = (int) $_GET['editid'];
-	$res = sql_query("SELECT * FROM forum_categories WHERE id=$cid");
+	$res = $REL_DB->query("SELECT * FROM forum_categories WHERE id=$cid");
 	$row = mysql_fetch_array($res);
 
 	$catselect='<select name="category_parent"><option value="0">'.$REL_LANG->say_by_key('no_parent').'</option>';
@@ -102,8 +102,8 @@ if(isset($_GET['added'])) {
 	$category_class = sqlesc(implode(',',(array)$_POST['category_class']));
 	$category_sort = sqlesc((int)$_POST['category_sort']);
 	$category_seo = sqlesc(htmlspecialchars((string)$_POST['category_seo']));
-	sql_query("INSERT INTO forum_categories (name,image,parent_id,class,sort,seo_name) VALUES ($category_name,$category_pic,$category_parent,$category_class,$category_sort,$category_seo)") or sqlerr(__FILE__,__LINE__);
-	stdmsg($REL_LANG->_("Successful"),$REL_LANG->_("The category successfully added"));
+	$REL_DB->query("INSERT INTO forum_categories (name,image,parent_id,class,sort,seo_name) VALUES ($category_name,$category_pic,$category_parent,$category_class,$category_sort,$category_seo)");
+	$REL_TPL->stdmsg($REL_LANG->_("Successful"),$REL_LANG->_("The category successfully added"));
 	$REL_CACHE->clearGroupCache('trees');
 	$REL_CACHE->clearGroupCache('forums');
 	$REL_TPL->stdfoot();
@@ -143,7 +143,7 @@ if(isset($_GET['add'])) {
 print('<div align="center">'.$REL_LANG->say_by_key('cur_tree').': '.gen_select_area('',$tree).'</div>');
 print("<table width=\"100%\" class=main>");
 print("<tr><td>ID</td><td>{$REL_LANG->say_by_key('sort')}</td><td>{$REL_LANG->say_by_key('name')}</td><td>{$REL_LANG->say_by_key('seo_name')}</td><td>{$REL_LANG->say_by_key('image')}</td><td>{$REL_LANG->say_by_key('parent')}</td><td>{$REL_LANG->_('Access level')}</td><td>{$REL_LANG->say_by_key('edit')}</td><td>{$REL_LANG->say_by_key('delete')}</td></tr>");
-$sql = sql_query("SELECT * FROM forum_categories ORDER BY id ASC");
+$sql = $REL_DB->query("SELECT * FROM forum_categories ORDER BY id ASC");
 
 while ($row = mysql_fetch_assoc($sql)) {
 	$catseo = ($row['seo_name']?$row['seo_name']:translit($row['name']));

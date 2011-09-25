@@ -1,10 +1,10 @@
 <?php
-global $CURUSER, $REL_CONFIG, $REL_SEO, $REL_CACHE, $REL_LANG;
+global  $CURUSER, $REL_CONFIG, $REL_SEO, $REL_CACHE, $REL_LANG, $REL_DB;
 if (!defined('BLOCK_FILE')) {
 	safe_redirect($REL_SEO->make_link('index'));
 	exit;
 }
-$a = mysql_fetch_array(sql_query("SELECT id, username, donor, warned, class, enabled FROM users WHERE id = (SELECT MAX(id) FROM users WHERE users.confirmed=1)"));
+$a = mysql_fetch_array($REL_DB->query("SELECT id, username, donor, warned, class, enabled FROM users WHERE id = (SELECT MAX(id) FROM users WHERE users.confirmed=1)"));
 if ($CURUSER)
 $latestuser = make_user_link($a);
 else
@@ -12,7 +12,7 @@ $latestuser = $a['username'];
 $title_who = array();
 $gues = array();
 $dt = sqlesc(time() - 300);
-$result = sql_query("SELECT DISTINCT s.uid as id, s.username, s.class, s.ip, users.donor, users.warned, users.enabled FROM sessions AS s LEFT JOIN users ON s.uid=users.id WHERE s.time > $dt ORDER BY s.class DESC");
+$result = $REL_DB->query("SELECT DISTINCT s.uid as id, s.username, s.class, s.ip, users.donor, users.warned, users.enabled FROM sessions AS s LEFT JOIN users ON s.uid=users.id WHERE s.time > $dt ORDER BY s.class DESC");
 $classes = init_class_array();
 while ($row = mysql_fetch_array($result)) {
 	$uid = $row["id"];
@@ -68,7 +68,7 @@ if (count($title_who)) {
 } else {
 	$content .= "<tr valign='middle'>
                     <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>
-                    <b>{$REL_LANG->_('Who is online')}: </b><br />{$REL_LANG->_('There is no users in last 10 minutes')}</td></tr>";
+                    <b>{$REL_LANG->_('Who is online')}: </b><br />{$REL_LANG->_('There are no users in last 10 minutes')}</td></tr>";
 }
 $content .= "<tr valign='middle'>
             <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>

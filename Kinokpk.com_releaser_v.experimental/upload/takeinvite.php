@@ -16,7 +16,7 @@ loggedinorreturn();
 
 function bark($msg) {
 	$REL_TPL->stdhead();
-	stdmsg($REL_LANG->say_by_key('error'), $msg);
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $msg);
 	$REL_TPL->stdfoot();
 	die;
 }
@@ -24,7 +24,7 @@ function bark($msg) {
 $id = (int) $_GET["id"];
 if (!$id) $id = (int) $_POST['id'];
 if (!$id)
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 if (get_privilege('approve_invites',false))
 $id = $CURUSER["id"];
@@ -39,16 +39,16 @@ if ($REL_CONFIG['use_captcha']){
 	$_POST["recaptcha_response_field"]);
 
 	if (!$resp->is_valid) {
-		stderr($REL_LANG->say_by_key('error'), "Введенный код подтверждения неверный. <a href=\"javascript:history.go(-1);\">Попробуйте еще раз</a>");
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'), "Введенный код подтверждения неверный. <a href=\"javascript:history.go(-1);\">Попробуйте еще раз</a>");
 	}
 
 }
 $email =  trim((string)$_POST['email']);
-if (!validemail($email)) stderr($REL_LANG->say_by_key('error'),'Email адрес введен неверно');
+if (!validemail($email)) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Email адрес введен неверно');
 
-$res = sql_query("SELECT 1 FROM users WHERE email='$email'");
+$res = $REL_DB->query("SELECT 1 FROM users WHERE email='$email'");
 $check = @mysql_result($res,0);
-if ($check) stderr($REL_LANG->say_by_key('error'),'Такой email уже зарегестрирован!');
+if ($check) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Такой email уже зарегестрирован!');
 
 $subject = "Приглашение на {$REL_CONFIG['sitename']}";
 $body = "Ваш друг или подруга с ником {$CURUSER['username']} пригласили вас зарегестрироваться на {$REL_CONFIG['sitename']}<br/>
@@ -57,9 +57,9 @@ $body = "Ваш друг или подруга с ником {$CURUSER['username
 Используйте следующий код приглашения:<b>$hash</b><hr/>
 Спасибо за внимание, с уважением {$REL_CONFIG['sitename']}";
 
-sql_query("INSERT INTO invites (inviter, invite, time_invited) VALUES (" . implode(", ", array_map("sqlesc", array($id, $hash, time()))) . ")") or sqlerr(__FILE__,__LINE__);
+$REL_DB->query("INSERT INTO invites (inviter, invite, time_invited) VALUES (" . implode(", ", array_map("sqlesc", array($id, $hash, time()))) . ")");
 
-sql_query("INSERT INTO cron_emails (emails, subject, body) VALUES (".sqlesc($email).",".sqlesc($subject).",".sqlesc($body).")") or sqlerr(__FILE__,__LINE__);
+$REL_DB->query("INSERT INTO cron_emails (emails, subject, body) VALUES (".sqlesc($email).",".sqlesc($subject).",".sqlesc($body).")");
 
 safe_redirect($REL_SEO->make_link('invite','id',$id));
 

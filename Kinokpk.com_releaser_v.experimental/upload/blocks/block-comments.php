@@ -1,6 +1,6 @@
 <?php
 
-global $REL_LANG, $REL_CACHE, $REL_SEO;
+global  $REL_LANG, $REL_CACHE, $REL_SEO, $REL_DB;
 if (!defined('BLOCK_FILE')) {
 	safe_redirect($REL_SEO->make_link('index'));
 	exit;
@@ -11,7 +11,7 @@ $content .= "<td align=\"center\" class=\"colhead\">{$REL_LANG->_('Name')}</td><
 
 $comarray = $REL_CACHE->get('block-comments','query');
 if ($comarray===false) {
-	$res = sql_query("SELECT comments.id, comments.toid AS torrent, torrents.name, comments.user, users.class, users.username, users.donor, users.warned, users.enabled FROM comments LEFT JOIN torrents ON comments.toid = torrents.id LEFT JOIN users ON comments.user = users.id WHERE comments.type='rel' ORDER BY comments.id DESC LIMIT 5");
+	$res = $REL_DB->query("SELECT comments.id, comments.toid AS torrent, torrents.name, comments.user, users.class, users.username, users.donor, users.warned, users.enabled FROM comments LEFT JOIN torrents ON comments.toid = torrents.id LEFT JOIN users ON comments.user = users.id WHERE comments.type='rel' ORDER BY comments.id DESC LIMIT 5");
 	$comarray=array();
 	while( $row = mysql_fetch_assoc($res) ) {
 		$comarray[] = $row;

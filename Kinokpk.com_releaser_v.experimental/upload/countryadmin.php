@@ -26,12 +26,12 @@ print("<table width=70% border=1 cellspacing=0 cellpadding=2><tr><td align=cente
 ///////////////////// D E L E T E  C O U N T R Y \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 if (isset($_GET['delid'])) {
-	if (!is_valid_id($_GET['delid'])) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!is_valid_id($_GET['delid'])) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
 
 	$delid = (int) $_GET['delid'];
 
-	sql_query("DELETE FROM countries WHERE id=" .sqlesc($delid) . " LIMIT 1");
-	stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('country_success_delete'));
+	$REL_DB->query("DELETE FROM countries WHERE id=" .sqlesc($delid) . " LIMIT 1");
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('country_success_delete'));
 	print "</td></tr></table>";
 	$REL_TPL->stdfoot();
 	die();
@@ -39,24 +39,24 @@ if (isset($_GET['delid'])) {
 
 ///////////////////// E  D  I  T  A  C  O  U  N  T  R  Y \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 elseif (isset($_GET['edited'])) {
-	if (!is_valid_id($_GET['id'])) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!is_valid_id($_GET['id'])) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
 
 	$country_name = sqlesc(htmlspecialchars((string)$_POST['country_name']));
 	$country_id = (int)$_GET['id'];
 	$country_flag = sqlesc(htmlspecialchars((string)$_POST['country_flag']));
-	sql_query("UPDATE countries SET
+	$REL_DB->query("UPDATE countries SET
 name = $country_name,
 flagpic = $country_flag WHERE id=$country_id");
-	stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('country_success_edit'));
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('country_success_edit'));
 	print "</td></tr></table>";
 	$REL_TPL->stdfoot();
 	die();
 }
 
 elseif (isset($_GET['editid'])) {
-	if (!is_valid_id($_GET['editid'])) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
+	if (!is_valid_id($_GET['editid'])) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'),'error'); $REL_TPL->stdfoot(); die(); }
 	$id = (int) $_GET['editid'];
-	$res = sql_query("SELECT * FROM countries WHERE id=$id");
+	$res = $REL_DB->query("SELECT * FROM countries WHERE id=$id");
 	$row = mysql_fetch_array($res);
 
 	print("<form name='form1' method='post' action='".$REL_SEO->make_link('countryadmin','edited','','id',$id)."'>");
@@ -77,8 +77,8 @@ elseif (isset($_GET['editid'])) {
 if(isset($_GET['added'])) {
 	$country_name = htmlspecialchars((string)$_POST['country_name']);
 	$country_flag = htmlspecialchars((string)$_POST['country_flag']);
-	sql_query("INSERT INTO countries (name,flagpic) VALUES (".sqlesc($country_name).",".sqlesc($country_flagpic).")");
-	stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('add_new_country'));
+	$REL_DB->query("INSERT INTO countries (name,flagpic) VALUES (".sqlesc($country_name).",".sqlesc($country_flagpic).")");
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('add_new_country'));
 	print "</td></tr></table>";
 	$REL_TPL->stdfoot();
 	die();
@@ -98,12 +98,12 @@ if(isset($_GET['add'])) {
 }
 ///////////////////// E X I S T I N G  C O  U  N  T  R  I E S  \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-$res = sql_query("SELECT SUM(1) FROM countries") or die(mysql_error());
+$res = $REL_DB->query("SELECT SUM(1) FROM countries") or die(mysql_error());
 $row = mysql_fetch_array($res);
 
 print("<table width=\"100%\" class=main cellspacing=0 cellpadding=5>");
 print("<td>ID</td><td>{$REL_LANG->say_by_key('name')}</td><td>{$REL_LANG->say_by_key('flag')}</td><td>{$REL_LANG->say_by_key('edit')}</td><td>{$REL_LANG->say_by_key('delete')}</td>");
-$sql = sql_query("SELECT * FROM countries ORDER BY name ASC $limit");
+$sql = $REL_DB->query("SELECT * FROM countries ORDER BY name ASC $limit");
 
 while ($row = mysql_fetch_array($sql)) {
 	$id = $row['id'];

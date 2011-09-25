@@ -26,7 +26,7 @@ if (!$curcat) $curcat=(int)$_POST['cat'];
  * @param int $curcat ID of category
  */
 function forum_routing($curcat) {
-	global $tree,$cats,$REL_SEO,$REL_TPL,$REL_LANG,$CURUSER,$curcat,$view_topics, $CAT;//, $route;
+	global  $tree,$cats,$REL_SEO,$REL_TPL,$REL_LANG,$CURUSER,$curcat,$view_topics, $CAT, $REL_DB;//, $route;
 
 
 	$REL_TPL->assignByRef('JUMP_TO', gen_select_area('cat',$tree,$curcat,true));
@@ -82,7 +82,7 @@ if (!$action) {
 
 		$count = get_row_count('forum_topics',"WHERE category=$curcat");
 		if ($count) {
-			$res = $REL_DB->query("SELECT forum_topics.*,(SELECT users.username FROM users WHERE users.id=forum_topics.author) AS aname,(SELECT users.class FROM users WHERE users.id=forum_topics.author) AS aclass, users.username,users.class,comments.added,comments.user FROM forum_topics LEFT JOIN comments ON forum_topics.lastposted_id=comments.id LEFT JOIN users ON comments.user=users.id WHERE category=$curcat AND comments.type='forum' ORDER BY started DESC") or sqlerr(__FILE__,__LINE__);
+			$res = $REL_DB->query("SELECT forum_topics.*,(SELECT users.username FROM users WHERE users.id=forum_topics.author) AS aname,(SELECT users.class FROM users WHERE users.id=forum_topics.author) AS aclass, users.username,users.class,comments.added,comments.user FROM forum_topics LEFT JOIN comments ON forum_topics.lastposted_id=comments.id LEFT JOIN users ON comments.user=users.id WHERE category=$curcat AND comments.type='forum' ORDER BY started DESC");
 			while ($row = mysql_fetch_assoc($res)) {
 				$tabledata[] = array('id'=>$row['id'],'subject'=>$row['subject'],'posts'=>$row['comments'],'started'=>mkprettytime($row['started']),'author'=>"<a href=\"{$REL_SEO->make_link('userdetails','id',$row['author'],'name',$row['aname'])}\">".get_user_class_color($row['aclass'],$row['aname'])."</a>",'lastposted_time'=>mkprettytime($row['added']),'lastposted_user'=>"<a href=\"{$REL_SEO->make_link('userdetails','id',$row['user'],'name',$row['username'])}\">".get_user_class_color($row['class'],$row['username'])."</a>", 'lastposted_id'=>$row['lastposted_id']);
 			}
@@ -117,13 +117,13 @@ elseif ($action=='newtopic') {
 		if (get_privilege('is_moderator')) {
 			$closedate = (int)strtotime((string)$_POST['closedate']);
 		} else $closedate = 0;
-		sql_query("INSERT INTO forum_topics (subject,comments,author,started,closedate,category) VALUES (".sqlesc($topictitle).", 1, {$CURUSER['id']}, ".time().", $closedate, $curcat)") or sqlerr(__FILE__,__LINE__);
+		$REL_DB->query("INSERT INTO forum_topics (subject,comments,author,started,closedate,category) VALUES (".sqlesc($topictitle).", 1, {$CURUSER['id']}, ".time().", $closedate, $curcat)");
 		$to_id= mysql_insert_id();
-		sql_query("INSERT INTO comments (user, toid, added, text, ip, type) VALUES (" .
+		$REL_DB->query("INSERT INTO comments (user, toid, added, text, ip, type) VALUES (" .
 		$CURUSER["id"] . ",$to_id, '" . time() . "', " . sqlesc($topiccontent) .
-	       "," . sqlesc(getip()) . ", 'forum')") or sqlerr(__FILE__,__LINE__);
+	       "," . sqlesc(getip()) . ", 'forum')");
 		$newid = mysql_insert_id();
-		sql_query("UPDATE forum_topics SET lastposted_id=$newid WHERE id=$to_id") or sqlerr(__FILE__,__LINE__);
+		$REL_DB->query("UPDATE forum_topics SET lastposted_id=$newid WHERE id=$to_id");
 		$topiclink = $REL_SEO->make_link('forum','a','viewtopic','id',$to_id,'subject',translit($topictitle));
 		safe_redirect($topiclink,2);
 		$REL_TPL->stderr($REL_LANG->_('Successfully'),$REL_LANG->_('Topic with title "%s" in "%s" successfully created, you will be reditected to it in 2 seconds. If not, click <a href="%s">on this link</a>',$topictitle,$CAT['name'],$topiclink),'success');
@@ -134,7 +134,7 @@ elseif ($action=='viewtopic') {
 	$tname = htmlspecialchars(trim((string)$_GET['subject']));
 	$post = (int)$_GET['p'];
 	if (!$tid && !$tname) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No topic found'));
-	$res = $REL_DB->query("SELECT * FROM forum_topics WHERE ".($tid?"id = $tid":"subject = ".sqlesc($tname))." LIMIT 1") or sqlerr(__FILE__,__LINE__);
+	$res = $REL_DB->query("SELECT * FROM forum_topics WHERE ".($tid?"id = $tid":"subject = ".sqlesc($tname))." LIMIT 1");
 	$topic = mysql_fetch_assoc($res);
 	if (!$topic) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No topic found'));
 
@@ -147,7 +147,7 @@ elseif ($action=='viewtopic') {
 
 		$REL_TPL->assignByRef('topic', $topic);
 
-		$res = $REL_DB->query("SELECT GROUP_CONCAT(id) AS posts FROM comments WHERE toid={$topic['id']} AND type='forum' ORDER BY id ASC") or sqlerr(__FILE__,__LINE__);
+		$res = $REL_DB->query("SELECT GROUP_CONCAT(id) AS posts FROM comments WHERE toid={$topic['id']} AND type='forum' ORDER BY id ASC");
 		$postids = @mysql_result($res,0);
 		if (!$postids) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('No posts found in this topic. Contact <a href="%s">Site administrators</a>',$REL_SEO->make_link('staff')));
 
@@ -157,7 +157,7 @@ elseif ($action=='viewtopic') {
 		$count = count($postids);
 	}
 	$limit = ajaxpager(25, $count, array('forum','a','viewtopic','id',$topic['id'],'subject',translit($topic['subject'])), "forumcomments");
-	$subres = sql_query ( "SELECT c.id, c.ip, c.ratingsum, c.text, c.type, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = {$topic['id']} AND c.type='forum' GROUP BY c.id ORDER BY c.id DESC $limit" ) or sqlerr ( __FILE__, __LINE__ );
+	$subres = $REL_DB->query ( "SELECT c.id, c.ip, c.ratingsum, c.text, c.type, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = {$topic['id']} AND c.type='forum' GROUP BY c.id ORDER BY c.id DESC $limit" );
 	$allrows = prepare_for_commenttable($subres,$topic['subject'],$REL_SEO->make_link('forum','a','viewtopic','id',$topic['id'],'subject',translit($topic['subject'])));
 
 	if (pagercheck()) { print commenttable($allrows,true,'modules/forum/commenttable.tpl'); die(); }

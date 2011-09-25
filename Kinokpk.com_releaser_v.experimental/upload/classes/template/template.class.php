@@ -18,7 +18,7 @@ class REL_TPL extends Smarty {
 	 * @param array $REL_CONFIG Releaser configuration
 	 */
 	function __construct($REL_CONFIG) {
-		global $CURUSER, $REL_LANG,$REL_SEO;
+		global  $CURUSER, $REL_LANG,$REL_SEO, $REL_DB;
 		define('SMARTY_RESOURCE_CHAR_SET','utf-8');
 		parent::__construct();
 		$this->template_dir = ROOT_PATH.'themes/'.$REL_CONFIG['ss_uri'];
@@ -69,7 +69,7 @@ class REL_TPL extends Smarty {
 	 * @param string $headadd Page <head> tag addition
 	 */
 	function stdhead($title = "", $descradd = '', $keywordsadd = "", $headadd = '') {
-		global $REL_CONFIG, $CURUSER;
+		global  $REL_CONFIG, $CURUSER, $REL_DB;
 
 		if (!$REL_CONFIG['siteonline'] && get_privilege('deny_disabled_site',false)) {
 			$this->display('offline.tpl');

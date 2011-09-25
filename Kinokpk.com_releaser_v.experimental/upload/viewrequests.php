@@ -17,20 +17,20 @@ if ($_GET["delreq"])
 {
 	if (get_privilege('requests_operation',false)) {
 		if (empty($_GET["delreq"]))
-		stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_fileds_blank'));
-		sql_query("DELETE FROM requests WHERE id IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
-		sql_query("DELETE FROM comments WHERE toid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ") AND type='req'");
-		sql_query("DELETE FROM notifs WHERE type='reqcomments' AND checkid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
-		sql_query("DELETE FROM addedrequests WHERE requestid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
-		sql_query("DELETE FROM notifs WHERE checkid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ") AND type='reqcomments'");
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_fileds_blank'));
+		$REL_DB->query("DELETE FROM requests WHERE id IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
+		$REL_DB->query("DELETE FROM comments WHERE toid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ") AND type='req'");
+		$REL_DB->query("DELETE FROM notifs WHERE type='reqcomments' AND checkid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
+		$REL_DB->query("DELETE FROM addedrequests WHERE requestid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
+		$REL_DB->query("DELETE FROM notifs WHERE checkid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ") AND type='reqcomments'");
 		$REL_CACHE->clearGroupCache('block-req');
-		stderr($REL_LANG->say_by_key('success'), "Запрос успешно удален.<br /><a href=\"".$REL_SEO->make_link('viewrequests')."\">К списку запросов</a>");
+		$REL_TPL->stderr($REL_LANG->say_by_key('success'), "Запрос успешно удален.<br /><a href=\"".$REL_SEO->make_link('viewrequests')."\">К списку запросов</a>");
 	}
 	else
-	stderr($REL_LANG->say_by_key('error'), "У вас нет прав для удаления запросов.");
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), "У вас нет прав для удаления запросов.");
 }
 
-if ((!is_valid_id($_GET['category'])) && ($_GET['category']<>0)) stderr ($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+if ((!is_valid_id($_GET['category'])) && ($_GET['category']<>0)) $REL_TPL->stderr ($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 $REL_TPL->stdhead($REL_LANG->say_by_key('requests_section'));
 
 $categ = (int)$_GET["category"];
@@ -82,7 +82,7 @@ $query[] = "requests.filledby = 0";
 if ($requestorid <> NULL) {
 	if (($categ <> NULL) && ($categ <> 0)) {
 		$cats = get_full_childs_ids($tree,$categ);
-		if (!$cats) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+		if (!$cats) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 		else {
 			foreach ($cats as $catid) $catq[] = " FIND_IN_SET($catid,requests.cat) ";
 
@@ -95,7 +95,7 @@ if ($requestorid <> NULL) {
 	$query[] = "requests.userid = " . sqlesc($requestorid);
 } elseif (($categ <> NULL) && ($categ <> 0)) {
 	$cats = get_full_childs_ids($tree,$categ);
-	if (!$cats) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+	if (!$cats) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 	else {
 		foreach ($cats as $catid) $catq[] = " FIND_IN_SET($catid,requests.cat) ";
 
@@ -106,7 +106,7 @@ if ($requestorid <> NULL) {
 
 	if ($query) $query = 'WHERE '.implode(' AND ',$query);
 
-	$res = sql_query("SELECT SUM(1) FROM requests INNER JOIN categories ON requests.cat = categories.id INNER JOIN users ON requests.userid = users.id $query GROUP BY requests.id") or sqlerr(__FILE__,__LINE__);
+	$res = $REL_DB->query("SELECT SUM(1) FROM requests INNER JOIN categories ON requests.cat = categories.id INNER JOIN users ON requests.userid = users.id $query GROUP BY requests.id");
 	list($count) = mysql_fetch_array($res);
 
 	if (!$count) {
@@ -120,7 +120,7 @@ if ($requestorid <> NULL) {
 
 		$limit = "LIMIT 50";
 
-		$res = sql_query("SELECT (SELECT username FROM users WHERE id = filledby) AS filledname, (SELECT class FROM users WHERE id = filledby) AS filledclass, users.class, users.ratingsum, users.username, users.warned, users.donor, users.enabled, requests.filled, requests.filledby, requests.id, requests.userid, requests.request, requests.added, requests.hits, requests.comments, categories.id AS cat_id FROM requests INNER JOIN categories ON requests.cat = categories.id INNER JOIN users ON requests.userid = users.id $query $filtersql $limit") or sqlerr(__FILE__, __LINE__);
+		$res = $REL_DB->query("SELECT (SELECT username FROM users WHERE id = filledby) AS filledname, (SELECT class FROM users WHERE id = filledby) AS filledclass, users.class, users.ratingsum, users.username, users.warned, users.donor, users.enabled, requests.filled, requests.filledby, requests.id, requests.userid, requests.request, requests.added, requests.hits, requests.comments, categories.id AS cat_id FROM requests INNER JOIN categories ON requests.cat = categories.id INNER JOIN users ON requests.userid = users.id $query $filtersql $limit");
 		$num = mysql_num_rows($res);
 
 		print("<form method=get OnSubmit=\"return confirm('Вы уверены?')\" action=\"".$REL_SEO->make_link('viewrequests')."\">\n");

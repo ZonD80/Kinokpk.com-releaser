@@ -16,18 +16,18 @@ loggedinorreturn();
 
 get_privilege('send_emails');
 
-$res = sql_query("SELECT email FROM users") or sqlerr(__FILE__,__LINE__);
+$res = $REL_DB->query("SELECT email FROM users");
 $counter = mysql_affected_rows();
 while ($a = mysql_fetch_assoc($res))
 {
 
 	$subject = htmlspecialchars((string)$_POST['subject']);
 	if (!$subject)
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('enter_topic'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('enter_topic'));
 
 	$msg = cleanhtml((string)$_POST['msg']);
 	if (!$msg)
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('enter_message'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('enter_message'));
 
 	$message = <<<EOD
 
@@ -37,6 +37,6 @@ EOD;
 	sent_mail($a["email"], $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], $subject, $message);
 }
 $REL_TPL->stdhead($REL_LANG->say_by_key('bulk_email'));
-stdmsg($REL_LANG->say_by_key('success'), "".$REL_LANG->say_by_key('mailer_seccessful')." $counter ".$REL_LANG->say_by_key('messages')."");
+$REL_TPL->stdmsg($REL_LANG->say_by_key('success'), "".$REL_LANG->say_by_key('mailer_seccessful')." $counter ".$REL_LANG->say_by_key('messages')."");
 $REL_TPL->stdfoot();
 ?>

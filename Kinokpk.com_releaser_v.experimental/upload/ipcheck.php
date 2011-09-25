@@ -20,7 +20,7 @@ get_privilege('view_duplicate_ip');
 $REL_TPL->stdhead("Повторяющиеся IP пользователей");
 $REL_TPL->begin_frame("Повторяющиеся IP пользователей:",true);
 
-$res = sql_query("SELECT SUM(1) AS dupl, ip FROM users WHERE enabled = 1 AND ip <> '' AND ip <> '127.0.0.0' GROUP BY ip ORDER BY dupl DESC, ip") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT SUM(1) AS dupl, ip FROM users WHERE enabled = 1 AND ip <> '' AND ip <> '127.0.0.0' GROUP BY ip ORDER BY dupl DESC, ip");
 print("<table width=\"100%\"><tr align=center><td class=colhead width=90>Пользователь</td>
  <td class=colhead width=70>Email</td>
  <td class=colhead width=70>Регистрация</td>
@@ -33,7 +33,7 @@ while($ras = mysql_fetch_assoc($res)) {
 	if ($ras["dupl"] <= 1)
 	break;
 	if ($ip <> $ras['ip']) {
-		$ros = sql_query("SELECT id, ratingsum, username, class, email, added, last_access, ip, warned, donor, enabled, confirmed, (SELECT SUM(1) FROM peers WHERE peers.ip = users.ip AND users.id = peers.userid) AS peer_count FROM users WHERE ip='".$ras['ip']."' GROUP BY id ORDER BY id") or sqlerr(__FILE__, __LINE__);
+		$ros = $REL_DB->query("SELECT id, ratingsum, username, class, email, added, last_access, ip, warned, donor, enabled, confirmed, (SELECT SUM(1) FROM peers WHERE peers.ip = users.ip AND users.id = peers.userid) AS peer_count FROM users WHERE ip='".$ras['ip']."' GROUP BY id ORDER BY id");
 		$num2 = mysql_num_rows($ros);
 		if ($num2 > 1) {
 			$uc++;
@@ -45,7 +45,7 @@ while($ras = mysql_fetch_assoc($res)) {
 				else
 				$utc = " bgcolor=\"ECE9D8\"";
 
-				/*$peer_res = sql_query("SELECT count(*) FROM peers WHERE ip = " . sqlesc($ras['ip']) . " AND userid = " . $arr['id']);
+				/*$peer_res = $REL_DB->query("SELECT count(*) FROM peers WHERE ip = " . sqlesc($ras['ip']) . " AND userid = " . $arr['id']);
 				 $peer_row = mysql_fetch_row($peer_res);*/
 				print("<tr$utc><td align=left>".make_user_link($arr). "</td>
                                   <td align=center>$arr[email]</td>

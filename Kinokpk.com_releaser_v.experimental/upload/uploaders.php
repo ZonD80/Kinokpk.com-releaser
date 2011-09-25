@@ -26,7 +26,7 @@ foreach ($classes as $cid=>$class) {
 $to_select = implode(',',$to_select);
 
 $query = "SELECT id, username, added, ratingsum, donor, warned, enabled, (SELECT MAX(added) FROM torrents WHERE owner=users.id) AS last_added, (SELECT SUM(1) FROM torrents WHERE owner=users.id) AS num_added FROM users WHERE class IN (".$to_select.")";
-$result = sql_query($query);
+$result = $REL_DB->query($query);
 $num = mysql_num_rows($result); // how many uploaders
 print "<h2>Информация о аплоадерах</h2>";
 print "<p>У нас " . $num . " аплоадер" . ($num > 1 ? "ов" : "") . "</p>";

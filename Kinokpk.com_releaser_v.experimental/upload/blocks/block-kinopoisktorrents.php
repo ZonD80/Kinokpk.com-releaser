@@ -1,6 +1,6 @@
 <?php
 
-global $REL_LANG, $REL_CACHE, $REL_SEO;
+global  $REL_LANG, $REL_CACHE, $REL_SEO, $REL_DB;
 
 if (!defined('BLOCK_FILE')) {
 	safe_redirect($REL_SEO->make_link('index'));
@@ -38,7 +38,7 @@ if ($content===false) {
 	}
 
 
-	$res = sql_query("SELECT id,name,descr,images,free FROM torrents WHERE visible=1 AND banned=0 AND moderatedby<>0 ORDER BY added DESC LIMIT 8") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT id,name,descr,images,free FROM torrents WHERE visible=1 AND banned=0 AND moderatedby<>0 ORDER BY added DESC LIMIT 8");
 	require_once(ROOT_PATH.'classes/parser/Snoopy.class.php');
 	$page = new Snoopy;
 
@@ -72,4 +72,4 @@ if ($content===false) {
 
 }
 
-?
+?>

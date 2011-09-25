@@ -21,9 +21,9 @@ $action = (string)$_POST["action"];
 if (($action == 'ownsupport') && get_privilege('ownsupport',false)) {
 	$supportfor = ($_POST["support"]?htmlspecialchars((string)$_POST["supportfor"]):'');
 	$updateset[] = "supportfor = " . sqlesc($supportfor);
-	sql_query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = {$CURUSER['id']}") or sqlerr(__FILE__, __LINE__);
+	$REL_DB->query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = {$CURUSER['id']}");
 	safe_redirect($REL_SEO->make_link('my'),0);
-	stderr($REL_LANG->say_by_key('success'),$REL_LANG->_('You successfully changed your support status'),'success');
+	$REL_TPL->stderr($REL_LANG->say_by_key('success'),$REL_LANG->_('You successfully changed your support status'),'success');
 
 }
 elseif (($action == 'delnick') && get_privilege('ownsupport',false)) {
@@ -33,8 +33,8 @@ elseif (($action == 'delnick') && get_privilege('ownsupport',false)) {
 }
 elseif ($action == "edituser") {
 	$userid = (int) $_POST["userid"];
-	$CLASS = @mysql_result(sql_query("SELECT class FROM users WHERE id = $userid"),0);
-	if (get_class_priority($CLASS) > get_class_priority(get_user_class())) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
+	$CLASS = @mysql_result($REL_DB->query("SELECT class FROM users WHERE id = $userid"),0);
+	if (get_class_priority($CLASS) > get_class_priority(get_user_class())) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
 
 	$title = $_POST["title"];
 	$avatar = (int)$_POST["avatar"];
@@ -83,10 +83,10 @@ elseif ($action == "edituser") {
 
 	$class = (int) $_POST["class"];
 	if (!is_valid_id($userid) || !is_valid_user_class($class))
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid ID'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid ID'));
 	// check target user class
-	$res = sql_query("SELECT warned, enabled, donor, username, class, modcomment, num_warned, avatar,id FROM users WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
-	$arr = mysql_fetch_assoc($res) or sqlerr(__FILE__,__LINE__);
+	$res = $REL_DB->query("SELECT warned, enabled, donor, username, class, modcomment, num_warned, avatar,id FROM users WHERE id = $userid");
+	$arr = mysql_fetch_assoc($res);
 	if ($avatar)
 	{
 		@unlink (ROOT_PATH."avatars/".$arr['avatar']);
@@ -109,7 +109,7 @@ elseif ($action == "edituser") {
 		$msg = sqlesc($REL_LANG->_to($userid,'Your class was setted to "%s" by %s',get_user_class_name($class),make_user_link()));
 		$added = sqlesc(time());
 		$subject = sqlesc($REL_LANG->_to($userid,'Notification about class changing'));
-		sql_query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES(0, $userid, $msg, $added, $subject)") or sqlerr(__FILE__, __LINE__);
+		$REL_DB->query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES(0, $userid, $msg, $added, $subject)");
 		$updateset[] = "class = $class";
 		$modcomment = date("Y-m-d") . ($REL_LANG->_to(0,'Class was setted to "%s" by %s',get_user_class_name($class),$CURUSER['username']))."\n". $modcomment;
 	}
@@ -125,10 +125,10 @@ elseif ($action == "edituser") {
 			$msg = sqlesc($REL_LANG->_to($userid,'Your warning has been disabled by %s', make_user_link()));
 		}
 		$added = sqlesc(time());
-		sql_query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES (0, $userid, $msg, $added, $subject)") or sqlerr(__FILE__, __LINE__);
+		$REL_DB->query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES (0, $userid, $msg, $added, $subject)");
 	} elseif ($warnlength) {
 		if (mb_strlen($warnpm) == 0)
-		stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('You must specify a reason'));
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('You must specify a reason'));
 		if ($warnlength == 255) {
 			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Warned by %s with the following reason: "%s"',$CURUSER['username'],$warnpm)."\n" . $modcomment;
 			$msg = sqlesc($REL_LANG->_to($userid,'You got warned by %s for %s with the following reason: "%s"',make_user_link(),$REL_LANG->_('an unlimited time'),$warnpm));
@@ -144,7 +144,7 @@ elseif ($action == "edituser") {
 		}
 		$added = sqlesc(time());
 		$subject = sqlesc($REL_LANG->_to($userid,'You have got a warning!'));
-		sql_query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES (0, $userid, $msg, $added, $subject)") or sqlerr(__FILE__, __LINE__);
+		$REL_DB->query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES (0, $userid, $msg, $added, $subject)");
 		$updateset[] = "warned = 1";
 	}
 
@@ -174,7 +174,7 @@ elseif ($action == "edituser") {
 		$REL_DB->query("UPDATE xbt_users SET torrent_pass='' WHERE uid=".sqlesc($CURUSER[id]));
 	}
 	write_log($REL_LANG->_to(0,'User %s modify user %s, parameters:<br/><pre>%s</pre>',make_user_link(),make_user_link($arr),var_export($updateset,true)),'modtask');
-	sql_query("UPDATE users SET	" . implode(", ", $updateset) . " $birthday WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
+	$REL_DB->query("UPDATE users SET	" . implode(", ", $updateset) . " $birthday WHERE id = $userid");
 
 	if (!empty($_POST["deluser"])) {
 		$user = get_user($userid);
@@ -191,11 +191,11 @@ elseif ($action == "edituser") {
 	$userid = (int)$_POST["userid"];
 	$confirm = (int)$_POST["confirm"];
 	if (!is_valid_id($userid))
-	stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	$user = get_user($userid);
 	$updateset[] = "confirmed = " . $confirm;
 	write_log($REL_LANG->_to(0,'User %s confirmed user %s',make_user_link(),make_user_link($user)),'modtask');
-	sql_query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
+	$REL_DB->query("UPDATE users SET " . implode(", ", $updateset) . " WHERE id = $userid");
 	$returnto = makesafe($_POST["returnto"]);
 
 	safe_redirect($returnto);

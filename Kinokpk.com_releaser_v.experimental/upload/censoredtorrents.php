@@ -36,13 +36,13 @@ if ($action == 'new') {
 	if ($_SERVER['REQUEST_METHOD']=='POST') {
 		$tname = htmlspecialchars($_POST["tname"]);
 		if (!$tname)
-		stderr($REL_LANG->say_by_key('error'),"Вы не ввели название");
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Вы не ввели название");
 		$reason = unesc($_POST["reason"]);
 		if (!$reason)
-		stderr($REL_LANG->say_by_key('error'),"Вы должны ввести причину запрета!");
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Вы должны ввести причину запрета!");
 		$tname = sqlesc($tname);
 		$reason = sqlesc($reason);
-		sql_query("INSERT INTO censoredtorrents (name,reason) VALUES($tname,$reason)") or sqlerr(__FILE__,__LINE__);
+		$REL_DB->query("INSERT INTO censoredtorrents (name,reason) VALUES($tname,$reason)");
 		$id = mysql_insert_id();
 
 		$REL_CACHE->clearGroupCache("block-cen");
@@ -68,10 +68,10 @@ if ($action == 'new') {
 	die;
 }
 
-if (!is_valid_id($_GET['id'])) 		stderr ($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+if (!is_valid_id($_GET['id'])) 		$REL_TPL->stderr ($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 $id = (int) $_GET["id"];
 
-$res = sql_query("SELECT * FROM censoredtorrents WHERE id = $id") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT * FROM censoredtorrents WHERE id = $id");
 $num = mysql_fetch_array($res);
 
 $s = $num["name"];

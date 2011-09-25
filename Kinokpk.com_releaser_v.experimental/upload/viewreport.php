@@ -17,7 +17,7 @@ get_privilege('is_moderator');
 //Удалить все жалобы
 if ($_POST['deleteall']) {
 
-	sql_query("TRUNCATE TABLE report") or sqlerr(__FILE__,__LINE__);
+	$REL_DB->query("TRUNCATE TABLE report");
 }
 //
 
@@ -27,7 +27,7 @@ if ($_POST['delete'] && $_POST['reports']) {
 	$reports = $_POST['reports'];
 
 	foreach ($reports as $id) {
-		sql_query("DELETE FROM report WHERE id=" . sqlesc((int) $id)) or sqlerr(__FILE__,__LINE__);
+		$REL_DB->query("DELETE FROM report WHERE id=" . sqlesc((int) $id));
 	}
 }
 //
@@ -97,7 +97,7 @@ if (!$count) {
 
 	if ($empty){
 
-		$res = sql_query("SELECT * FROM report ORDER BY added DESC") or sqlerr(__FILE__, __LINE__);
+		$res = $REL_DB->query("SELECT * FROM report ORDER BY added DESC");
 		while ($row = mysql_fetch_array($res)) {
 
 			$reportid = $row["id"];
@@ -106,7 +106,7 @@ if (!$count) {
 			$motive = $row["motive"];
 			$added = $row["added"];
 
-			$res1 = sql_query("SELECT id, username, class, warned, donor, enabled FROM users WHERE id = $userid") or sqlerr(__FILE__, __LINE__);
+			$res1 = $REL_DB->query("SELECT id, username, class, warned, donor, enabled FROM users WHERE id = $userid");
 			$row1 = mysql_fetch_array($res1);
 
 			$username = $row1["username"];
@@ -116,7 +116,7 @@ if (!$count) {
 				$username = "<b><font color='red'>Аноним<font></b>";
 			}
 
-			$res2 = sql_query("SELECT id, name FROM torrents WHERE id = $torrentid") or sqlerr(__FILE__, __LINE__);
+			$res2 = $REL_DB->query("SELECT id, name FROM torrents WHERE id = $torrentid");
 			$row2 = mysql_fetch_array($res2);
 
 			if ($row2["id"]){

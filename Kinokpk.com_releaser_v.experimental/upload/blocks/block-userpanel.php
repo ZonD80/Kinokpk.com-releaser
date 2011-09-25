@@ -1,8 +1,8 @@
 <?php
-global $REL_LANG, $REL_CONFIG, $REL_CACHE, $REL_SEO;
+global  $REL_LANG, $REL_CONFIG, $REL_CACHE, $REL_SEO, $REL_DB;
 
 if (!defined('BLOCK_FILE')) {
-	safe_redirect(" ../".$REL_SEO->make_link('index'));
+	safe_redirect($REL_SEO->make_link('index'));
 	exit;
 }
 

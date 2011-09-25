@@ -14,7 +14,7 @@ require_once("include/bittorrent.php");
 
 function bark($msg) {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('error'));
-	stdmsg($REL_LANG->say_by_key('error'), $msg);
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $msg);
 	$REL_TPL->stdfoot();
 	exit;
 }
@@ -23,16 +23,16 @@ INIT();
 
 get_privilege('delete_releases');
 
-if (!is_valid_id($_POST["id"])) 			stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+if (!is_valid_id($_POST["id"])) 			$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 $id = (int) $_POST["id"];
 
 loggedinorreturn();
 
-$res = sql_query("SELECT name,owner,images FROM torrents WHERE id = $id");
+$res = $REL_DB->query("SELECT name,owner,images FROM torrents WHERE id = $id");
 $row = mysql_fetch_array($res);
 if (!$row)
-stderr($REL_LANG->say_by_key('error'),"Такого торрента не существует.");
+$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Такого торрента не существует.");
 
 
 $rt = (int) $_POST["reasontype"];

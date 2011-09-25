@@ -13,7 +13,7 @@ gensitemap();
 
 
 function gensitemap(){
-	global $REL_CONFIG, $REL_SEO;
+	global  $REL_CONFIG, $REL_SEO, $REL_DB;
 	$txt = '<?xml version="1.0" encoding="utf-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.google.com/schemas/sitemap/0.84 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
 
@@ -22,13 +22,13 @@ function gensitemap(){
 <url><loc>'.$REL_CONFIG['defaultbaseurl'].'/</loc><lastmod>'.t().'</lastmod><changefreq>hourly</changefreq><priority>1</priority></url>
 ';
 
-	$sql = sql_query("SELECT id,name,added FROM torrents ORDER BY id DESC LIMIT 300");
+	$sql = $REL_DB->query("SELECT id,name,added FROM torrents ORDER BY id DESC LIMIT 300");
 	while($a = mysql_fetch_assoc($sql)){
 		$txt .='
 <url><loc>'.htmlspecialchars($REL_SEO->make_link('details','id',$a['id'],'name',translit($a['name']))).'</loc><lastmod>'.t($a['added']).'</lastmod><changefreq>daily</changefreq><priority>0.50</priority></url>';
 	}
 
-	$sql = sql_query("SELECT id FROM categories");
+	$sql = $REL_DB->query("SELECT id FROM categories");
 	while($a = mysql_fetch_assoc($sql)){
 		$txt .='
 <url><loc>'.htmlspecialchars($REL_SEO->make_link('browse','cat',$a['id'])).'</loc><lastmod>'.t().'</lastmod><changefreq>hourly</changefreq><priority>0.50</priority></url>';
@@ -39,7 +39,7 @@ function gensitemap(){
 
 ';
 
-	@file_put_contents(ROOT_PATH."/Sitemap.xml",$txt) or stderr($REL_LANG->_('Error'),$REL_LANG->_('Unable to write Sitemap.xml file'));
+	@file_put_contents(ROOT_PATH."/Sitemap.xml",$txt) or $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unable to write Sitemap.xml file'));
 }
 
 function t($t=false){

@@ -13,17 +13,17 @@ INIT();
 
 
 //echo "<body><META http-equiv=\"refresh\" content=\"3; URL=$REL_CONFIG['forumurl']/index.php?act=Reg&CODE=00\"></body>";
-//stderr($REL_LANG->say_by_key('error'), "Наш проект осуществляется совместно с форумом $REL_CONFIG['forumname'], пройдите регистрацию на нем, а затем просто войдите под своим логином и паролем. Через 3 секунды вы будете перенаправлены.");
+//$REL_TPL->stderr($REL_LANG->say_by_key('error'), "Наш проект осуществляется совместно с форумом $REL_CONFIG['forumname'], пройдите регистрацию на нем, а затем просто войдите под своим логином и паролем. Через 3 секунды вы будете перенаправлены.");
 
 if ($REL_CONFIG['deny_signup'] && !$REL_CONFIG['allow_invite_signup'])
-stderr($REL_LANG->say_by_key('error'), $REL_LANG->_("Registration disabled by administration."));
+$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_("Registration disabled by administration."));
 
 if ($CURUSER)
-stderr($REL_LANG->say_by_key('error'), sprintf($REL_LANG->say_by_key('signup_already_registered'), $REL_CONFIG['sitename']));
+$REL_TPL->stderr($REL_LANG->say_by_key('error'), sprintf($REL_LANG->say_by_key('signup_already_registered'), $REL_CONFIG['sitename']));
 
 if ($REL_CONFIG['maxusers']) {$users = get_row_count("users");
 if ($users >= $REL_CONFIG['maxusers'])
-stderr($REL_LANG->say_by_key('error'), sprintf($REL_LANG->say_by_key('signup_users_limit'), number_format($REL_CONFIG['maxusers'])));
+$REL_TPL->stderr($REL_LANG->say_by_key('error'), sprintf($REL_LANG->say_by_key('signup_users_limit'), number_format($REL_CONFIG['maxusers'])));
 }
 if (!$_POST["agree"]) {
 	$REL_TPL->stdhead("Правила трекера");
@@ -85,7 +85,7 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('signup_signup'));
 
 <?
 if ($REL_CONFIG['deny_signup'] && $REL_CONFIG['allow_invite_signup'])
-stdmsg($REL_LANG->_("Attention"), $REL_LANG->_("Only invite registrations are allowed!"));
+$REL_TPL->stdmsg($REL_LANG->_("Attention"), $REL_LANG->_("Only invite registrations are allowed!"));
 ?>
 <form method="post" action="<?=$REL_SEO->make_link('takesignup');?>">
 <table border="1" cellspacing=0 cellpadding="10">

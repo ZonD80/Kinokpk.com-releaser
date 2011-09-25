@@ -1,5 +1,5 @@
 <?php
-global $CURUSER, $REL_LANG, $REL_CONFIG, $REL_SEO;
+global  $CURUSER, $REL_LANG, $REL_CONFIG, $REL_SEO, $REL_DB;
 if (!defined('BLOCK_FILE')) {
 	safe_redirect($REL_SEO->make_link('index'));
 	exit;

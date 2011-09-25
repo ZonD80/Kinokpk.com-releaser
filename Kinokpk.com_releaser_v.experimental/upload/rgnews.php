@@ -20,8 +20,8 @@ $action = $_GET["action"];
 
 $id = (int) $_GET['id'];
 
-if (!is_valid_id($id)) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
-$relgroup = sql_query("SELECT name,owners FROM relgroups WHERE id=$id") or sqlerr(__FILE__,__LINE__);
+if (!is_valid_id($id)) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+$relgroup = $REL_DB->query("SELECT name,owners FROM relgroups WHERE id=$id");
 list($rgname,$owners) = mysql_fetch_array($relgroup);
 
 $to_group = " <a href=\"".$REL_SEO->make_link('relgroups','id',$id,'name',translit($rgname))."\">К релиз группе</a>";
@@ -29,7 +29,7 @@ $to_group = " <a href=\"".$REL_SEO->make_link('relgroups','id',$id,'name',transl
 if ($owners) {
 	$owners = explode(',',$owners);
 
-	if (!@in_array($CURUSER['id'],$owners) && (!get_privilege('edit_relgroups',false))) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroup_owner'));
+	if (!@in_array($CURUSER['id'],$owners) && (!get_privilege('edit_relgroups',false))) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroup_owner'));
 }
 //   Delete rgnews Item    //////////////////////////////////////////////////////
 
@@ -37,13 +37,13 @@ if ($action == 'delete')
 {
 	$rgnewsid = (int)$_GET["newsid"];
 	if (!is_valid_id($rgnewsid))
-	stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 	$returnto = strip_tags($_SERVER['HTTP_REFERER']);
 
-	sql_query("DELETE FROM rgnews WHERE id=$rgnewsid") or sqlerr(__FILE__, __LINE__);
-	sql_query("DELETE FROM comments WHERE toid=$rgnewsid AND type='rgnews'") or sqlerr(__FILE__, __LINE__);
-	sql_query("DELETE FROM notifs WHERE type='rgnewscomments' AND checkid=$rgnewsid") or sqlerr(__FILE__, __LINE__);
+	$REL_DB->query("DELETE FROM rgnews WHERE id=$rgnewsid");
+	$REL_DB->query("DELETE FROM comments WHERE toid=$rgnewsid AND type='rgnews'");
+	$REL_DB->query("DELETE FROM notifs WHERE type='rgnewscomments' AND checkid=$rgnewsid");
 
 	$REL_CACHE->clearCache('relgroups-'.$id, 'newsquery');
 	if ($returnto != "")
@@ -57,18 +57,18 @@ elseif ($action == 'add')
 
 	$subject = htmlspecialchars($_POST["subject"]);
 	if (!$subject)
-	stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
 
 	$body = ((string)$_POST["body"]);
 	if (!$body)
-	stderr($REL_LANG->say_by_key('error'),"Тело новости не может быть пустым!");
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Тело новости не может быть пустым!");
 
 	$added = $_POST["added"];
 	if (!$added)
 	$added = sqlesc(time());
 
-	sql_query("INSERT INTO rgnews (relgroup, added, body, subject) VALUES (".
-	$id . ", $added, " . sqlesc($body) . ", " . sqlesc($subject) . ")") or sqlerr(__FILE__, __LINE__);
+	$REL_DB->query("INSERT INTO rgnews (relgroup, added, body, subject) VALUES (".
+	$id . ", $added, " . sqlesc($body) . ", " . sqlesc($subject) . ")");
 
 	$REL_CACHE->clearCache('relgroups-'.$id, 'newsquery');
 	$warning = "Новость <b>успешно добавлена</b>$to_group";
@@ -83,11 +83,11 @@ elseif ($action == 'edit')
 	$rgnewsid = (int)$_GET["newsid"];
 
 	if (!is_valid_id($rgnewsid))
-	stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
-	$res = sql_query("SELECT * FROM rgnews WHERE id=$rgnewsid") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT * FROM rgnews WHERE id=$rgnewsid");
 	$arr = mysql_fetch_array($res);
-	if (!$arr) 	  stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+	if (!$arr) 	  $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 	if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	{
@@ -95,10 +95,10 @@ elseif ($action == 'edit')
 		$subject = htmlspecialchars($_POST['subject']);
 
 		if ($subject == "")
-		stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
 
 		if ($body == "")
-		stderr($REL_LANG->say_by_key('error'), "Тело новости не может быть пустым!");
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'), "Тело новости не может быть пустым!");
 
 		$body = sqlesc(($body));
 
@@ -106,7 +106,7 @@ elseif ($action == 'edit')
 
 		$editedat = time();
 
-		sql_query("UPDATE rgnews SET body=$body, subject=$subject WHERE id=$rgnewsid") or sqlerr(__FILE__, __LINE__);
+		$REL_DB->query("UPDATE rgnews SET body=$body, subject=$subject WHERE id=$rgnewsid");
 
 		$REL_CACHE->clearCache('relgroups-'.$id, 'newsquery');
 

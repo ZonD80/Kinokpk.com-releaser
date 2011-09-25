@@ -1,5 +1,5 @@
 <?php
-global $REL_LANG, $REL_CACHE, $REL_SEO;
+global  $REL_LANG, $REL_CACHE, $REL_SEO, $REL_DB;
 if (!defined('BLOCK_FILE')) {
 	safe_redirect($REL_SEO->make_link('index'));
 	exit;
@@ -12,7 +12,7 @@ $resource = $REL_CACHE->get('block-news', 'query');
 if ($resource===false) {
 
 	$resource = array();
-	$resourcerow = sql_query("SELECT * FROM news GROUP BY news.id ORDER BY news.added DESC LIMIT 3") or sqlerr(__FILE__, __LINE__);
+	$resourcerow = $REL_DB->query("SELECT * FROM news GROUP BY news.id ORDER BY news.added DESC LIMIT 3");
 	while ($res = mysql_fetch_array($resourcerow))
 	$resource[] = $res;
 

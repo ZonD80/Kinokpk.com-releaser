@@ -33,12 +33,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	if (!empty($imail) && validemail($imail))
 	$updateset[] = "email = ".sqlesc($imail);
 	if (count($updateset)) {
-		$class = @mysql_result(sql_query("SELECT class FROM users WHERE username = ".sqlesc($iname)),0);
-		if (get_class_priority(get_user_class()) <= get_class_priority($class)) { stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('your_class_is_lower'),'error'); $REL_TPL->stdfoot(); die(); }
-		$res = sql_query("UPDATE users SET ".implode(", ", $updateset)." WHERE username = ".sqlesc($iname)) or sqlerr(__FILE__,__LINE__);
+		$class = @mysql_result($REL_DB->query("SELECT class FROM users WHERE username = ".sqlesc($iname)),0);
+		if (get_class_priority(get_user_class()) <= get_class_priority($class)) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('your_class_is_lower'),'error'); $REL_TPL->stdfoot(); die(); }
+		$res = $REL_DB->query("UPDATE users SET ".implode(", ", $updateset)." WHERE username = ".sqlesc($iname));
 
 	}
-	stdmsg($REL_LANG->say_by_key('change_usr_succ'), $REL_LANG->say_by_key('username').$iname.(!empty($hash) ? $REL_LANG->say_by_key('new_password').$ipass : "").(!empty($imail) ? $REL_LANG->say_by_key('new_email').$imail : ""));
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('change_usr_succ'), $REL_LANG->say_by_key('username').$iname.(!empty($hash) ? $REL_LANG->say_by_key('new_password').$ipass : "").(!empty($imail) ? $REL_LANG->say_by_key('new_email').$imail : ""));
 } else {
 	echo "<form method=\"post\" action=\"".$REL_SEO->make_link('passwordadmin')."\">"
 	."<table border=\"0\" cellspacing=\"0\" cellpadding=\"3\">"

@@ -15,7 +15,7 @@ loggedinorreturn();
 
 $id = (int) $_GET["torrent"];
 
-$res = $REL_DB->query("SELECT torrents.seeders, torrents.banned, torrents.leechers, torrents.name, torrents.id, torrents.hits, torrents.last_reseed AS lr FROM torrents WHERE torrents.id = $id") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT torrents.seeders, torrents.banned, torrents.leechers, torrents.name, torrents.id, torrents.hits, torrents.last_reseed AS lr FROM torrents WHERE torrents.id = $id");
 $row = mysql_fetch_array($res);
 
 if (!$row || $row["banned"])
@@ -37,7 +37,7 @@ $msgs_to = $REL_DB->query("SELECT userid FROM snatched WHERE torrent = $id AND u
 while (list($receiver) = mysql_fetch_array($msgs_to)) {
 	write_msg($CURUSER['id'],$receiver,$REL_LANG->_to($receiver,'Help to seed "%s"',$row['name']),$REL_LANG->_to($receiver,'Hi!<br/><br/>I ask you to help seed "<a href="%s"></a>".<br/>If you want to help, but deleted .torrent file, you can get it <a href="%s">here</a><br/><br/><i>Thank you</i>',$REL_SEO->make_link('details','id',$id,'name',translit($row["name"])),$REL_SEO->make_link('download','id',$id,'name',translit($row['name']))));
 }
-$REL_DB->query("UPDATE torrents SET last_reseed = ".time()." WHERE id = $id") or sqlerr(__FILE__, __LINE__);
+$REL_DB->query("UPDATE torrents SET last_reseed = ".time()." WHERE id = $id");
 
 safe_redirect($REL_SEO->make_link('details','id',$id,'name',translit($row['name'])),2);
 

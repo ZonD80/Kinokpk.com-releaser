@@ -34,7 +34,7 @@ if (!$CURUSER) {
 	$_POST["recaptcha_response_field"]);
 
 	if (!$resp->is_valid) {
-		stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('test_humanity'));
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('test_humanity'));
 	}
 }
 
@@ -51,28 +51,28 @@ $subj = htmlspecialchars((string)$_POST['subj']);
 
 if(!validemail($visitormail))
 {
-	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('check_address'), error);
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('check_address'), error);
 	$REL_TPL->stdfoot();
 	die();
 }
 
 if(empty($subj))
 {
-	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_subject'), error);
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_subject'), error);
 	$REL_TPL->stdfoot();
 	die();
 }
 
 if(empty($visitor))
 {
-	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_name_sender'), error);
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_name_sender'), error);
 	$REL_TPL->stdfoot();
 	die();
 }
 
 if(empty($notes))
 {
-	stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_text_message'), error);
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_text_message'), error);
 	$REL_TPL->stdfoot();
 	die();
 
@@ -94,7 +94,7 @@ sent_mail($to, $subj.' | '.$REL_CONFIG['sitename'], $visitormail, $subject, $msg
 ?>
 
 <?
-stdmsg($REL_LANG->say_by_key('thanks'), $REL_LANG->say_by_key('message_sent'));
+$REL_TPL->stdmsg($REL_LANG->say_by_key('thanks'), $REL_LANG->say_by_key('message_sent'));
 ?>
 <br />
 <br />

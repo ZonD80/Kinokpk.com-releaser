@@ -16,22 +16,22 @@ loggedinorreturn();
 
 $rgid=(int)$_GET['id'];
 
-if (!is_valid_id($rgid)) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+if (!is_valid_id($rgid)) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
-$relgroup = sql_query("SELECT name,owners,private FROM relgroups WHERE id=$rgid") or sqlerr(__FILE__,__LINE__);
+$relgroup = $REL_DB->query("SELECT name,owners,private FROM relgroups WHERE id=$rgid");
 $relgroup = mysql_fetch_assoc($relgroup);
 
-if (!$relgroup) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+if (!$relgroup) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 if (in_array($CURUSER['id'],@explode(',',$relgroup['owners'])) || (get_privilege('edit_relgroups',false))) $I_OWNER=true;
 
 if ($relgroup['private']) {
-	if (!in_array($rgid,@explode(',',$CURUSER['relgroups'])) && !$I_OWNER && !in_array($CURUSER['id'],@explode(',',$relgroup['onwers']))) stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_access_priv_rg'));
+	if (!in_array($rgid,@explode(',',$CURUSER['relgroups'])) && !$I_OWNER && !in_array($CURUSER['id'],@explode(',',$relgroup['onwers']))) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_access_priv_rg'));
 }
 
 $count = get_row_count("rgnews"," WHERE relgroup=$rgid");
 
-$resource = sql_query("SELECT rgnews.* , SUM(1) FROM rgnews LEFT JOIN comments ON comments.toid = rgnews.id WHERE comments.type='rgnews' GROUP BY rgnews.id ORDER BY rgnews.added DESC $limit");
+$resource = $REL_DB->query("SELECT rgnews.* , SUM(1) FROM rgnews LEFT JOIN comments ON comments.toid = rgnews.id WHERE comments.type='rgnews' GROUP BY rgnews.id ORDER BY rgnews.added DESC $limit");
 
 print("<div id='rgnews-table'>");
 print ("<table border='0' cellspacing='0' width='100%' cellpadding='5'>

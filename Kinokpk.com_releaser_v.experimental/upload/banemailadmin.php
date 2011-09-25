@@ -21,7 +21,7 @@ if (isset($_GET['remove']) && is_valid_id($_GET['remove']))
 {
 	$remove = (int) $_GET['remove'];
 
-	$REL_DB->query("DELETE FROM bannedemails WHERE id = '$remove'") or sqlerr(__FILE__, __LINE__);
+	$REL_DB->query("DELETE FROM bannedemails WHERE id = '$remove'");
 	write_log($REL_LANG->_('Ban %s was removed by %s',$remove,make_user_link()),'emailbans');
 }
 
@@ -31,14 +31,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 	$comment = trim($_POST["comment"]);
 	if (!$email || !$comment)
 	$REL_TPL->stderr($REL_LANG->_("Error"), $REL_LANG->_("Missing form data"));
-	$REL_DB->query("INSERT INTO bannedemails (added, addedby, comment, email) VALUES(".sqlesc(time()).", $CURUSER[id], ".sqlesc($comment).", ".sqlesc($email).")") or (mysql_errno() == 1062 ? stderr($REL_LANG->say_by_key('error'), $REL_LANG->_("This email was already banned")) : sqlerr(__FILE__, __LINE__));
+	$REL_DB->query("INSERT INTO bannedemails (added, addedby, comment, email) VALUES(".sqlesc(time()).", $CURUSER[id], ".sqlesc($comment).", ".sqlesc($email).")");
+	if (mysql_errno() == 1062) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_("This email was already banned"));
 	safe_redirect(makesafe($_SERVER[REQUEST_URI]));
 	die;
 }
 
-$res = $REL_DB->query("SELECT * FROM bannedemails ORDER BY added DESC") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT * FROM bannedemails ORDER BY added DESC");
 
-$REL_TPL->stdhead($REL_LANG->_("Ban emails admin panel"));
+$REL_TPl->stdhead($REL_LANG->_("Ban emails admin panel"));
 
 print("<h1>{$REL_LANG->_("List of bans")}</h1>\n");
 

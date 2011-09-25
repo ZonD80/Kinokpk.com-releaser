@@ -1,7 +1,7 @@
 <?php
-global $REL_LANG, $REL_SEO;
+global  $REL_LANG, $REL_SEO, $REL_DB;
 if (!defined('BLOCK_FILE')) {
-	safe_redirect(" ../".$REL_SEO->make_link('index'));
+	safe_redirect($REL_SEO->make_link('index'));
 	exit;
 }
 
@@ -9,7 +9,7 @@ if (!defined('BLOCK_FILE')) {
 $blocktitle = $REL_LANG->say_by_key('helpseed');
 $content .= "<div align=\"center\"><font color=\"#FF6633\"><b>".$REL_LANG->say_by_key('help_seed')."</b></font></div>
 <table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"10\"><tr><td class=\"text\">";
-$res = sql_query("SELECT id, name, seeders, leechers FROM torrents WHERE (seeders > 0 AND leechers = 0) OR (leechers / seeders >= 4) ORDER BY leechers DESC LIMIT 20") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT id, name, seeders, leechers FROM torrents WHERE (seeders > 0 AND leechers = 0) OR (leechers / seeders >= 4) ORDER BY leechers DESC LIMIT 20");
 if (mysql_num_rows($res) > 0) {
 	while ($arr = mysql_fetch_assoc($res)) {
 		$torrname = $arr['name'];

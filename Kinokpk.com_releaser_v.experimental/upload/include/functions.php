@@ -20,7 +20,7 @@ if(!defined("IN_TRACKER") && !defined("IN_ANNOUNCE")) die("Direct access to this
  * @param int $timeout JS function timeout
  */
 function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
-	global $REL_SEO,$REL_TPL, $REL_LANG;
+	global  $REL_SEO,$REL_TPL, $REL_LANG, $REL_DB;
 	$page = (int)$_GET['page'];
 	$maxpage = floor($count/$perpage);
 	$hrefarray[] = 'AJAXPAGER';
@@ -152,7 +152,7 @@ function safe_redirect($url,$timeout = 0) {
  */
 
 function ratearea($currating,$currid,$type,$owner_id = 0) {
-	global $CURUSER, $REL_LANG, $REL_CONFIG, $REL_SEO;
+	global  $CURUSER, $REL_LANG, $REL_CONFIG, $REL_SEO, $REL_DB;
 	if ($currating>0) $znak='+';
 	$text='<strong>'.$znak.$currating.'</strong>';
 	if (!$currid || !$CURUSER) return $text;
@@ -161,7 +161,7 @@ function ratearea($currating,$currid,$type,$owner_id = 0) {
 		$allowed_types = array('torrents','users','relcomments','pollcomments','newscomments','usercomments','reqcomments','relgroups','rgcomments');
 		foreach  ($allowed_types as $atype) $_SESSION['already_rated'][$atype] = array();
 
-		$res = sql_query("SELECT rid,type FROM ratings WHERE userid={$CURUSER['id']}");
+		$res = $REL_DB->query("SELECT rid,type FROM ratings WHERE userid={$CURUSER['id']}");
 		while (list($rid,$rtype) = mysql_fetch_array($res)) {
 			$_SESSION['already_rated'][$rtype][] = $rid;
 		}
@@ -186,12 +186,12 @@ function ratearea($currating,$currid,$type,$owner_id = 0) {
  * @return string report area with link to reporting script
  */
 function reportarea($id,$type) {
-	global $CURUSER, $REL_LANG, $REL_SEO;
+	global  $CURUSER, $REL_LANG, $REL_SEO, $REL_DB;
 	if (!$id || !$CURUSER) return '';
 	if (!$_SESSION['already_reported']) {
 		$allowed_types = array ('messages', 'torrents', 'users', 'comments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'relgroups', 'rgcomments');
 		foreach ($allowed_types as $atype) $_SESSION['already_reported'][$atype] = array();
-		$res = sql_query("SELECT reportid,type,motive FROM reports WHERE userid={$CURUSER['id']}");
+		$res = $REL_DB->query("SELECT reportid,type,motive FROM reports WHERE userid={$CURUSER['id']}");
 		while (list($reportid,$rtype,$motive) = mysql_fetch_array($res)) {
 			$_SESSION['already_reported'][$rtype][$reportid] = $motive;
 		}
@@ -244,8 +244,8 @@ function write_sys_msg($receiver,$msg,$subject) {
  * @return void
  */
 function write_msg($sender,$receiver,$msg,$subject) {
-	global $REL_DB;
-	$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, subject) VALUES($sender, $receiver, '" . time() . "', ".$REL_DB->sqlesc($msg).", ".$REL_DB->sqlesc($subject).")");// or sqlerr(__FILE__, __LINE__);
+	global  $REL_DB;
+	$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, subject) VALUES($sender, $receiver, '" . time() . "', ".$REL_DB->sqlesc($msg).", ".$REL_DB->sqlesc($subject).")");//;
 	return;
 }
 
@@ -254,7 +254,7 @@ function write_msg($sender,$receiver,$msg,$subject) {
  * @return void
  */
 function httpauth(){
-	global $CURUSER, $REL_LANG, $REL_SEO;
+	global  $CURUSER, $REL_LANG, $REL_SEO, $REL_DB;
 
 	if(isset($_SERVER['HTTP_AUTHORIZATION'])) {
 		$auth_params = explode(":" , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
@@ -268,7 +268,7 @@ function httpauth(){
 
 		header("WWW-Authenticate: Basic realm=\"Kinokpk.com releaser's admininsration panel. You can use email or username to login. All inputs are case-sensitive\"");
 		header("HTTP/1.0 401 Unauthorized");
-		stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'),'error');
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'),'error');
 
 	}
 	return;
@@ -289,7 +289,7 @@ function makesafe($text) {
  * Generates WYSIWYG code
  */
 function wysiwyg_init() {
-	global $REL_CONFIG, $CURUSER;
+	global  $REL_CONFIG, $CURUSER, $REL_DB;
 	define ("WYSIWYG_REQUIRED",true);
 
 	$lang = (($CURUSER['language']=='ua')?'uk':$CURUSER['language']);
@@ -381,7 +381,7 @@ function textbbcode($name, $content="") {
  * @return Ambigous <mixed, boolean> Data or false
  */
 function get_user($id,$type='assoc') {
-	global $REL_DB;
+	global  $REL_DB;
 	return $REL_DB->query_row("SELECT * FROM users WHERE id=$id",$type);
 }
 
@@ -391,7 +391,7 @@ function get_user($id,$type='assoc') {
  * @return string
  */
 function make_user_link($data=false) {
-	global $REL_SEO,$CURUSER;
+	global  $REL_SEO,$CURUSER, $REL_DB;
 	if (!$data) $data = $CURUSER;
 	return '<a href="'.$REL_SEO->make_link('userdetails','id',$data['id'],'username',translit($data['username'])).'">'.get_user_class_color($data['class'],$data['username']).'</a>'.get_user_icons($data);
 }
@@ -402,20 +402,20 @@ function make_user_link($data=false) {
  * @return void
  */
 function delete_user($id) {
-	global $CURUSER, $REL_SEO, $REL_DB;
-	sql_query("DELETE FROM users WHERE id = $id");
-	sql_query("DELETE FROM comments WHERE toid=$id AND type='user'") or sqlerr(__FILE__, __LINE__);
-	sql_query("DELETE FROM notifs WHERE type='usercomments' AND checkid=$id") or sqlerr(__FILE__, __LINE__);
-	sql_query("DELETE FROM messages WHERE receiver = $id OR sender = $id") or sqlerr(__FILE__,__LINE__);
-	sql_query("DELETE FROM friends WHERE userid = $id") or sqlerr(__FILE__,__LINE__);
-	sql_query("DELETE FROM friends WHERE friendid = $id") or sqlerr(__FILE__,__LINE__);
-	sql_query("DELETE FROM bookmarks WHERE userid = $id") or sqlerr(__FILE__,__LINE__);
-	sql_query("DELETE FROM invites WHERE inviter = $id") or sqlerr(__FILE__,__LINE__);
-	sql_query("DELETE FROM peers WHERE userid = $id") or sqlerr(__FILE__,__LINE__);
-	sql_query("DELETE FROM presents WHERE presenter = $id OR userid = $id") or sqlerr(__FILE__,__LINE__);
-	sql_query("DELETE FROM addedrequests WHERE userid = $id") or sqlerr(__FILE__,__LINE__);
-	sql_query("DELETE FROM notifs WHERE userid = $id") or sqlerr(__FILE__,__LINE__);
-	sql_query("DELETE FROM xbt_users WHERE uid = $id") or sqlerr(__FILE__,__LINE__);
+	global  $CURUSER, $REL_SEO, $REL_DB;
+	$REL_DB->query("DELETE FROM users WHERE id = $id");
+	$REL_DB->query("DELETE FROM comments WHERE toid=$id AND type='user'");
+	$REL_DB->query("DELETE FROM notifs WHERE type='usercomments' AND checkid=$id");
+	$REL_DB->query("DELETE FROM messages WHERE receiver = $id OR sender = $id");
+	$REL_DB->query("DELETE FROM friends WHERE userid = $id");
+	$REL_DB->query("DELETE FROM friends WHERE friendid = $id");
+	$REL_DB->query("DELETE FROM bookmarks WHERE userid = $id");
+	$REL_DB->query("DELETE FROM invites WHERE inviter = $id");
+	$REL_DB->query("DELETE FROM peers WHERE userid = $id");
+	$REL_DB->query("DELETE FROM presents WHERE presenter = $id OR userid = $id");
+	$REL_DB->query("DELETE FROM addedrequests WHERE userid = $id");
+	$REL_DB->query("DELETE FROM notifs WHERE userid = $id");
+	$REL_DB->query("DELETE FROM xbt_users WHERE uid = $id");
 	write_log(make_user_link()." <font color=\"red\">deleted user with id $id</font>",'system_functions');
 
 	return;
@@ -428,60 +428,13 @@ function delete_user($id) {
  */
 function get_row_count($table, $suffix = "")
 {
+	global $REL_DB;
 	if ($suffix)
 	$suffix = " $suffix";
-	($r = sql_query("SELECT SUM(1) FROM $table $suffix")) or die(mysql_error());
-	($a = mysql_fetch_row($r)) or die(mysql_error());
+	$r = $REL_DB->query("SELECT SUM(1) FROM $table $suffix");
+	$a = mysql_fetch_row($r);
 	return $a[0]?$a[0]:0;
 }
-/**
- * Standart notification message
- * @deprecated Use $REL_TPL->stdmsg() instead
- * @param string $heading Heading of a message, e.g. subject
- * @param string $text Content of a message, e.g. body
- * @param string $div Div to be displayed, default 'success'
- * @param boolean $htmlstrip Strip html? Defalut false
- * @todo Deprecate
- * @return void
- */
-function stdmsg($heading = '', $text = '', $div = 'success', $htmlstrip = false) {
-	global $REL_TPL;
-	$REL_TPL->stdmsg($heading,$text,$div,$htmlstrip);
-}
-
-/**
- * Standart error message with die
- * @deprecated Use $REL_TPL->stderr() instead
- * @param string $heading Heading of a message, e.g. subject
- * @param string $text Content of a message, e.g. body
- * @param string $div Div to be displayed, default 'success'
- * @param boolean $htmlstrip Strip html? Defalut false
- * @return void
- * @see stdmsg()
- * @todo Deprecate
- */
-function stderr($heading = '', $text = '', $div ='error', $htmlstrip = false) {
-	global $REL_TPL;
-	$REL_TPL->stderr($heading,$text,$div,$htmlstrip);
-}
-
-/**
- * Generates SQL error message sending notification to SYSOP
- * @param string $file File where error begins __FILE__
- * @param string $line Line where error begins __LINE__
- * @return void
- */
-function sqlerr($file = '', $line = '') {
-	global $queries, $CURUSER, $REL_SEO, $REL_LANG;
-	$err = mysql_error();
-	$text = ("<table border=\"0\" bgcolor=\"blue\" align=\"left\" cellspacing=\"0\" cellpadding=\"10\" style=\"background: blue\">" .
-	"<tr><td class=\"embedded\"><font color=\"white\"><h1>{$REL_LANG->_('SQL error')}</h1>\n" .
-	"<b>{$REL_LANG->_('SQL server response')}: " . $err . ($file != '' && $line != '' ? "<p>{$REL_LANG->_('in')} $file, {$REL_LANG->_('line')} $line</p>" : "") . "<p>{$REL_LANG->_('Query number')}: $queries.</p></b></font></td></tr></table>");
-	write_log(make_user_link()." SQL ERROR: $text</font>",'sql_errors');
-	print $text;
-	return;
-}
-
 /**
  * Adds nums of ages in russian
  * @param int $age Value of ages
@@ -489,7 +442,7 @@ function sqlerr($file = '', $line = '') {
  */
 function AgeToStr($age)
 {
-	global $REL_LANG;
+	global  $REL_LANG, $REL_DB;
 	if(($age>=5) && ($age<=14)) $str = $REL_LANG->_('years');
 	else {
 		$num = $age - (floor($age/10)*10);
@@ -557,7 +510,7 @@ function cleanhtml($code) {
  * @return string Processed html code
  */
 function encode_spoiler($text) {
-	global $REL_LANG;
+	global  $REL_LANG, $REL_DB;
 	$replace = "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\">{$REL_LANG->_("Spoiler")}</div><div class=\"sp-body\"><textarea id=\"spoiler\" rows=\"10\" cols=\"60\">\\1</textarea></div></div>";
 	$text = preg_replace("#\[spoiler\](.*?)\[/spoiler\]#si", $replace, $text);
 	return $text;
@@ -569,7 +522,7 @@ function encode_spoiler($text) {
  * @return string Processed html code
  */
 function encode_spoiler_from($text) {
-	global $REL_LANG;
+	global  $REL_LANG, $REL_DB;
 	$replace = "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\">\\1</div><div class=\"sp-body\"><textarea id=\"spoiler\" rows=\"10\" cols=\"60\">\\2</textarea></div></div>";
 	$text = preg_replace("#\[spoiler=(.+?)\](.*?)\[/spoiler\]#si", $replace, $text);
 	return $text;
@@ -583,7 +536,7 @@ function encode_spoiler_from($text) {
  * @see get_images()
  */
 function format_comment($text,$nospoiler = false) {
-	global $REL_CONFIG, $REL_CACHE, $bb,$html, $REL_LANG, $REL_SEO;
+	global  $REL_CONFIG, $REL_CACHE, $bb,$html, $REL_LANG, $REL_SEO, $REL_DB;
 
 	$text = cleanhtml($text);
 
@@ -659,14 +612,14 @@ function get_slr_color($ratio) {
  * @return void
  */
 function write_log($text, $type = "tracker") {
-	global $CURUSER;
+	global  $CURUSER, $REL_DB;
 	if (!$CURUSER['id']) $id =0; else $id=$CURUSER['id'];
 
 	//
 	$type = sqlesc($type);
 	$text = sqlesc($text);
 	$added = time();
-	sql_query("INSERT INTO sitelog (added, userid, txt, type) VALUES($added, $id, $text, $type)") or sqlerr(__FILE__,__LINE__);
+	$REL_DB->query("INSERT INTO sitelog (added, userid, txt, type) VALUES($added, $id, $text, $type)");
 	return;
 }
 
@@ -674,13 +627,13 @@ function write_log($text, $type = "tracker") {
  * Check that email is banned and dies if is
  * @param string $email Email to be checked
  * @return void
- * @see stderr()
+ * @see $REL_TPL->stderr()
  */
 function check_banned_emails ($email) {
-	global $REL_TPL, $REL_LANG;
+	global  $REL_TPL, $REL_LANG, $REL_DB;
 	$expl = explode("@", $email);
 	$wildemail = "*@".$expl[1];
-	$res = sql_query("SELECT id, comment FROM bannedemails WHERE email = ".sqlesc($email)." OR email = ".sqlesc($wildemail)."") or sqlerr(__FILE__, __LINE__);
+	$res = $REL_DB->query("SELECT id, comment FROM bannedemails WHERE email = ".sqlesc($email)." OR email = ".sqlesc($wildemail)."");
 	if ($arr = mysql_fetch_assoc($res))
 	$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('This email address was banned due the following reason: <b>%s</b>',$arr[comment]), false);
 	return;
@@ -776,25 +729,13 @@ function rusdate($num,$type){
 }
 
 /**
- * Just alias to $REL_DB->query();
- * @param string $query Query to be performed
- * @return resource Mysql resource
- * @todo Deprecate this shit!
- * @deprecated Use $REL_DB->query(); instead
- */
-function sql_query($query) {
-	global $REL_DB;
-	return $REL_DB->query($query);
-}
-
-/**
  * Initializes all required stuff for Kinokpk.com releaser operation
  * @param boolean $lightmode Does not begin user session or not. Default false
  * @see user_session()
  * @see userlogin()
  */
 function INIT($lightmode = false) {
-	global $REL_CONFIG,$REL_CACHE,$REL_CRON,$REL_DB,$REL_SEO,$REL_TPL;
+	global  $REL_CONFIG,$REL_CACHE,$REL_CRON,$REL_DB,$REL_SEO,$REL_TPL, $REL_DB;
 	// configcache init
 
 	/* @var array Array of releaser's configuration */
@@ -804,7 +745,7 @@ function INIT($lightmode = false) {
 
 		$REL_CONFIG = array();
 
-		$cacherow = sql_query("SELECT * FROM cache_stats");
+		$cacherow = $REL_DB->query("SELECT * FROM cache_stats");
 
 		while ($cacheres = mysql_fetch_array($cacherow))
 		$REL_CONFIG[$cacheres['cache_name']] = $cacheres['cache_value'];
@@ -813,7 +754,7 @@ function INIT($lightmode = false) {
 	}
 	$REL_CONFIG['lang'] = getlang();
 	//configcache init end
-	$cronrow = sql_query("SELECT * FROM cron");
+	$cronrow = $REL_DB->query("SELECT * FROM cron");
 	/* @var array cron array init */
 	while ($cronres = mysql_fetch_array($cronrow))
 	$REL_CRON[$cronres['cron_name']] = $cronres['cron_value'];
@@ -845,7 +786,7 @@ function INIT($lightmode = false) {
  * @return string 2-char language code
  */
 function getlang() {
-	global $REL_CONFIG;
+	global  $REL_CONFIG, $REL_DB;
 		$return = substr(trim((string)$_COOKIE['lang']),0,2);
 	if (!$return) $return = $REL_CONFIG['default_language'];
 	return $return;
@@ -855,8 +796,8 @@ function getlang() {
  * @return void
  */
 function userlogin() {
-	global $REL_LANG, $REL_CONFIG, $REL_CACHE, $REL_LANG, $CURUSER, $REL_CRON;
-	unset($GLOBALS["CURUSER"]);
+	global  $REL_LANG, $REL_CONFIG, $REL_CACHE, $REL_LANG, $CURUSER, $REL_CRON, $REL_DB;
+	unset($GLOBALS['CURUSER']);
 	/* @var object language system */
 	require_once(ROOT_PATH . 'classes/lang/lang.class.php');
 	$ip = getip();
@@ -865,7 +806,7 @@ function userlogin() {
 
 		$maskres = $REL_CACHE->get('bans', 'query');
 		if ($maskres ===false){
-			$res = sql_query("SELECT mask FROM bans");
+			$res = $REL_DB->query("SELECT mask FROM bans");
 			$maskres = array();
 
 			while (list($mask) = mysql_fetch_array($res))
@@ -895,7 +836,7 @@ function userlogin() {
 
 	}
 	$id = (int) $_COOKIE["uid"];
-	$res = sql_query("SELECT users.*, xbt_users.torrent_pass AS passkey, stylesheets.uri FROM users LEFT JOIN xbt_users ON users.id=xbt_users.uid LEFT JOIN stylesheets ON users.stylesheet = stylesheets.id WHERE users.id = $id AND confirmed=1");// or die(mysql_error());
+	$res = $REL_DB->query("SELECT users.*, xbt_users.torrent_pass AS passkey, stylesheets.uri FROM users LEFT JOIN xbt_users ON users.id=xbt_users.uid LEFT JOIN stylesheets ON users.stylesheet = stylesheets.id WHERE users.id = $id AND confirmed=1");// or die(mysql_error());
 	$row = mysql_fetch_assoc($res);
 	if (!$row) {
 		$REL_CONFIG['ss_uri'] = $REL_CONFIG['default_theme'];
@@ -905,7 +846,7 @@ function userlogin() {
 		return;
 	} elseif ((!$row['enabled']) && !defined("IN_CONTACT")) {
 		if ($row['language']<>$REL_CONFIG['lang']) {
-			sql_query("UPDATE users SET language=".sqlesc($REL_CONFIG['lang'])." WHERE id={$row['id']}");
+			$REL_DB->query("UPDATE users SET language=".sqlesc($REL_CONFIG['lang'])." WHERE id={$row['id']}");
 			$row['language'] = $REL_CONFIG['lang'];
 		}
 		$REL_CONFIG['ss_uri'] = $row['uri'];
@@ -916,7 +857,7 @@ function userlogin() {
 
 	}
 	if ($row['language']<>$REL_CONFIG['lang']) {
-		sql_query("UPDATE users SET language=".sqlesc($REL_CONFIG['lang'])." WHERE id={$row['id']}");
+		$REL_DB->query("UPDATE users SET language=".sqlesc($REL_CONFIG['lang'])." WHERE id={$row['id']}");
 		$row['language'] = $REL_CONFIG['lang'];
 	}
 	$sec = hash_pad($row["secret"]);
@@ -939,7 +880,7 @@ function userlogin() {
 	$updateset[] = 'last_access = ' . time();
 
 	if (count($updateset))
-	sql_query("UPDATE LOW_PRIORITY users SET ".implode(", ", $updateset)." WHERE id=" . $row["id"]);// or die(mysql_error());
+	$REL_DB->query("UPDATE LOW_PRIORITY users SET ".implode(", ", $updateset)." WHERE id=" . $row["id"]);// or die(mysql_error());
 	$row['ip'] = $ip;
 
 	if (isset($_COOKIE['override_class'])) {
@@ -971,7 +912,7 @@ function userlogin() {
  * @param complex $REL_LANG Language object
  */
 function make_zodiac_records($REL_LANG) {
-	global $zodiac;
+	global  $zodiac, $REL_DB;
 	$zodiac[] = array($REL_LANG->_('Capricorn'), "capricorn.gif", "22-12");
 $zodiac[] = array($REL_LANG->_('Sagittarius'), "sagittarius.gif", "23-11");
 $zodiac[] = array($REL_LANG->_('Scorpio'), "scorpio.gif", "24-10");
@@ -992,7 +933,7 @@ $GLOBALS['zodiac'] = $zodiac;
  * @return number|string
  */
 function get_server_load() {
-	global $REL_LANG, $phpver;
+	global  $REL_LANG, $phpver, $REL_DB;
 	if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
 		return 0;
 	} elseif (@file_exists("/proc/loadavg")) {
@@ -1021,7 +962,7 @@ function get_server_load() {
  * @return void
  */
 function user_session() {
-	global $CURUSER, $REL_CONFIG, $REL_CRON;
+	global  $CURUSER, $REL_CONFIG, $REL_CRON, $REL_DB;
 
 	$ip = getip();
 	$url = htmlspecialchars($_SERVER['REQUEST_URI']);
@@ -1046,7 +987,7 @@ function user_session() {
 		 $where[] = "uid = $uid";
 		 else
 		 $where[] = "ip = ".sqlesc($ip);*/
-		//sql_query("DELETE FROM sessions WHERE ".implode(" AND ", $where));
+		//$REL_DB->query("DELETE FROM sessions WHERE ".implode(" AND ", $where));
 		$ctime = time();
 		$agent = htmlspecialchars($_SERVER["HTTP_USER_AGENT"]);
 		$updateset[] = "sid = ".sqlesc($sid);
@@ -1060,8 +1001,8 @@ function user_session() {
 		$updateset[] = "url = ".sqlesc($url);
 		$updateset[] = "useragent = ".sqlesc($agent);
 		if (count($updateset))
-		//	sql_query("UPDATE sessions SET ".implode(", ", $updateset)." WHERE ".implode(" AND ", $where)) or sqlerr(__FILE__,__LINE__);
-		sql_query("INSERT INTO sessions (sid, uid, username, class, ip, time, url, useragent) VALUES (".implode(", ", array_map("sqlesc", array($sid, $uid, $username, $class, $ip, $ctime, $url, $agent))).") ON DUPLICATE KEY UPDATE ".implode(", ", $updateset)) or sqlerr(__FILE__,__LINE__);
+		//	$REL_DB->query("UPDATE sessions SET ".implode(", ", $updateset)." WHERE ".implode(" AND ", $where));
+		$REL_DB->query("INSERT INTO sessions (sid, uid, username, class, ip, time, url, useragent) VALUES (".implode(", ", array_map("sqlesc", array($sid, $uid, $username, $class, $ip, $ctime, $url, $agent))).") ON DUPLICATE KEY UPDATE ".implode(", ", $updateset));
 	}
 	if ($CURUSER) {
 
@@ -1127,7 +1068,7 @@ function user_session() {
 			$sql_query = "SELECT ".implode(', ', $sql_query);
 
 			//die($sql_query);
-			$notifysql = sql_query($sql_query);
+			$notifysql = $REL_DB->query($sql_query);
 			$notifs = mysql_fetch_assoc($notifysql);
 			foreach ($notifs as $type => $value) if ($value) $CURUSER[$type] = explode(',', $value);
 			//$notifs = array_combine($allowed_types,explode(',',$notifs));
@@ -1154,7 +1095,7 @@ function unesc($x) {
  * @return void
  */
 function gzip() {
-	global $REL_CONFIG;
+	global  $REL_CONFIG, $REL_DB;
 	if (@extension_loaded('zlib') && @ini_get('zlib.output_compression') != '1' && @ini_get('output_handler') != 'ob_gzhandler' && $REL_CONFIG['use_gzip']) {
 		@ob_start('ob_gzhandler');
 	} else @ob_start();
@@ -1274,7 +1215,7 @@ function mksizeint($bytes) {
  * @return string Nice time
  */
 function mkprettytime($seconds, $time = true) {
-	global $CURUSER, $REL_CONFIG, $REL_LANG;
+	global  $CURUSER, $REL_CONFIG, $REL_LANG, $REL_DB;
 	$seconds = $seconds+$REL_CONFIG['site_timezone']*3600;
 	$seconds = $seconds-date("Z")+$CURUSER['timezone']*3600;
 	$search = array('January','February','March','April','May','June','July','August','September','October','November','December');
@@ -1297,28 +1238,6 @@ function mkprettytime($seconds, $time = true) {
 	if (!$data) $data = 'N/A'; else
 	$data = str_replace($search, $replace, $data);
 	return $data;
-}
-
-/**
- * Makes global vars as normal.
- * <code>
- * mkglobal('test'); ->> $_POST['test'] becoming $test
- * </code>
- * @param string|array $vars vars' names, separated by : or array of vars' names
- * @return number|number
- */
-function mkglobal($vars) {
-	if (!is_array($vars))
-	$vars = explode(":", $vars);
-	foreach ($vars as $v) {
-		if (isset($_GET[$v]))
-		$GLOBALS[$v] = unesc($_GET[$v]);
-		elseif (isset($_POST[$v]))
-		$GLOBALS[$v] = unesc($_POST[$v]);
-		else
-		return false;
-	}
-	return true;
 }
 
 /**
@@ -1390,7 +1309,7 @@ function validemail($email) {
  * @return string Converted text
  */
 function convert_local_urls($link) {
-	global $REL_CONFIG;
+	global  $REL_CONFIG, $REL_DB;
 	return preg_replace ( "#\\<a(.*?)href(\\s*)\\=(\\s*)(\"|')(?!http://)(.*?)(\"|')(.*?)\\>#si", "<a\\1href=\\4" . $REL_CONFIG['defaultbaseurl'].'/' . "\\5\\6\\7>", $link );
 }
 /**
@@ -1406,7 +1325,7 @@ function convert_local_urls($link) {
  */
 function sent_mail($to,$fromname,$fromemail,$subject,$body,$multiplemail='') {
 //return true;
-	global $REL_CONFIG;
+	global  $REL_CONFIG, $REL_DB;
 	require_once ROOT_PATH."classes/mail/dSendMail2.inc.php";
 	$m = new dSendMail2;
 	$m->setCharset('utf-8');
@@ -1427,10 +1346,10 @@ function sent_mail($to,$fromname,$fromemail,$subject,$body,$multiplemail='') {
  * @deprecated USE $REL_DB->sqlesc instead
  * @param string $value Value to be escaped
  * @return string Escaped value
- * @see sql_query()
+ * @see $REL_DB->query()
  */
 function sqlesc($value) {
-	global $REL_DB;
+	global  $REL_DB;
 	return $REL_DB->sqlesc($value);
 }
 
@@ -1476,7 +1395,7 @@ function pagercheck() {
 }
 
 function run_cronjobs() {
-	global $REL_CRON,$REL_SEO;
+	global  $REL_CRON,$REL_SEO, $REL_DB;
 	if ($REL_CRON['cron_is_native']) {
 		$time = time();
 		if (((($time-$REL_CRON['last_cleanup'])>$REL_CRON['autoclean_interval']) && !$REL_CRON['in_cleanup'])) print '<img width="0px" height="0px" alt="" title="" src="'.$REL_SEO->make_link('cleanup').'"/>';
@@ -1487,7 +1406,7 @@ function run_cronjobs() {
  * Generates debug
  */
 function debug() {
-	global $CURUSER, $REL_LANG, $REL_CONFIG, $REL_CRON, $REL_SEO,$REL_TPL, $REL_DB, $tstart;
+	global  $CURUSER, $REL_LANG, $REL_CONFIG, $REL_CRON, $REL_SEO,$REL_TPL, $REL_DB, $tstart, $REL_DB;
 
 	if (($REL_CONFIG['debug_mode']) && (get_privilege('view_sql_debug',false))) {
 		//var_dump($REL_DB->query);
@@ -1521,15 +1440,15 @@ function generate_post_javascript() {
  * Closes old sessions
  */
 function close_sessions() {
-	// close old sessions
+	global $REL_DB;
 	$secs = 1 * 3600;
 	$time = time();
 	$dt = $time - $secs;
-	$updates = sql_query("SELECT uid, time FROM sessions WHERE uid<>-1 AND time < $dt") or sqlerr(__FILE__,__LINE__);
+	$updates = $REL_DB->query("SELECT uid, time FROM sessions WHERE uid<>-1 AND time < $dt");
 	while ($upd = mysql_fetch_assoc($updates)) {
-		sql_query("UPDATE users SET last_login={$upd['time']} WHERE id={$upd['uid']}") or sqlerr(__FILE__,__LINE__);
+		$REL_DB->query("UPDATE users SET last_login={$upd['time']} WHERE id={$upd['uid']}");
 	}
-	sql_query("DELETE FROM sessions WHERE time < $dt") or sqlerr(__FILE__,__LINE__);
+	$REL_DB->query("DELETE FROM sessions WHERE time < $dt");
 }
 
 
@@ -1539,7 +1458,7 @@ function close_sessions() {
  */
 function generate_notify_array()
 {
-	global $CURUSER,$REL_LANG,$REL_SEO;
+	global  $CURUSER,$REL_LANG,$REL_SEO, $REL_DB;
 
 	$allowed_types = $CURUSER['notifs'];
 	$return['total'] = 0;
@@ -1565,14 +1484,14 @@ function generate_notify_array()
  * @return void|string HTML code with javascript
  */
 function generate_ratio_popup_warning($blockmode = false) {
-	global $CURUSER, $REL_CRON, $REL_LANG, $REL_SEO;
+	global  $CURUSER, $REL_CRON, $REL_LANG, $REL_SEO, $REL_DB;
 
 	if (!$CURUSER) return;
 
 	if (!$REL_CRON['rating_enabled']) return;
 	if ($_COOKIE['denynotifs'] && !$blockmode) return;
 	if (!$CURUSER['downloaded_rel'] && !$CURUSER['seeding']) {
-		$query = sql_query("SELECT (SELECT SUM(1) FROM peers WHERE seeder=1 AND userid={$CURUSER['id']}) AS seeding, (SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE snatched.finished=1 AND torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid={$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']}) AS downloaded");
+		$query = $REL_DB->query("SELECT (SELECT SUM(1) FROM peers WHERE seeder=1 AND userid={$CURUSER['id']}) AS seeding, (SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE snatched.finished=1 AND torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid={$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']}) AS downloaded");
 
 		list($seeding,$downloaded) = mysql_fetch_array($query);
 		$CURUSER['seeding'] = (int)$seeding;
@@ -1617,12 +1536,13 @@ function mksecret($length = 20) {
  * @return void
  */
 function logincookie($id, $passhash, $language, $updatedb = true, $expires = 0x7fffffff) {
+	global $REL_DB;
 	setcookie("uid", $id, $expires);
 	setcookie("pass", md5($passhash.COOKIE_SECRET), $expires);
 	setcookie("lang", $language, $expires);
 
 	if ($updatedb)
-	sql_query("UPDATE users SET last_access = ".time()." WHERE id = $id") or sqlerr(__FILE__,__LINE__);
+	$REL_DB->query("UPDATE users SET last_access = ".time()." WHERE id = $id");
 	return;
 }
 
@@ -1642,7 +1562,7 @@ function logoutcookie() {
  * @return void
  */
 function loggedinorreturn() {
-	global $CURUSER, $REL_SEO;
+	global  $CURUSER, $REL_SEO, $REL_DB;
 	if (!$CURUSER) {
 		safe_redirect($REL_SEO->make_link('login','returnto',urlencode(str_replace($REL_CONFIG['defaultbaseurl'],'', $_SERVER["REQUEST_URI"]))));
 		exit();
@@ -1655,16 +1575,16 @@ function loggedinorreturn() {
  * @param int $id id for torrent to be deleted
  */
 function deletetorrent($id) {
-	global $CURUSER, $REL_SEO, $REL_DB;
-	sql_query("DELETE FROM notifs WHERE checkid = $id AND type='relcomments'") or sqlerr(__FILE__,__LINE__);
-	sql_query("DELETE FROM torrents WHERE id = $id");
-	sql_query("DELETE FROM bookmarks WHERE id = $id");
-	sql_query("DELETE FROM comments WHERE toid = $id AND type='rel'");
+	global  $CURUSER, $REL_SEO, $REL_DB;
+	$REL_DB->query("DELETE FROM notifs WHERE checkid = $id AND type='relcomments'");
+	$REL_DB->query("DELETE FROM torrents WHERE id = $id");
+	$REL_DB->query("DELETE FROM bookmarks WHERE id = $id");
+	$REL_DB->query("DELETE FROM comments WHERE toid = $id AND type='rel'");
 	$REL_DB->query("DELETE FROM xbt_files WHERE fid=$id");
 	$REL_DB->query("DELETE FROM xbt_files_users WHERE fid=$id");
 	//$REL_DB->query("DELETE FROM xbt_files WHERE fid=$id");
 	foreach(explode(".","snatched.peers.files.trackers") as $x)
-	sql_query("DELETE FROM $x WHERE torrent = $id");
+	$REL_DB->query("DELETE FROM $x WHERE torrent = $id");
 	@unlink("torrents/$id.torrent");
 	$images = glob(ROOT_PATH.'torrents/images/'.$id.'-*');
 	if ($images) {
@@ -1690,7 +1610,7 @@ function fuckIE() {
  * @param string $type Type of comments
  */
 function clear_comment_caches($type) {
-	global $REL_CACHE;
+	global  $REL_CACHE, $REL_DB;
 	$clearcache = array();
 	if ($type=='news') $clearcache[] = 'block-news';
 	elseif ($type=='poll') $clearcache[] = 'block-polls';
@@ -1710,7 +1630,7 @@ function clear_comment_caches($type) {
  * @see commenttable()
  */
 function prepare_for_commenttable($subres,$subject='',$link='') {
-	global $CURUSER,$REL_SEO, $CURUSER;
+	global  $CURUSER,$REL_SEO, $CURUSER, $REL_DB;
 	$allrows = array();
 	$allowed_links = array (/*'unread' => $REL_SEO->make_link('message','action','viewmessage','id',''), */'comments' => $REL_SEO->make_link('details','id','%s'), 'forum' => $REL_SEO->make_link('forum','a','viewtopic','id','%s'), 'poll' => $REL_SEO->make_link('polloverview','id','%s'), 'news' => $REL_SEO->make_link('newsoverview','id','%s'), 'user' => $REL_SEO->make_link('userdetails','id','%s'), 'req' => $REL_SEO->make_link('requests','id','%s'), 'rg' => $REL_SEO->make_link('relgroups','id','%s'), 'rgnews' => $REL_SEO->make_link('rgnewsoverview','id','%s'));
 
@@ -1744,7 +1664,7 @@ function prepare_for_commenttable($subres,$subject='',$link='') {
  * @return void|string
  */
 function commenttable($rows,$fetch = false, $custom_tpl='commenttable.tpl') {
-	global $CURUSER, $REL_CONFIG, $REL_LANG, $REL_SEO, $REL_TPL;
+	global  $CURUSER, $REL_CONFIG, $REL_LANG, $REL_SEO, $REL_TPL, $REL_DB;
 
 	$IS_MODERATOR = (get_privilege('is_moderator',false));
 	$REL_TPL->assignByRef('IS_MODERATOR',$IS_MODERATOR);
@@ -1760,13 +1680,13 @@ function commenttable($rows,$fetch = false, $custom_tpl='commenttable.tpl') {
  * @see cloud()
  */
 function cloud3d() {
-	global $REL_CACHE, $REL_SEO, $REL_LANG;
+	global  $REL_CACHE, $REL_SEO, $REL_LANG, $REL_DB;
 	$tags = $REL_CACHE->get('system','cat_tags');
 	if ($tags===false) {
 		$cats = assoc_cats();
 		$tree=make_tree();
 		$arr=array();
-		$row = sql_query("SELECT category FROM torrents");
+		$row = $REL_DB->query("SELECT category FROM torrents");
 		while (list($tcats) = mysql_fetch_array($row)) {
 			if ($tcats) { $tcats = explode(',',$tcats);
 			foreach ($tcats as $cat) {
@@ -1885,7 +1805,7 @@ function linkcolor($num) {
  * @see torrenttable()
  */
 function prepare_for_torrenttable($res) {
-	global $tree, $REL_LANG, $REL_CONFIG, $REL_SEO, $CURUSER;
+	global  $tree, $REL_LANG, $REL_CONFIG, $REL_SEO, $CURUSER, $REL_DB;
 
 	if (!$tree) $tree = make_tree();
 	$resarray = array();
@@ -1981,7 +1901,7 @@ function prepare_for_torrenttable($res) {
  * @return void
  */
 function torrenttable($res, $variant = "index") {
-	global $CURUSER, $REL_CONFIG, $REL_SEO, $REL_LANG, $tree, $REL_TPL;
+	global  $CURUSER, $REL_CONFIG, $REL_SEO, $REL_LANG, $tree, $REL_TPL, $REL_DB;
 	if (!$tree) $tree = make_tree();
 	$REL_TPL->assign('TABLE_VARIANT',$variant);
 	$REL_TPL->assign('res',$res);
@@ -1995,7 +1915,7 @@ function torrenttable($res, $variant = "index") {
  * @return string Nice month
  */
 function mkprettymonth($seconds) {
-	global $REL_LANG;
+	global  $REL_LANG, $REL_DB;
 	$search = array('January','February','March','April','May','June','July','August','September','October','November','December');
 		$replace = array($REL_LANG->_('Jan'),
 	$REL_LANG->_('Feb'),
@@ -2069,11 +1989,11 @@ function get_user_icons($arr, $big = false) {
  * @return array Array of categories, keys are ids, values are categories' names
  */
 function assoc_cats($type='categories') {
-	global $REL_CACHE;
+	global  $REL_CACHE, $REL_DB;
 	$cats = $REL_CACHE->get('trees','cat_assoc_'.$type);
 	if ($cats===false) {
 		$cats=array();
-		$catsrow = sql_query("SELECT id,name FROM $type ORDER BY sort ASC");
+		$catsrow = $REL_DB->query("SELECT id,name FROM $type ORDER BY sort ASC");
 		while ($catres= mysql_fetch_assoc($catsrow)) $cats[$catres['id']]=$catres['name'];
 		$REL_CACHE->set('trees','cat_assoc_'.$type,$cats);
 	}
@@ -2086,11 +2006,11 @@ function assoc_cats($type='categories') {
  * @return array Array of categories, keys are ids, values are categories' data
  */
 function assoc_full_cats($type='categories') {
-	global $REL_CACHE;
+	global  $REL_CACHE, $REL_DB;
 	$cats = $REL_CACHE->get('trees','cat_assoc_full_'.$type);
 	if ($cats===false) {
 		$cats=array();
-		$catsrow = sql_query("SELECT * FROM $type ORDER BY sort ASC");
+		$catsrow = $REL_DB->query("SELECT * FROM $type ORDER BY sort ASC");
 		while ($catres= mysql_fetch_assoc($catsrow)) {
 			$catres['class'] = explode(',', $catres['class']);
 			//var_dump($catres['class']);
@@ -2109,16 +2029,16 @@ function assoc_full_cats($type='categories') {
  * @return void
  */
 function send_comment_notifs($id,$page,$type) {
-	global $REL_LANG, $CURUSER, $REL_DB;
+	global  $REL_LANG, $CURUSER, $REL_DB;
 
-	$emailssql = $REL_DB->query("SELECT GROUP_CONCAT(users.email) FROM notifs LEFT JOIN users ON userid=users.id WHERE checkid = $id AND type='$type' AND FIND_IN_SET('$type',emailnotifs) AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
+	$emailssql = $REL_DB->query("SELECT GROUP_CONCAT(users.email) FROM notifs LEFT JOIN users ON userid=users.id WHERE checkid = $id AND type='$type' AND FIND_IN_SET('$type',emailnotifs) AND userid != $CURUSER[id]");
 	$emails = mysql_result($emailssql, 0);
 	if ($emails) {
 		$emails = sqlesc($emails);
 		$subject = sqlesc($REL_LANG->say_by_key_to($id,'new_comment'));
 		$msg = sqlesc(sprintf($REL_LANG->say_by_key_to($id,'comment_notice_'.$type),$page));
-		//sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
-		sql_query("INSERT INTO cron_emails (emails, subject, body) VALUES ($emails, $subject, $msg)") or sqlerr(__FILE__,__LINE__);
+		//$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]");
+		$REL_DB->query("INSERT INTO cron_emails (emails, subject, body) VALUES ($emails, $subject, $msg)");
 	}
 }
 
@@ -2131,16 +2051,16 @@ function send_comment_notifs($id,$page,$type) {
  * @todo check messages sending
  */
 function send_notifs($type,$text = '',$id = 0) {
-	global $REL_LANG, $CURUSER, $REL_CONFIG, $REL_SEO, $REL_DB;
+	global  $REL_LANG, $CURUSER, $REL_CONFIG, $REL_SEO, $REL_DB;
 
-	$emailssql = $REL_DB->query("SELECT GROUP_CONCAT(users.email),users.language FROM users WHERE FIND_IN_SET('$type',emailnotifs) AND ".(!$id?"id != ".(int)$CURUSER['id']:"id = $id")." GROUP BY users.language") or sqlerr(__FILE__,__LINE__);
+	$emailssql = $REL_DB->query("SELECT GROUP_CONCAT(users.email),users.language FROM users WHERE FIND_IN_SET('$type',emailnotifs) AND ".(!$id?"id != ".(int)$CURUSER['id']:"id = $id")." GROUP BY users.language");
 	while (list($emails,$language) = mysql_fetch_array($emailssql)) {	
 	if ($emails) {
 		$emails = sqlesc($emails);
 		$subject = sqlesc($REL_LANG->say_by_key('new_'.$type,$language));
 		$msg = sqlesc($REL_LANG->say_by_key('notice_'.$type,$language).$text."<hr/ ><a href=\"".$REL_SEO->make_link('index')."\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->_lang($language,'You can always configure your notifications in <a href="%s">notification settings</a> of your account.',$REL_SEO->make_link("mynotifs","settings"))}</div>");
-		//	sql_query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]") or sqlerr(__FILE__,__LINE__);
-		$REL_DB->query("INSERT INTO cron_emails (emails, subject, body) VALUES ($emails,$subject, $msg)") or sqlerr(__FILE__,__LINE__);
+		//	$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]");
+		$REL_DB->query("INSERT INTO cron_emails (emails, subject, body) VALUES ($emails,$subject, $msg)");
 	}
 	}
 }
@@ -2152,8 +2072,8 @@ function send_notifs($type,$text = '',$id = 0) {
  * @return string Notification html code
  */
 function is_i_notified($id,$type) {
-	global $CURUSER,$REL_LANG, $REL_SEO;
-	$res = sql_query("SELECT id FROM notifs WHERE checkid=$id AND userid={$CURUSER['id']} AND type='$type'") or sqlerr(__FILE__,__LINE__);
+	global  $CURUSER,$REL_LANG, $REL_SEO, $REL_DB;
+	$res = $REL_DB->query("SELECT id FROM notifs WHERE checkid=$id AND userid={$CURUSER['id']} AND type='$type'");
 	list($cid) = mysql_fetch_array($res);
 	if ($cid) return("<div id=\"notifarea-$id\" style=\"display:inline;\"><a href=\"".$REL_SEO->make_link('notifs','action','deny','id',$cid)."\" onclick=\"return notifyme($cid,$id,'','deny')\">{$REL_LANG->say_by_key('monitor_comments_disable')}</a></div>");
 	else return("<div id=\"notifarea-$id\" style=\"display:inline;\"><a href=\"".$REL_SEO->make_link('notifs','id',$id,'type',$type)."\" onclick=\"return notifyme('',$id,'$type','')\">{$REL_LANG->say_by_key('monitor_comments')}</a></div>");
@@ -2167,14 +2087,14 @@ function is_i_notified($id,$type) {
  */
 function &make_tree($table='categories',$condition='')
 {
-	global $REL_CACHE;
+	global  $REL_CACHE, $REL_DB;
 	if ($condition) $cacheadd = '-'.md5($condition);
 
 	$tree = $REL_CACHE->get('trees',$table.$cacheadd);
 	if ($tree === false) {
 		$tree = array();
 
-		$query = sql_query('SELECT * FROM '.$table.($condition?' '.$condition:'').' ORDER BY sort ASC') or sqlerr(__FILE__,__LINE__);
+		$query = $REL_DB->query('SELECT * FROM '.$table.($condition?' '.$condition:'').' ORDER BY sort ASC');
 		if (!$query) return $tree;
 
 		$nodes = array();
@@ -2224,7 +2144,7 @@ function &make_tree($table='categories',$condition='')
  * @return string HTML code of input=select
  */
 function gen_select_area($name, $tree, $selected='', $selectparents = false, $multiple=false, $recurs = false, $level = 0, &$t_content = '') {
-	global $REL_LANG;
+	global  $REL_LANG, $REL_DB;
 	$pass_sel = $selected;
 	$selected = explode(',',$selected);
 	if (!$recurs) $t_content = "<select name=\"$name\"".($multiple?' multiple="multiple"':'')."><option value=\"0\">{$REL_LANG->say_by_key('choose')}</option>\n";
@@ -2273,7 +2193,7 @@ function get_childs($tree, $tid) {
 }
 
 function get_top_parent($tree,$tid, $type='categories') {
-	global $REL_DB;
+	global  $REL_DB;
 	$return = $REL_CACHE->get('trees',"top_parent_$type_".$tid);
 	if ($return==false) {
 		foreach ($tree as $branch) {
@@ -2297,7 +2217,7 @@ function get_top_parent($tree,$tid, $type='categories') {
  * @return array|boolean Array of ids of ALL children of branch, id of a branch if there are no children and false if category does not exist
  */
 function get_full_childs_ids($tree, $tid, $type='categories', &$array = array(), &$recurs = false, &$level = 0) {
-	global $REL_CACHE;
+	global  $REL_CACHE, $REL_DB;
 	$return = false;
 	if (!$recurs)
 	$return = $REL_CACHE->get('trees',$type.'-full-childs-'.$tid);
@@ -2328,7 +2248,7 @@ function get_full_childs_ids($tree, $tid, $type='categories', &$array = array(),
  * @return array Array of way steps
  */
 function get_cur_position($tree, $cid, $viewer='browse', $byimages=false, &$array = '') {
-	global $REL_SEO;
+	global  $REL_SEO, $REL_DB;
 	foreach ($tree as $branch) {
 		if ($cid==$branch['id']) { $array[]="<a href=\"".$REL_SEO->make_link($viewer,"cat",$branch['id'])."\">".(($byimages && $branch['image'])?"<img style=\"border:none;\" src=\"pic/cats/{$branch['image']}\" title=\"{$branch['name']}\" alt=\"{$branch['name']}\"/>":$branch['name'])."</a>"; return $array; }
 		elseif ($branch['nodes']) {
@@ -2373,7 +2293,7 @@ function set_visited($type,$id) {
  * @return string Html code of player
  */
 function get_trailer($descr) {
-	global $REL_CONFIG;
+	global  $REL_CONFIG, $REL_DB;
 	if ($REL_CONFIG['use_kinopoisk_trailers']) {
 		preg_match("#http://www.kinopoisk.ru/level/1/film/(.*?)/#si",$descr,$matches);
 
@@ -2454,7 +2374,7 @@ function translit($st,$replace_spaces = true) {
 }
 
 function generate_lang_js() {
-	global $REL_LANG;
+	global  $REL_LANG, $REL_DB;
 	return "<script type=\"text/javascript\" language=\"javascript\">
 			var REL_LANG_NO_TEXT_SELECTED = '{$REL_LANG->_('No text selected!')}';
 			var REL_LANG_ARE_YOU_SURE = '{$REL_LANG->_('Are you sure?')}';

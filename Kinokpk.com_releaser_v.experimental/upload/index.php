@@ -10,6 +10,7 @@
 require_once("include/bittorrent.php");
 
 INIT();
+
 $REL_TPL->stdhead($REL_LANG->say_by_key('homepage'));
 
 $REL_TPL->stdfoot();

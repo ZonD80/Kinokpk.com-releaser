@@ -18,7 +18,7 @@ $path = str_replace("js/tiny_mce/plugins/stamps",'',dirname(__FILE__));
 require_once ($path."include/bittorrent.php");
 INIT();
 if (!$CURUSER) die('Only users enabled');
-$stamparray = sql_query("SELECT image FROM stamps WHERE FIND_IN_SET(".get_user_class().",class) ORDER BY sort ASC");
+$stamparray = $REL_DB->query("SELECT image FROM stamps WHERE FIND_IN_SET(".get_user_class().",class) ORDER BY sort ASC");
 while ((list($img) = mysql_fetch_array($stamparray)))
 print('
 <div class="stamps"><a href="javascript:StampsDialog.insert(\''.$img.'\');"><img src="'.$REL_CONFIG['defaultbaseurl'].'/pic/stamp/'.$img.'" border="0" style="width:100px;height:100px;" class="stamp" alt="Stamp" title="Stamp" /></a></div>');

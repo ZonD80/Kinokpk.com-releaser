@@ -321,7 +321,7 @@ $highlight = " bgcolor=#BBAF9B";
 
 					{
 
-						stdmsg($REL_LANG->say_by_key('error'), "Второй рейтинг должен быть больше первого.");
+						$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Второй рейтинг должен быть больше первого.");
 
 						$REL_TPL->stdfoot();
 
@@ -367,7 +367,7 @@ $highlight = " bgcolor=#BBAF9B";
 	  	{
 	  		if (!validemail($email))
 	  		{
-	  			stdmsg($REL_LANG->say_by_key('error'), "Неправильный E-mail.");
+	  			$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неправильный E-mail.");
 	  			$REL_TPL->stdfoot();
 	  			die();
 	  		}
@@ -401,7 +401,7 @@ $highlight = " bgcolor=#BBAF9B";
 			$regex = "/^(((1?\d{1,2})|(2[0-4]\d)|(25[0-5]))(\.\b|$)){4}$/";
 			if (!preg_match($regex, $ip))
 			{
-				stdmsg($REL_LANG->say_by_key('error'), "Неверный IP.");
+				$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неверный IP.");
 				$REL_TPL->stdfoot();
 				die();
 			}
@@ -416,7 +416,7 @@ $highlight = " bgcolor=#BBAF9B";
 					$n = substr($mask, 1, mb_strlen($mask) - 1);
 					if (!is_numeric($n) or $n < 0 or $n > 32)
 					{
-						stdmsg($REL_LANG->say_by_key('error'), "Неверная макса подсети.");
+						$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неверная макса подсети.");
 						$REL_TPL->stdfoot();
 						die();
 					}
@@ -425,7 +425,7 @@ $highlight = " bgcolor=#BBAF9B";
 				}
 				elseif (!preg_match($regex, $mask))
 				{
-					stdmsg($REL_LANG->say_by_key('error'), "Неверная макса подсети.");
+					$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неверная макса подсети.");
 					$REL_TPL->stdfoot();
 					die();
 				}
@@ -497,7 +497,7 @@ $highlight = " bgcolor=#BBAF9B";
 		{
 			if (!$date = mkdate($date))
 			{
-				stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
+				$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
 				$REL_TPL->stdfoot();
 				die();
 			}
@@ -521,7 +521,7 @@ $highlight = " bgcolor=#BBAF9B";
 					{
 						if (!$date = mkdate($date))
 						{
-							stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
+							$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
 							$REL_TPL->stdfoot();
 							die();
 						}
@@ -531,7 +531,7 @@ $highlight = " bgcolor=#BBAF9B";
 					}
 					else
 					{
-						stdmsg($REL_LANG->say_by_key('error'), "Нужны две даты для этого типа поиска.");
+						$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Нужны две даты для этого типа поиска.");
 						$REL_TPL->stdfoot();
 						die();
 					}
@@ -549,7 +549,7 @@ $highlight = " bgcolor=#BBAF9B";
 		{
 			if (!$last = mkdate($last))
 			{
-				stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
+				$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
 				$REL_TPL->stdfoot();
 				die();
 			}
@@ -574,7 +574,7 @@ $highlight = " bgcolor=#BBAF9B";
 					}
 					else
 					{
-						stdmsg($REL_LANG->say_by_key('error'), "Вторая дата неверна.");
+						$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Вторая дата неверна.");
 						$REL_TPL->stdfoot();
 						die();
 					}
@@ -670,18 +670,18 @@ $highlight = " bgcolor=#BBAF9B";
 		//    <temporary>    /////////////////////////////////////////////////////
 		if ($DEBUG_MODE > 0)
 		{
-			stdmsg("Запрос подсчета",$queryc);
+			$REL_TPL->stdmsg("Запрос подсчета",$queryc);
 			print "<br /><br />";
-			stdmsg("Поисковый запрос",$query);
+			$REL_TPL->stdmsg("Поисковый запрос",$query);
 			print "<br /><br />";
-			stdmsg("URL ",$q);
+			$REL_TPL->stdmsg("URL ",$q);
 			if ($DEBUG_MODE == 2)
 			die();
 			print "<br /><br />";
 		}
 		//    </temporary>   /////////////////////////////////////////////////////
 
-		$res = sql_query($queryc) or sqlerr(__FILE__, __LINE__);
+		$res = $REL_DB->query($queryc);
 		$arr = mysql_fetch_row($res);
 		$count = $arr[0];
 
@@ -692,10 +692,10 @@ $highlight = " bgcolor=#BBAF9B";
 
 		$query .= $limit;
 
-		$res = sql_query($query) or sqlerr(__FILE__, __LINE__);
+		$res = $REL_DB->query($query);
 
 		if (mysql_num_rows($res) == 0)
-		stdmsg("Внимание","Пользователь не был найден.");
+		$REL_TPL->stdmsg("Внимание","Пользователь не был найден.");
 		else
 		{
 			print "<table border=1 cellspacing=0 cellpadding=5>\n";

@@ -24,13 +24,13 @@ if ($action == 'delete')
 {
 	$newsid = (int)$_GET["newsid"];
 	if (!is_valid_id($newsid))
-	stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 	$returnto = makesafe($_GET["returnto"]);
 
-	sql_query("DELETE FROM news WHERE id=$newsid") or sqlerr(__FILE__, __LINE__);
-	sql_query("DELETE FROM comments WHERE toid=$newsid AND type='news'") or sqlerr(__FILE__, __LINE__);
-	sql_query("DELETE FROM notifs WHERE type='newscomments' AND checkid=$newsid") or sqlerr(__FILE__, __LINE__);
+	$REL_DB->query("DELETE FROM news WHERE id=$newsid");
+	$REL_DB->query("DELETE FROM comments WHERE toid=$newsid AND type='news'");
+	$REL_DB->query("DELETE FROM notifs WHERE type='newscomments' AND checkid=$newsid");
 
 	$REL_CACHE->clearGroupCache("block-news");
 	if ($returnto != "")
@@ -44,16 +44,16 @@ elseif ($action == 'add')
 
 	$subject = htmlspecialchars((string)$_POST["subject"]);
 	if (!$subject)
-	stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
 
 	$body = ((string)$_POST["body"]);
 	if (!$body)
-	stderr($REL_LANG->say_by_key('error'),"Тело новости не может быть пустым!");
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Тело новости не может быть пустым!");
 
 	$added = time();
 
-	sql_query("INSERT INTO news (userid, added, body, subject) VALUES (".
-	$CURUSER['id'] . ", $added, " . sqlesc($body) . ", " . sqlesc($subject) . ")") or sqlerr(__FILE__, __LINE__);
+	$REL_DB->query("INSERT INTO news (userid, added, body, subject) VALUES (".
+	$CURUSER['id'] . ", $added, " . sqlesc($body) . ", " . sqlesc($subject) . ")");
 
 	$REL_CACHE->clearGroupCache("block-news");
 	$warning = "Новость <b>успешно добавлена</b>";
@@ -66,7 +66,7 @@ elseif ($action == 'edit')
 	$newsid = (int)$_GET["newsid"];
 
 	if (!is_valid_id($newsid))
-	stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 	if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	{
@@ -74,10 +74,10 @@ elseif ($action == 'edit')
 		$subject = htmlspecialchars((string)$_POST['subject']);
 
 		if (!$subject)
-		stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
 
 		if (!$body)
-		stderr($REL_LANG->say_by_key('error'), "Тело новости не может быть пустым!");
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'), "Тело новости не может быть пустым!");
 
 		$body = sqlesc(($body));
 
@@ -85,7 +85,7 @@ elseif ($action == 'edit')
 
 		$editedat = sqlesc(time());
 
-		sql_query("UPDATE news SET body=$body, subject=$subject WHERE id=$newsid") or sqlerr(__FILE__, __LINE__);
+		$REL_DB->query("UPDATE news SET body=$body, subject=$subject WHERE id=$newsid");
 
 		$REL_CACHE->clearGroupCache("block-news");
 
@@ -98,10 +98,10 @@ elseif ($action == 'edit')
 	}
 	else
 	{
-		$res = sql_query("SELECT * FROM news WHERE id=$newsid") or sqlerr(__FILE__, __LINE__);
+		$res = $REL_DB->query("SELECT * FROM news WHERE id=$newsid");
 
 		if (mysql_num_rows($res) != 1)
-		stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
 		$arr = mysql_fetch_array($res);
 		$returnto = makesafe($_GET['returnto']);

@@ -20,7 +20,7 @@ $REL_TPL->stdhead("Предупрежденные пользователи");
 $warned = number_format(get_row_count("users", "WHERE warned=1"));
 $REL_TPL->begin_frame("Предупрежденные пользователи: ($warned)", true);
 
-$res = sql_query("SELECT id,username,added,last_access,ratingsum,warneduntil,donor,enabled,warned,class FROM users WHERE warned=1 ORDER BY users.warneduntil") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT id,username,added,last_access,ratingsum,warneduntil,donor,enabled,warned,class FROM users WHERE warned=1 ORDER BY users.warneduntil");
 $num = mysql_num_rows($res);
 print("<table border=1 width='100%' ellspacing=0 cellpadding=2><form action=\"".$REL_SEO->make_link('nowarn')."\" method=post>\n");
 print("<tr align=center><td class=colhead width=90>Пользователь</td>

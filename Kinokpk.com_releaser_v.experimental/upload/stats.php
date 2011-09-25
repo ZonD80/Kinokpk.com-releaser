@@ -34,11 +34,11 @@ a.colheadlink:hover {
 <?php
 $REL_TPL->begin_main_frame();
 
-$res = sql_query("SELECT SUM(1) FROM torrents") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT SUM(1) FROM torrents");
 $n = mysql_fetch_row($res);
 $n_tor = $n[0];
 
-$res = sql_query("SELECT SUM(1) FROM peers") or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query("SELECT SUM(1) FROM peers");
 $n = mysql_fetch_row($res);
 $n_peers = $n[0];
 
@@ -60,10 +60,10 @@ $query = "SELECT u.id, u.username AS name, MAX(t.added) AS last, COUNT(DISTINCT 
 	FROM users as u LEFT JOIN torrents as t ON u.id = t.owner LEFT JOIN peers as p ON t.id = p.torrent WHERE u.class > 3
 	GROUP BY u.id ORDER BY $orderby";
 
-$res = sql_query($query) or sqlerr(__FILE__, __LINE__);
+$res = $REL_DB->query($query);
 
 if (mysql_num_rows($res) == 0)
-stdmsg("Извините", "Нет заливающих.");
+$REL_TPL->stdmsg("Извините", "Нет заливающих.");
 else
 {
 	$REL_TPL->begin_frame("Статистика заливающих", True);
@@ -89,7 +89,7 @@ else
 }
 
 if ($n_tor == 0)
-stdmsg("Извините", "Данные по категориям отсутствуют!");
+$REL_TPL->stdmsg("Извините", "Данные по категориям отсутствуют!");
 else
 {
 	if ($catorder == "lastul")
@@ -101,9 +101,9 @@ else
 	else
 	$orderby = "c.name";
 	$tree = make_tree();
-	$res = sql_query("SELECT c.id as catid, MAX(t.added) AS last, COUNT(DISTINCT t.id) AS n_t, COUNT(p.id) AS n_p
+	$res = $REL_DB->query("SELECT c.id as catid, MAX(t.added) AS last, COUNT(DISTINCT t.id) AS n_t, COUNT(p.id) AS n_p
 	FROM categories as c LEFT JOIN torrents as t ON t.category = c.id LEFT JOIN peers as p
-	ON t.id = p.torrent GROUP BY c.id ORDER BY $orderby") or sqlerr(__FILE__, __LINE__);
+	ON t.id = p.torrent GROUP BY c.id ORDER BY $orderby");
 
 	$REL_TPL->begin_frame("Активность категорий", True);
 	print("<table width=\"100%\" border=\"1\">
