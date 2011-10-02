@@ -28,25 +28,25 @@ $REL_TPL->stderr($REL_LANG->say_by_key('error'), sprintf($REL_LANG->say_by_key('
 if (!$_POST["agree"]) {
 	$REL_TPL->stdhead("Правила трекера");
 	?>
-<form method="post" action="<?=$REL_SEO->make_link('signup')?>">
+<form method="post" action="<?php print $REL_SEO->make_link('signup'); ?>">
 <div align="center">
-<fieldset class="fieldset"><legend><?=$REL_LANG->_("Site rules");?></legend>
+<fieldset class="fieldset"><legend><?php print $REL_LANG->_("Site rules"); ?></legend>
 <table cellpadding="4" cellspacing="0" border="0" style="width: 100%"
 	class="tableinborder">
 	<tr>
-		<td class="tablea"><?=$REL_LANG->_("To proceed registration you must agreee the following terms");?>:</td>
+		<td class="tablea"><?php print $REL_LANG->_("To proceed registration you must agreee the following terms"); ?>:</td>
 	</tr>
 	<tr>
 		<td class="tablea"
 			style="font-size: 11px; font-style: normal; font-variant: normal; font-weight: normal; font-family: verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif">
 		<div class="page"
 			style="border-right: thin inset; padding-right: 6px; border-top: thin inset; padding-left: 6px; padding-bottom: 6px; overflow: auto; border-left: thin inset; padding-top: 1px; border-bottom: thin inset; height: 275px">
-		<p><strong>Правила <?=$REL_CONFIG['sitename']?></strong></p>
+		<p><strong>Правила <?php print $REL_CONFIG['sitename']; ?></strong></p>
 		<p>Регистрация на трекере абсолютно бесплатна! Настоятельно
 		рекомендуем ознакомиться с правилами нашего проекта. Если вы согласны
 		со всеми условиями, поставьте галочку рядом с 'Я согласен' и нажмите
 		'Регистрация'. Если вы передумали регистрироваться, нажмите <a
-			href="<?=$REL_CONFIG['defaultbaseurl'];?>">здесь</a>, чтобы вернуться
+			href="<?php print $REL_CONFIG['defaultbaseurl']; ?>">здесь</a>, чтобы вернуться
 		на главную страницу.</p>
 		<p>Хотя модераторы и администраторы, обслуживающие сайт, стараются
 		удалять все оскорбительные и некорректные сообщения из трекера, все
@@ -64,7 +64,7 @@ if (!$_POST["agree"]) {
 	<tr>
 		<td class="tablea">
 		<div><label> <input class="tablea" type="checkbox" name="agree"
-			value="1"> <input type="hidden" name="do" value="register"> <strong><?=$REL_LANG->_("I agree with this rules");?></strong>
+			value="1"> <input type="hidden" name="do" value="register"> <strong><?php print $REL_LANG->_("I agree with this rules"); ?></strong>
 		</label></div>
 		</td>
 	</tr>
@@ -73,42 +73,41 @@ if (!$_POST["agree"]) {
 <p><input class="tableinborder" type="submit" value="Регистрация"></p>
 </div>
 </form>
-	<?
-	$REL_TPL->stdfoot();
+	<?php	$REL_TPL->stdfoot();
 	die;
 }
 
 $REL_TPL->stdhead($REL_LANG->say_by_key('signup_signup'));
 
 ?>
-<span style="color: red; font-weight: bold;"><?=$REL_LANG->say_by_key('signup_use_cookies');?></span>
+<span style="color: red; font-weight: bold;"><?php print $REL_LANG->say_by_key('signup_use_cookies'); ?></span>
 
-<?
+<?php
 if ($REL_CONFIG['deny_signup'] && $REL_CONFIG['allow_invite_signup'])
 $REL_TPL->stdmsg($REL_LANG->_("Attention"), $REL_LANG->_("Only invite registrations are allowed!"));
 ?>
-<form method="post" action="<?=$REL_SEO->make_link('takesignup');?>">
+<form method="post" action="<?php print $REL_SEO->make_link('takesignup'); ?>">
 <table border="1" cellspacing=0 cellpadding="10">
 	<tr valign=top>
-		<td align="right" class="heading"><?=$REL_LANG->say_by_key('signup_email');?></td>
+		<td align="right" class="heading"><?php print $REL_LANG->say_by_key('signup_email'); ?></td>
 		<td align=left><input type="text" size="40" name="email" />
 		<table width=250 border=0 cellspacing=0 cellpadding=0>
 			<tr>
-				<td class=embedded><font class=small><?=$REL_LANG->_("This email must be used to login this site.").($REL_CONFIG['use_email_act']?$REL_LANG->_("<br/>Confirmation letter will be sent to this address"):'')?></font></td>
+				<td class=embedded><font class=small><?php print $REL_LANG->_("This email must be used to login this site.").($REL_CONFIG['use_email_act']?$REL_LANG->_("<br/>Confirmation letter will be sent to this address"):''); ?></font></td>
 			</tr>
 		</table>
 		</td>
 	</tr>
 	<tr>
-		<td align="right" class="heading"><?=$REL_LANG->_('Nickname');?></td>
+		<td align="right" class="heading"><?php print $REL_LANG->_('Nickname'); ?></td>
 		<td align=left><input type="text" size="40" name="wantusername" /></td>
 	</tr>
 	<tr>
-		<td align="right" class="heading"><?=$REL_LANG->say_by_key('signup_password');?></td>
+		<td align="right" class="heading"><?php print $REL_LANG->say_by_key('signup_password'); ?></td>
 		<td align=left><input type="password" size="40" name="wantpassword" /></td>
 	</tr>
 	<tr>
-		<td align="right" class="heading"><?=$REL_LANG->say_by_key('signup_password_again');?></td>
+		<td align="right" class="heading"><?php print $REL_LANG->say_by_key('signup_password_again'); ?></td>
 		<td align=left><input type="password" size="40" name="passagain" /></td>
 	</tr>
 	<?php
@@ -130,7 +129,7 @@ $REL_TPL->stdmsg($REL_LANG->_("Attention"), $REL_LANG->_("Only invite registrati
 	?>
 	<tr>
 		<td colspan="2" align="center"><input type="submit"
-			value="<?=$REL_LANG->_("Registrer now!");?>" style='height: 25px' /></td>
+			value="<?php print $REL_LANG->_("Registrer now!"); ?>" style='height: 25px' /></td>
 	</tr>
 </table>
 </form>

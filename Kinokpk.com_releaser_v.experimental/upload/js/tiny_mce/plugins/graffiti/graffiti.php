@@ -51,8 +51,8 @@ loading...</div>
 
    var flashvars = {
 'overstretch':'false',
-'postTo':'graffiti.php?imgcode=<?=$imgcode?>',
-'redirectTo':'graffiti.php?imgcode=<?=$imgcode?>_done',
+'postTo':'graffiti.php?imgcode=<?php print $imgcode; ?>',
+'redirectTo':'graffiti.php?imgcode=<?php print $imgcode; ?>_done',
    };
 
    var params = {

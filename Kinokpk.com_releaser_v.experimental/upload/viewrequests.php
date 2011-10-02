@@ -24,10 +24,10 @@ if ($_GET["delreq"])
 		$REL_DB->query("DELETE FROM addedrequests WHERE requestid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ")");
 		$REL_DB->query("DELETE FROM notifs WHERE checkid IN (" . implode(", ", array_map("sqlesc", $_GET["delreq"])) . ") AND type='reqcomments'");
 		$REL_CACHE->clearGroupCache('block-req');
-		$REL_TPL->stderr($REL_LANG->say_by_key('success'), "Запрос успешно удален.<br /><a href=\"".$REL_SEO->make_link('viewrequests')."\">К списку запросов</a>");
+		$REL_TPL->stderr($REL_LANG->say_by_key('success'), "{$REL_LANG->_('Request successfully deleted')}.<br />".$REL_LANG->_('<a href="%s">Go back</a>',$REL_SEO->make_link('viewrequests')));
 	}
 	else
-	$REL_TPL->stderr($REL_LANG->say_by_key('error'), "У вас нет прав для удаления запросов.");
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Access denied'));
 }
 
 if ((!is_valid_id($_GET['category'])) && ($_GET['category']<>0)) $REL_TPL->stderr ($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
@@ -40,27 +40,26 @@ $search = (string) $_GET["search"];
 $filter = htmlspecialchars($_GET["filter"]);
 
 print("<table class=\"embedded\" cellspacing=\"0\" cellpadding=\"5\" width=\"100%\" >");
-print("<tr><td class=\"colhead\" align=\"center\" colspan=\"15\">Секция запросов</td></tr>");
+print("<tr><td class=\"colhead\" align=\"center\" colspan=\"15\">{$REL_LANG->_('Requests section')}</td></tr>");
 print("<tr><td class=\"index\" colspan=\"15\">");
 
 
-//print("<h1>".$REL_LANG->say_by_key('requests_section')."</h1>\n");
 print("<p><a href=\"".$REL_SEO->make_link('requests','action','new')."\">".$REL_LANG->say_by_key('make_request')."</a></p>\n");
 print("<p><a href=\"".$REL_SEO->make_link('viewrequests','requestorid',$CURUSER['id'])."\">".$REL_LANG->say_by_key('show_my_requests')."</a></p>\n");
-/////***Писал поздно думать не мог - by Juster***/////
-print("<p><a href=". $_SERVER[PHP_SELF] ."?".(isset($categ)?"category={$categ}&":"")."sort=" . $sort . "&filter=true>".$REL_LANG->say_by_key('hide_filled')."</a></p>\n");
-/////******/////
+
+print("<p><a href=\"{$REL_SEO->make_link('viewrequests','category',$categ,'sort',$sort,'filter',1)}\">".$REL_LANG->say_by_key('hide_filled')."</a></p>\n");
+
 print("<form method=get action=\"".$REL_SEO->make_link('viewrequests')."\">");
 $tree= make_tree();
 print gen_select_area('category',$tree,$categ,true);
 
 print("</select>");
-print("&nbsp;<input type=\"submit\" align=\"center\" value=\"Изменить\" style=\"height: 22px\">\n");
+print("&nbsp;<input type=\"submit\" align=\"center\" value=\"{$REL_LANG->_('Edit')}\" style=\"height: 22px\">\n");
 print("</form>\n<p />");
 
 print("<form method=\"get\" action=\"".$REL_SEO->make_link('viewrequests')."\">");
-print("<b>Искать запросы: </b><input type=\"text\" size=\"40\" name=\"search\">");
-print("&nbsp;<input type=\"submit\" align=\"center\" value=\"Искать\" style=\"height: 22px\">\n");
+print("<b>{$REL_LANG->_('Search for requests')}: </b><input type=\"text\" size=\"40\" name=\"search\">");
+print("&nbsp;<input type=\"submit\" align=\"center\" value=\"{$REL_LANG->_('Go')}\" style=\"height: 22px\">\n");
 print("</form><p></p>");
 
 if ($search)
@@ -110,9 +109,9 @@ if ($requestorid <> NULL) {
 	list($count) = mysql_fetch_array($res);
 
 	if (!$count) {
-		print("<tr><td class=\"colhead\" align=\"center\" colSpan=\"15\" >Нет запросов</td></tr>");
+		print("<tr><td class=\"colhead\" align=\"center\" colSpan=\"15\" >{$REL_LANG->_('Nothing was found')}</td></tr>");
 		print("<tr><td class=\"index\" colspan=\"15\">");
-		print("<p>Нет запросов. Желаете <a href=\"".$REL_SEO->make_link('requests','action','new')."\">добавить</a>?</p>");
+		print("<p>{$REL_LANG->_('There are no requests. Do you want to <a href="%s">Add yours</a>?',$REL_SEO->make_link('requests','action','new'))}</p>");
 		print("</td></tr>");
 	} else {
 
@@ -123,7 +122,7 @@ if ($requestorid <> NULL) {
 		$res = $REL_DB->query("SELECT (SELECT username FROM users WHERE id = filledby) AS filledname, (SELECT class FROM users WHERE id = filledby) AS filledclass, users.class, users.ratingsum, users.username, users.warned, users.donor, users.enabled, requests.filled, requests.filledby, requests.id, requests.userid, requests.request, requests.added, requests.hits, requests.comments, categories.id AS cat_id FROM requests INNER JOIN categories ON requests.cat = categories.id INNER JOIN users ON requests.userid = users.id $query $filtersql $limit");
 		$num = mysql_num_rows($res);
 
-		print("<form method=get OnSubmit=\"return confirm('Вы уверены?')\" action=\"".$REL_SEO->make_link('viewrequests')."\">\n");
+		print("<form method=get OnSubmit=\"return confirm('{$REL_LANG->_('Are you sure?')}'\" action=\"".$REL_SEO->make_link('viewrequests')."\">\n");
 		print("<tr><td class=\"colhead\" align=\"center\">".$REL_LANG->say_by_key('type')."</td><td class=colhead align=left><a href=\"".$REL_SEO->make_link('viewrequests','category',$categ,'filter',$filter,'sort','request')."\" class=altlink_white>".$REL_LANG->say_by_key('request')."</a></td><td class=colhead align=center width=150><a href=\"".$REL_SEO->make_link('viewrequests','category',$categ,'filter',$filter,'sort','added')."\" class=altlink_white>".$REL_LANG->say_by_key('added')."</a></td><td class=colhead align=center>".$REL_LANG->say_by_key('requester')."</td><td class=colhead align=center>".$REL_LANG->say_by_key('filled')."</td><td class=colhead align=center>".$REL_LANG->say_by_key('filled_by')."</td><td class=colhead align=center><a href=" . $_SERVER[PHP_SELF] . "?category=" . $categ . "&filter=" . $filter . "&sort=votes class=altlink_white>".$REL_LANG->say_by_key('votes')."</a></td><td class=colhead align=center><a href=" . $_SERVER[PHP_SELF] . "?category=" . $categ . "&filter=" . $filter . "&sort=comm class=altlink_white>".$REL_LANG->say_by_key('comments')."</a></td>" . (get_privilege('requests_operation',false)?"<td class=colhead align=center>".$REL_LANG->say_by_key('delete')."</td>": "") . "</tr>\n");
 		for ($i = 0; $i < $num; ++$i)
 		{

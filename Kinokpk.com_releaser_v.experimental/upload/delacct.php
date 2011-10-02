@@ -35,26 +35,26 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('delete_account'));
 ?>
 <h1></h1>
 <table border="1" cellspacing="0" cellpadding="5">
-	<form method="post" action="<?=$REL_SEO->make_link('delacct')?>">
+	<form method="post" action="<?php print $REL_SEO->make_link('delacct'); ?>">
 	<tr>
 		<td class="colhead" colspan="2">
-		<center><?=$REL_LANG->say_by_key('delete_account')?></center>
+		<center><?php print $REL_LANG->say_by_key('delete_account'); ?></center>
 		</td>
 	</tr>
 	<tr>
-		<td class="rowhead"><?=$REL_LANG->say_by_key('E-mail')?></td>
+		<td class="rowhead"><?php print $REL_LANG->say_by_key('E-mail'); ?></td>
 		<td><input size="40" name="email"></td>
 	</tr>
 	<tr>
-		<td class="rowhead"><?=$REL_LANG->say_by_key('password')?></td>
+		<td class="rowhead"><?php print $REL_LANG->say_by_key('password'); ?></td>
 		<td><input type="password" size="40" name="password"></td>
 	</tr>
 	<tr>
 		<td colspan="2" align="center"><input type="submit" class="btn"
-			value="<?=$REL_LANG->say_by_key('remove')?>"></td>
+			value="<?php print $REL_LANG->say_by_key('remove'); ?>"></td>
 	</tr>
 	</form>
 </table>
-<?
+<?php
 $REL_TPL->stdfoot();
 ?>

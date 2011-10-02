@@ -67,15 +67,14 @@ function checkname() {
 //-->
 </script>
 <form name="upload" enctype="multipart/form-data"
-	action="<?=$REL_SEO->make_link('takeupload');?>" method="post"
+	action="<?php print $REL_SEO->make_link('takeupload'); ?>" method="post"
 	onsubmit="return checkname();">
 <table border="1" cellspacing="0" cellpadding="5">
-	<input type="hidden" name="type[]" value="<?=$type?>" />
+	<input type="hidden" name="type[]" value="<?php print $type; ?>" />
 	<tr>
 		<td class="colhead" colspan="2"><?print $REL_LANG->say_by_key('upload_torrent')?></td>
 	</tr>
-	<?
-	//tr($REL_LANG->say_by_key('announce_url'), $announce_urls[0], 1);
+	<?php	//tr($REL_LANG->say_by_key('announce_url'), $announce_urls[0], 1);
 	tr($REL_LANG->say_by_key('torrent_file'), "<input  type=file name=tfile  size=80><br /><input type=\"checkbox\"  name=\"multi\" value=\"1\">&nbsp;{$REL_LANG->say_by_key('multitracker_torrent')}<br /><small>{$REL_LANG->say_by_key('multitracker_torrent_notice')}</small>\n", 1);
 	if (get_privilege('edit_releases',false) && $REL_CONFIG['use_dc'])
 	tr($REL_LANG->say_by_key('tiger_hash'),"<input type=\"text\" size=\"60\" maxlength=\"38\" name=\"tiger_hash\" value=\"{$row['tiger_hash']}\"><br/>".$REL_LANG->say_by_key('tiger_hash_notice'),1);
@@ -126,12 +125,11 @@ function checkname() {
 	?>
 	<tr>
 		<td align="center" colspan="2"><input type="submit" class="btn button"
-			value="<?=$REL_LANG->say_by_key('upload');?>" /></td>
+			value="<?php print $REL_LANG->say_by_key('upload'); ?>" /></td>
 	</tr>
 </table>
 </form>
-	<?
-
+	<?php
 	$REL_TPL->stdfoot();
 
 	?>

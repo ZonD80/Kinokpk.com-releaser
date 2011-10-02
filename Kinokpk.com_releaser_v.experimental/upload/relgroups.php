@@ -48,28 +48,28 @@ if (!$id) {
 		?>
 
 <div class="relgroups_table">
-<div class="relgroups_image"><img src="<?=$row['image']?>"
-	title="<?=makesafe($row['name'])?>" /><? $REL_LANG->say_by_key('no_image')?>
+<div class="relgroups_image"><img src="<?php print $row['image']; ?>"
+	title="<?php print makesafe($row['name']); ?>" /><?php $REL_LANG->say_by_key('no_image')?>
 </div>
 <div class="relgroups_name">
 <dl class="clearfix">
 	<dt>Название</dt>
 	<dd class="result_name"><a
-		href="<?=$REL_SEO->make_link('relgroups','id',$row['id']);?>"><?=makesafe($row['name']).($row['private']?' (Приватная)':'') ?></a></dd>
+		href="<?php print $REL_SEO->make_link('relgroups','id',$row['id']); ?>"><?php print makesafe($row['name']).($row['private']?' (Приватная)':'') ; ?></a></dd>
 		<?php if ($row['page_pay'] || $row['private']) {?>
 	<dt>Подписано</dt>
-	<dd><?=(int)$row['users']?> человек</dd>
+	<dd><?php print (int)$row['users']; ?> человек</dd>
 	<dt>Информация о подписке</dt>
-	<dd><?=($row['page_pay']?$REL_LANG->say_by_key('pay_required'):$REL_LANG->say_by_key('no_pay')).' ('.($row['subscribe_length']?$row['subscribe_length'].' дней':$REL_LANG->say_by_key('lifetime')).')'?></dd>
+	<dd><?php print ($row['page_pay']?$REL_LANG->say_by_key('pay_required'):$REL_LANG->say_by_key('no_pay')).' ('.($row['subscribe_length']?$row['subscribe_length'].' дней':$REL_LANG->say_by_key('lifetime')).')'; ?></dd>
 	<?php }?>
 	<dt>Специализация</dt>
-	<dd><?=makesafe($row['spec'])?></dd>
+	<dd><?php print makesafe($row['spec']); ?></dd>
 </dl>
 </div>
 <div class="relgroups_input">
 
 <ul class="relgroups_input">
-	<li><a href="<?=$REL_SEO->make_link('relgroups','id',$row['id']);?>">Просмотр</a></li>
+	<li><a href="<?php print $REL_SEO->make_link('relgroups','id',$row['id']); ?>">Просмотр</a></li>
 	<?php
 	if ($row['private']) {
 		$i_subscribed = mysql_fetch_row($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$row['id']}"));
@@ -86,8 +86,7 @@ if (!$id) {
 
 
 </div>
-	<?
-
+	<?php
 	}
 	print('</table>');
 	$REL_TPL->end_frame();
@@ -121,9 +120,9 @@ else {
 			?>
 
 <div id="relgroups_header" class="relgroups_header">
-<div align="center"><?=makesafe($row['name']) ?>&nbsp;&nbsp;<?   print(ratearea($row['ratingsum'],$row['id'],'relgroups',($I_OWNER?$row['id']:0))."");?></div>
+<div align="center"><?php print makesafe($row['name']) ; ?>&nbsp;&nbsp;<?php   print(ratearea($row['ratingsum'],$row['id'],'relgroups',($I_OWNER?$row['id']:0))."");?></div>
 <div align="right" style="margin-top: -22px;"><a
-	href="<?=$REL_SEO->make_link('relgroups');?>"><img
+	href="<?php print $REL_SEO->make_link('relgroups'); ?>"><img
 	src="/themes/<?php print $REL_CONFIG['ss_uri'];?>/images/strelka.gif"
 	border="0" title="Вернуться к просмотру групп"
 	style="margin-top: 5px; margin-right: 5px;" /></a></div>
@@ -131,8 +130,8 @@ else {
 </div>
 <div id="relgroups_table_right">
 <div id="relgroups_image" class="relgroups_image_right">
-<div class="relgroups_avatar_right"><img src="<?=$row['image']?>"
-	title="<?=makesafe($row['name'])?>" /><? $REL_LANG->say_by_key('no_image')?>
+<div class="relgroups_avatar_right"><img src="<?php print $row['image']; ?>"
+	title="<?php print makesafe($row['name']); ?>" /><?php $REL_LANG->say_by_key('no_image')?>
 
 <div id="input_right" class="relgroups_input_right"><? //print (int)$row['users'].'&nbsp;';
 			//ПЕРЕДЕЛАТЬ
@@ -148,24 +147,24 @@ else {
 <h3 class="box_right_block"><span>Директор</span><?print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="inside basic_infor_summary_list">
 <dl class="infor">
-	<dd><?=$ownersview?></dd>
+	<dd><?php print $ownersview; ?></dd>
 
 </div>
 </div>
 </div>
 <div id="boxes_right" class="box_right">
 <div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Состав Группы</span><? print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
+<h3 class="box_right_block"><span>Состав Группы</span><?php print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="inside basic_infor_summary_list">
 <dl class="infor">
-	<dd><?=$membersview?></dd>
+	<dd><?php print $membersview; ?></dd>
 
 </div>
 </div>
 </div>
 <div id="boxes_right" class="box_right">
 <div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Тип Группы</span><? print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
+<h3 class="box_right_block"><span>Тип Группы</span><?php print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="inside basic_infor_summary_list">
 <dl class="infor">
 	<dd><?php
@@ -197,13 +196,13 @@ else {
 <div class="basic_infor_summary_list box_left_page">
 <dl class="infor_left">
 	<dt>Название</dt>
-	<dd><b><?=makesafe($row['name']) ?></b></dd>
+	<dd><b><?php print makesafe($row['name']) ; ?></b></dd>
 	<dt>Специализация</dt>
-	<dd><?=$row['spec']?></dd>
-	<dt><?=$REL_LANG->say_by_key('description')?></dt>
-	<dd><?=$row['descr']?></dd>
-	<dt><?=$REL_LANG->say_by_key('releases')?></dt>
-	<dd><?=($row['releases']?$row['releases'].' [<a href="'.$REL_SEO->make_link('browse','relgroup',$row['id']).'">'.$REL_LANG->say_by_key('view').'</a>]':'0')?></dd>
+	<dd><?php print $row['spec']; ?></dd>
+	<dt><?php print $REL_LANG->say_by_key('description'); ?></dt>
+	<dd><?php print $row['descr']; ?></dd>
+	<dt><?php print $REL_LANG->say_by_key('releases'); ?></dt>
+	<dd><?php print ($row['releases']?$row['releases'].' [<a href="'.$REL_SEO->make_link('browse','relgroup',$row['id']).'">'.$REL_LANG->say_by_key('view').'</a>]':'0'); ?></dd>
 
 
 </dl>
@@ -220,7 +219,7 @@ else {
 <h3 class="box_right_left"><span>Участники (последние 10)</span> <?print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="basic_infor_summary_list box_left_page">
 <dl class="infor_left">
-<?=$rgusers?>
+<?php print $rgusers; ?>
 </dl>
 </div>
 </div>
@@ -281,7 +280,7 @@ else {
 </div>
 <div id="box_left_wall" class="box_left"
 	style="margin-top: 9px; margin-bottom: 5px;">
-<h3 class="box_right_left"><span>Комментарии к Группе</span><? print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></a></h3>
+<h3 class="box_right_left"><span>Комментарии к Группе</span><?php print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></a></h3>
 	<?php
 	$REL_TPL->begin_frame();
 
@@ -340,8 +339,7 @@ else {
 </div>
 </div>
 
-		<?
-
+		<?php
 		if (@array_key_exists($CURUSER['id'],$owners) || get_privilege('edit_relgroups',false)) $I_OWNER=true;
 
 

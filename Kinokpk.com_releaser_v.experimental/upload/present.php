@@ -201,7 +201,7 @@ if (!$reason) {
 	</tr>
 	<tr>
 		<td align="center"><input type="submit"
-			value="<?=$REL_LANG->_("Present now!");?>" /></td>
+			value="<?php print $REL_LANG->_("Present now!"); ?>" /></td>
 	</tr>
 </table>
 	<?php

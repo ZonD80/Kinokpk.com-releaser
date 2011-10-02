@@ -70,7 +70,7 @@ $REL_TPL->begin_frame("Администрация");
 	//var_dump($staff_table);
 	foreach ($staff_table as $class => $data) {?>
 	<tr>
-		<td class=embedded colspan=11><b><?=get_user_class_name($class)?></b></td>
+		<td class=embedded colspan=11><b><?php print get_user_class_name($class); ?></b></td>
 	</tr>
 	<tr>
 		<td class=embedded colspan=11>
@@ -78,15 +78,14 @@ $REL_TPL->begin_frame("Администрация");
 		</td>
 	</tr>
 	<tr height=15>
-	<?=$data?>
+	<?php print $data; ?>
 	</tr>
 	<tr>
 		<td class=embedded colspan=11>&nbsp;</td>
 	</tr>
 	<?php } ?>
 </table>
-	<?
-	$REL_TPL->end_frame();
+	<?php	$REL_TPL->end_frame();
 
 	// LIST ALL FIRSTLINE SUPPORTERS
 	// Search User Database for Firstline Support and display in alphabetical order
@@ -129,15 +128,13 @@ $REL_TPL->begin_frame("Администрация");
 			</td>
 		</tr>
 
-		<?=$firstline?>
+		<?php print $firstline; ?>
 
 	</tr>
 </table>
-		<?
-		$REL_TPL->end_frame();
+		<?php		$REL_TPL->end_frame();
 
 		?>
-		<?
-		$REL_TPL->end_main_frame();
+		<?php		$REL_TPL->end_main_frame();
 		$REL_TPL->stdfoot();
 		?>

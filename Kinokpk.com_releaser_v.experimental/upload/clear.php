@@ -1,5 +1,4 @@
-<?
-
+<?php
 require "include/bittorrent.php";
 INIT();
 

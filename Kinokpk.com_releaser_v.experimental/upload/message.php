@@ -49,10 +49,9 @@ if ($action == "viewmailbox") {
 
 	?>
 
-<H1><?=$mailbox_name?></H1>
+<H1><?php print $mailbox_name; ?></H1>
 
-	<?
-	#amount of messages
+	<?php	#amount of messages
 	$inbox_all = count($CURUSER['inbox']);
 	$outbox_all = count($CURUSER['outbox']);
 	$all_mess = $inbox_all+$outbox_all;
@@ -75,24 +74,22 @@ if ($action == "viewmailbox") {
 	style="float: left; margin-top: 10px;">
 	<TR>
 		<TD width="2%" class="colhead">&nbsp;&nbsp;</TD>
-		<TD width="41%" class="colhead"><?=$REL_LANG->say_by_key('subject');?></TD>
-		<?
-		if ($mailbox == PM_INBOX )
+		<TD width="41%" class="colhead"><?php print $REL_LANG->say_by_key('subject'); ?></TD>
+		<?php		if ($mailbox == PM_INBOX )
 		print ("<TD width=\"30%\" class=\"colhead\">".$REL_LANG->say_by_key('sender')."</TD>");
 		else
 		print ("<TD width=\"30%\" class=\"colhead\">".$REL_LANG->say_by_key('receiver')."</TD>");
 		?>
-		<TD width="10%" class="colhead"><?=$REL_LANG->say_by_key('date');?></TD>
+		<TD width="10%" class="colhead"><?php print $REL_LANG->say_by_key('date'); ?></TD>
 		<TD width="10%" class="colhead">В архиве</TD>
 		<TD width="10%" class="colhead">Срок хранения</TD>
 		<TD width="2%" class="colhead"><input id="toggle-all"
 			style="float: right;" type="checkbox"
-			title="<?=$REL_LANG->say_by_key('mark_all');?>"
-			value="<?=$REL_LANG->say_by_key('mark_all');?>" /></TD>
+			title="<?php print $REL_LANG->say_by_key('mark_all'); ?>"
+			value="<?php print $REL_LANG->say_by_key('mark_all'); ?>" /></TD>
 
 	</TR>
-	<?
-
+	<?php
 	$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
 	$dt_system = time() - $secs_system; // Сегодня минус количество дней
 	$secs_all = $REL_CRON['pm_delete_user_days']*86400; // Количество дней
@@ -170,15 +167,15 @@ if ($action == "viewmailbox") {
 	<tr class="colhead">
 		<td class="colhead">&nbsp;</td>
 		<td colspan="6" align="right" width="100%" class="colhead" />
-		<input type="hidden" name="box" value="<?=$mailbox?>" />
+		<input type="hidden" name="box" value="<?php print $mailbox; ?>" />
 		<input type="submit" name="delete"
-			title="<?=$REL_LANG->say_by_key('delete_marked_messages');?>"
-			value="<?=$REL_LANG->say_by_key('delete');?>"
-			onClick="return confirm('<?=$REL_LANG->say_by_key('sure_mark_delete');?>')" />
+			title="<?php print $REL_LANG->say_by_key('delete_marked_messages'); ?>"
+			value="<?php print $REL_LANG->say_by_key('delete'); ?>"
+			onClick="return confirm('<?php print $REL_LANG->say_by_key('sure_mark_delete'); ?>')" />
 		<input type="submit" name="markread"
-			title="<?=$REL_LANG->say_by_key('mark_as_read');?>"
-			value="<?=$REL_LANG->say_by_key('mark_read');?>"
-			onClick="return confirm('<?=$REL_LANG->say_by_key('sure_mark_read');?>')" />
+			title="<?php print $REL_LANG->say_by_key('mark_as_read'); ?>"
+			value="<?php print $REL_LANG->say_by_key('mark_read'); ?>"
+			onClick="return confirm('<?php print $REL_LANG->say_by_key('sure_mark_read'); ?>')" />
 		<input type="submit" name="archive" title="Архивировать"
 			value="Архивировать"
 			onClick="return confirm('Архивировать выбранные сообщения? (они не будут удалены системой автоматически)')" />
@@ -191,10 +188,9 @@ if ($action == "viewmailbox") {
 </table>
 </form>
 <div align="left"><img src="pic/pn_inboxnew.gif" alt="Непрочитанные" />
-	<?=$REL_LANG->say_by_key('mail_unread_desc');?><br />
-<img src="pic/pn_inbox.gif" alt="Прочитанные" /> <?=$REL_LANG->say_by_key('mail_read_desc');?></div>
-	<?
-	$REL_TPL->stdfoot();
+	<?php print $REL_LANG->say_by_key('mail_unread_desc'); ?><br />
+<img src="pic/pn_inbox.gif" alt="Прочитанные" /> <?php print $REL_LANG->say_by_key('mail_read_desc'); ?></div>
+	<?php	$REL_TPL->stdfoot();
 } // конец просмотр почтового ящика
 
 
@@ -258,20 +254,20 @@ elseif ($action == "viewmessage") {
 <TABLE width="100%" border="0" cellpadding="4" cellspacing="0">
 
 	<TR>
-		<TD class="colhead" colspan="2">Тема: <?=$subject?><span class="higo"><a
+		<TD class="colhead" colspan="2">Тема: <?php print $subject; ?><span class="higo"><a
 			href="javascript:history.go(-1);">назад</a></span></TD>
 
 	</TR>
 	<TR>
-		<TD width="50%" class="colhead"><?=$from?></TD>
+		<TD width="50%" class="colhead"><?php print $from; ?></TD>
 		<TD width="50%" class="colhead">Дата отправки</TD>
 	</TR>
 	<TR>
-		<TD><?=$sender?></TD>
-		<TD><?=$added?>&nbsp;&nbsp;<?=$unread?></TD>
+		<TD><?php print $sender; ?></TD>
+		<TD><?php print $added; ?>&nbsp;&nbsp;<?php print $unread; ?></TD>
 	</TR>
 	<TR>
-		<TD colspan="2" style="padding: 20px;"><?=$body?></TD>
+		<TD colspan="2" style="padding: 20px;"><?php print $body; ?></TD>
 	</TR>
 	<TR>
 		<TD align="right" colspan=2><?php
@@ -285,8 +281,7 @@ elseif ($action == "viewmessage") {
 		?></TD>
 	</TR>
 </TABLE>
-		<?
-		set_visited('messages',$pm_id);
+		<?php		set_visited('messages',$pm_id);
 		$REL_TPL->stdfoot();
 } // конец просмотр тела сообщения
 
@@ -359,35 +354,32 @@ for(j=0; j<required.length; j++) {
 	<tr>
 		<td class=embedded>
 		<form name="message" method="post"
-			action="<?=$REL_SEO->make_link('message')?>"
+			action="<?php print $REL_SEO->make_link('message'); ?>"
 			onsubmit="return SendForm();"><input type=hidden name=action
 			value=takemessage>
 		<table class=message cellspacing=0 cellpadding=5>
 			<tr>
 				<td colspan=2 class=colhead>Сообщение для <a class=altlink_white
-					href="<?=$REL_SEO->make_link('userdetails','id',$receiver,'username',translit($user['username']))?>"><?=$user ["username"]?></a></td>
+					href="<?php print $REL_SEO->make_link('userdetails','id',$receiver,'username',translit($user['username'])); ?>"><?php print $user ["username"]; ?></a></td>
 			</tr>
 			<TR>
 				<TD colspan="2"><B>Тема:&nbsp;&nbsp;</B> <INPUT name="subject"
-					type="text" size="60" value="<?=$subject?>" maxlength="255"></TD>
+					type="text" size="60" value="<?php print $subject; ?>" maxlength="255"></TD>
 			</TR>
 			<tr>
-				<td <?=$replyto ? " colspan=2" : ""?>><?
-				print textbbcode ( "msg", $body );
+				<td <?php print $replyto ? " colspan=2" : ""; ?>><?php				print textbbcode ( "msg", $body );
 				?></td>
 			</tr>
 			<tr>
-			<?
-			if ($replyto) {
+			<?php			if ($replyto) {
 				?>
 				<td align=center><input type=checkbox name='delete' value='1'
-				<?=$CURUSER ['deletepms'] ? "checked" : ""?> />Удалить сообщение
-				после ответа <input type=hidden name=origmsg value=<?=$replyto?> /></td>
-				<?
-			}
+				<?php print $CURUSER ['deletepms'] ? "checked" : ""; ?> />Удалить сообщение
+				после ответа <input type=hidden name=origmsg value=<?php print $replyto; ?> /></td>
+				<?php			}
 			?>
 				<td align=center><input type=checkbox name='save' value='1'
-				<?=$CURUSER ['savepms'] ? "checked" : ""?> />Сохранить сообщение в
+				<?php print $CURUSER ['savepms'] ? "checked" : ""; ?> />Сохранить сообщение в
 				отправленных</td>
 			</tr>
 			<tr>
@@ -395,17 +387,16 @@ for(j=0; j<required.length; j++) {
 				после отправки</td>
 			</tr>
 			<tr>
-				<td <?=$replyto ? " colspan=2" : ""?> align=center><input
+				<td <?php print $replyto ? " colspan=2" : ""; ?> align=center><input
 					type=submit value="Послать!" class=btn /></td>
 			</tr>
 		</table>
-		<input type=hidden name=receiver value=<?=$receiver?> /></form>
+		<input type=hidden name=receiver value=<?php print $receiver; ?> /></form>
 		</div>
 		</td>
 	</tr>
 </table>
-				<?
-				$REL_TPL->stdfoot();
+				<?php				$REL_TPL->stdfoot();
 } // конец посылка сообщения
 
 
@@ -556,17 +547,15 @@ elseif ($action == 'mass_pm') {
 	<tr>
 		<td class=embedded>
 		<div align=center>
-		<form method=post action=<?=$_SERVER ['PHP_SELF']?> name=message><input
-			type=hidden name=action value=takemass_pm> <?
-			if ($_SERVER ["HTTP_REFERER"]) {
+		<form method=post action=<?php print $_SERVER ['PHP_SELF']; ?> name=message><input
+			type=hidden name=action value=takemass_pm> <?php			if ($_SERVER ["HTTP_REFERER"]) {
 				?> <input type=hidden name=returnto
-			value="<?=htmlspecialchars ( $_SERVER ["HTTP_REFERER"] );?>"> <?
-			}
+			value="<?php print htmlspecialchars ( $_SERVER ["HTTP_REFERER"] ); ?>"> <?php			}
 			?>
 		<table border=1 cellspacing=0 cellpadding=5>
 			<tr>
-				<td class=colhead colspan=2>Массовая рассылка для <?=$n_pms?>
-				пользовате<?=($n_pms > 1 ? "лей" : "ля")?></td>
+				<td class=colhead colspan=2>Массовая рассылка для <?php print $n_pms; ?>
+				пользовате<?php print ($n_pms > 1 ? "лей" : "ля"); ?></td>
 			</tr>
 			<TR>
 				<TD colspan="2"><B>Тема:&nbsp;&nbsp;</B> <INPUT name="subject"
@@ -574,7 +563,7 @@ elseif ($action == 'mass_pm') {
 			</TR>
 			<tr>
 				<td colspan="2">
-				<div align="center"><?=print textbbcode ( "msg", $body );?></div>
+				<div align="center"><?php print print textbbcode ( "msg", $body ); ?></div>
 				</td>
 			</tr>
 			<tr>
@@ -585,7 +574,7 @@ elseif ($action == 'mass_pm') {
 			</tr>
 			<tr>
 				<td>
-				<div align="center"><b>От:&nbsp;&nbsp;</b> <?=$CURUSER ['username']?>
+				<div align="center"><b>От:&nbsp;&nbsp;</b> <?php print $CURUSER ['username']; ?>
 				<input name="sender" type="radio" value="self" checked /> &nbsp;
 				Системное <input name="sender" type="radio" value="system" /></div>
 				</td>
@@ -595,8 +584,8 @@ elseif ($action == 'mass_pm') {
 					class=btn /></td>
 			</tr>
 		</table>
-		<input type=hidden name=pmees value="<?=$pmees?>" /> <input
-			type=hidden name=n_pms value=<?=$n_pms?> /></form>
+		<input type=hidden name=pmees value="<?php print $pmees; ?>" /> <input
+			type=hidden name=n_pms value=<?php print $n_pms; ?> /></form>
 		<br />
 		<br />
 		</div>
@@ -812,12 +801,12 @@ elseif ($action == "forward") {
 		$REL_TPL->stdhead( $subject );
 		?>
 
-<FORM action="<?=$REL_SEO->make_link('message')?>" method="post"><INPUT
+<FORM action="<?php print $REL_SEO->make_link('message'); ?>" method="post"><INPUT
 	type="hidden" name="action" value="forward"> <INPUT type="hidden"
-	name="id" value="<?=$pm_id?>">
+	name="id" value="<?php print $pm_id; ?>">
 <TABLE border="0" cellpadding="4" cellspacing="0">
 	<TR>
-		<TD class="colhead" colspan="2"><?=$subject?></TD>
+		<TD class="colhead" colspan="2"><?php print $subject; ?></TD>
 	</TR>
 	<TR>
 		<TD>Кому:</TD>
@@ -826,30 +815,29 @@ elseif ($action == "forward") {
 	<TR>
 		<TD>Оригинальный<br />
 		отправитель:</TD>
-		<TD><?=$orig_name?></TD>
+		<TD><?php print $orig_name; ?></TD>
 	</TR>
 	<TR>
 		<TD>От:</TD>
-		<TD><?=$from_name?></TD>
+		<TD><?php print $from_name; ?></TD>
 	</TR>
 	<TR>
 		<TD>Тема:</TD>
-		<TD><INPUT type="text" name="subject" value="<?=$subject?>" size="83"></TD>
+		<TD><INPUT type="text" name="subject" value="<?php print $subject; ?>" size="83"></TD>
 	</TR>
 	<TR>
 		<TD>Сообщение:</TD>
-		<TD><?=( textbbcode ( "msg" ) );?></TD>
+		<TD><?php print ( textbbcode ( "msg" ) ); ?></TD>
 	</TR>
 	<TR>
 		<TD colspan="2" align="center">Сохранить сообщение <INPUT
 			type="checkbox" name="save" value="1"
-			<?=$CURUSER ['savepms'] ? " checked" : ""?>>&nbsp;<INPUT
+			<?php print $CURUSER ['savepms'] ? " checked" : ""; ?>>&nbsp;<INPUT
 			type="submit" value="Переслать"></TD>
 	</TR>
 </TABLE>
 </FORM>
-			<?
-			$REL_TPL->stdfoot();
+			<?php			$REL_TPL->stdfoot();
 	}
 
 	else {

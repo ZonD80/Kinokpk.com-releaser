@@ -184,7 +184,7 @@ function ajaxcheck() {
       if ($) no_ajax = false;
    $("#checkfield").empty();
    $("#checkfield").append('<div align="center"><img src="pic/loading.gif" border="0"/></div>');
-    $.get("<?=$REL_SEO->make_link('takeedit')?>", { ajax: 1, checkonly: "", id: <?=$id;?> }, function(data){
+    $.get("<?php print $REL_SEO->make_link('takeedit'); ?>", { ajax: 1, checkonly: "", id: <?php print $id; ?> }, function(data){
    $("#checkfield").empty();
    $("#checkfield").append(data);
 });
@@ -196,8 +196,7 @@ return no_ajax;
 
 //]]>
 </script>
-		<?
-
+		<?php
 		print ( "</table>\n" );
 
 		print ( "<div align=\"center\"><a href=\"#\" onclick=\"location.href='".$REL_SEO->make_link('pass_on','to','pre','from',$id)."'; return false;\">

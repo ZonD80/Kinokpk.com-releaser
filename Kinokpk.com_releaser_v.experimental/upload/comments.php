@@ -137,19 +137,16 @@ elseif ($action == "quote")
 
 <table class=main border=0 cellspacing=0 cellpadding=3>
 	<tr>
-		<td class="colhead"><?
-		print($REL_LANG->_("Quoting comment"));
+		<td class="colhead"><?php		print($REL_LANG->_("Quoting comment"));
 		?></td>
 	</tr>
 	<tr>
-		<td><?
-		print textbbcode("text",$text);
+		<td><?php		print textbbcode("text",$text);
 		?></td>
 	</tr>
 </table>
 
-		<?
-
+		<?php
 		print("<p><input type=\"submit\" value=\"{$REL_LANG->_('Submit comment')}\" /></p></form>\n");
 
 		$REL_TPL->stdfoot();
@@ -196,19 +193,16 @@ elseif ($action == "edit")
 
 <table class=main border=0 cellspacing=0 cellpadding=3>
 	<tr>
-		<td class="colhead"><?
-		print($REL_LANG->_("Editing comment"));
+		<td class="colhead"><?php		print($REL_LANG->_("Editing comment"));
 		?></td>
 	</tr>
 	<tr>
-		<td><?
-		print textbbcode("text",$arr["text"]);
+		<td><?php		print textbbcode("text",$arr["text"]);
 		?></td>
 	</tr>
 </table>
 
-		<?
-
+		<?php
 		print("<p><input type=\"submit\" value=\"{$REL_LANG->_("Submit comment")}\" /></p></form>\n");
 
 		$REL_TPL->stdfoot();

@@ -46,9 +46,9 @@ if (!pagercheck()) {
 	$REL_TPL->stdhead("Комментирование новости");
 	?>
 <div id="relgroups_header" class="relgroups_header">
-<div align="center">Обзор Новости Релиз группы <?=makesafe($relgroup['name']) ?>&nbsp;&nbsp;<?   print(ratearea($relgroup['ratingsum'],$relgroup['id'],'relgroups',($I_OWNER?$relgroup['id']:0))."");?></div>
+<div align="center">Обзор Новости Релиз группы <?php print makesafe($relgroup['name']) ; ?>&nbsp;&nbsp;<?php   print(ratearea($relgroup['ratingsum'],$relgroup['id'],'relgroups',($I_OWNER?$relgroup['id']:0))."");?></div>
 <div align="right" style="margin-top: -22px;"><a
-	href="<?=$REL_SEO->make_link('relgroups');?>"><img
+	href="<?php print $REL_SEO->make_link('relgroups'); ?>"><img
 	src="/themes/kinokpk/images/strelka.gif" border="0"
 	title="Вернуться к просмотру групп"
 	style="margin-top: 5px; margin-right: 5px;" /></a></div>
@@ -56,8 +56,8 @@ if (!pagercheck()) {
 </div>
 <div id="relgroups_table_right">
 <div id="relgroups_image" class="relgroups_image_right">
-<div class="relgroups_avatar_right"><img src="<?=$relgroup['image']?>"
-	title="<?=makesafe($relgroup['name'])?>" /><? $REL_LANG->say_by_key('no_image')?>
+<div class="relgroups_avatar_right"><img src="<?php print $relgroup['image']; ?>"
+	title="<?php print makesafe($relgroup['name']); ?>" /><?php $REL_LANG->say_by_key('no_image')?>
 <div id="input_right" class="relgroups_input_right"><? //print (int)$relgroup['users'].'&nbsp;';
 	//ПЕРЕДЕЛАТЬ
 	//$i_subscribed = @mysql_result($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid=$id"),0);
@@ -72,24 +72,24 @@ if (!pagercheck()) {
 <h3 class="box_right_block"><span>Директор</span><?print('<div align="center">'.((get_privilege('edit_relgroups',false) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="inside basic_infor_summary_list">
 <dl class="infor">
-	<dd><?=$ownersview?></dd>
+	<dd><?php print $ownersview; ?></dd>
 
 </div>
 </div>
 </div>
 <div id="boxes_right" class="box_right">
 <div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Состав Группы</span><? print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
+<h3 class="box_right_block"><span>Состав Группы</span><?php print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="inside basic_infor_summary_list">
 <dl class="infor">
-	<dd><?=$membersview?></dd>
+	<dd><?php print $membersview; ?></dd>
 
 </div>
 </div>
 </div>
 <div id="boxes_right" class="box_right">
 <div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Тип Группы</span><? print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
+<h3 class="box_right_block"><span>Тип Группы</span><?php print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="inside basic_infor_summary_list">
 <dl class="infor">
 	<dd><?php 
@@ -115,10 +115,9 @@ if (!pagercheck()) {
 <div id="relgroups_table_left">
 <div id="boxes_left" class="box_left">
 <div id="box_left" style="margin-top: 9px;">
-<h3 class="box_right_left"><span>Обсуждаем: <?=$rgnews['subject']?></span>
+<h3 class="box_right_left"><span>Обсуждаем: <?php print $rgnews['subject']; ?></span>
 	<?print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" title=".$REL_LANG->say_by_key('edit')." href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$relgroup['id'],'newsid',$rgnewsid,'returnto',$REL_SEO->make_link('rgnews','id',$rgnewsid))."\"></a>" : "").'</div>');?></h3>
-<div class="basic_infor_summary_list box_left_page"><?
-
+<div class="basic_infor_summary_list box_left_page"><?php
 $added = mkprettytime($rgnews['added']) . " (" . (get_elapsed_time($rgnews["added"],false)) . " {$REL_LANG->say_by_key('ago')})";
 
 

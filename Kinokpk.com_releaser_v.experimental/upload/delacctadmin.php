@@ -40,20 +40,20 @@ if ($HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST")
 }
 $REL_TPL->stdhead($REL_LANG->say_by_key('delete_account'));
 ?>
-<h1><?=$REL_LANG->say_by_key('delete_account')?></h1>
+<h1><?php print $REL_LANG->say_by_key('delete_account'); ?></h1>
 <table border=1 cellspacing=0 cellpadding=5>
-	<form method=post action="<?=$REL_SEO->make_link('delacctadmin')?>">
+	<form method=post action="<?php print $REL_SEO->make_link('delacctadmin'); ?>">
 	<tr>
-		<td class=rowhead><?=$REL_LANG->say_by_key('email')?></td>
+		<td class=rowhead><?php print $REL_LANG->say_by_key('email'); ?></td>
 		<td><input size=40 name=email></td>
 	</tr>
 
 	<tr>
 		<td colspan=2><input type=submit class=btn
-			value='<?=$REL_LANG->say_by_key('remove')?>'></td>
+			value='<?php print $REL_LANG->say_by_key('remove'); ?>'></td>
 	</tr>
 	</form>
 </table>
-<?
+<?php
 $REL_TPL->stdfoot();
 ?>

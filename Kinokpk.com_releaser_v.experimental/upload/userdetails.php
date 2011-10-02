@@ -199,8 +199,7 @@ if (!pagercheck()) {
 		?>
 <tr>
 	<td class=rowhead><b>Связь</b></td>
-	<td align=left><?
-	if ($user ["icq"])
+	<td align=left><?php	if ($user ["icq"])
 	print ( "<img src=\"http://web.icq.com/whitepages/online?icq=" . ( int ) $user [icq] . "&amp;img=5\" alt=\"icq\" border=\"0\" /> " . ( int ) $user [icq] . " <br />\n" );
 	if ($user ["msn"])
 	print ( "<img src=\"pic/contact/msn.gif\" alt=\"msn\" border=\"0\" /> " . makesafe ( $user [msn] ) . "<br />\n" );
@@ -214,8 +213,7 @@ if (!pagercheck()) {
 	print ( "<img src=\"pic/contact/mirc.gif\" alt=\"mirc\" border=\"0\" /> " . makesafe ( $user [mirc] ) . "\n" );
 	?></td>
 </tr>
-	<?
-	}
+	<?php	}
 	if ($user ["website"])
 	print ( "<tr><td class=\"rowhead\">Сайт</td><td align=\"left\">" . makesafe ( $user [website] ) . "</a></td></tr>\n" );
 	print ( "<tr><td class=\"rowhead\">Класс</td><td align=\"left\"><b>" . get_user_class_color ( $user ["class"], get_user_class_name ( $user ["class"] ) ) . ($user ["title"] != "" ? " / <span style=\"color: purple;\">{$user["title"]}</span>" : "") . "</b></td></tr>\n" );

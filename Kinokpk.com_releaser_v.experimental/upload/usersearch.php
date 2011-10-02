@@ -1,6 +1,6 @@
 <?php
 /**
- * Moderators and administrators user search by various parametres
+ * Moderators and administrators user search by various parameters
  * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
  * @package Kinokpk.com releaser
  * @author ZonD80 <admin@kinokpk.com>
@@ -15,75 +15,49 @@ loggedinorreturn();
 
 get_privilege('is_moderator');
 
-$REL_TPL->stdhead("Административный поиск");
-print "<h1>Административный поиск</h1>\n";
+$REL_TPL->stdhead($REL_LANG->_('Search for users'));
+print "<h1>{$REL_LANG->_('Search for users')}</h1>\n";
 
 $q[] = 'usersearch';
 if ($_GET['h'])
 {
-	$REL_TPL->begin_frame("Инструкция<font color=#009900> - Читать обязательно</font>");
-	?>
-<ul>
-	<li>Пустые поля будут проигнорированы</li>
-	<li>Шаблоны * и ? могут быть использованы в Имени, Email и
-	Комментариях, так-же и в нескольких значениях разделенными пробелами
-	(т.е. 'wyz Max*' в Имени выведет обоих пользователей 'wyz' и тех у
-	которых имена начинаються на 'Max'. Похожим образом может быть
-	использована '~' для отрицания, т.е. '~alfiest' в комментариях
-	ограничит поиск пользователей к тем у которых нету выражения 'alfiest'
-	в ихних комментариях).</li>
-	<li>Поле Рейтинг принимает 'Inf' и '---' наравне с числовыми
-	значениями.</li>
-	<li>Маска подсети может быть введена или в десятично точечной или CIDR
-	записи (т.е. 255.255.255.0 то-же самое что и /24).</li>
-	<li>Раздал и Скачал вводиться в GB.</li>
-	<li>For search parameters with multiple text fields the second will be
-	ignored unless relevant for the type of search chosen.</li>
-	<li>'Только активных' ограничивает поиск к тем пользователям которые
-	сейчас что-то качают или раздают, 'Отключенные IP' к тем чьи IP
-	отключены.</li>
-	<li>The 'p' columns in the results show partial stats, that is, those
-	of the torrents in progress.</li>
-	<li>Колонка история отображает количество постов в форуме и
-	комментариев к торрентам, соотвественно, как и ведет на страницу
-	истории. <?
+	$REL_TPL->begin_frame($REL_LANG->_('Manual'));
+	$REL_TPL->output('manual_'.getlang());
 	$REL_TPL->end_frame();
 }
 else
 {
-	print "<p align=center>(<a href='".$REL_SEO->make_link('usersearch','h',1)."'>Инструкиця</a>)";
-	print "&nbsp;-&nbsp;(<a href='".$REL_SEO->make_link('usersearch')."'>Сброс</a>)</p>\n";
+	print "<p align=center>(<a href='".$REL_SEO->make_link('usersearch','h',1)."'>{$REL_LANG->_('Manual')}</a>)";
+	print "&nbsp;-&nbsp;(<a href='".$REL_SEO->make_link('usersearch')."'>{$REL_LANG->_('Reset')}</a>)</p>\n";
 }
 
 $highlight = " bgcolor=#BBAF9B";
 
 ?>
 
-	<form method="get" action="<?=$REL_SEO->make_link('usersearch');?>">
+	<form method="get" action="<?php print $REL_SEO->make_link('usersearch'); ?>">
 	<table border="1" cellspacing="0" cellpadding="5">
 		<tr>
 
 			<td valign="middle" class=rowhead>Имя:</td>
-			<td <?=$_GET['n']?$highlight:""?>><input name="n" type="text"
-				value="<?=htmlspecialchars($_GET['n'])?>" size=35></td>
+			<td <?php print $_GET['n']?$highlight:""; ?>><input name="n" type="text"
+				value="<?php print htmlspecialchars($_GET['n']); ?>" size=35></td>
 
 			<td valign="middle" class=rowhead>Рейтинг:</td>
-			<td <?=$_GET['r']?$highlight:""?>><select name="rt">
-			<?
-			$options = array("равен","выше","ниже","между");
+			<td <?php print $_GET['r']?$highlight:""; ?>><select name="rt">
+			<?php			$options = array("равен","выше","ниже","между");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['rt']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
 			?>
 			</select> <input name="r" type="text"
-				value="<?=htmlspecialchars($_GET['r'])?>" size="5" maxlength="4"> <input
-				name="r2" type="text" value="<?=htmlspecialchars($_GET['r2'])?>"
+				value="<?php print htmlspecialchars($_GET['r']); ?>" size="5" maxlength="4"> <input
+				name="r2" type="text" value="<?php print htmlspecialchars($_GET['r2']); ?>"
 				size="5" maxlength="4"></td>
 
 			<td valign="middle" class=rowhead>Статус:</td>
-			<td <?=$_GET['st']?$highlight:""?>><select name="st">
-			<?
-			$options = array("(Любой)","Подтвержден","Не подтвержден");
+			<td <?php print $_GET['st']?$highlight:""; ?>><select name="st">
+			<?php			$options = array("(Любой)","Подтвержден","Не подтвержден");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['st']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -92,16 +66,15 @@ $highlight = " bgcolor=#BBAF9B";
 		</tr>
 		<tr>
 			<td valign="middle" class=rowhead>Email:</td>
-			<td <?=$_GET['em']?$highlight:""?>><input name="em" type="text"
-				value="<?=htmlspecialchars($_GET['em'])?>" size="35"></td>
+			<td <?php print $_GET['em']?$highlight:""; ?>><input name="em" type="text"
+				value="<?php print htmlspecialchars($_GET['em']); ?>" size="35"></td>
 			<td valign="middle" class=rowhead>IP:</td>
-			<td <?=$_GET['ip']?$highlight:""?>><input name="ip" type="text"
-				value="<?=htmlspecialchars($_GET['ip'])?>" maxlength="17"></td>
+			<td <?php print $_GET['ip']?$highlight:""; ?>><input name="ip" type="text"
+				value="<?php print htmlspecialchars($_GET['ip']); ?>" maxlength="17"></td>
 
 			<td valign="middle" class=rowhead>Отключен:</td>
-			<td <?=$_GET['as']?$highlight:""?>><select name="as">
-			<?
-			$options = array("(Любой)","Нет","Да");
+			<td <?php print $_GET['as']?$highlight:""; ?>><select name="as">
+			<?php			$options = array("(Любой)","Нет","Да");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['as']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -110,36 +83,34 @@ $highlight = " bgcolor=#BBAF9B";
 		</tr>
 		<tr>
 			<td valign="middle" class=rowhead>Комментарий:</td>
-			<td <?=$_GET['co']?$highlight:""?>><input name="co" type="text"
-				value="<?=htmlspecialchars($_GET['co'])?>" size="35"></td>
+			<td <?php print $_GET['co']?$highlight:""; ?>><input name="co" type="text"
+				value="<?php print htmlspecialchars($_GET['co']); ?>" size="35"></td>
 			<td valign="middle" class=rowhead>Маска:</td>
-			<td <?=$_GET['ma']?$highlight:""?>><input name="ma" type="text"
-				value="<?=htmlspecialchars($_GET['ma'])?>" maxlength="17"></td>
+			<td <?php print $_GET['ma']?$highlight:""; ?>><input name="ma" type="text"
+				value="<?php print htmlspecialchars($_GET['ma']); ?>" maxlength="17"></td>
 			<td valign="middle" class=rowhead>Класс:</td>
-			<td <?=((int)$_GET['c'] && (int)$_GET['c'] != 1)?$highlight:""?>><?php print make_classes_select('c',(int)$_GET['c']);?></td>
+			<td <?php print ((int)$_GET['c'] && (int)$_GET['c'] != 1)?$highlight:""; ?>><?php print make_classes_select('c',(int)$_GET['c']);?></td>
 		</tr>
 		<tr>
 
 			<td valign="middle" class=rowhead>Регистрация:</td>
 
-			<td <?=$_GET['d']?$highlight:""?>><select name="dt">
-			<?
-			$options = array("в","раньше","после","между");
+			<td <?php print $_GET['d']?$highlight:""; ?>><select name="dt">
+			<?php			$options = array("в","раньше","после","между");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['dt']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
 			?>
 			</select> <input name="d" type="text"
-				value="<?=htmlspecialchars($_GET['d'])?>" size="12" maxlength="10">
+				value="<?php print htmlspecialchars($_GET['d']); ?>" size="12" maxlength="10">
 
 			<input name="d2" type="text"
-				value="<?=htmlspecialchars($_GET['d2'])?>" size="12" maxlength="10"></td>
+				value="<?php print htmlspecialchars($_GET['d2']); ?>" size="12" maxlength="10"></td>
 
 			<td valign="middle" class="rowhead" colspan="3">Донор:</td>
 
-			<td <?=$_GET['do']?$highlight:""?>><select name="do">
-			<?
-			$options = array("(Любой)","Да","Нет");
+			<td <?php print $_GET['do']?$highlight:""; ?>><select name="do">
+			<?php			$options = array("(Любой)","Да","Нет");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['do']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -150,24 +121,22 @@ $highlight = " bgcolor=#BBAF9B";
 
 			<td valign="middle" class=rowhead>Последняя активность:</td>
 
-			<td <?=$_GET['ls']?$highlight:""?>><select name="lst">
-			<?
-			$options = array("в","раньше","после","между");
+			<td <?php print $_GET['ls']?$highlight:""; ?>><select name="lst">
+			<?php			$options = array("в","раньше","после","между");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['lst']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
 			?>
 			</select> <input name="ls" type="text"
-				value="<?=htmlspecialchars($_GET['ls'])?>" size="12" maxlength="10">
+				value="<?php print htmlspecialchars($_GET['ls']); ?>" size="12" maxlength="10">
 
 			<input name="ls2" type="text"
-				value="<?=htmlspecialchars($_GET['ls2'])?>" size="12" maxlength="10"></td>
+				value="<?php print htmlspecialchars($_GET['ls2']); ?>" size="12" maxlength="10"></td>
 
 			<td valign="middle" class=rowhead colspan="3">Предупрежден:</td>
 
-			<td <?=$_GET['w']?$highlight:""?>><select name="w">
-			<?
-			$options = array("(Любой)","Да","Нет");
+			<td <?php print $_GET['w']?$highlight:""; ?>><select name="w">
+			<?php			$options = array("(Любой)","Да","Нет");
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['w']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -179,11 +148,11 @@ $highlight = " bgcolor=#BBAF9B";
 			<td class="rowhead"></td>
 			<td></td>
 			<td valign="middle" class=rowhead>Только&nbsp;активные:</td>
-			<td <?=$_GET['ac']?$highlight:""?>><input name="ac" type="checkbox"
-				value="1" <?=($_GET['ac'])?"checked":"" ?>></td>
+			<td <?php print $_GET['ac']?$highlight:""; ?>><input name="ac" type="checkbox"
+				value="1" <?php print ($_GET['ac'])?"checked":"" ; ?>></td>
 			<td valign="middle" class=rowhead>Забаненые&nbsp;IP:</td>
-			<td <?=$_GET['dip']?$highlight:""?>><input name="dip" type="checkbox"
-				value="1" <?=($_GET['dip'])?"checked":"" ?>></td>
+			<td <?php print $_GET['dip']?$highlight:""; ?>><input name="dip" type="checkbox"
+				value="1" <?php print ($_GET['dip'])?"checked":"" ; ?>></td>
 		</tr>
 		<tr>
 			<td colspan="6" align=center><input name="submit" type=submit
@@ -194,8 +163,7 @@ $highlight = " bgcolor=#BBAF9B";
 	<br />
 	</form>
 
-	<?
-
+	<?php
 	// Validates date in the form [yy]yy-mm-dd;
 	// Returns date if valid, 0 otherwise.
 	function mkdate($date){
@@ -736,8 +704,7 @@ $highlight = " bgcolor=#BBAF9B";
 		</tr>
 	</table>
 	</form>
-	<?
-
+	<?php
 		}
 	}
 

@@ -35,11 +35,11 @@ if ($ip)
 $REL_TPL->stdhead($REL_LANG->say_by_key('check_ip'));
 
 ?>
-<h1><?=$REL_LANG->say_by_key('check_ip')?></h1>
-<form method=post action="<?=$REL_SEO->make_link('testip')?>">
+<h1><?php print $REL_LANG->say_by_key('check_ip'); ?></h1>
+<form method=post action="<?php print $REL_SEO->make_link('testip'); ?>">
 <table border=1 cellspacing=0 cellpadding=5>
 	<tr>
-		<td class=rowhead><?=$REL_LANG->say_by_key('ip_address')?></td>
+		<td class=rowhead><?php print $REL_LANG->say_by_key('ip_address'); ?></td>
 		<td><input type=text name=ip></td>
 	</tr>
 	<tr>
@@ -48,6 +48,6 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('check_ip'));
 	</form>
 </table>
 
-<?
+<?php
 $REL_TPL->stdfoot();
 ?>

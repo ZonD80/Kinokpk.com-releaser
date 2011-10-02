@@ -121,7 +121,7 @@ else
 {
 	$REL_TPL->stdhead("Восстановление пароля");
 	?>
-<form method="post" action="<?=$REL_SEO->make_link('recover');?>">
+<form method="post" action="<?php print $REL_SEO->make_link('recover'); ?>">
 <table border="1" cellspacing="0" cellpadding="5">
 	<tr>
 		<td class="colhead" colspan="2">Восстановление имени пользователя или
@@ -149,8 +149,7 @@ else
 			value="Восстановить"></td>
 	</tr>
 </table>
-	<?
-	$REL_TPL->stdfoot();
+	<?php	$REL_TPL->stdfoot();
 }
 
 ?>

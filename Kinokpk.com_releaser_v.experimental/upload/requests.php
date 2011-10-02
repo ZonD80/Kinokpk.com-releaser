@@ -55,9 +55,9 @@ if ($action == 'new') {
 	</tr>
 	<tr>
 		<td align=left>
-		<form method="get" action="<?=$REL_SEO->make_link('browse');?>"><input
+		<form method="get" action="<?php print $REL_SEO->make_link('browse'); ?>"><input
 			type="text" name="search" size="40"
-			value="<?= htmlspecialchars($searchstr) ?>" />&nbsp;в&nbsp<?php
+			value="<?php print  htmlspecialchars($searchstr) ; ?>" />&nbsp;в&nbsp<?php
 			print(gen_select_area('cat',$tree,(int)$_GET['cat'])."<input type=\"submit\" value=\"{$REL_LANG->_('Search')}!\">");
 			print("</form>");
 			print("</td></tr></table>");

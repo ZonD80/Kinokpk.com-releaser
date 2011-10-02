@@ -24,7 +24,7 @@ print("<h1>".$REL_LANG->say_by_key('my_mail_updated')."</h1>\n");
 
 
 <div id="my_table">
-<h2><?=$REL_LANG->say_by_key('account_settings')?></h2>
+<h2><?php print $REL_LANG->say_by_key('account_settings'); ?></h2>
 
 	<script	type="text/javascript">
 	<!--//
@@ -283,8 +283,8 @@ div("Пароль еще раз", "<input type=\"password\" name=\"passagain\" s
 </div>
 </div>
 </div>
-<?
-//print("<p><a href=users.php><b>Найти пользователя/Список пользователей</b></a></p>");
+<?php
+
 $REL_TPL->stdfoot();
 
 ?>

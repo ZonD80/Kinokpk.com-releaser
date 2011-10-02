@@ -58,19 +58,19 @@ $REL_TPL->stdhead("Отправить e-mail");
 ?>
 <table border=1 cellspacing=0 cellpadding=5>
 	<tr>
-		<td class=colhead colspan=2>Отправить e-mail пользователю <?=$username;?></td>
+		<td class=colhead colspan=2>Отправить e-mail пользователю <?php print $username; ?></td>
 	</tr>
 	<form method=post
-		action="<?=$REL_SEO->make_link('email-gateway','id',$id)?>">
+		action="<?php print $REL_SEO->make_link('email-gateway','id',$id); ?>">
 	<tr>
 		<td class=rowhead>Ваше имя</td>
-		<td><input type=text name=from size=80 value=<?=$CURUSER["username"]?>
+		<td><input type=text name=from size=80 value=<?php print $CURUSER["username"]; ?>
 			disabled></td>
 	</tr>
 	<tr>
 		<td class=rowhead>Ваш e-mail</td>
 		<td><input type=text name=from_email size=80
-			value=<?=$CURUSER["email"]?> disabled></td>
+			value=<?php print $CURUSER["email"]; ?> disabled></td>
 	</tr>
 	<tr>
 		<td class=rowhead>Тема</td>
@@ -90,4 +90,4 @@ $REL_TPL->stdhead("Отправить e-mail");
 виден получателю, для предотвращния обмана.<br />
 Убедитесь что вы ввели правильны e-mail адрес если вы ожидаете ответа.</font>
 </p>
-<? $REL_TPL->stdfoot(); ?>
+<?php $REL_TPL->stdfoot(); ?>

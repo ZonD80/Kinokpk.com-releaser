@@ -22,14 +22,12 @@ $REL_TPL->stdhead("Общее сообщение", false);
 		<td class=embedded>
 		<div align=center>
 		<form method=post name=message
-			action="<?=$REL_SEO->make_link('takestaffmess');?>"><?
-
+			action="<?php print $REL_SEO->make_link('takestaffmess'); ?>"><?php
 			if ($_GET["returnto"] || $_SERVER["HTTP_REFERER"])
 			{
 				?> <input type=hidden name=returnto
-			value=<?=$_GET["returnto"] ? urlencode($_GET["returnto"]) : urlencode($_SERVER["HTTP_REFERER"])?>>
-			<?
-			}
+			value=<?php print $_GET["returnto"] ? urlencode($_GET["returnto"]) : urlencode($_SERVER["HTTP_REFERER"]); ?>>
+			<?php			}
 			?>
 		<table cellspacing=0 cellpadding=5>
 			<tr>
@@ -51,12 +49,12 @@ $REL_TPL->stdhead("Общее сообщение", false);
 			<TD colspan="2">Тема: <INPUT name="subject" type="text" size="70"></TD>
 			</TR>
 			<tr>
-				<td align="center"><?print textbbcode("msg",$body);?> <!--<textarea name=msg cols=80 rows=15><?=$body?></textarea>-->
+				<td align="center"><?print textbbcode("msg",$body);?> <!--<textarea name=msg cols=80 rows=15><?php print $body; ?></textarea>-->
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2>
-				<div align="center"><b>Отправитель:&nbsp;&nbsp;</b> <?=$CURUSER['username']?>
+				<div align="center"><b>Отправитель:&nbsp;&nbsp;</b> <?php print $CURUSER['username']; ?>
 				<input name="sender" type="radio" value="self" checked> &nbsp;
 				Система <input name="sender" type="radio" value="system"></div>
 				</td>
@@ -66,12 +64,11 @@ $REL_TPL->stdhead("Общее сообщение", false);
 					class=btn></td>
 			</tr>
 		</table>
-		<input type=hidden name=receiver value=<?=$receiver?>></form>
+		<input type=hidden name=receiver value=<?php print $receiver; ?>></form>
 
 		</div>
 		</td>
 	</tr>
 </table>
-						<?
-						$REL_TPL->stdfoot();
+						<?php						$REL_TPL->stdfoot();
 						?>

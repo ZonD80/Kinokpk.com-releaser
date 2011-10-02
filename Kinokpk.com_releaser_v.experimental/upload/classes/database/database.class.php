@@ -112,22 +112,4 @@ class REL_DB {
 		return array_shift($result);
 	}
 
-
-	/**
-	 * Generates SQL error message sending notification to SYSOP
-	 * @param string $file File where error begins __FILE__
-	 * @param string $line Line where error begins __LINE__
-	 * @return void
-	 */
-	function sqlerr($file = '', $line = '') {
-		global  $queries, $CURUSER, $REL_SEO, $REL_LANG, $REL_DB;
-		$err = mysql_error();
-		$text = ("<table border=\"0\" bgcolor=\"blue\" align=\"left\" cellspacing=\"0\" cellpadding=\"10\" style=\"background: blue\">" .
-	"<tr><td class=\"embedded\"><font color=\"white\"><h1>{$REL_LANG->_('SQL error')}</h1>\n" .
-	"<b>{$REL_LANG->_('SQL server response')}: " . $err . ($file != '' && $line != '' ? "<p>{$REL_LANG->_('in')} $file, {$REL_LANG->_('line')} $line</p>" : "") . "<p>{$REL_LANG->_('Query number')}: $queries.</p></b></font></td></tr></table>");
-		write_log(make_user_link()." SQL ERROR: $text</font>",'sql_errors');
-		print $text;
-		return;
-	}
-
 }

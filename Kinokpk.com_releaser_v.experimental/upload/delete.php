@@ -77,9 +77,8 @@ $ret = "<a href=\"{$REL_CONFIG['defaultbaseurl']}/\">На главную</a>";
 
 ?>
 <h2>Торрент удален!</h2>
-<p><?= $ret ?></p>
-<?
-
+<p><?php print  $ret ; ?></p>
+<?php
 $REL_TPL->stdfoot();
 
 ?>

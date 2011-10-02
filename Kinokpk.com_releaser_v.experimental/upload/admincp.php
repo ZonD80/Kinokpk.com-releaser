@@ -51,7 +51,7 @@ if (get_privilege('is_owner',false)) {
 }
 
 if (get_privilege('is_administrator',false)) { ?>
-<? $REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For administrators")); ?>
+<?php $REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For administrators")); ?>
 <table width=100% cellspacing=10 align=center>
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('unco');?>"><?=$REL_LANG->_("Unconfirmed users");?></a></td>
@@ -83,7 +83,7 @@ if (get_privilege('is_administrator',false)) { ?>
 }
 
 if (get_privilege('is_moderator',false)) { ?>
-<? $REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For moderators")); ?>
+<?php $REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For moderators")); ?>
 
 
 <table width=100% cellspacing=3>

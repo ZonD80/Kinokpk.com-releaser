@@ -1,5 +1,4 @@
-<?
-
+<?php
 /*
  Project: Kinokpk.com releaser
  This file is part of Kinokpk.com releaser.

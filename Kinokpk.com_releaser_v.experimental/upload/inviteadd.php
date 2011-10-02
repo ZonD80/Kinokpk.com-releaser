@@ -50,19 +50,19 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('upd_users_inv_amn'));
 
 ?>
 
-<h1><?=$REL_LANG->say_by_key('upd_users_inv_amn')?></h1>
+<h1><?php print $REL_LANG->say_by_key('upd_users_inv_amn'); ?></h1>
 
-<form method=post action="<?=$REL_SEO->make_link('inviteadd')?>">
+<form method=post action="<?php print $REL_SEO->make_link('inviteadd'); ?>">
 
 <table border=1 cellspacing=0 cellpadding=5>
 
 	<tr>
-		<td class=rowhead><?=$REL_LANG->say_by_key('user_name')?></td>
+		<td class=rowhead><?php print $REL_LANG->say_by_key('user_name'); ?></td>
 		<td><input type=text name=username size=40></td>
 	</tr>
 
 	<tr>
-		<td class=rowhead><?=$REL_LANG->say_by_key('invites')?></td>
+		<td class=rowhead><?php print $REL_LANG->say_by_key('invites'); ?></td>
 		<td><input name=invites size=5></td>
 	</tr>
 
@@ -74,4 +74,4 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('upd_users_inv_amn'));
 
 </form>
 
-<? $REL_TPL->stdfoot(); ?>
+<?php $REL_TPL->stdfoot(); ?>

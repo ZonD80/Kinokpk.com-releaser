@@ -47,14 +47,14 @@ if (! $count) {
 <h1>Поступившие жалобы</h1>
 </center>
 <div align=center>
-<form id="message" action="<?=$REL_SEO->make_link('reports');?>"
+<form id="message" action="<?php print $REL_SEO->make_link('reports'); ?>"
 	method="post"><input type="hidden" name="deleteall" value="deleteall">
 <input type="submit" value="Удалить все жалобы"
 	onClick="return confirm('Вы уверены?')"></form>
 </div>
 <br />
 
-<form id="message" action="<?=$REL_SEO->make_link('reports');?>"
+<form id="message" action="<?php print $REL_SEO->make_link('reports'); ?>"
 	method="post" name="form1"><input type="hidden" value="moveordel"
 	name="action" />
 <table border="0" cellspacing="0" width="100%" cellpadding="3">
@@ -77,8 +77,7 @@ if (! $count) {
 		</td>
 	</tr>
 
-	<?
-
+	<?php
 	if ($empty) {
 
 		$res = $REL_DB->query ( "SELECT reports.*,users.username,users.class,users.donor,users.warned, users.enabled FROM reports LEFT JOIN users ON reports.userid=users.id ORDER BY added DESC" );
@@ -126,7 +125,6 @@ if (! $count) {
 </table>
 </form>
 
-	<?
-	$REL_TPL->stdfoot();
+	<?php	$REL_TPL->stdfoot();
 
 	?>

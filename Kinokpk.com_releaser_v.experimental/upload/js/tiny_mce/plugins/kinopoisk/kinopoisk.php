@@ -7,7 +7,7 @@ $path = str_replace("js/tiny_mce/plugins/kinopoisk",'',dirname(__FILE__));
 require_once ($path."include/bittorrent.php");
 INIT();
 ?>
-<base href="<?=$REL_CONFIG['defaultbaseurl'];?>" />
+<base href="<?php print $REL_CONFIG['defaultbaseurl']; ?>" />
 <title>{#kinopoisk_dlg.title}</title>
 <script type="text/javascript" src="js/tiny_mce/tiny_mce_popup.js"></script>
 <script type="text/javascript"

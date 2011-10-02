@@ -36,20 +36,20 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('change_class'));
 ?>
 
 <form method=get
-	action='<?=$REL_SEO->make_link('setclass');?>'><input type=hidden
+	action='<?php print $REL_SEO->make_link('setclass'); ?>'><input type=hidden
 	name='action' value='editclass'> <input type=hidden name='returnto'
-	value='<?=$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username']));?>'>
+	value='<?php print $REL_SEO->make_link('userdetails','id',$CURUSER['id'],'username',translit($CURUSER['username'])); ?>'>
 <!-- Change to any page you want -->
 <table width=150 border=2 cellspacing=5 cellpadding=5>
 	<tr>
-		<td><?=$REL_LANG->say_by_key('class')?></td>
+		<td><?php print $REL_LANG->say_by_key('class'); ?></td>
 		<td align=left><?php print make_classes_select();?></td>
 	</tr>
 	</td>
 	</tr>
 	<tr>
 		<td colspan=3 align=center><input type=submit class=btn
-			value='<?=$REL_LANG->say_by_key('change_class')?>'></td>
+			value='<?php print $REL_LANG->say_by_key('change_class'); ?>'></td>
 	</tr>
 	</form>
 	</form>
