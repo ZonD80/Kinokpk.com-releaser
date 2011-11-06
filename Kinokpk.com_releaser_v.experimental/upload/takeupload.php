@@ -94,6 +94,9 @@ $sticky = 1;
 else
 $sticky = 0;
 
+if ($_POST["visible"]) {
+	get_privilege('post_releases_to_mainpage');
+}
 if ($_POST['nofile']) {} else {
 
 	unset($dict['value']['nodes']); // remove cached peers (Bitcomet & Azareus)
@@ -275,12 +278,12 @@ if ($_POST['nofile']) {
 
 		$totallen = (float)($nofilesize*1024*1024);
 
-		$ret = $REL_DB->query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, tiger_hash, name, descr, size, free, images, category, online, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], 1, $sticky, $infohash, $tiger_hash, $torrent, $descr, $totallen, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('post_releases_approved',false))?', '.$CURUSER['id']:'').")");
+		$ret = $REL_DB->query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, tiger_hash, name, descr, size, free, images, category, online, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], ($_POST["visible"] ? 1 : 0), $sticky, $infohash, $tiger_hash, $torrent, $descr, $totallen, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('post_releases_approved',false))?', '.$CURUSER['id']:'').")");
 	} else {
 
 		$torrent = htmlspecialchars(str_replace("_", " ", $torrent));
 
-		$ret = $REL_DB->query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, name, descr, size, numfiles, ismulti, free, images, category, online, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], 1, $sticky, $infohash, $torrent, $descr, $totallen, count($filelist), $type, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('post_releases_approved',false))?', '.$CURUSER['id']:'').")");
+		$ret = $REL_DB->query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, name, descr, size, numfiles, ismulti, free, images, category, online, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], ($_POST["visible"] ? 1 : 0), $sticky, $infohash, $torrent, $descr, $totallen, count($filelist), $type, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('post_releases_approved',false))?', '.$CURUSER['id']:'').")");
 	}
 	if (!$ret) {
 		if (mysql_errno() == 1062)

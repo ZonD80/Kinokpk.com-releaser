@@ -55,7 +55,7 @@ class REL_DB {
 			$to_log .= "<pre>";
 			$to_log .= var_export(debug_backtrace(),true);
 			$to_log .= "</pre><hr/>";
-			write_log($to_log,'sql_errors');
+			//write_log($to_log,'sql_errors');
 			print $to_log;
 			if (!$this->debug()) die();
 		}

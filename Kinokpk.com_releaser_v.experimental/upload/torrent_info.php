@@ -114,7 +114,7 @@ print('</table>');
 $REL_TPL->end_frame();
 
 
-print('<h3><a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'info','1').'">'.$REL_LANG->_('View .torrent file details').'</a> или <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'dllist','1').'">'.$REL_LANG->_('View realtime local tracker data').'</a></h3>');
+print('<h3><a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'info','1').'">'.$REL_LANG->_('View .torrent file details').'</a> '.$REL_LANG->_('or').' <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'dllist','1').'">'.$REL_LANG->_('View realtime local tracker data').'</a></h3>');
 if (isset($_GET['info'])) {
 	/**
 	 * Prints Nice array
@@ -256,11 +256,6 @@ li span.title {
 
 		$info = bdec_file($fn, (1024*1024));
 
-		// Start table
-		/*print("<table cellspacing=\"0\" cellpadding=\"0\" class=\"tabs\"><tbody><tr>
-		<td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"details.php?id=$id\">Описание</a></td>
-		<td class=\"tab\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"torrent_info.php?id=$id\">Данные о торренте</a></td>
-		<td class=\"tab3\"> </td></tr></tbody></table>\n");*/
 		print("<table width=100% border=1 cellspacing=0 cellpadding=5>");
 
 		print("<td>");

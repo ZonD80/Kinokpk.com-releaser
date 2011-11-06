@@ -70,7 +70,7 @@ function validusername($username)
 	return false;
 
 	// The following characters are allowed in user names
-	$allowedchars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.";
+	$allowedchars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.-";
 
 	for ($i = 0; $i < mb_strlen($username); ++$i)
 	if (strpos($allowedchars, $username[$i]) === false)
@@ -1326,20 +1326,19 @@ function convert_local_urls($link) {
 function sent_mail($to,$fromname,$fromemail,$subject,$body,$multiplemail='') {
 //return true;
 	global  $REL_CONFIG, $REL_DB;
-	require_once ROOT_PATH."classes/mail/dSendMail2.inc.php";
-	$m = new dSendMail2;
-	$m->setCharset('utf-8');
-	$m->setSubject($subject);
-	$m->setFrom($fromemail,$REL_CONFIG['sitename']);
-	$m->setMessage($body);
+	require_once ROOT_PATH."classes/mail/class.phpmailer.php";
+	$m = new PHPMailer();
+	$m->SetFrom($fromemail,$REL_CONFIG['sitename']);	
+	$m->CharSet = 'utf-8';
+	$m->Subject = $subject;
+	$m->MsgHTML($body);
 	if ($multiplemail) {
 		return true;
-		$m->setTo($REL_CONFIG['siteemail']);
-		$m->setBcc($multiplemail);
-		$m->groupAmnt = 10;
-		$m->delay     = 1;
-	} else $m->setTo($to);
-	return $m->send();
+		foreach (explode($multiplemail) as $addr)
+		$m->AddAddress($addr);
+		
+	} else $m->AddAddress($to);
+	return $m->Send();
 }
 
 /**

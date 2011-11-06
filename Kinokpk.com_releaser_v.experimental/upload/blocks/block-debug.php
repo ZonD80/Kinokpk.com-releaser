@@ -15,12 +15,21 @@ $cronrow = $REL_DB->query("SELECT * FROM cron WHERE cron_name IN ('remotepeers_c
 while ($cronres = mysql_fetch_array($cronrow)) $REL_CRON[$cronres['cron_name']] = $cronres['cron_value'];
 
 $content .= "<pre>";
-$content .= "total $total
+$content .= "
+Trackers:
+total $total
 unchecked $unchecked
 checked $checked
 ---
 checking $checking
 rate ".($checked/$REL_CRON['remote_trackers'])."
 rate unchecked ".($unchecked/$REL_CRON['remote_trackers']);
+
+$ret = $REL_DB->query_row("select (select count(*) from torrents) as total, (select count(*) from torrents where seeders=0) as dead");
+$content .="
+--------------
+Torrents:
+total torrents {$ret['total']}
+dead torrents (0 seeders) {$ret['dead']}";
 $content .= "</pre>";
 ?>

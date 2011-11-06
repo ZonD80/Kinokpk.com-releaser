@@ -12,7 +12,7 @@ if (($_SERVER["REQUEST_METHOD"] == "GET") && @($_SERVER['HTTP_X_REQUESTED_WITH']
 
 	@$hidebid = $_COOKIE ["hidebid"];
 	if (empty ( $_GET ["bid"] ))
-	die ( "<b><font color=\"red\" size=\"10\">Ты куда лезешь???</font></b>" );
+	die ("Hello my dear hacker, I love you.... really!");
 	$bid = "b" . intval ( str_replace ( "b", "", $_GET ["bid"] ) );
 	$bidpos = strrpos ( $hidebid, "$bid." );
 	if ($_GET["type"] == "hide" && ! $bidpos) {

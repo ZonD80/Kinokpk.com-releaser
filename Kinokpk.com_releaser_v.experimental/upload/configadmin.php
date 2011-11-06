@@ -44,13 +44,13 @@ elseif ($_GET['action'] == 'save'){
 	$updateset = array();
 
 	foreach ($reqparametres as $param) {
-		if (!isset($_POST[$param]) && ($param != 'pron_cats')) $REL_TPL->stderr($REL_LANG->say_by_key('error'),"Некоторые поля не заполнены ($param)");
+		if (!isset($_POST[$param]) && ($param != 'pron_cats')) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Some fields does not filled (%s)',$param));
 		$updateset[] = "UPDATE cache_stats SET cache_value=".sqlesc($_POST[$param])." WHERE cache_name='$param'";
 	}
 
 	if ($_POST['use_captcha'] == 1) {
 		foreach ($captcha_param as $param) {
-			if (!$_POST[$param] || !isset($_POST[$param])) $REL_TPL->stderr($REL_LANG->say_by_key('error'),"Приватный или публичный ключи капчи не определены");
+			if (!$_POST[$param] || !isset($_POST[$param])) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Public and private ReCaptcha fields does not defined'));
 			$updateset[] = "UPDATE cache_stats SET cache_value=".sqlesc($_POST[$param])." WHERE cache_name='$param'";
 		}
 	}

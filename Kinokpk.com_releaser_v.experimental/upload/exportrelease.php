@@ -41,13 +41,13 @@ if ($childs) {
 }
 $catstr = get_cur_position_str($tree,$cat['id']).(is_array($chsel)?', '.implode(', ',$chsel):'');
 
-$formvalue = "<div align=\"center\"><a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\"><img width=\"200px\" src=\"{$image}\"></a></div><br /><br /><b>Полное название:</b> ".$row['name']."<br /><b>Тип:</b> ".$catstr."<br />";
+$formvalue = "<div align=\"center\"><a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\"><img width=\"200px\" src=\"{$image}\"></a></div><br /><br /><b>{$REL_LANG->_('Full name')}:</b> ".$row['name']."<br /><b>{$REL_LANG->_('Type')}:</b> ".$catstr."<br />";
 
 $formvalue .= format_comment($row['descr'],true);
 
-$formvalue .= "<b>Размер:</b> ".mksize($row['size'])."<br />";
+$formvalue .= "<b>{$REL_LANG->_('Size')}:</b> ".mksize($row['size'])."<br />";
 
-$formvalue .= "<div align=\"center\">Оригинал релиза на <a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\">{$REL_CONFIG['sitename']}</a></b></div>";
+$formvalue .= "<div align=\"center\">{$REL_LANG->_('Original release')}: <a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\">{$REL_CONFIG['sitename']}</a></b></div>";
 
 $REL_TPL->stdhead($REL_LANG->say_by_key('exportrelease_mname'));
 
@@ -61,7 +61,7 @@ function SelectAll(){
 
 $REL_TPL->begin_main_frame();
 print("<div id=\"tabs\"><ul>
-	<li class=\"tab2\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\"><span>Описание</span></a></li>
+	<li class=\"tab2\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\"><span>{$REL_LANG->_('Description')}</span></a></li>
 	<li nowrap=\"\" class=\"tab2\"><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($row['name']))."\"><span>{$REL_LANG->say_by_key('torrent_info')}</span></a></li>
 	<li nowrap=\"\" class=\"tab1\"><a href=\"".$REL_SEO->make_link('exportrelease','id',$id,'name',translit($row['name']))."\"><span>{$REL_LANG->say_by_key('exportrelease_mname')}</span></a></li>
 	</ul></div>\n <br />");

@@ -15,7 +15,7 @@ loggedinorreturn();
 get_privilege('mass_pm');
 httpauth();
 
-$REL_TPL->stdhead("Общее сообщение", false);
+$REL_TPL->stdhead($REL_LANG->_('Mass PM'), false);
 ?>
 <table class=main width=100% border=0 cellspacing=0 cellpadding=0>
 	<tr>
@@ -31,11 +31,10 @@ $REL_TPL->stdhead("Общее сообщение", false);
 			?>
 		<table cellspacing=0 cellpadding=5>
 			<tr>
-				<td class="colhead" colspan="2">Общее сообщение всем членам
-				администрации и пользователям</td>
+				<td class="colhead" colspan="2"><?php print $REL_LANG->_('Mass PM');?></td>
 			</tr>
 			<tr>
-				<td>Кому отправлять:<br />
+				<td><?php print $REL_LANG->_('Receivers');?>:<br />
 				<table style="border: 0" width="100%" cellpadding="0"
 					cellspacing="0">
 					<tr>
@@ -46,7 +45,7 @@ $REL_TPL->stdhead("Общее сообщение", false);
 				</table>
 				</td>
 			</tr>
-			<TD colspan="2">Тема: <INPUT name="subject" type="text" size="70"></TD>
+			<TD colspan="2"><?php print $REL_LANG->_('Subject');?>: <INPUT name="subject" type="text" size="70"></TD>
 			</TR>
 			<tr>
 				<td align="center"><?print textbbcode("msg",$body);?> <!--<textarea name=msg cols=80 rows=15><?php print $body; ?></textarea>-->
@@ -54,13 +53,13 @@ $REL_TPL->stdhead("Общее сообщение", false);
 			</tr>
 			<tr>
 				<td colspan=2>
-				<div align="center"><b>Отправитель:&nbsp;&nbsp;</b> <?php print $CURUSER['username']; ?>
+				<div align="center"><b><?php print $REL_LANG->_('Sender');?>:&nbsp;&nbsp;</b> <?php print $CURUSER['username']; ?>
 				<input name="sender" type="radio" value="self" checked> &nbsp;
-				Система <input name="sender" type="radio" value="system"></div>
+				<?php print $REL_LANG->_('From system');?> <input name="sender" type="radio" value="system"></div>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2 align=center><input type=submit value="Отправить"
+				<td colspan=2 align=center><input type=submit value="<?php print $REL_LANG->_('Send');?>"
 					class=btn></td>
 			</tr>
 		</table>

@@ -45,7 +45,7 @@ if (!$count) {
 
 	torrenttable($resarray, "bookmarks");
 	print '</div>';
-	print("<div align=\"right\"><input type=\"submit\" OnClick=\"return confirm('Вы уверены?');\" value=\"".$REL_LANG->say_by_key('delete')."\"/></div></form>\n");
+	print("<div align=\"right\"><input type=\"submit\" OnClick=\"return confirm('{$REL_LANG->_('Are you sure?')}');\" value=\"".$REL_LANG->say_by_key('delete')."\"/></div></form>\n");
 	$REL_TPL->end_frame();
 }
 

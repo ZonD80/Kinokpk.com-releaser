@@ -107,7 +107,7 @@ EOD;
 
 
 function bark($msg) {
-	global  $REL_LANG, $REL_DB;
+	global  $REL_LANG, $REL_DB, $REL_TPL;
 	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $msg." <a href=\"javascript:history.go(-1);\">{$REL_LANG->say_by_key('ago')}</a>");
 }
 
@@ -363,6 +363,9 @@ if(get_privilege('edit_releases',false)) {
 	$updateset[] = "banned = ".($_POST["banned"]?1:0);
 	$updateset[] = "sticky = ".($_POST['sticky']?1:0);
 
+	if ($_POST["visible"]) {
+		get_privilege('post_releases_to_mainpage');
+	}
 	$updateset[] = "visible = '" . ($_POST["visible"] ? 1 : 0) . "'";
 }
 
@@ -402,6 +405,7 @@ if ($_POST['upd']) $updateset[] = "added = '" . time() . "'";
 $REL_DB->query("UPDATE torrents SET " . join(",", $updateset) . " WHERE id = $id");
 if (mysql_errno() == 1062) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Torrent already uploaded!');
 
+if ($update_xbt_query)
 $REL_DB->query($update_xbt_query);
 
 $REL_CACHE->clearGroupCache('block-indextorrents');

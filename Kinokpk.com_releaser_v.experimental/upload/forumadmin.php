@@ -143,7 +143,7 @@ if(isset($_GET['add'])) {
 print('<div align="center">'.$REL_LANG->say_by_key('cur_tree').': '.gen_select_area('',$tree).'</div>');
 print("<table width=\"100%\" class=main>");
 print("<tr><td>ID</td><td>{$REL_LANG->say_by_key('sort')}</td><td>{$REL_LANG->say_by_key('name')}</td><td>{$REL_LANG->say_by_key('seo_name')}</td><td>{$REL_LANG->say_by_key('image')}</td><td>{$REL_LANG->say_by_key('parent')}</td><td>{$REL_LANG->_('Access level')}</td><td>{$REL_LANG->say_by_key('edit')}</td><td>{$REL_LANG->say_by_key('delete')}</td></tr>");
-$sql = $REL_DB->query("SELECT * FROM forum_categories ORDER BY id ASC");
+$sql = $REL_DB->query("SELECT * FROM forum_categories ORDER BY parent_id ASC");
 
 while ($row = mysql_fetch_assoc($sql)) {
 	$catseo = ($row['seo_name']?$row['seo_name']:translit($row['name']));

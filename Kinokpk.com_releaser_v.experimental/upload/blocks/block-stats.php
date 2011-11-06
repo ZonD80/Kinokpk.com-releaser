@@ -15,7 +15,6 @@ if ($block_online===false) {
        (SELECT SUM(1) FROM users WHERE gender=2) UNION ALL
         (SELECT SUM(1) FROM torrents) UNION ALL
          (SELECT SUM(1) FROM torrents WHERE filename = 'nofile') UNION ALL
-          (SELECT SUM(1) FROM torrents WHERE visible=0) UNION ALL
            (SELECT SUM(1) FROM users WHERE warned = 1) UNION ALL
             (SELECT SUM(1) FROM users WHERE enabled = 0) UNION ALL
              (SELECT SUM(1) FROM users WHERE class = ".$classes['vip'].") UNION ALL
@@ -30,7 +29,6 @@ if ($block_online===false) {
 'females',
 'torrents',
 'torrents_nofile',
-'torrents_dead',
 'users_warned',
 'users_disabled',
 'vips',
@@ -55,7 +53,6 @@ $male = $block_online['males'];
 $female = $block_online['females'];
 $torrents = $block_online['torrents'];
 $nofiler = $block_online['torrents_nofile'];
-$dead = $block_online['torrents_dead'];
 $peersrow = $REL_DB->query("(SELECT SUM(1) AS peers FROM peers WHERE seeder=1) UNION (SELECT SUM(1) AS peers FROM peers WHERE seeder=0)");
 while (list($peersarray) = mysql_fetch_array($peersrow))
 $peers[] = $peersarray;
@@ -91,7 +88,6 @@ $content .= "<table width=\"100%\" class=\"main\" border=\"0\" cellspacing=\"0\"
 <td width=\"50%\" align=\"center\" style=\"border: none;\"><table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">
 <tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('browse')."\">{$REL_LANG->_('Releases')}</a></td><td align=\"right\">".number_format($torrents)."</td></tr>
 <tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('browse','nofile','1')."\">{$REL_LANG->_('Releases without torrents')}</a></td><td align=\"right\">".($nofiler?number_format($nofiler):$REL_LANG->say_by_key('no'))."</td></tr>
-<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('browse','dead','1')."\">{$REL_LANG->_('Dead releases')}</a></td><td align=\"right\">".($dead?number_format($dead):$REL_LANG->say_by_key('no'))."</td></tr>
 <tr><td class=\"rowhead\"><a href= \"".$REL_SEO->make_link('peers')."\">".$REL_LANG->say_by_key('tracker_peers')."</a></td><td align=\"right\">".number_format($peers)."</td></tr>";
 if (isset($peers)) {
 	$content .= "<tr><td class=\"rowhead\"><a href=\"".$REL_SEO->make_link('peers','view','seeders')."\">".$REL_LANG->say_by_key('tracker_seeders')."</a>&nbsp;&nbsp; <img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/arrowup.gif\" alt=\"{$REL_LANG->_('Seeding')}\" border=\"0\" align=\"bottom\"/></td><td align=\"right\">".number_format($seeders+$block_online['seeders'])."</td></tr>

@@ -151,7 +151,7 @@ $query = $querycount." GROUP BY friends.id";
 
 	print ('<div id="users-table">');
 	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\" width=\"100%\">\n");
-	print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td><td class=\"colhead\">Подтвержден</td><td class=\"colhead\">Действия</td></tr>\n");
+	print("<tr><td class=\"colhead\" align=\"left\">{$REL_LANG->_('Username')}</td><td class=\"colhead\">{$REL_LANG->_('Registered at')}</td><td class=\"colhead\">{$REL_LANG->_('Last login')}</td><td class=\"colhead\">{$REL_LANG->_('Rating')}</td><td class=\"colhead\">{$REL_LANG->_('Gender')}</td><td class=\"colhead\" align=\"left\">{$REL_LANG->_('Class')}</td><td class=\"colhead\">{$REL_LANG->_('Country')}</td><td class=\"colhead\">{$REL_LANG->_('Confirmed')}</td><td class=\"colhead\">{$REL_LANG->_('Actions')}</td></tr>\n");
 	while ($arr = mysql_fetch_assoc($res)) {
 		if ($arr['country'] > 0) {
 			$country = "<td style=\"padding: 0px\" align=\"center\"><img src=\"pic/flag/$arr[flagpic]\" alt=\"$arr[name]\" title=\"$arr[name]\"></td>";
@@ -161,8 +161,8 @@ $query = $querycount." GROUP BY friends.id";
 		$ratingsum = ratearea($arr['ratingsum'],$arr['friend'],'users',$CURUSER['id']);
 
 
-		if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" alt=\"Парень\" title=\"Парень\" style=\"margin-left: 4pt\">";
-		elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" alt=\"Девушка\" title=\"Девушка\" style=\"margin-left: 4pt\">";
+		if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" title=\"{$REL_LANG->_('Male')}\" style=\"margin-left: 4pt\">";
+		elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" title=\"{$REL_LANG->_('Female')}\" style=\"margin-left: 4pt\">";
 		else $gender = "<div align=\"center\"><b>?</b></div>";
 
 		print("<tr".(!$arr['fconf']?' style="background-color: #ffc;"':'')."><td align=\"left\"><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',translit($arr["username"]))."\"><b>".get_user_class_color($arr["class"], $arr["username"])."</b></a>" .get_user_icons($arr).($arr['init']?$REL_LANG->say_by_key('init'):'')."</td>" .

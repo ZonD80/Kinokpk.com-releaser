@@ -100,7 +100,7 @@ else {
 
 		if ($CURUSER) {
 			if (! $row ["visible"])
-			$OUT .= "<strong>{$REL_LANG->say_by_key('visible')}:</strong> <b>" . $REL_LANG->say_by_key('no') . "</b> (" . $REL_LANG->say_by_key('dead') . ")"."<br/>";
+			$OUT .= "<strong>{$REL_LANG->say_by_key('visible')}:</strong> <b>" . $REL_LANG->say_by_key('no') . "</b> ({$REL_LANG->_('Does not visible on main page')})<br/>";
 			if ($row ['filename'] != 'nofile')
 			$OUT .= "<strong>{$REL_LANG->say_by_key('seeder')}:</strong> {$REL_LANG->say_by_key('seeder_last_seen')} " . get_elapsed_time ( $row ["lastseed"] ) . " " . $REL_LANG->say_by_key('ago')."<br/>";
 

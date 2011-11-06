@@ -32,7 +32,6 @@
 	left: 0;
 	z-index: 100;
 	text-align: left;
-	
 }
 
 #facebox .popup,#facebox_trailer .popup {
@@ -41,7 +40,7 @@
 
 #facebox table,#facebox_trailer table {
 	border-collapse: collapse;
-	background-color:none;
+	background-color: none;
 }
 
 #facebox td,#facebox_trailer td {
@@ -80,8 +79,8 @@
 	vertical-align: middle;
 }
 
-#facebox_trailer .tl,#facebox_trailer .tr,#facebox_trailer .bl,#facebox_trailer .br,
-#facebox .tl,#facebox .tr,#facebox .bl,#facebox .br {
+#facebox_trailer .tl,#facebox_trailer .tr,#facebox_trailer .bl,#facebox_trailer .br,#facebox .tl,#facebox .tr,#facebox .bl,#facebox .br
+	{
 	height: 10px;
 	width: 10px;
 	overflow: hidden;

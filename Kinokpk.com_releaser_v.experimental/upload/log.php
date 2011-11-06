@@ -16,11 +16,12 @@ loggedinorreturn();
 get_privilege('view_logs');
 
 // delete items older than a week
-if (isset($_GET['truncate']) && get_privilege('truncate_logs',false)) {
+if (isset($_GET['truncate'])) {
+	get_privilege('truncate_logs');
 	$REL_DB->query("TRUNCATE TABLE sitelog");
-	$REL_TPL->stderr($REL_LANG->say_by_key('success'),'Логи очищены <a href="'.$REL_SEO->make_link('log').'">К логам</a>','success');
+	$REL_TPL->stderr($REL_LANG->say_by_key('success'),$REL_LANG->_('Logs cleared successfully. <a href="%s">Go back to logs</a>',$REL_SEO->make_link('log')),'success');
 
-} elseif (isset($_GET['truncate'])) 	$REL_TPL->stderr($REL_LANG->say_by_key('error'),'Логи могут быть очищены только системным администратором');
+}
 
 $type = htmlspecialchars(trim((string)$_GET["type"]));
 
@@ -28,7 +29,7 @@ if (!pagercheck()) {
 $REL_TPL->stdhead($REL_LANG->say_by_key('logs'));
 
 if(!$type) {
-	print ('<h1><a href="'.$REL_SEO->make_link('log','truncate','').'">Очистить логи</a></h1>');
+	print ('<h1><a href="'.$REL_SEO->make_link('log','truncate','').'">'.$REL_LANG->_('Truncate logs').'</a></h1>');
 	print("<p align=center>");
 	$logs = $REL_DB->query("SELECT type FROM sitelog GROUP BY type");
 	while (list($logt) = mysql_fetch_array($logs)) {
@@ -48,7 +49,7 @@ else
 	$limit = ajaxpager(25, $count, array('log','type',$type), 'logtable > tbody:last');
 	$res = $REL_DB->query("SELECT txt, added FROM `sitelog` WHERE type = ".sqlesc($type)." ORDER BY `added` DESC LIMIT 50");
 	if (!pagercheck()) {
-	print("<h1>".$REL_LANG->say_by_key('logs')."| <a href=\"".$REL_SEO->make_link('log')."\">к типам логов</a></h1>\n");
+	print("<h1>".$REL_LANG->say_by_key('logs')."| <a href=\"".$REL_SEO->make_link('log')."\">{$REL_LANG->_('To log types')}</a></h1>\n");
 	print("<div id=\"pager_scrollbox\"><table id=\"logtable\" border=1 cellspacing=0 cellpadding=5>\n");
 	print("<tr><td class=colhead align=left>".$REL_LANG->say_by_key('time')."</td><td class=colhead align=left>".$REL_LANG->say_by_key('event')."</td></tr>\n");
 	}

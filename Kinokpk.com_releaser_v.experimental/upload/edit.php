@@ -56,7 +56,7 @@ if (($CURUSER["id"] != $row["owner"]) && !get_privilege('edit_releases',false)) 
 
 	if (get_privilege('is_releaser',false))
 	tr($REL_LANG->say_by_key('announce_urls'),"<textarea name=\"trackers\" rows=\"6\" cols=\"60\" wrap=\"off\">$trackers</textarea><br/><input type=\"submit\" name=\"add_trackers\" value=\"{$REL_LANG->say_by_key('add_announce_urls')}\"><br/>{$REL_LANG->say_by_key('announce_urls_notice')}",1);
-	tr($REL_LANG->say_by_key('torrent_name')."<font color=\"red\">*</font>", "<input type=\"text\" name=\"name\" value=\"" . strip_tags($row["name"]) . "\" size=\"80\" />", 1);
+	tr($REL_LANG->say_by_key('torrent_name')."<font color=\"red\">*</font>", "<input type=\"text\" name=\"name\" value=\"" . strip_tags($row["name"]) . "\" size=\"80\" /><div id=\"namematch\">{$REL_LANG->_("Example")}: ".$REL_LANG->say_by_key('taken_from_torrent')."</div>", 1);
 
 	$row['images'] = explode(',',$row['images']);
 	$imagecontent = '';
@@ -98,7 +98,8 @@ if (($CURUSER["id"] != $row["owner"]) && !get_privilege('edit_releases',false)) 
 	if ($chsel)
 	tr ($REL_LANG->say_by_key('subcats'),$chsel,1);
 
-	tr($REL_LANG->_("Viewing"), "<input type=\"checkbox\" name=\"visible\"" . (($row["visible"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Видимый на главной<br /><table border=0 cellspacing=0 cellpadding=0 width=420><tr><td class=embedded>Обратите внимание, что торрент автоматически станет видмым когда появиться раздающий и автоматически перестанет быть видимым (станет мертвяком) когда не будет раздающего некоторое время. Используйте этот переключатель для ускорения процеса. Также учтите что невидимые торренты (мертвяки) все-равно могут быть просмотрены и найдены, это просто не по-умолчанию.</td></tr></table>", 1);
+	if(get_privilege('post_releases_to_mainpage',false))
+	tr($REL_LANG->_("Viewing"), "<input type=\"checkbox\" name=\"visible\"" . (($row["visible"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Видимый на главной", 1);
 	if(get_privilege('edit_releases',false)) {
 	tr($REL_LANG->_("Updated"), "<input type=\"checkbox\" name=\"upd\" value=\"1\" />Сделать первым на главной", 1);
 	tr($REL_LANG->_("Banned"), "<input type=\"checkbox\" name=\"banned\"" . (($row["banned"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" />", 1);
@@ -120,7 +121,7 @@ if (($CURUSER["id"] != $row["owner"]) && !get_privilege('edit_releases',false)) 
 	print("<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"{$REL_LANG->say_by_key('edit')}\" style=\"height: 25px; width: 100px\"> <input type=reset value=\"Обратить изменения\" style=\"height: 25px; width: 100px\"></td></tr>\n");
 	print("</table>\n");
 	print("</form>\n");
-	if(get_privilege('edit_releases',false)) {
+	if(get_privilege('delete_releases',false)) {
 		print("<p>\n");
 		print("<form method=\"post\" action=\"".$REL_SEO->make_link('delete')."\">\n");
 		print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");

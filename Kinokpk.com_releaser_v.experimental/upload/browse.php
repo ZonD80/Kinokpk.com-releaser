@@ -22,7 +22,7 @@ $relgroup = (int) $_GET['relgroup'];
 
 $tree = make_tree();
 
-if (isset($_GET['dead'])) $dead = 1; else $dead = 0;
+if (isset($_GET['mainpage'])) $mainpage = 1; else $mainpage = 0;
 if (isset($_GET['nofile'])) $nofile = 1; else $nofile = 0;
 if (isset($_GET['unchecked'])) $unchecked = 1; else $unchecked = 0;
 
@@ -47,11 +47,11 @@ if (($cat!=0) && is_valid_id($cat)) {
 	}
 }
 
-if ($dead) {
-	$wherea['dead'] = "torrents.visible = 0";
-	$addparam[] = 'dead';
+if ($mainpage) {
+	$wherea['mainpage'] = "torrents.visible = 0";
+	$addparam[] = 'mainpage';
 	$addparam[] = 1;
-	$dead = "''";
+	$mainpage = "''";
 }
 if ($nofile) {
 	$wherea['nofile'] = "torrents.filename = 'nofile'";
@@ -75,10 +75,10 @@ if ($relgroup) {
 
 if (get_privilege('is_moderator',false)) { $modview=true; }
 
+
 if ($unchecked && !$modview) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('unchecked_only_moders'));
 
-
-if (!is_array($wherea) || !$modview) $wherea[] = "torrents.visible=1 AND torrents.banned=0 AND torrents.moderatedby<>0";
+if (!is_array($wherea) && !$modview) $wherea[] = "torrents.banned=0 AND torrents.moderatedby<>0";
 
 if (isset($cleansearchstr))
 {

@@ -20,9 +20,8 @@ $REL_TPL->stdhead($REL_LANG->_('Administrator control panel'));
 $REL_TPL->begin_main_frame();
 
 
-if (get_privilege('is_owner',false)) {
-	$REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For owners")); ?>
-<table width=100% cellspacing=10 align=center>
+	$REL_TPL->begin_frame($REL_LANG->_('Administrator control panel')); ?>
+<table width="100%" cellspacing="10" align="center">
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('configadmin');?>"><?=$REL_LANG->_("Global settings");?></a></td>
 		<td><a href="<?=$REL_SEO->make_link('privadmin');?>"><?=$REL_LANG->_("Privileges configuration");?></a></td>
@@ -46,13 +45,6 @@ if (get_privilege('is_owner',false)) {
 		<td><a href="<?=$REL_SEO->make_link('cronadmin');?>"><?=$REL_LANG->_("Sheduled jobs administration");?></a></td>
 		<td><a href="<?=$REL_SEO->make_link('langadmin');?>"><?=$REL_LANG->_("Language tools");?></a></td>
 	</tr>
-</table>
-	<? $REL_TPL->end_frame();
-}
-
-if (get_privilege('is_administrator',false)) { ?>
-<?php $REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For administrators")); ?>
-<table width=100% cellspacing=10 align=center>
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('unco');?>"><?=$REL_LANG->_("Unconfirmed users");?></a></td>
 		<td><a href="<?=$REL_SEO->make_link('delacctadmin');?>"><?=$REL_LANG->_("Delete user account");?></a></td>
@@ -75,19 +67,6 @@ if (get_privilege('is_administrator',false)) { ?>
 		<td><a href="<?=$REL_SEO->make_link('news');?>"><?=$REL_LANG->_("Add a news");?></a>
 		| <a href="<?=$REL_SEO->make_link('newsarchive');?>"><?=$REL_LANG->_("View all news");?></a></td>
 		<td colspan="3"><a href="<?=$REL_SEO->make_link('recountadmin');?>"><?=$REL_LANG->_("Recount/sync database values");?></a></td>
-
-
-	</tr>
-</table>
-<? $REL_TPL->end_frame();
-}
-
-if (get_privilege('is_moderator',false)) { ?>
-<?php $REL_TPL->begin_frame($REL_LANG->_("Staff functions").' - '.$REL_LANG->_("For moderators")); ?>
-
-
-<table width=100% cellspacing=3>
-	<tr>
 	</tr>
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('users','act','users');?>"><?=$REL_LANG->_("View users with rating below 0");?></a></td>
@@ -130,7 +109,7 @@ if (get_privilege('is_moderator',false)) { ?>
 
 			<?php
 			$REL_TPL->end_frame();
-}
+
 $REL_TPL->end_main_frame();
 $REL_TPL->stdfoot();
 ?>

@@ -56,7 +56,7 @@ if (!empty($_POST['invite'])) {
 }
 
 function bark($msg) {
-	global  $REL_LANG, $REL_DB;
+	global  $REL_LANG, $REL_DB, $REL_TPL;
 	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $msg, 'error');
 	exit;
 }

@@ -20,7 +20,7 @@ $type = (string)$_GET['type'];
 
 
 $allowed_types = array('torrents','users','rel','poll','news','user','req','relgroups','rg','forum');
-$comment_types = array('poll', 'news', 'user', 'req', 'rel', 'rg','forum');
+$comment_types = array('poll', 'news', 'users', 'req', 'rel', 'rg','forum');
 /**
  * Checks that user cannot change himself ratings
  * @param int $id ID of element to change rating

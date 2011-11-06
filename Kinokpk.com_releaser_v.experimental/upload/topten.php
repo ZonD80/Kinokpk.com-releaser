@@ -32,7 +32,7 @@ $num = mysql_num_rows($res);
 
 if (!pagercheck()) {
 	print("<div id=\"pager_scrollbox\"><table id=\"userst\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-	print("<tr><td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td></tr>\n");
+	print("<tr><td class=\"colhead\" align=\"left\">{$REL_LANG->_('Username')}</td><td class=\"colhead\">{$REL_LANG->_('Registered at')}</td><td class=\"colhead\">{$REL_LANG->_('Last login')}</td><td class=\"colhead\">{$REL_LANG->_('Rating')}</td><td class=\"colhead\">{$REL_LANG->_('Gender')}</td><td class=\"colhead\" align=\"left\">{$REL_LANG->_('Class')}</td><td class=\"colhead\">{$REL_LANG->_('Country')}</td></tr>\n");
 }
 while ($arr = mysql_fetch_assoc($res)) {
 	if ($arr['country'] > 0) {
@@ -42,8 +42,8 @@ while ($arr = mysql_fetch_assoc($res)) {
 	$country = "<td align=\"center\">---</td>";
 	$ratio = ratearea($arr['ratingsum'],$arr['id'],'users',$CURUSER['id']);
 
-	if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" alt=\"Парень\" title=\"Парень\" style=\"margin-left: 4pt\">";
-	elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" alt=\"Девушка\" title=\"Девушка\" style=\"margin-left: 4pt\">";
+	if ($arr["gender"] == "1") $gender = "<img src=\"pic/male.gif\" title=\"{$REL_LANG->_('Male')}\" style=\"margin-left: 4pt\">";
+	elseif ($arr["gender"] == "2") $gender = "<img src=\"pic/female.gif\" title=\"{$REL_LANG->_('Female')}\" style=\"margin-left: 4pt\">";
 	else $gender = "<div align=\"center\"><b>?</b></div>";
 
 	print("<tr><td align=\"left\">".make_user_link($arr)."</td>" .

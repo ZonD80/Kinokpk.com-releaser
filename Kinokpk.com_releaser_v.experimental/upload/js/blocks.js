@@ -9,13 +9,11 @@ function showshides(id)
                   klappBild.src = 'pic/minus.gif';
               type = "show";
         }
-    $.get("blocks.php", {"type": type, "bid": id}, function(data){}, 'html');
-    $(document).ready(function(){
-		$('#b' + id).slideToggle("medium");
+    jQuery.get("blocks.php", {"type": type, "bid": id}, function(data){}, 'html');
+    jQuery(document).ready(function(){
+		jQuery('#b' + id).slideToggle("medium");
 	});
 }
-
-
 
 				jQuery(function () {
 				 jQuery(window).scroll(function () {
@@ -34,13 +32,12 @@ function showshides(id)
 
 					});
 
-$(document).ready(function(){
+jQuery(document).ready(function(){
 
-
-$("li a#myAccount").click(function() {
+jQuery("li a#myAccount").click(function() {
 				// ul#myOptions is the hidden list
-				$("ul#myOptions").toggle();
-				$(this).toggleClass("active");
+				jQuery("ul#myOptions").toggle();
+				jQuery(this).toggleClass("active");
 				return false;
 			});
 

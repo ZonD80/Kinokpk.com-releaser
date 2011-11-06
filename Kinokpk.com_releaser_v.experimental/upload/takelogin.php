@@ -40,8 +40,21 @@ if (!$row) {
 if (!$row["confirmed"])
 bark('You account did not activated yet. Activate it frist then try to log in. You can <a href="%s">Resend activation letter</a>.',$REL_SEO->make_link('signup','resend','1'));
 
-if ($row["passhash"] != md5($row["secret"] . $password . $row["secret"]))
-bark();
+if ($row["passhash"] != md5($row["secret"] . $password . $row["secret"])) {
+//bithouse delete after
+	$cp1251s = iconv('utf-8','windows-1251',$row['secret']);
+if ($row["passhash"] != md5($cp1251s . $password . $cp1251s)) {
+	bark();
+} else {
+		$sec = mksecret();
+
+	$row["passhash"] = md5($sec . $password . $sec);
+	$REL_DB->query("UPDATE users set passhash=".$REL_DB->sqlesc($row["passhash"]).", secret=".$REL_DB->sqlesc($sec)." WHERE id={$row['id']}");
+	
+}
+//end
+}
+//bark();
 
 logincookie($row["id"], $row["passhash"], $row["language"]);
 
