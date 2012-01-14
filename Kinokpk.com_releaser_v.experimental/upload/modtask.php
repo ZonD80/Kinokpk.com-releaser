@@ -32,11 +32,49 @@ elseif (($action == 'delnick') && get_privilege('ownsupport',false)) {
 	$REL_TPL->stderr($REL_LANG->_('Success'),$REL_LANG->_('Nick deleted from history'));
 }
 elseif ($action == "edituser") {
-	$userid = (int) $_POST["userid"];
-	$CLASS = @mysql_result($REL_DB->query("SELECT class FROM users WHERE id = $userid"),0);
-	if (get_class_priority($CLASS) > get_class_priority(get_user_class())) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('access_denied'));
+	
 
-	$title = $_POST["title"];
+	$userid = (int) $_POST["userid"];
+	$user = get_user($userid);
+	if (get_class_priority($user['class']) >= get_class_priority(get_user_class())) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access deined'));
+
+	$title = htmlspecialchars((string)$_POST["title"]);
+	$username = (string)$_POST['username'];
+	$email = (string)$_POST['email'];
+
+	if ($username<>$user['username']) {
+		if (mb_strlen($username) > 12)
+			$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Sorry, but your username is too big. It must be < 12 symbols. Please <a href="javascript:history.go(-1);">try again</a>.'));
+
+		if (!validusername($username))
+			$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Sorry, but you entered invalid username. Allowed characters are: a-Z0-9_. Please <a href="javascript:history.go(-1);">try again</a>.'));
+
+		$check = @mysql_result($REL_DB->query("SELECT 1 FROM users WHERE username=".sqlesc($username)),0);
+		if ($check)
+			$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Sorry, but this username is already in use. Please <a href="javascript:history.go(-1);">try again</a> and select another.'));
+
+		$username = sqlesc($username);
+		$updateset[] = "username = ".$username;
+
+		$REL_DB->query("INSERT INTO nickhistory (userid,nick,date) VALUES ({$userid},$username,".time().")");
+	}
+	if ($email != $user["email"]) {
+		if (!validemail($email))
+			$REL_TPL->stderr($REL_LANG->_("Error"),$REL_LANG->_('Sorry, email format is invailid'));
+
+		$r = $REL_DB->query("SELECT id FROM users WHERE email=" . sqlesc($email));
+		if (mysql_num_rows($r) > 0)
+			$REL_TPL->stderr($REL_LANG->_("Error"),$REL_LANG->_('Sorry, this email is already in use'));
+		$updateset[] = "email = ".$REL_DB->sqlesc($email);
+	}
+
+	$password = (string)$_POST['password'];
+
+	if ($password) {
+		$secret = mksecret();
+		$hash = md5($secret.$password.$secret);
+	}
+
 	$avatar = (int)$_POST["avatar"];
 	$resetb = $_POST["resetb"];
 	$birthday = ($resetb?", birthday = '0000-00-00'":"");
@@ -65,7 +103,7 @@ elseif ($action == "edituser") {
 	$priority2 = get_class_priority($userid);
 	$classes = init_class_array();
 	foreach ($classes as $cid=>$cl)
-	if ($cl['priority']<=$priority2||$cl['priority']>$priority||!is_int($cid)) unset($classes[$cid]); else $classes[$cid] = "FIND_IN_SET($cid,classes_allowed)";
+		if ($cl['priority']<=$priority2||$cl['priority']>$priority||!is_int($cid)) unset($classes[$cid]); else $classes[$cid] = "FIND_IN_SET($cid,classes_allowed)";
 
 	$privsdata = $REL_DB->query_return("SELECT name FROM privileges WHERE ".implode(' OR ',$classes));
 	foreach ($privsdata as $p) {
@@ -74,7 +112,7 @@ elseif ($action == "edituser") {
 	foreach ($privileges as $pid=>$priv) {
 		if (!in_array($priv,$privs)) unset ($privileges[$pid]);
 	}
-	
+
 	$updateset[] = "custom_privileges = ".sqlesc(implode(',',$privileges));
 
 
@@ -83,26 +121,19 @@ elseif ($action == "edituser") {
 
 	$class = (int) $_POST["class"];
 	if (!is_valid_id($userid) || !is_valid_user_class($class))
-	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid ID'));
-	// check target user class
-	$res = $REL_DB->query("SELECT warned, enabled, donor, username, class, modcomment, num_warned, avatar,id FROM users WHERE id = $userid");
-	$arr = mysql_fetch_assoc($res);
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid ID'));
+
 	if ($avatar)
 	{
-		@unlink (ROOT_PATH."avatars/".$arr['avatar']);
+		@unlink (ROOT_PATH."avatars/".$user['avatar']);
 		$updateset[] = "avatar = ''";
 
 	}
-	$curenabled = $arr["enabled"];
-	$curclass = $arr["class"];
-	$curwarned = $arr["warned"];
+	$curenabled = $user["enabled"];
+	$curclass = $user["class"];
+	$curwarned = $user["warned"];
 	if (get_privilege('add_comments_to_user',false))
-	$modcomment = (string)($_POST["modcomment"]);
-	else
-	$modcomment = $arr["modcomment"];
-	// User may not edit someone with same or higher class than himself!
-	if (get_class_priority($curclass) >= get_class_priority(get_user_class()) || get_class_priority($class) >= get_class_priority(get_user_class()))
-		$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Access deined'));
+		$modcomment = (string)($_POST["modcomment"]);
 
 	if ($curclass != $class) {
 		// Notify user
@@ -111,33 +142,33 @@ elseif ($action == "edituser") {
 		$subject = sqlesc($REL_LANG->_to($userid,'Notification about class changing'));
 		$REL_DB->query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES(0, $userid, $msg, $added, $subject)");
 		$updateset[] = "class = $class";
-		$modcomment = date("Y-m-d") . ($REL_LANG->_to(0,'Class was setted to "%s" by %s',get_user_class_name($class),$CURUSER['username']))."\n". $modcomment;
+		$modcomment = date("Y-m-d") .' '. ($REL_LANG->_to(0,'Class was setted to "%s" by %s',get_user_class_name($class),$CURUSER['username']))."\n". $user["modcomment"];
 	}
 
-	$num_warned = 1 + $arr["num_warned"];
+	$num_warned = 1 + $user["num_warned"];
 	if ($curwarned != $warned) {
 		$updateset[] = "warned = 0";
 		$updateset[] = "warneduntil = 0";
 		$subject = sqlesc($REL_LANG->_to($userid,'Your warning has been disabled'));
 		if (!$warned)
 		{
-			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Warning has been disabled by %s',$CURUSER['username']) . ".\n". $modcomment;
+			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Warning has been disabled by %s',$CURUSER['username']) . ".\n". $user["modcomment"];
 			$msg = sqlesc($REL_LANG->_to($userid,'Your warning has been disabled by %s', make_user_link()));
 		}
 		$added = sqlesc(time());
 		$REL_DB->query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES (0, $userid, $msg, $added, $subject)");
 	} elseif ($warnlength) {
 		if (mb_strlen($warnpm) == 0)
-		$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('You must specify a reason'));
+			$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('You must specify a reason'));
 		if ($warnlength == 255) {
-			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Warned by %s with the following reason: "%s"',$CURUSER['username'],$warnpm)."\n" . $modcomment;
+			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Warned by %s with the following reason: "%s"',$CURUSER['username'],$warnpm)."\n" . $user["modcomment"];
 			$msg = sqlesc($REL_LANG->_to($userid,'You got warned by %s for %s with the following reason: "%s"',make_user_link(),$REL_LANG->_('an unlimited time'),$warnpm));
 			$updateset[] = "warneduntil = 0";
 			$updateset[] = "num_warned = $num_warned";
 		} else {
 			$warneduntil = (time() + $warnlength * 604800);
 			$dur = $warnlength .' '. ($warnlength > 1 ? $REL_LANG->_('weeks') : $REL_LANG->_('week'));
-			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Warned by %s for %s with the following reason: "%s"',$CURUSER['username'],$dur,$warnpm)."\n" . $modcomment;
+			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Warned by %s for %s with the following reason: "%s"',$CURUSER['username'],$dur,$warnpm)."\n" . $user["modcomment"];
 			$msg = sqlesc($REL_LANG->_to($userid,'You got warned by %s for %s with the following reason: "%s"',make_user_link(),$dur,$warnpm));
 			$updateset[] = "warneduntil = $warneduntil";
 			$updateset[] = "num_warned = $num_warned";
@@ -153,11 +184,11 @@ elseif ($action == "edituser") {
 		if ($enabled) {
 			$enareason = htmlspecialchars((string)$_POST["enareason"]);
 			if (!$enareason) $REL_TPL->stderr($REL_LANG->_('Error'), $REL_LANG->_('You must specify a reason'));
-			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Enabled by user %s with the following reason: "%s"',$CURUSER['username'],$enareason)."\n" . $modcomment;
+			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Enabled by user %s with the following reason: "%s"',$CURUSER['username'],$enareason)."\n" . $user["modcomment"];
 
 		} else   {
 			if (empty($dis_reason)) $REL_TPL->stderr($REL_LANG->_('Error'), $REL_LANG->_('You must specify a reason'));
-			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Disabled by user %s with the following reason: "%s"',$CURUSER['username'],$dis_reason)."\n" . $modcomment;
+			$modcomment = date("Y-m-d") . $REL_LANG->_to(0,'Disabled by user %s with the following reason: "%s"',$CURUSER['username'],$dis_reason)."\n" . $user["modcomment"];
 
 		}
 	}
@@ -173,25 +204,23 @@ elseif ($action == "edituser") {
 		$passkey = md5($CURUSER['username'].time().$CURUSER['passhash']);
 		$REL_DB->query("UPDATE xbt_users SET torrent_pass='' WHERE uid=".sqlesc($CURUSER[id]));
 	}
-	write_log($REL_LANG->_to(0,'User %s modify user %s, parameters:<br/><pre>%s</pre>',make_user_link(),make_user_link($arr),var_export($updateset,true)),'modtask');
-	$REL_DB->query("UPDATE users SET	" . implode(", ", $updateset) . " $birthday WHERE id = $userid");
-
-	if (!empty($_POST["deluser"])) {
-		$user = get_user($userid);
-		delete_user($userid);
-		@unlink(ROOT_PATH.$avatar);
-		write_log($REL_LANG->_to(0,'User %s deleted user %s',make_user_link(),make_user_link($user)),'modtask');
-		barf();
-	} else {
-		$returnto = makesafe((string)$_POST["returnto"]);
-		safe_redirect($returnto);
-		die;
+	$REL_DB->query("UPDATE users SET " . implode(", ", $updateset) . " $birthday WHERE id = $userid");
+	if ($password) {
+		$REL_DB->query("UPDATE users SET passhash=".$REL_DB->sqlesc($hash).", secret=".$REL_DB->sqlesc($secret)." WHERE id = $userid");
+		$updateset[] = "password = CHANGED";
 	}
+	write_log($REL_LANG->_to(0,'User %s modify user %s, parameters:<br/><pre>%s</pre>',make_user_link(),make_user_link($user),var_export($updateset,true)),'modtask');
+
+	safe_redirect(makesafe($_SERVER['HTTP_REFERER']),1);
+	
+	$REL_TPL->stderr($REL_LANG->_('Successfull'),$REL_LANG->_('User edited'),'success');
+	
+	
 } elseif ($action == "confirmuser") {
 	$userid = (int)$_POST["userid"];
 	$confirm = (int)$_POST["confirm"];
 	if (!is_valid_id($userid))
-	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 	$user = get_user($userid);
 	$updateset[] = "confirmed = " . $confirm;
 	write_log($REL_LANG->_to(0,'User %s confirmed user %s',make_user_link(),make_user_link($user)),'modtask');

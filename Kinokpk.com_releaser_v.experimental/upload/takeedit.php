@@ -117,7 +117,7 @@ foreach(explode(":","type:name") as $v) {
 }
 
 $name = htmlspecialchars((string)($_POST['name']));
-if (!preg_match("#(.*?) \/ (.*?) \([0-9-]+\) \[(.*?)\]#si",$name))
+if (!preg_match("#(.*?) \([0-9-]+\) \[(.*?)\]#si",$name))
 bark ("{$REL_LANG->_("Release name does not corresponding to rule, please change it and try again:")}<br/>{$REL_LANG->say_by_key('taken_from_torrent')}");
 
 if (!is_array($_POST["type"]))
@@ -138,6 +138,8 @@ if ($_POST['nofile']) {} else {
 	$updateset[] = "tiger_hash = ".sqlesc($tiger_hash);
 }
 
+
+$updateset[] = "tags = ".$REL_DB->sqlesc(htmlspecialchars((string)$_POST['tags']));
 
 if ($CURUSER["id"] != $row["owner"] && !get_privilege('edit_releases',false))
 bark("You're not the owner! How did that happen?\n");
@@ -395,10 +397,6 @@ $descr = ((string)$_POST['descr']);
 $updateset[] = 'descr = '.sqlesc($descr);
 /// get kinopoisk.ru trailer!
 
-$online = get_trailer($descr);
-
-// end get kinopoisk.ru trailer
-if ($online) $updateset[] = 'online = '.sqlesc($online);
 
 if ($_POST['upd']) $updateset[] = "added = '" . time() . "'";
 

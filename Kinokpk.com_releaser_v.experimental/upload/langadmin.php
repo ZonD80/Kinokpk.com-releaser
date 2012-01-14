@@ -235,7 +235,7 @@ function ajaxdel(key,lang) {
 	}
 	$count = get_row_count('languages',($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":''));
 
-	$limit = ajaxpager(25, $count, array('langadmin','editor','1','search',$search), 'wordstable > tbody:last');
+	$limit = ajaxpager(25, $count, array('langadmin','editor','1','search',$search), 'wordstable');
 
 	$res = $REL_DB->query("SELECT * FROM languages".($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":'')." ORDER BY lkey DESC $limit");
 

@@ -73,9 +73,9 @@ if (count($title_who)) {
 $content .= "<tr valign='middle'>
             <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>
             <b>{$REL_LANG->_('Online')}: </b><br />";
-$content .= "<img src='pic/info/admin.gif' alt='{$REL_LANG->_('Staff')}' align='middle' width='16' height='16' />&nbsp;<font color='red'>{$REL_LANG->_('Staff')}: $staff</font>&nbsp;";
+$content .= "<img src='pic/info/admin.gif' alt='{$REL_LANG->_('Staff')}' align='middle' width='16' height='16' />&nbsp;<font color='red'>{$REL_LANG->_('Staff')}: $staff</font>&nbsp;<br />";
 $content .= "<img src='pic/info/member.gif' alt='{$REL_LANG->_('Users')}' align='middle' width='16' height='16' />&nbsp;{$REL_LANG->_('Users')}: $users&nbsp;<br />";
-$content .= "<img src='pic/info/guest.gif' alt='{$REL_LANG->_('Guests')}' align='middle' width='16' height='16' />&nbsp;{$REL_LANG->_('Guests')}: $guests&nbsp;";
+$content .= "<img src='pic/info/guest.gif' alt='{$REL_LANG->_('Guests')}' align='middle' width='16' height='16' />&nbsp;{$REL_LANG->_('Guests')}: $guests&nbsp;<br />";
 $content .= "<img src='pic/info/group.gif' alt='{$REL_LANG->_('Total')}' align='middle' width='16' height='16' />&nbsp;{$REL_LANG->_('Total')}: $total</td></tr>";
 $content .= "<tr valign='middle'>
             <td align='left' class='embedded' style='padding:5px; border: 1px solid #266C8A; background-color: #FFFFFF'>

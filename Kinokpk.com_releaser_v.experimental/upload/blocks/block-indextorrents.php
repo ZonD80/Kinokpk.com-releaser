@@ -32,17 +32,17 @@ if (!$count) { $content = "<div align=\"center\">{$REL_LANG->_('No releases yet'
 	$perpage = 9;
 
 	$resarray = $REL_CACHE->get('block-indextorrents','page'.($page?$page:''));
-	$limit = ajaxpager(12, $count, array('blocks/block-indextorrents'), 'releases-table > tbody:last');
+	$limit = ajaxpager(10, $count, array('blocks/block-indextorrents'), 'releases-table');
 	if ($resarray===false) {
 		$resarray=array();
-		$res = $REL_DB->query("SELECT id,name,images,free,category FROM torrents WHERE visible=1 AND banned=0 AND moderatedby<>0 ORDER BY added DESC $limit");
+		$res = $REL_DB->query("SELECT id,name,descr,images,free,category FROM torrents WHERE visible=1 AND banned=0 AND moderatedby<>0 ORDER BY added DESC $limit");
 		while ($row = mysql_fetch_assoc($res)) $resarray[] = $row;
 		$REL_CACHE->set('block-indextorrents','page'.($page?$page:''),$resarray);
 	}
 	$num = count($resarray);
 
 	if (!$pager) {
-	$content .= "<div id=\"pager_scrollbox\"><table id=\"releases-table\" border=\"1\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"100%\">";
+	$content .= "<div id=\"pager_scrollbox\" align=\"center\"><table id=\"releases-table\" border=\"1\" cellspacing=\"0\" style=\"border-collapse: collapse\" width=\"95%\">";
 	}
 	$nc=1;
 
@@ -51,20 +51,45 @@ if (!$count) { $content = "<div align=\"center\">{$REL_LANG->_('No releases yet'
 	foreach ($resarray as $row) {
 		$pron=false;
 		if ($nc == 1) { $content .= "<tr>"; }
-		$content .= "<td  valign=\"top\">";
+		
 		if ($row['category'] && $REL_CONFIG['pron_cats'] && !$CURUSER['pron']) {
 			$categories = explode(',',$row['category']);
 			foreach ($categories as $category)
 			if (in_array($category,$REL_CONFIG['pron_cats'])) { $pron=true; break; }
 		}
-		if ($pron) { $image = 'pic/nopron.gif';  $row['name'] = $REL_LANG->say_by_key('xxx_release'); } else
-		if ($row['images']) $image = array_shift(explode(",",$row['images'])); else $image='pic/noimage.gif';
-		$content .= "<div align=\"center\"><a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\"><img border=\"0\" src=\"$image\" width=\"170\" height=\"200\" title=\"{$row['name']}\" alt=\"{$row['name']}\"/></a>";
-		$content .= "<br/><br/>".(($row['free'])?'<img border="0" src="pic/freedownload.gif" alt="'.$REL_LANG->_('Golden release').'"/>&nbsp;':'')."<a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\">{$row['name']}</a></div>";
+	
+		
 
-		$content .= "</td>";
+
+if (strlen($row['descr'])>1000) $rowdescr = substr($row['descr'],0,1000).'...';
+
+	if ($pron) { $image = 'pic/nopron.gif';  $row['name'] = $REL_LANG->say_by_key('xxx_release'); } else
+		if ($row['images']) $image = array_shift(explode(",",$row['images'])); else $image='pic/noimage.gif';
+		$content .= "  <td class=\"colhead\" colspan=\"2\" align=\"center\" >
+    <a href=\"details.php?id={$row['id']}\">{$row['name']}</a>
+  </td>
+</tr>
+
+
+
+
+
+
+
+<tr valign=\"top\" >
+  <td align=\"center\" width=\"160\" style=\"padding:10px 10px;\">
+    <a href=\"details.php?id={$row['id']}\"><img border=\"0\" src=\"$image\" width=\"170\" height=\"200\" title=\"{$row['name']}\" alt=\"{$row['name']}\"/></a>
+  </td>
+
+  <td style=\"padding-top:10px;\">
+    <div align=\"left\">
+      {$rowdescr}
+    </div>
+    <br>
+    <br>
+     <div align=\"right\"> [ <a href=\"details.php?id={$row['id']}\"><b>{$REL_LANG->say_by_key('more')} </b></a>]  <br></div>  </td>";
 		++$nc;
-		if ($nc == 4) { $nc=1; $content .= "</tr>"; }
+	if ($nc == 2) { $nc=1; $content .= "</tr>"; }
 	}
 	if (!$pager)
 	$content.='</table></div>';

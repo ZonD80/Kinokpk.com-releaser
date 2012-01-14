@@ -17,34 +17,29 @@ INIT();
 loggedinorreturn();
 get_privilege('upload_releases');
 
-//$REL_TPL->stderr('Загрузка релизов временно отключена','Загрузка новых релизов временно отключена администрацией');
-$REL_TPL->stdhead($REL_LANG->say_by_key('upload_torrent'));
-$tree = make_tree();
-
-if (!isset($_GET['type'])) {
-	$REL_TPL->begin_frame("Выберите категорию релиза");
-	print '<div align="center">
-<form name="upload" action="'.$REL_SEO->make_link('upload').'" method="GET">
-<table border="0" cellspacing="0" cellpadding="5">
-<tr><td align="center" style="border: 0px;">'.gen_select_area('type',$tree).'</td></tr>
-<tr><td align="center" colspan="2" style="border:0;"><input type="submit" class="btn button" value="Далее" /></td></tr>
-</table>
-</form>
-</div>
-';
-	$REL_TPL->end_frame();
-	$REL_TPL->stdfoot();
-	die();
+if (!$_GET['ts']) {
+$REL_TPL->stderr($REL_LANG->_('Select what to upload'),"<a href=\"{$REL_SEO->make_link('upload','type','movie','ts','1')}\">Фильм</a>, <a href=\"{$REL_SEO->make_link('upload','ts','1')}\">Без формы</a>",'success');
 }
 
-elseif (!is_valid_id($_GET["type"])) {			$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id')); $REL_TPL->stdfoot();   exit;}
+$allowed_types = array('movie');
 
-$type = (int) $_GET['type'];
+$type=(string)$_GET['type'];
 
+if ($type&&!in_array($type,$allowed_types)) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unknown release type'));
 
-$cat = get_cur_branch($tree,$type);
-if (!$cat) {			$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id')); $REL_TPL->stdfoot();   exit;}
-
+$script = '        <script type="text/javascript">
+$(document).ready(function() {
+$("#tags").tokenInput("tags-generator.php", {
+theme: "facebook",
+hintText: "'.$REL_LANG->_('Begin to type tag').'",
+noResultsText: "'.$REL_LANG->_('No results, new tag will be created').'",
+searchingText: "'.$REL_LANG->_('Search').'",
+preventDuplicates: true
+});
+});
+</script>';
+$REL_TPL->stdhead($REL_LANG->say_by_key('upload_torrent'),'','','<script src="js/jquery.tokeninput.js"></script><link rel="stylesheet" href="css/token-input-facebook.css" type="text/css" />'.$script);
+$tree = make_tree();
 
 if (mb_strlen($CURUSER['passkey']) != 32) {
 	$CURUSER['passkey'] = md5($CURUSER['username'].time().$CURUSER['passhash']);
@@ -55,7 +50,7 @@ if (mb_strlen($CURUSER['passkey']) != 32) {
 <script type="text/javascript">
 //<!--
 function checkname() {
-	pcre = /(.*?) \/ (.*?) \([0-9-]+\) \[(.*?)\]/g;
+	pcre = /(.*?) \([0-9-]+\) \[(.*?)\]/g;
 	ERRORTEXT = "<?php print $REL_LANG->_("Release name does not corresponding to rule, please change it and try again:");?>"+"\n\n"+$("#namematch").text();
 	if (!pcre.test($("#name").val())) {
 		alert(ERRORTEXT);
@@ -70,9 +65,8 @@ function checkname() {
 	action="<?php print $REL_SEO->make_link('takeupload'); ?>" method="post"
 	onsubmit="return checkname();">
 <table border="1" cellspacing="0" cellpadding="5">
-	<input type="hidden" name="type[]" value="<?php print $type; ?>" />
 	<tr>
-		<td class="colhead" colspan="2"><?print $REL_LANG->say_by_key('upload_torrent')?></td>
+		<td class="colhead" colspan="2"><?php print $REL_LANG->say_by_key('upload_torrent')?></td>
 	</tr>
 	<?php	//tr($REL_LANG->say_by_key('announce_url'), $announce_urls[0], 1);
 	tr($REL_LANG->say_by_key('torrent_file'), "<input  type=file name=tfile  size=80><br /><input type=\"checkbox\"  name=\"multi\" value=\"1\">&nbsp;{$REL_LANG->say_by_key('multitracker_torrent')}<br /><small>{$REL_LANG->say_by_key('multitracker_torrent_notice')}</small>\n", 1);
@@ -88,8 +82,12 @@ function checkname() {
 	}
 
 	tr($REL_LANG->say_by_key('images'), $REL_LANG->say_by_key('max_file_size').": 500kb<br />".$REL_LANG->say_by_key('avialable_formats').": .jpg .png .gif$imagecontent\n", 1);
+	
+	if (!$type)
 	tr($REL_LANG->say_by_key('description').'<br/>'.$REL_LANG->say_by_key('description_notice'),textbbcode("descr"),1);
-
+	else {
+		$REL_TPL->output($type);
+	}
 	/// RELEASE group
 	$rgarrayres = $REL_DB->query("SELECT id,name FROM relgroups ORDER BY added DESC");
 	while($rgarrayrow = mysql_fetch_assoc($rgarrayres)) {
@@ -104,16 +102,10 @@ function checkname() {
 	if ($rgselect)
 	tr($REL_LANG->say_by_key('relgroup'),$rgselect,1);
 
-	$childs = get_childs($tree,$cat['parent_id']);
-	if ($childs) {
-		$chsel='<table width="100%" border="1">';
-		foreach($childs as $child)
-		if ($cat['id'] != $child['id']) $chsel.="<tr><td><input type=\"checkbox\" name=\"type[]\" value=\"{$child['id']}\">&nbsp;{$child['name']}</td></tr>";
-		$chsel.="</table>";
-	}
-	tr ($REL_LANG->say_by_key('main_category'),get_cur_position_str($tree,$cat['id']),1);
-	if ($chsel)
-	tr ($REL_LANG->say_by_key('subcats'),$chsel,1);
+	tr ($REL_LANG->say_by_key('category'),gen_select_area('type',$tree,NULL,true,true),1);
+	
+	tr ($REL_LANG->_('Tags'),'<input type="text" name="tags" id="tags" size="100">',1);
+
 
 	if(get_privilege('post_releases_to_mainpage',false))
 		tr($REL_LANG->_("Viewing"), "<input type=\"checkbox\" name=\"visible\" value=\"1\" /> Видимый на главной", 1);

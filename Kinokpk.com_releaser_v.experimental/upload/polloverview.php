@@ -208,7 +208,7 @@ if (!$count) {
 }
 else {
 	
-	$limit = ajaxpager(25, $count, array('polloverview','id',$pid), 'comments-table > tbody:last');
+	$limit = ajaxpager(25, $count, array('polloverview','id',$pid), 'comments-table');
 	$subres = $REL_DB->query("SELECT pc.type, pc.id, pc.ip, pc.ratingsum, pc.text, pc.user, pc.added, pc.editedby, pc.editedat, u.avatar, u.warned, ".
                   "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS pc LEFT JOIN users AS u ON pc.user = u.id LEFT JOIN sessions ON pc.user=sessions.uid LEFT JOIN users AS e ON pc.editedby = e.id WHERE pc.toid = " .
                   "".$id." AND pc.type='poll' GROUP BY pc.id ORDER BY pc.id DESC $limit");

@@ -51,7 +51,7 @@ $REL_SEO = new REL_SEO();
 require_once(ROOT_PATH . 'classes/lang/lang.class.php');
 $REL_LANG = new REL_LANG($REL_CONFIG);
 
-$cronrow = $REL_DB->query("SELECT * FROM cron WHERE cron_name IN ('in_cleanup','autoclean_interval','max_dead_torrent_time','pm_delete_sys_days','pm_delete_user_days','signup_timeout','ttl_days','announce_interval','delete_votes','rating_freetime','rating_enabled','rating_perleech','rating_perseed','rating_checktime','rating_dislimit','promote_rating','rating_max')");
+$cronrow = $REL_DB->query("SELECT * FROM cron WHERE cron_name IN ('in_cleanup','autoclean_interval','max_dead_torrent_time','pm_delete_sys_days','pm_delete_user_days','signup_timeout','ttl_days','announce_interval','delete_votes','rating_freetime','rating_enabled','rating_perleech','rating_perseed','rating_checktime','rating_dislimit','promote_rating','rating_max','remote_trackers_delete')");
 
 while ($cronres = mysql_fetch_assoc($cronrow)) $REL_CRON[$cronres['cron_name']] = $cronres['cron_value'];
 
@@ -60,6 +60,8 @@ if ($REL_CRON['in_cleanup']) die('Cleanup already running');
 $REL_DB->query("UPDATE cron SET cron_value=".time()." WHERE cron_name='last_cleanup'");
 
 $REL_DB->query("UPDATE cron SET cron_value=1 WHERE cron_name='in_cleanup'");
+
+if ($REL_CRON['remote_trackers_delete']) $REL_DB->query("DELETE FROM trackers WHERE num_failed > {$REL_CRON['remote_trackers_delete']}");
 
 $torrents = array();
 $res = $REL_DB->query('SELECT fid,seeders,leechers FROM xbt_files');
@@ -224,6 +226,8 @@ while ($message = mysql_fetch_assoc($emails)) {
 
 }
 $REL_DB->query("TRUNCATE TABLE cron_emails");
+
+$REL_DB->query("DELETE FROM xbt_announce_log WHERE mtime < ".($time-$REL_CRON['autoclean_interval']));
 // delete expiried relgroups subsribes
 $REL_DB->query("DELETE FROM rg_subscribes WHERE valid_until<$time AND valid_until<>0");
 

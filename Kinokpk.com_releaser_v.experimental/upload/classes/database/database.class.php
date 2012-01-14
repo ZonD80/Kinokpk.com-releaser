@@ -34,6 +34,18 @@ class REL_DB {
 	}
 
 	/**
+	 * Escapes value making search query.
+	 * <code>
+	 * sqlwildcardesc ('The 120% alcohol');
+	 * </code>
+	 * @param string $x Value to be escaped
+	 * @return string Escaped value
+	 */
+	function sqlwildcardesc($x) {
+		return str_replace(array("%","_"), array("\\%","\\_"), mysql_real_escape_string($x));
+	}
+	
+	/**
 	 * Preforms a sql query and writes query and time to statistics
 	 * @param string $query Query to be performed
 	 * @return resource Mysql resource

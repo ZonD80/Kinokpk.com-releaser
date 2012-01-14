@@ -17,7 +17,7 @@ if (! is_valid_id ( $_GET ['id'] ))
 $REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 $id = ( int ) $_GET ["id"];
 
-$res = $REL_DB->query ("SELECT torrents.category, torrents.free, torrents.ratingsum, torrents.descr, torrents.seeders, torrents.leechers, torrents.banned, torrents.info_hash, torrents.tiger_hash, torrents.filename, torrents.last_action AS lastseed, torrents.name, torrents.owner, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.id, torrents.ismulti, torrents.numfiles, torrents.images, torrents.online, torrents.moderatedby, torrents.freefor, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, users.username, users.ratingsum AS userrating, users.class, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed FROM torrents LEFT JOIN users ON torrents.owner = users.id LEFT JOIN relgroups ON torrents.relgroup=relgroups.id WHERE torrents.id = $id" );
+$res = $REL_DB->query ("SELECT torrents.category, torrents.free, torrents.ratingsum, torrents.descr, torrents.seeders, torrents.leechers, torrents.banned, torrents.info_hash, torrents.tiger_hash, torrents.filename, torrents.last_action AS lastseed, torrents.name, torrents.owner, torrents.visible, torrents.size, torrents.added, torrents.views, torrents.hits, torrents.id, torrents.ismulti, torrents.numfiles, torrents.images, torrents.tags, torrents.moderatedby, torrents.freefor, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, users.username, users.ratingsum AS userrating, users.class, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed FROM torrents LEFT JOIN users ON torrents.owner = users.id LEFT JOIN relgroups ON torrents.relgroup=relgroups.id WHERE torrents.id = $id" );
 $row = mysql_fetch_array ( $res );
 $owned = $moderator = 0;
 if (get_privilege('edit_releases',false))
@@ -77,21 +77,10 @@ else {
 	</div>", 1, 1, "10%" );
 
 		// make main category and childs
-
-
-		$tree = make_tree ();
-
-		$cats = explode ( ',', $row ['category'] );
-		$cat = array_shift ( $cats );
-		$cat = get_cur_branch ( $tree, $cat );
-		$childs = get_childs ( $tree, $cat ['parent_id'] );
-		if ($childs) {
-			foreach ( $childs as $child )
-			if (($cat ['id'] != $child ['id']) && in_array ( $child ['id'], $cats ))
-			$chsel [] = "<a href=\"".$REL_SEO->make_link('browse','cat',$child['id'],'name',translit($child['name']))."\">" . makesafe ( $child ['name'] ) . "</a>";
-		}
-		$OUT .= "<strong>{$REL_LANG->say_by_key('type')}:</strong> ". get_cur_position_str ( $tree, $cat ['id'] ) . (is_array ( $chsel ) ? ', ' . implode ( ', ', $chsel ) : '')."<br/>";
-
+		$cats = assoc_full_cats();
+		$OUT .= "<strong>{$REL_LANG->say_by_key('type')}:</strong> ". get_full_position_str ( $cats, $row ['category'] ) . "<br/>";
+		$OUT .= "<strong>{$REL_LANG->_('Tags')}:</strong> ". str_replace(',',', ',$row['tags']) . "<br/>";
+		
 		$OUT .= "<strong>{$REL_LANG->say_by_key('info_hash')}:</strong> BTIH:<a title=\"Google it!\" href=\"http://www.google.com/search?q=".$row ["info_hash"]."\">{$row["info_hash"]}</a>".($row['tiger_hash']?", TTH:<a title=\"Google it!\" href=\"http://www.google.com/search?q=".$row ["tiger_hash"]."\">{$row["tiger_hash"]}</a>":'')."<b>,&nbsp;".$REL_LANG->say_by_key('number_release')."</b>&nbsp;&nbsp;<font style=\"color:red\">".$id."</font><br/>";
 		if ($CURUSER)
 		$OUT .= "<strong>{$REL_LANG->say_by_key('check')}:</strong>".'<div id="checkfield">' . ($row ['moderatedby'] ? $REL_LANG->say_by_key('checked_by') . ' <a href="'.$REL_SEO->make_link('userdetails','id',$row ['moderatedby'],'username',translit($row['modname'])).'">' . get_user_class_color ( $row ['modclass'], $row ['modname'] ) . '</a> ' . ((get_privilege('edit_releases',false)) ? '<a onclick="return ajaxcheck();" href="'.$REL_SEO->make_link('takeedit','checkonly','','id', $id).'">' . $REL_LANG->say_by_key('uncheck') . '</a>' : '') : $REL_LANG->say_by_key('not_yet_checked') . ((get_privilege('edit_releases',false)) ? ' <a onclick="return ajaxcheck();" href="'.$REL_SEO->make_link('takeedit','checkonly','','id',$id).'">' . $REL_LANG->say_by_key('check') . '</a>' : '')) . '</div><br/>';
@@ -127,8 +116,15 @@ else {
 			foreach ( $images as $img ) {
 				$k ++;
 
-				$img = "<a href=\"$img\" onclick=\"javascript: $.facebox({image:'$img'}); return false;\"><img style=\"border: 2px dashed #c1d0d8;\" alt='Изображение для " . $row ["name"] . " (кликните для просмотра полного изображения)' width=\"240\" src=\"$img\" /></a><br />";
-				//$img.="<a href='pic/loading.gif' rel='facebox'><img src='pic/loading.gif'/></a>";
+				// tysa.me add
+				if (preg_match('/http\:\/\/(www\.|)tysa\.me\/i\/([a-zA-Z0-9]+)\.(.*)/',$img,$imgid)) {
+					$imgext = $imgid[3];
+					$imgid = $imgid[2];
+					$img='<a href="http://www.tysa.me/view.php?img='.$imgid.'.'.$imgext.'" target="_blank"><img style="border: 2px dashed #c1d0d8;" title="Изображение для ' . $row ["name"] . ' (кликните для просмотра полного изображения)" width="240"  src="http://www.tysa.me/i/'.$imgid.'_preview.'.$imgext.'"></a><br />';
+					
+				/*tysa.me add end, remove above to delete*/} else {
+					$img = "<a href=\"$img\" onclick=\"javascript: $.facebox({image:'$img'}); return false;\"><img style=\"border: 2px dashed #c1d0d8;\" title='Изображение для " . $row ["name"] . " (кликните для просмотра полного изображения)' width=\"240\" src=\"$img\" /></a><br />";
+				}
 				if ($k <= 1)
 				$imgcontent .= $img;
 				else
@@ -137,7 +133,7 @@ else {
 			}
 		}
 
-		print ( '<tr><td colspan="2"><table width="100%"><tr><td style="vertical-align: top;">' . ($imgcontent ? $imgcontent : '<img src="pic/noimage.gif"/>') . (! empty ( $imgspoiler ) ? sprintf($spbegin,"{$REL_LANG->say_by_key('screens')} ({$REL_LANG->say_by_key('view')})") . $imgspoiler . $spend : '') . '</td><td style="vertical-align: top; text-align:left; width:100%">'.($row['online']?$row['online'].'<hr />':'') .$OUT.'<hr/>'. format_comment ( $row ['descr'] ) . '</td></tr></table></td></tr>' );
+		print ( '<tr><td colspan="2"><table width="100%"><tr><td style="vertical-align: top;">' . ($imgcontent ? $imgcontent : '<img src="pic/noimage.gif"/>') . (! empty ( $imgspoiler ) ? sprintf($spbegin,"{$REL_LANG->say_by_key('screens')} ({$REL_LANG->say_by_key('view')})") . $imgspoiler . $spend : '') . '</td><td style="vertical-align: top; text-align:left; width:100%">' .$OUT.'<hr/>'. format_comment ( $row ['descr'] ) . '</td></tr></table></td></tr>' );
 
 		if (! $CURUSER) {
 			print ( "</table>\n" );
@@ -234,7 +230,7 @@ return no_ajax;
 		print ( "</td></tr></table><br /></div>");
 
 	} else {
-		$limit = ajaxpager(25, $count, array('details','id',$id,'name',translit($row['name'])), 'comments-table > tbody:last');
+		$limit = ajaxpager(25, $count, array('details','id',$id,'name',translit($row['name'])), 'comments-table');
 		$subres = $REL_DB->query ( "SELECT c.id, c.type, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = " . "$id AND c.type='rel' GROUP BY c.id ORDER BY c.id DESC $limit" );
 		$allrows = prepare_for_commenttable($subres,$row['name'],$REL_SEO->make_link('details','id',$id,'name',translit($row['name'])));
 

@@ -22,7 +22,7 @@ $res = $REL_DB->query("SELECT SUM(1) FROM users");
 $count = mysql_result($res,0);
 if (!$count) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); $REL_TPL->stdfoot(); die(); }
 
-$limit = ajaxpager(10, $count, array('topten'), 'userst > tbody:last');
+$limit = ajaxpager(10, $count, array('topten'), 'userst');
 
 
 

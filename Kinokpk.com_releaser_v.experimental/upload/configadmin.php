@@ -20,7 +20,7 @@ if (!isset($_GET['action'])){
 	$REL_TPL->begin_frame($REL_LANG->_('General settings of Kinokpk.com releaser v.%s',RELVERSION));
 	$REL_TPL->assignByRef('REL_CONFIG', $REL_CONFIG);
 	$tree = make_tree();
-	$REL_TPL->assign('pron_selector',gen_select_area('pron_cats', $tree,$REL_CONFIG['pron_cats'],false,true));
+	$REL_TPL->assign('pron_selector',gen_select_area('pron_cats', $tree,$REL_CONFIG['pron_cats'],true,true));
 	$REL_TPL->assign('REL_CACHEDRIVER',REL_CACHEDRIVER);
 	$xbt = $REL_DB->query_return("SELECT * FROM xbt_config");
 	foreach ($xbt as $xbtconfrow) {
@@ -45,6 +45,7 @@ elseif ($_GET['action'] == 'save'){
 
 	foreach ($reqparametres as $param) {
 		if (!isset($_POST[$param]) && ($param != 'pron_cats')) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Some fields does not filled (%s)',$param));
+		if ($_POST['pron_cats']) $_POST['pron_cats'] = implode(',',(array)$_POST['pron_cats']);
 		$updateset[] = "UPDATE cache_stats SET cache_value=".sqlesc($_POST[$param])." WHERE cache_name='$param'";
 	}
 

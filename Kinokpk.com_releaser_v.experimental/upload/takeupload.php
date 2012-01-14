@@ -14,7 +14,7 @@ require_once(ROOT_PATH."include/benc.php");
 ini_set("upload_max_filesize",$REL_CONFIG['max_torrent_size']);
 
 function bark($msg) {
-	global  $REL_LANG, $REL_DB;
+	global  $REL_LANG, $REL_DB, $REL_TPL;
 	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $msg." <a href=\"javascript:history.go(-1);\">{$REL_LANG->say_by_key('ago')}</a>");
 }
 
@@ -44,7 +44,6 @@ if ($_POST['nofile']) {} else {
 	bark("Файл не загружен. Пустое имя файла!");
 }
 
-
 if (!is_array($_POST["type"]))
 bark("Ошибка обработки выбранных категорий!");
 else
@@ -68,7 +67,7 @@ if ($_POST['multi']) $multi=1; else $multi=0;
 if (!empty($_POST["name"]))
 $torrent = unesc((string)$_POST["name"]); else bark("Вы не ввели название релиза");
 
-if (!preg_match("#(.*?) \/ (.*?) \([0-9-]+\) \[(.*?)\]#si",$torrent))
+if (!preg_match("#(.*?) \([0-9-]+\) \[(.*?)\]#si",$torrent))
 bark ("{$REL_LANG->_("Release name does not corresponding to rule, please change it and try again:")}<br/>{$REL_LANG->say_by_key('taken_from_torrent')}");
 
 if ($_POST['nofile']) {} else {
@@ -247,9 +246,16 @@ if ($_POST['nofile']) {
 
 
 	$descr = (string) $_POST['descr'];
+	$descrtpl = (array) $_POST['descrtpl'];
 
-	if (!$descr) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Вы не ввели описание');
+	if (!$descr&&!$descrtpl) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Release description is missing'));
 
+	if ($descrtpl) {
+		$allowed_types = array('movie');
+		if (!in_array($descrtpl['type'], $allowed_types)) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unknown release type'));
+		$REL_TPL->assign('descr',$descrtpl);
+		$descr = $REL_TPL->fetch("modules/upload/{$descrtpl['type']}_descr.tpl");
+	}
 	//////////////////////////////////////////////
 
 	// get relgroup
@@ -260,12 +266,8 @@ if ($_POST['nofile']) {
 
 		if (!$relgroup) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_relgroup'));
 	}
-
-	/// get kinopoisk.ru trailer!
-
-	$online = get_trailer($descr);
-
-	// end get kinopoisk.ru trailer
+	
+	$tags = htmlspecialchars((string)$_POST['tags']);
 
 	// Replace punctuation characters with spaces
 	if ($_POST['nofile']) {
@@ -278,12 +280,12 @@ if ($_POST['nofile']) {
 
 		$totallen = (float)($nofilesize*1024*1024);
 
-		$ret = $REL_DB->query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, tiger_hash, name, descr, size, free, images, category, online, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], ($_POST["visible"] ? 1 : 0), $sticky, $infohash, $tiger_hash, $torrent, $descr, $totallen, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('post_releases_approved',false))?', '.$CURUSER['id']:'').")");
+		$ret = $REL_DB->query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, tiger_hash, name, descr, size, free, images, category, tags, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], ($_POST["visible"] ? 1 : 0), $sticky, $infohash, $tiger_hash, $torrent, $descr, $totallen, $free, $images, $catsstr, $tags))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('post_releases_approved',false))?', '.$CURUSER['id']:'').")");
 	} else {
 
 		$torrent = htmlspecialchars(str_replace("_", " ", $torrent));
 
-		$ret = $REL_DB->query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, name, descr, size, numfiles, ismulti, free, images, category, online, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], ($_POST["visible"] ? 1 : 0), $sticky, $infohash, $torrent, $descr, $totallen, count($filelist), $type, $free, $images, $catsstr, $online))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('post_releases_approved',false))?', '.$CURUSER['id']:'').")");
+		$ret = $REL_DB->query("INSERT INTO torrents (filename, owner, visible, sticky, info_hash, name, descr, size, numfiles, ismulti, free, images, category, tags, added, last_action, relgroup".((get_privilege('post_releases_approved',false))?', moderatedby':'').") VALUES (" . implode(",", array_map("sqlesc", array($fname, $CURUSER["id"], ($_POST["visible"] ? 1 : 0), $sticky, $infohash, $torrent, $descr, $totallen, count($filelist), $type, $free, $images, $catsstr, $tags))) . ", " . time() . ", " . time() . ", $relgroup".((get_privilege('post_releases_approved',false))?', '.$CURUSER['id']:'').")");
 	}
 	if (!$ret) {
 		if (mysql_errno() == 1062)
@@ -361,7 +363,6 @@ $descr .= nl2br($bfooter);
 
 
 if (!get_privilege('post_releases_approved',false)) {
-	write_sys_msg($CURUSER['id'],sprintf($REL_LANG->say_by_key('uploaded_body'),"<a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($torrent))."\">$torrent</a>"),$REL_LANG->say_by_key('uploaded'));
 	send_notifs('unchecked',nl2br($body));
 } else {
 	send_notifs('torrents',format_comment($descr));

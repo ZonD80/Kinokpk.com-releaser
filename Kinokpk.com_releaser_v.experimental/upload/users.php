@@ -117,7 +117,7 @@ elseif (!isset($_GET['act'])) {
 	$count = mysql_result($res,0);
 	if (!$count) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'),'error'); $REL_TPL->stdfoot(); die(); }
 
-	$limit = ajaxpager(25, $count, array('users'), 'userst > tbody:last');
+	$limit = ajaxpager(25, $count, array('users'), 'userst');
 
 
 

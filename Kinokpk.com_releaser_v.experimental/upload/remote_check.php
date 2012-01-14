@@ -86,13 +86,11 @@ if ($id)  {
 	die(base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="));
 }
 
-$cronrow = $REL_DB->query("SELECT * FROM cron WHERE cron_name IN ('remotecheck_disabled','remotepeers_cleantime','in_remotecheck','remote_trackers','remote_trackers_delete')");
+$cronrow = $REL_DB->query("SELECT * FROM cron WHERE cron_name IN ('remotecheck_disabled','remotepeers_cleantime','in_remotecheck','remote_trackers')");
 while ($cronres = mysql_fetch_array($cronrow)) $REL_CRON[$cronres['cron_name']] = $cronres['cron_value'];
 
 if (!$REL_CRON['remotecheck_disabled']) {
 
-	if ($REL_CRON['remote_trackers_delete']) $REL_DB->query("DELETE FROM trackers WHERE num_failed > {$REL_CRON['remote_trackers_delete']}");
-	
 	$REL_CONFIGrow = $REL_DB->query("SELECT * FROM cache_stats WHERE cache_name IN ('defaultbaseurl')");
 
 	while ($REL_CONFIGres = mysql_fetch_assoc($REL_CONFIGrow)) $REL_CONFIG[$REL_CONFIGres['cache_name']] = $REL_CONFIGres['cache_value'];

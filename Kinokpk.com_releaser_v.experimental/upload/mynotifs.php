@@ -29,7 +29,7 @@ if (isset($_GET['settings'])) {
 		$emailnotifs = $CURUSER['emailnotifs'];
 
 		$REL_TPL->begin_frame(sprintf($REL_LANG->say_by_key('i_can_be_notified_due_my_class'),get_user_class_name($CURUSER['class'])));
-		print('<form action="'.$REL_SEO->make_link('mynotifs','settings','').'" method="POST">
+		print('<form action="'.$REL_SEO->make_link('mynotifs','settings','').'" method="POST" style="width:777px">
 		<div id="mynotifs">');
 		print("<div class=\"colhead notify_type\"><span>{$REL_LANG->say_by_key('notify_type')}</span></div><div class=\"colhead notify_popup\">{$REL_LANG->say_by_key('notify_popup')}</div><div class=\"colhead notify_ema\">{$REL_LANG->say_by_key('notify_email')}</div><div class=\"clear\"></div></div>");
 

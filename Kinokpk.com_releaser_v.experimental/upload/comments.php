@@ -93,6 +93,13 @@ if ($action == "add")
 		clear_comment_caches($type);
 		/////////////////СЛЕЖЕНИЕ ЗА КОММЕНТАМИ/////////////////
 		
+		if ($type=='rel'&&get_privilege('edit_releases',false)) {
+			$release = $REL_DB->query_row("SELECT id,name,owner FROM torrents WHERE id=$to_id AND moderatedby=0");
+			if ($release&&$release['owner']) {
+				$msg = $REL_LANG->_to($release['owner'],'Moderator has just added new comment to your release "%s". It means that you may be able to fix some release details to get it published. Please visit <a href="%s">your release page</a> for better experience. Thanks.',$release['name'],$REL_SEO->make_link('details','id',$to_id,'name',translit($release['name'])));
+				write_sys_msg($release['owner'], $msg, $REL_LANG->_to($release['owner'],'Your release is checking'));
+			}
+		}
 		send_comment_notifs($to_id,"<a href=\"$returnto\">$name</a>","{$type}comments");
 		
 		set_visited("{$type}comments",$newid);

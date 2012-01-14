@@ -17,7 +17,9 @@ INIT();
 
 $page = (int) $_GET["page"];
 
-$cat = (int) $_GET['cat'];
+$cat = (array) $_GET['cat'];
+$cat = array_map('intval',$cat);
+
 $relgroup = (int) $_GET['relgroup'];
 
 $tree = make_tree();
@@ -29,22 +31,29 @@ if (isset($_GET['unchecked'])) $unchecked = 1; else $unchecked = 0;
 $searchstr = (string) $_GET['search'];
 $cleansearchstr = htmlspecialchars($searchstr);
 if (empty($cleansearchstr))
-unset($cleansearchstr);
+	unset($cleansearchstr);
 $addparam[] = 'browse';
 
-if (($cat!=0) && is_valid_id($cat)) {
+$allowed_orders = array('seeders','leechers','moderated','moderatedby','banned','visible','added','comments','size');
 
-	$cats = get_full_childs_ids($tree,$cat);
-	if (!$cats) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
-	else {
-		foreach ($cats as $catid) $catq[] = " FIND_IN_SET($catid,torrents.category) ";
+$order = (string)$_GET['order'];
 
-		if ($catq) $catq = implode('OR',$catq);
+if ($order&&!in_array($order,$allowed_orders)) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unknown order type'));
+elseif (!$order) $order='added';
 
-		$wherea['cat'] = $catq;
-		$addparam[] = 'cat';
-		$addparam[] = $cat;
-	}
+$ordertype = ($_GET['asc']?'ASC':'DESC');
+
+//search for other addparam asc at bottom
+
+foreach ($cat as $catid) {
+	$catq[] = " FIND_IN_SET($catid,torrents.category) ";
+
+	$addparam[] = 'cat[]';
+	$addparam[] = $catid;
+}
+if ($catq) {
+	$catq = implode('OR',$catq);
+	$wherea['cat'] = "($catq)";
 }
 
 if ($mainpage) {
@@ -73,7 +82,9 @@ if ($relgroup) {
 	$addparam[] = $relgroup;
 }
 
-if (get_privilege('is_moderator',false)) { $modview=true; }
+if (get_privilege('is_moderator',false)) {
+	$modview=true;
+}
 
 
 if ($unchecked && !$modview) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('unchecked_only_moders'));
@@ -97,10 +108,28 @@ $res = $REL_DB->query("SELECT SUM(1) FROM torrents".($where?" WHERE $where":''))
 $row = mysql_fetch_array($res);
 $count = $row[0];
 
-$limit = ajaxpager($REL_CONFIG['torrentsperpage'], $count, $addparam, "torrenttable > tbody:last");
+// ordering
 
-$query = "SELECT torrents.id, torrents.comments, torrents.seeders, torrents.leechers, torrents.freefor,".($modview?" torrents.moderated, torrents.moderatedby, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, torrents.visible, torrents.banned,":'')." torrents.category, torrents.images, torrents.free, torrents.name, torrents.size, torrents.added, torrents.numfiles, torrents.filename, torrents.sticky, torrents.owner, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed, " .
-        "users.username, users.class, users.donor, users.enabled, users.warned FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id LEFT JOIN users ON torrents.owner = users.id".($where?" WHERE $where":'')." ORDER BY torrents.sticky DESC, torrents.added DESC $limit";
+foreach ($allowed_orders as $ord) {
+	$orderlink[$ord] = $addparam;
+	$orderlink[$ord][] = 'asc';
+	$orderlink[$ord][] = ($_GET['asc']?'0':'1');
+	$orderlink[$ord][] = 'order';
+	$orderlink[$ord][] = $ord;
+	
+}
+$REL_TPL->assign('orderlink',$orderlink);
+
+$addparam[] = 'asc';
+$addparam[] = ($_GET['asc']?'1':'0');
+$addparam[] = 'order';
+$addparam[] = $order;
+
+// ordering end
+$limit = ajaxpager($REL_CONFIG['torrentsperpage'], $count, $addparam, "torrenttable");
+
+$query = "SELECT torrents.id, torrents.comments, torrents.seeders, torrents.leechers, torrents.freefor,".($modview?" torrents.moderated, torrents.moderatedby, (SELECT username FROM users WHERE id=torrents.moderatedby) AS modname, (SELECT class FROM users WHERE id=torrents.moderatedby) AS modclass, torrents.visible, torrents.banned,":'')." torrents.category, torrents.tags, torrents.images, torrents.free, torrents.name, torrents.size, torrents.added, torrents.numfiles, torrents.filename, torrents.sticky, torrents.owner, torrents.relgroup AS rgid, relgroups.name AS rgname, relgroups.image AS rgimage,".($CURUSER?" IF((torrents.relgroup=0) OR (relgroups.private=0) OR FIND_IN_SET({$CURUSER['id']},relgroups.owners) OR FIND_IN_SET({$CURUSER['id']},relgroups.members),1,(SELECT 1 FROM rg_subscribes WHERE rgid=torrents.relgroup AND userid={$CURUSER['id']}))":' IF((torrents.relgroup=0) OR (relgroups.private=0),1,0)')." AS relgroup_allowed, " .
+		"users.username, users.class, users.donor, users.enabled, users.warned FROM torrents LEFT JOIN relgroups ON torrents.relgroup=relgroups.id LEFT JOIN users ON torrents.owner = users.id".($where?" WHERE $where":'')." ORDER BY torrents.sticky DESC, torrents.$order $ordertype $limit";
 $res = $REL_DB->query($query);
 
 
@@ -120,40 +149,26 @@ if (!pagercheck()) {
 	}
 
 	if ($rgarray) {
-		$rgselect = '<span class="browse_relgroup">'.$REL_LANG->say_by_key('relgroup').':</span> <select style="width: 120px;" name="relgroup"><option value="0">'.$REL_LANG->say_by_key('choose').'</option>';
+		$rgselect = '<span class="browse_relgroup">'.$REL_LANG->_('Select release group').':</span> <select style="width: 120px;" name="relgroup"><option value="0">'.$REL_LANG->say_by_key('choose').'</option>';
 		foreach ($rgarray as $rgid=>$rgname) $rgselect.='<option   value="'.$rgid.'"'.(($relgroup==$rgid)?" selected=\"1\"":'').'>'.$rgname."</option>\n";
 		$rgselect.='</select>';
 	}
 
 
 
-	print("<div class=\"friends_search\">
-<form class='formbr' action=\"".$REL_SEO->make_link('browse')."\" method=\"get\">".'
-<input type="text" class="browse_search" name="search" size="30" style="margin-right: 10px;"/>
-'.gen_select_area('cat',$tree,$cat, true).'<br />
-<div class="brel">
-'.$rgselect.'
+	print("<div align=\"center\"><form action=\"".$REL_SEO->make_link('browse')."\" method=\"get\">".$REL_LANG->_('Type name here').':&nbsp;<input type="text" class="browse_search" name="search" size="30" style="margin-right: 10px;" value="'.$cleansearchstr.'"/>
+			&nbsp;'.gen_select_area('cat',$tree,implode(',',$cat), true,true).'
+			'.$rgselect.'
 
-<input class="button" type="submit" size="40" value="'.$REL_LANG->say_by_key('search').'!" />
-</div>
-</form>
-<div class="clear"></div>
-<!-- Google Search -->
-<form action="http://www.google.com/cse">
-    <input name="cx" value="008925083164290612781:gpt7xhlrdou" type="hidden" />
-    <input name="ie" value="utf-8" type="hidden" />
-    <input name="q" size="43" type="text" />
-    <input name="sa" class="button" value="Поиск Google!" type="submit" />
-</form>
-<!-- Google Search -->
-</div>
-');
+			<input class="button" type="submit" size="40" value="'.$REL_LANG->say_by_key('search').'!" />
+			</form></div>
+			');
 	$REL_TPL->end_frame();
 
 	if (isset($cleansearchstr)){
 		$REL_TPL->begin_frame($REL_LANG->say_by_key('search_results_for')." \"" . $cleansearchstr . "\". {$REL_LANG->_('Found %s releases',$count)}\n");
 	}else{
-		$REL_TPL->begin_frame('Релизы');
+		$REL_TPL->begin_frame($REL_LANG->_('Releases'));
 	}
 
 

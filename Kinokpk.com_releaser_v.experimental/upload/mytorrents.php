@@ -31,7 +31,7 @@ if (!$count) {
 else {
 
 	$tree = make_tree();
-	$res = $REL_DB->query("SELECT torrents.images, torrents.comments, torrents.leechers, torrents.seeders, torrents.id, torrents.name, filename, numfiles, added, size, views, visible, free, hits, category FROM torrents $where GROUP BY id ORDER BY id DESC $limit");
+	$res = $REL_DB->query("SELECT torrents.images, torrents.comments, torrents.leechers, torrents.seeders, torrents.id, torrents.name, filename, numfiles, added, size, views, visible, free, hits, category, tags FROM torrents $where GROUP BY id ORDER BY id DESC $limit");
 	$resarray = prepare_for_torrenttable($res);
 
 	if (!$resarray) {$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('not_releases'),'error'); $REL_TPL->stdfoot(); die(); }

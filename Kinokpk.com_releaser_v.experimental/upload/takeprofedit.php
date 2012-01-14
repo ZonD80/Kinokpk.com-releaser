@@ -59,7 +59,8 @@ if ($email != $CURUSER["email"]) {
 
 $username = trim((string)$_POST['username']);
 
-if ($username<>$CURUSER['username']) {
+if ($username&&($username<>$CURUSER['username'])) {
+	get_privilege('change_nick');
 	if (mb_strlen($username) > 12)
 	$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Sorry, but your username is too big. It must be < 12 symbols. Please <a href="javascript:history.go(-1);">try again</a>.'));
 
@@ -141,9 +142,6 @@ if ($privacy != "normal" && $privacy != "highest" && $privacy != "strong")
 $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_("Privacy level is unknown"));
 
 $updateset[] = "privacy = '$privacy'";
-
-$website = unesc($_POST["website"]);
-$updateset[] = "website = " . sqlesc(htmlspecialchars($website));
 
 $updateset[] = "stylesheet = $stylesheet";
 $updateset[] = "country = $country";

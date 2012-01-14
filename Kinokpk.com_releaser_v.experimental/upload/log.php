@@ -46,7 +46,7 @@ $count = @mysql_result($REL_DB->query("SELECT SUM(1) FROM `sitelog` WHERE type =
 if (!$count) print("<b>".$REL_LANG->say_by_key('log_file_empty')."</b>\n");
 else
 {
-	$limit = ajaxpager(25, $count, array('log','type',$type), 'logtable > tbody:last');
+	$limit = ajaxpager(25, $count, array('log','type',$type), 'logtable');
 	$res = $REL_DB->query("SELECT txt, added FROM `sitelog` WHERE type = ".sqlesc($type)." ORDER BY `added` DESC LIMIT 50");
 	if (!pagercheck()) {
 	print("<h1>".$REL_LANG->say_by_key('logs')."| <a href=\"".$REL_SEO->make_link('log')."\">{$REL_LANG->_('To log types')}</a></h1>\n");

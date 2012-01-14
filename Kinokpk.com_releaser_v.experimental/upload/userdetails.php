@@ -173,9 +173,22 @@ if (!pagercheck()) {
 		}
 	}
 	print ( "<p>" . ratearea ( $user ['ratingsum'], $user ['id'], 'users', $CURUSER['id'] ) . "$country</p>" );
-
-	print ( '<div class="sp-wrap"><div class="sp-head folded clickable">'.$REL_LANG->_("Open information").'</div><div class="sp-body"><table width=100% border=1 cellspacing=0 cellpadding=5>
-<tr><td class=rowhead width=1%>Зарегистрирован</td><td align=left width=99%>' . $joindate . '</td></tr>
+	if ($user ["acceptpms"] == "friends") {
+		$r = $REL_DB->query ( "SELECT id FROM friends WHERE userid = $user[id] AND friendid = $CURUSER[id]" );
+		$showpmbutton = (mysql_num_rows ( $r ) == 1 ? 1 : 0);
+	} elseif ($CURUSER ["id"] != $user ["id"])
+	$showpmbutton = 1;
+	
+	if ($showpmbutton)
+		print ( "<p><form method=\"get\" action=\"".$REL_SEO->make_link('message')."\">
+				<input type=\"hidden\" name=\"receiver\" value=" . $user ["id"] . ">
+				<input type=\"hidden\" name=\"action\" value=\"sendmessage\">
+				<input type=submit value=\"Послать ЛС\" style=\"height: 23px\">
+				</form></p>" . ((get_privilege('send_emails',false)) ? "<p><form method=\"get\" action=\"".$REL_SEO->make_link('email-gateway')."\">
+						<input type=\"hidden\" name=\"id\" value=\"" . $user ["id"] . "\">
+						<input type=submit value=\"Послать e-mail\" style=\"height: 23px\">
+						</form></p>" : '') );
+	print ( '<tr><td class=rowhead width=1%>Зарегистрирован</td><td align=left width=99%>' . $joindate . '</td></tr>
 <tr><td class=rowhead>Последний раз был на трекере</td><td align=left>' . $lastseen . '</td></tr>' );
 
 
@@ -214,8 +227,6 @@ if (!pagercheck()) {
 	?></td>
 </tr>
 	<?php	}
-	if ($user ["website"])
-	print ( "<tr><td class=\"rowhead\">Сайт</td><td align=\"left\">" . makesafe ( $user [website] ) . "</a></td></tr>\n" );
 	print ( "<tr><td class=\"rowhead\">Класс</td><td align=\"left\"><b>" . get_user_class_color ( $user ["class"], get_user_class_name ( $user ["class"] ) ) . ($user ["title"] != "" ? " / <span style=\"color: purple;\">{$user["title"]}</span>" : "") . "</b></td></tr>\n" );
 	print ( "<tr><td class=\"rowhead\">Пол</td><td align=\"left\">$gender</td></tr>\n" );
 	//мод предупреждений
@@ -263,25 +274,11 @@ if (!pagercheck()) {
 	if ($user ["info"])
 	print ( "<tr valign=\"top\"><td align=\"left\" colspan=\"2\" class=\"text\" bgcolor=\"#F4F4F0\">" . format_comment ( $user ["info"] ) . "</td></tr>\n" );
 
-	if ($user ["acceptpms"] == "friends") {
-		$r = $REL_DB->query ( "SELECT id FROM friends WHERE userid = $user[id] AND friendid = $CURUSER[id]" );
-		$showpmbutton = (mysql_num_rows ( $r ) == 1 ? 1 : 0);
-	} elseif ($CURUSER ["id"] != $user ["id"])
-	$showpmbutton = 1;
-
-	if ($showpmbutton)
-	print ( "<tr><td align=right><b>Связь</b></td><td align=center><form method=\"get\" action=\"".$REL_SEO->make_link('message')."\">
-        <input type=\"hidden\" name=\"receiver\" value=" . $user ["id"] . "> 
-        <input type=\"hidden\" name=\"action\" value=\"sendmessage\"> 
-        <input type=submit value=\"Послать ЛС\" style=\"height: 23px\"> 
-        </form>" . ((get_privilege('send_emails',false)) ? "<form method=\"get\" action=\"".$REL_SEO->make_link('email-gateway')."\">
-        <input type=\"hidden\" name=\"id\" value=\"" . $user ["id"] . "\">
-        <input type=submit value=\"Послать e-mail\" style=\"height: 23px\">
-        </form>" : '') . "</td></tr>" );
-
-	print ( "</table></div>\n" );
+	print ( "</table>\n" );
 	print ( '</td><td>' );
-
+	
+	print '<div class="sp-wrap"><div class="sp-head folded clickable" style="background: red;"><h1>'.$REL_LANG->_("Open social features").'</h1></div><div class="sp-body">';
+	
 	$REL_TPL->begin_frame ();
 
 	if ($presents) {
@@ -299,7 +296,7 @@ if (!pagercheck()) {
 			print '<td align="center"><small>'.$REL_LANG->_($switch_pr[$present['type']]).'</small><br/><a href="'.$REL_SEO->make_link('present','a','viewpresent','id',$present['id']).'"><img style="border:none;" src="pic/presents/'.$present['type'].'_small.png" titie="'.$REL_LANG->_('Present').'"/></a><br/><small>'.($present['presenter']<>$CURUSER['id']?$REL_LANG->_("From").' <a href="'.$REL_SEO->make_link('userdetails','id',$present['presenter'],'username',$present['username']).'">'.get_user_class_color($present['class'],$present['username']).'</a><br/>':$REL_LANG->_("Yours").'<br/>').$REL_LANG->_("With wish of").': '.($prtext?$prtext:$REL_LANG->_("None")).'</small></td>';
 
 		}
-		print ('</tr>');
+		print ('</tr></table>');
 		print ('</td></tr></table>');
 	}
 
@@ -329,7 +326,7 @@ if (! $count) {
 	print ( "</td></tr></table><br /></div>" );
 
 } else {
-	$limit = ajaxpager(25, $count, array('userdetails','id',$id,'username',translit($user['username'])), 'comments-table > tbody:last');
+	$limit = ajaxpager(25, $count, array('userdetails','id',$id,'username',translit($user['username'])), 'comments-table');
 	//var_dump($count);
 	$subres = $REL_DB->query ( "SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " . "$id AND c.type='user' GROUP BY (c.id) ORDER BY c.id DESC $limit" );
 	$allrows = prepare_for_commenttable($subres, $user['username'],$REL_SEO->make_link('userdetails','id',$id,'username',translit($user['username'])));
@@ -350,8 +347,10 @@ if (! $count) {
 	print ( "</td></tr>" ); die(); }
 }
 
-print '</table>';
+
 $REL_TPL->end_frame ();
+// print '</table>';
+  print '</div></div>';
 
 if (get_privilege('edit_users',false) && get_class_priority($user ["class"]) < get_class_priority(get_user_class ())) {
 	$REL_TPL->begin_frame ( "Редактирование пользователя", true );
@@ -361,6 +360,9 @@ if (get_privilege('edit_users',false) && get_class_priority($user ["class"]) < g
 	print ( "<input type=\"hidden\" name=\"returnto\" value=\"".$REL_SEO->make_link('userdetails','id',$id,'username',$user['username'])."\">\n" );
 	print ( "<table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n" );
 	print ( "<tr><td class=\"rowhead\">Заголовок</td><td colspan=\"2\" align=\"left\"><input type=\"text\" size=\"60\" name=\"title\" value=\"" . htmlspecialchars ( $user [title] ) . "\"></td></tr>\n" );
+	print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Username')}</td><td colspan=\"2\" align=\"left\"><input type=\"text\" size=\"60\" name=\"username\" value=\"" . htmlspecialchars ( $user [username] ) . "\"></td></tr>\n" );
+	print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Password')}</td><td colspan=\"2\" align=\"left\"><input type=\"password\" size=\"60\" name=\"password\"></td></tr>\n" );	
+	print ( "<tr><td class=\"rowhead\">Email</td><td colspan=\"2\" align=\"left\"><input type=\"text\" size=\"60\" name=\"email\" value=\"" . htmlspecialchars ( $user [email] ) . "\"></td></tr>\n" );
 	print ( "<tr><td class=\"rowhead\">Удалить аватар</td><td colspan=\"2\" align=\"left\"><input type=\"checkbox\" name=\"avatar\" value=\"1\"></td></tr>\n" );
 	// we do not want mods to be able to change user classes or amount donated...
 	if (!get_privilege('is_administrator',false))
@@ -380,7 +382,7 @@ if (get_privilege('edit_users',false) && get_class_priority($user ["class"]) < g
 	$supportfor = makesafe ( $user ["supportfor"] );
 	print ( "<tr><td class=rowhead>Поддержка</td><td colspan=2 align=left><input type=radio name=support value=\"1\"" . ($user ["supportfor"] ? " checked" : "") . ">Да <input type=radio name=support value=\"0\"" . (! $user ["supportfor"] ? " checked" : "") . ">Нет</td></tr>\n" );
 	print ( "<tr><td class=rowhead>Поддержка для:</td><td colspan=2 align=left><textarea cols=60 rows=6 name=supportfor>$supportfor</textarea></td></tr>\n" );
-	print ( "<tr><td class=rowhead>История пользователя</td><td colspan=2 align=left><textarea cols=60 rows=6" . (get_privilege('add_comments_to_user',false) ? " readonly" : " name=modcomment") . ">$modcomment</textarea></td></tr>\n" );
+	print ( "<tr><td class=rowhead>История пользователя</td><td colspan=2 align=left><textarea cols=60 rows=6" . (!get_privilege('add_comments_to_user',false) ? " readonly" : " name=modcomment") . ">$modcomment</textarea></td></tr>\n" );
 	$warned = $user ["warned"] == 1;
 
 	print ( "<tr><td class=\"rowhead\"" . (! $warned ? " rowspan=\"2\"" : "") . ">Предупреждение</td>
@@ -463,9 +465,12 @@ function togglepic(bu, picid, formid)
 		$REL_TPL->end_frame ();
 				//$privs = 
 }
+
+
 }
 
 set_visited('users',$id);
+	
 $REL_TPL->end_main_frame();
 $REL_TPL->stdfoot();
 ?>

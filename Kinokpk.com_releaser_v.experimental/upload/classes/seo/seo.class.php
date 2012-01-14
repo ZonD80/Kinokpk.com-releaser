@@ -45,32 +45,37 @@ class REL_SEO {
 
 		$script = $linkar[0];
 
-		if (isset($this->SR[$script]['{base}'])) $destar[0] = $this->SR[$script]['{base}'];
-		else $destar['{base}'] = "$script.php";
+		if (isset($this->SR[$script]['{base}'])) $dest = $this->SR[$script]['{base}'];
+		else $dest = "$script.php";
 		unset($linkar[0]);
 		if ($linkar) {
 
 			foreach ($linkar as $place => $param) {
 				if ($place % 2 == 0) continue;
 				if ($this->SR[$script][$param]) {
-					$destar[$this->SO[$script][$param]] = sprintf($this->SR[$script][$param],$linkar[$place+1]);
+					$destar[$this->SO[$script][$param]][] = sprintf($this->SR[$script][$param],$linkar[$place+1]);
 					if ($this->SU[$script][$param]) {
 						foreach ($this->SU[$script][$param] as $to_unset) unset($destar[$this->SO[$script][$to_unset]]);
 					}
 				} else {
-					$destar2[$param] = "$param={$linkar[$place+1]}";
+					$destar2[$param][] = "$param={$linkar[$place+1]}";
 				}
 			}
 		}
-		if (isset($destar['{base}'])) {
-			$dest = $destar['{base}'];
-			unset($destar['{base}']);
-		}
-		ksort($destar);
+
 		if ($destar) {
+			ksort($destar);
+			foreach ($destar as $dkey=>$dval) {
+				if ($dval)
+				$destar[$dkey] = implode('&',$dval);
+			}
 			$dest .= addslashes(implode('',$destar));
 		}
 		if ($destar2) {
+			foreach ($destar2 as $dkey=>$dval) {
+				if ($dval)
+				$destar2[$dkey] = implode('&',$dval);
+			}
 			$dest .= '?'.addslashes(implode('&',$destar2));
 		}
 		return $REL_CONFIG['defaultbaseurl'].'/'.addslashes($dest);

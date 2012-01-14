@@ -61,12 +61,12 @@ else
 	$reasonstr = trim($reason[3]);
 }
 
-deletetorrent($id);
+deletetorrent($id,$reasonstr);
 
 $REL_CACHE->clearGroupCache('block-indextorrents');
 
 $reasonstr = htmlspecialchars($reasonstr);
-write_log("Торрент $id ($row[name]) был удален пользователем $CURUSER[username] ($reasonstr)\n","torrent");
+write_log("Торрент $id ($row[name]) был удален пользователем ".make_user_link()." ($reasonstr)\n","torrent");
 
 $REL_TPL->stdhead("Торрент удален!");
 

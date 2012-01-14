@@ -22,6 +22,7 @@ if(!defined("IN_TRACKER") && !defined("IN_ANNOUNCE")) die("Direct access to this
 function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
 	global  $REL_SEO,$REL_TPL, $REL_LANG, $REL_DB;
 	$page = (int)$_GET['page'];
+	if ($page) $page=$page-1;
 	$maxpage = floor($count/$perpage);
 	$hrefarray[] = 'AJAXPAGER';
 	$hrefarray[] = '1';
@@ -30,7 +31,7 @@ function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
 	$href = call_user_func_array(array($REL_SEO, 'make_link'),$hrefarray);
 
 	if (!$page) {
-	$REL_TPL->assign("AJAXPAGER", "
+	/*$REL_TPL->assign("AJAXPAGER", "
 	<script type=\"text/javascript\">
 	var CURR_PAGE = 0;
 	var MAX_PAGE = $maxpage;
@@ -51,7 +52,33 @@ function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
 			$('#pager_button').val('{$REL_LANG->_('Show more')}');
 		});
 	}
-</script>");
+</script>");*/
+		$REL_TPL->assign("AJAXPAGER", "
+				<script type=\"text/javascript\">
+				var CURR_PAGE = $page;
+				var MAX_PAGE = $maxpage;
+				var PAGER_HREF = \"$href\";
+				$('document').ready(function(){
+				$('#pager_scrollbox').before('<div align=\"center\" class=\"paginator\"></div>');
+				$('#pager_scrollbox').after('<div align=\"center\" class=\"paginator\"></div>');
+		            
+				$('.paginator').paginator({
+                pagesTotal  : MAX_PAGE, 
+				pagesSpan   : 11, 
+				pageCurrent : CURR_PAGE, 
+				baseUrl     : PAGER_HREF,
+								clickHandler : function (page){
+				    page = PAGER_HREF.replace(/%number%/i,page);
+				$.jGrowl(\"{$REL_LANG->_('Loading next page, please be patient')}\", { header: \"{$REL_LANG->_('Loading')}\" });
+				$.get(page, '', function(newitems){
+			$('#$el_id tbody').html(newitems);
+		});
+					return false;
+				}
+            });
+	});
+
+		</script>");
 	
 	return "LIMIT $perpage";
 	} else {
@@ -254,7 +281,7 @@ function write_msg($sender,$receiver,$msg,$subject) {
  * @return void
  */
 function httpauth(){
-	global  $CURUSER, $REL_LANG, $REL_SEO, $REL_DB;
+	global  $CURUSER, $REL_LANG, $REL_SEO, $REL_DB, $REL_TPL;
 
 	if(isset($_SERVER['HTTP_AUTHORIZATION'])) {
 		$auth_params = explode(":" , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
@@ -454,6 +481,21 @@ function AgeToStr($age)
 	}
 	return $age . " " . $str ;
 }
+
+
+
+function substrr($text, $length)
+{
+    $length = strripos(substr($text, 0, $length), '.');
+    return substr($text, 0, $length);
+}
+
+
+
+
+
+
+
 
 /**
  * Gets all images from text
@@ -1333,9 +1375,14 @@ function sent_mail($to,$fromname,$fromemail,$subject,$body,$multiplemail='') {
 	$m->Subject = $subject;
 	$m->MsgHTML($body);
 	if ($multiplemail) {
-		return true;
+		//return true;
 		foreach (explode($multiplemail) as $addr)
-		$m->AddAddress($addr);
+		{
+			$m2 = clone $m;
+			$m2->AddAddress($addr);
+			$return = $m2->Send();
+		}
+		return $return;
 		
 	} else $m->AddAddress($to);
 	return $m->Send();
@@ -1361,7 +1408,8 @@ function sqlesc($value) {
  * @return string Escaped value
  */
 function sqlwildcardesc($x) {
-	return str_replace(array("%","_"), array("\\%","\\_"), mysql_real_escape_string($x));
+	global $REL_DB;
+	return $REL_DB->sqlwildcardesc($x);
 }
 
 /**
@@ -1573,8 +1621,11 @@ function loggedinorreturn() {
  * Deletes torrent from database and folder
  * @param int $id id for torrent to be deleted
  */
-function deletetorrent($id) {
-	global  $CURUSER, $REL_SEO, $REL_DB;
+function deletetorrent($id,$reason='') {
+	global  $CURUSER, $REL_SEO, $REL_DB, $REL_LANG;
+
+	$row = $REL_DB->query_row("SELECT name,owner FROM torrents WHERE id = $id");
+
 	$REL_DB->query("DELETE FROM notifs WHERE checkid = $id AND type='relcomments'");
 	$REL_DB->query("DELETE FROM torrents WHERE id = $id");
 	$REL_DB->query("DELETE FROM bookmarks WHERE id = $id");
@@ -1589,7 +1640,12 @@ function deletetorrent($id) {
 	if ($images) {
 		foreach ($images as $img) unlink($img);
 	}
-	write_log(make_user_link()." deleted torrent with id $id (system message)",'system_functions');
+	
+	if ($row['owner']&&$reason) {
+		write_sys_msg($row['owner'], $REL_LANG->_to($row['owner'],'Your release named "%s" was deleted by %s with the following reason: %s',$row['name'],make_user_link(),$reason), $REL_LANG->_to($row['owner'],'Your release was deleted'));
+	
+	}
+	write_log(make_user_link()." deleted torrent with id $id and name \"{$row['name']}\" (system message)",'system_functions');
 	return;
 }
 
@@ -1809,19 +1865,10 @@ function prepare_for_torrenttable($res) {
 	if (!$tree) $tree = make_tree();
 	$resarray = array();
 	$REL_CONFIG['pron_cats'] = explode(',',$REL_CONFIG['pron_cats']); //pron
-
+	$cats = assoc_full_cats();
 	while ($resvalue = mysql_fetch_array($res)) {
 		$chsel = array();
-		$cats = explode(',',$resvalue['category']);
-		$catq= array_shift($cats);
-		$catq = get_cur_branch($tree,$catq);
-		$childs = get_childs($tree,$catq['parent_id']);
-		if ($childs) {
-			foreach($childs as $child)
-			if (($catq['id'] != $child['id']) && in_array($child['id'],$cats)) $chsel[]="<a href=\"".$REL_SEO->make_link("browse","cat",$child['id'])."\">".makesafe($child['name'])."</a>";
-			$resvalue['cat_names'] = get_cur_position_str($tree,$catq['id']).($chsel && is_array($chsel)?', '.implode(', ',$chsel):'');
-			//$resarray[$resvalue['id']] = $resvalue;
-		} else $resvalue['cat_names'] = get_cur_position_str($tree,$catq['id']);
+		$resvalue['cat_names'] = get_full_position_strr($cats,$resvalue['category']);
 
 		if ($resvalue['sticky']&&!$st_used) {$resvalue['label'] = $REL_LANG->_("Sticky"); $st_used=true;}
 
@@ -1859,6 +1906,7 @@ function prepare_for_torrenttable($res) {
 		}
 		$resvalue['month_added'] = mkprettymonth($resvalue["added"]);
 		$resvalue['new'] = (@in_array($resvalue['id'],$CURUSER['torrents']));
+		$resvalue['tags'] = str_replace(',',', ',$resvalue['tags']);
 		if ($resvalue['images']) {
 			$resvalue['images'] = explode(',',$resvalue['images']);
 			$resvalue['images'] = array_shift($resvalue['images']);
@@ -2057,7 +2105,7 @@ function send_notifs($type,$text = '',$id = 0) {
 	if ($emails) {
 		$emails = sqlesc($emails);
 		$subject = sqlesc($REL_LANG->say_by_key('new_'.$type,$language));
-		$msg = sqlesc($REL_LANG->say_by_key('notice_'.$type,$language).$text."<hr/ ><a href=\"".$REL_SEO->make_link('index')."\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->_lang($language,'You can always configure your notifications in <a href="%s">notification settings</a> of your account.',$REL_SEO->make_link("mynotifs","settings"))}</div>");
+		$msg = sqlesc($REL_LANG->say_by_key('notice_'.$type,$language).$text."<hr/ ><a href=\"".$REL_SEO->make_link('index')."\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->_lang($language,'You can always configure your notifications in <a href="%s">notification settings</a> of your account.',$REL_SEO->make_link("mynotifs","settings",'1'))}</div>");
 		//	$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]");
 		$REL_DB->query("INSERT INTO cron_emails (emails, subject, body) VALUES ($emails,$subject, $msg)");
 	}
@@ -2144,22 +2192,29 @@ function &make_tree($table='categories',$condition='')
  */
 function gen_select_area($name, $tree, $selected='', $selectparents = false, $multiple=false, $recurs = false, $level = 0, &$t_content = '') {
 	global  $REL_LANG, $REL_DB;
+	
 	$pass_sel = $selected;
 	$selected = explode(',',$selected);
-	if (!$recurs) $t_content = "<select name=\"$name\"".($multiple?' multiple="multiple"':'')."><option value=\"0\">{$REL_LANG->say_by_key('choose')}</option>\n";
+	if (!$recurs) {
+		$t_content = "<div class=\"sp-wrap\" style=\"width:200px\"><div class=\"sp-head folded clickable\">{$REL_LANG->_('Select category')}</div><div class=\"sp-body\">";
+	}
 
 	foreach ($tree as $branch) {
-		$add = str_repeat('--',$level).' ';
+
+		//$add = ($level?str_repeat('--',$level-1).'|- ':'');
 		if ($branch['nodes']) {
 			$level++;
-			$t_content .="<option class=\"select\" value=\"{$branch['id']}\"".(!$selectparents?" disabled=\"disabled\"":(in_array($branch['id'],$selected)?" selected=\"selected\"":'')).">$add{$branch['name']}</option>\n";
-			gen_select_area('',$branch['nodes'],$pass_sel, $selectparents, $multiple, true,$level, $t_content);
+			$t_content .="<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\">".($selectparents?"<input name=\"{$name}".($multiple?'[]':'')."\" value=\"{$branch['id']}\" type=\"checkbox\"".(in_array($branch['id'],$selected)?' checked="checked"':'')."/>&nbsp;":'')."{$branch['name']}</div><div class=\"sp-body\">\n";
+			gen_select_area($name,$branch['nodes'],$pass_sel, $selectparents, $multiple, true,$level, $t_content);
 			$level--;
+			$t_content .="</div></div>";
 		} else {
-			$t_content .="<option value=\"{$branch['id']}\"".((in_array($branch['id'],$selected))?" selected=\"selected\"":'').">$add{$branch['name']}</option>\n";
+			$t_content .="<input type=\"checkbox\" value=\"{$branch['id']}\" name=\"{$name}".($multiple?'[]':'')."\"".(in_array($branch['id'],$selected)?' checked="checked"':'')."/>&nbsp;{$branch['name']}<br/>\n";
 		}
 	}
-	if (!$recurs) { $t_content.= "</select>\n";  return $t_content; }
+	if (!$recurs) {
+		$t_content.= "</div></div>\n";  return $t_content;
+	}
 }
 
 /**
@@ -2249,9 +2304,9 @@ function get_full_childs_ids($tree, $tid, $type='categories', &$array = array(),
 function get_cur_position($tree, $cid, $viewer='browse', $byimages=false, &$array = '') {
 	global  $REL_SEO, $REL_DB;
 	foreach ($tree as $branch) {
-		if ($cid==$branch['id']) { $array[]="<a href=\"".$REL_SEO->make_link($viewer,"cat",$branch['id'])."\">".(($byimages && $branch['image'])?"<img style=\"border:none;\" src=\"pic/cats/{$branch['image']}\" title=\"{$branch['name']}\" alt=\"{$branch['name']}\"/>":$branch['name'])."</a>"; return $array; }
+		if ($cid==$branch['id']) { $array[$branch['name']]="<a href=\"".$REL_SEO->make_link($viewer,"cat",$branch['id'])."\">".(($byimages && $branch['image'])?"<img style=\"border:none;\" src=\"pic/cats/{$branch['image']}\" title=\"{$branch['name']}\" alt=\"{$branch['name']}\"/>":$branch['name'])."</a>"; return $array; }
 		elseif ($branch['nodes']) {
-			$array[]="<a href=\"".$REL_SEO->make_link($viewer,"cat",$branch['id'])."\">".(($byimages && $branch['image'])?"<img style=\"border:none;\" src=\"pic/cats/{$branch['image']}\" title=\"{$branch['name']}\" alt=\"{$branch['name']}\"/>":$branch['name'])."</a>";
+			$array[$branch['name']]="<a href=\"".$REL_SEO->make_link($viewer,"cat",$branch['id'])."\">".(($byimages && $branch['image'])?"<img style=\"border:none;\" src=\"pic/cats/{$branch['image']}\" title=\"{$branch['name']}\" alt=\"{$branch['name']}\"/>":$branch['name'])."</a>";
 			$res = get_cur_position($branch['nodes'],$cid, $viewer, $byimages, $array);
 			if (!$res) array_pop($array); else return $res;
 		}
@@ -2259,10 +2314,33 @@ function get_cur_position($tree, $cid, $viewer='browse', $byimages=false, &$arra
 	}
 }
 
+
+
+
+
+
+
+
+
+/**
+ * Searches the same named categories
+ * @param array $cats Tree of categories
+ * @param string $name Category name search for
+ * @return array Array of IDs of categories named as $name
+ */
+function find_name_ids($cats,$name) {
+	$return = array();
+	foreach ($cats as $c) {
+		if ($c['name']==$name) $return[] = $c['id'];
+		if ($c['nodes']) $return = array_merge($return,find_name_ids($c['nodes'],$name));
+	}
+	return $return;
+}
+
 /**
  * Implodes way, given by get_cur_position() by passed separator
  * @param array $tree Tree to be processed
- * @param int $cid id of processing branch
+ * @param int $tid id of processing branch
  * @param string $viewer Script to view by branches. Default 'browse' (without .php extention)
  * @param boolean $byimages Repace branch names by branch images? Default false
  * @param string $separator Symbol (string) to separate waypoints
@@ -2273,6 +2351,44 @@ function get_cur_position_str($tree,$tid, $viewer = 'browse', $byimages=false, $
 	if (!$array) return '';
 	return implode($separator,$array);
 }
+
+/**
+ * Prints full way to categories, even multiple
+ * @param array $cats FULL Array of categories
+ * @param string $tids ids of processing branches, separated by comma
+ * @param string $viewer Script to view by branches. Default 'browse' (without .php extention)
+ * @param boolean $byimages Repace branch names by branch images? Default false
+ * @param string $separator Symbol (string) to separate waypoints
+ * @return string String of way or empty line on fail
+ */
+function get_full_position_str($cats,$tids, $viewer = 'browse', $byimages=false, $separator=' / ') {
+	global $REL_SEO;
+	$tids = explode(',',$tids);
+	foreach ($tids as $tid) {
+	$return[$cats[$tid]['parent_id']][] = "<a href=\"".$REL_SEO->make_link($viewer,"cat",$tid)."\">".(($byimages && $cats[$tid]['image'])?"<img style=\"border:none;\" src=\"pic/cats/{$cats[$tid]['image']}\" title=\"{$cats[$tid]['name']}\" alt=\"{$cats[$tid]['name']}\"/>":$cats[$tid]['name'])."</a>";
+	}
+	foreach ($return as $k=>$r) {
+		$return[$k] = implode(', ',$r);
+	}
+	return implode($separator,$return);
+}
+
+
+
+function get_full_position_strr($cats,$tids, $viewer = 'browse', $byimages=true, $separator=' / ') {
+	global $REL_SEO;
+	$tids = explode(',',$tids);
+	foreach ($tids as $tid) {
+	$return[$cats[$tid]['parent_id']][] = "<a href=\"".$REL_SEO->make_link($viewer,"cat",$tid)."\">".(($byimages && $cats[$tid]['image'])?"<img style=\"border:none;\" src=\"pic/cats/{$cats[$tid]['image']}\" title=\"{$cats[$tid]['name']}\" alt=\"{$cats[$tid]['name']}\"/>":$cats[$tid]['name'])."</a>";
+	}
+	foreach ($return as $k=>$r) {
+		$return[$k] = implode(', ',$r);
+	}
+	return implode($separator,$return);
+}
+
+
+
 
 /**
  * This is a part of notification system. Sets element visited.
@@ -2383,7 +2499,7 @@ function generate_lang_js() {
  * Outputs beta warning. Default false.
  * @var boolean
  */
-define ("BETA", true);
+define ("BETA", false);
 /**
  * Beta warning as it is
  * @var string
@@ -2393,5 +2509,5 @@ define ("BETA_NOTICE", "\n<br />This isn't complete release of source!");
  * Kinokpk.com releaser's version
  * @var string
  */
-define("RELVERSION","3.40 experimental alpha with xbt support");
+define("RELVERSION","3.39");
 ?>

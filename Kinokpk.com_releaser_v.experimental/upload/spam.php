@@ -22,7 +22,7 @@ if (!$count){
 	$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Nothing was found'));
 }
 
-$limit = ajaxpager(50, $count, array('spam'), "messages > tbody:last");
+$limit = ajaxpager(50, $count, array('spam'), "messages");
 if (!pagercheck()) {
 $REL_TPL->stdhead($REL_LANG->_('Private messages viewer'));
 

@@ -190,7 +190,7 @@ if (in_array($type,$allowed_types))
 		$REL_TPL->begin_frame($REL_LANG->say_by_key('history_'.$type).sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 
 
-		$limit = ajaxpager(25, $count, array('userhistory','id',$id,'name',$user['username'],'type',$type), 'comments-table > tbody:last');
+		$limit = ajaxpager(25, $count, array('userhistory','id',$id,'name',$user['username'],'type',$type), 'comments-table');
 		$query = "SELECT comments.id, comments.toid, comments.type, comments.ip, comments.ratingsum, comments.text, comments.user, comments.added, comments.editedby, comments.editedat, users.avatar, users.warned, users.username, users.title, users.class, users.donor, users.enabled, users.ratingsum AS urating, users.gender, users.last_access, e.username AS editedbyname, $name[$type] FROM comments LEFT JOIN users ON comments.user = users.id LEFT JOIN users AS e ON comments.editedby = e.id{$leftjoin[$type]} WHERE $where ORDER BY $order $limit";
 		$res = $REL_DB->query($query);
 		$commentsarray = prepare_for_commenttable($res);

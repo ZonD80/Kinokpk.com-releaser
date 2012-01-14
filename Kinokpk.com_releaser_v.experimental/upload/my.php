@@ -107,6 +107,8 @@ if (get_privilege('ownsupport',false)) {
 	print('</div></div>');
 }
 print ('<form id="myform" method="post" action="'.$REL_SEO->make_link('takeprofedit').'">');
+
+if (get_privilege('change_nick',false))
 div($REL_LANG->_('Nickname'),"<input type=\"text\"  name=\"username\" size=\"40\" maxlength=\"40\" value=\"" . htmlspecialchars($CURUSER["username"]) . "\" /> ", 1,'my_title','my_web');
 div($REL_LANG->say_by_key('my_avatar_url'),$CURUSER['avatar']?"<img src=\"".$CURUSER['avatar']."\">":"Нет аватара",1,'my_title','my_avatar');
 div(!$CURUSER['avatar'] ? $REL_LANG->_('Upload avatar') : $REL_LANG->_('Change avatar'), "<a class=\"index\" href=\"".$REL_SEO->make_link('avatarup')."\" onclick=\"javascript:$.facebox({ajax:'".$REL_SEO->make_link('avatarup')."'}); return false;\">Кликните сюда для загрузки</a><br />\n".sprintf($REL_LANG->say_by_key('max_avatar_size'), $REL_CONFIG['avatar_max_width'], $REL_CONFIG['avatar_max_height']), 1,'my_title','up_avatar');
@@ -132,7 +134,6 @@ print('<div class="clear"></div>');
 div($REL_LANG->say_by_key('my_country'), "<select id='country' name=country>\n$countries\n</select>",1,'my_title','my_count');
 div($REL_LANG->say_by_key('my_timezone'), list_timezones('timezone',$CURUSER['timezone']),1,'my_title','my_count');
 div($REL_LANG->say_by_key('my_language'), $lang_select ,1,'my_title','my_count');
-div($REL_LANG->say_by_key('my_website'), "<input type=\"text\"  name=\"website\" size=50 value=\"" . htmlspecialchars($CURUSER["website"]) . "\" /> ", 1,'my_title','my_web');
 div($REL_LANG->_("Signature"), $REL_LANG->_("Your signature will be shown in comments. Maximum length is %s characters (if more, text will be cutted). Pure HTML knowing is allowed!",$REL_CONFIG['sign_length'])."<br /><textarea name=info cols=57 rows=4>" . $CURUSER["info"] . "</textarea><br />", 1,'my_title','my_area');
 print('<div class="clear"></div>');
 
@@ -143,7 +144,7 @@ div($REL_LANG->say_by_key('my_sentbox'), "<input type=checkbox class=\"styled\" 
 print('<div class="clear"></div>');
 //                   $spbegin = "<div style=\"position: static;\" class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"bottom\" width=\"50%\"><i>Открыть список</i></td></tr></table></div><div class=\"sp-body\">";
 //              $spend = "</div></div>";
-div($REL_LANG->_("My notifications"),'<a href="'.$REL_SEO->make_link('mynotifs','settings','').'">'.$REL_LANG->_("Go to configuration page of my notifications").'</a>',1,'my_title','my_sent');
+div($REL_LANG->_("My notifications"),'<a href="'.$REL_SEO->make_link('mynotifs','settings','1').'" onclick="javascript:jQuery.facebox({ajax:\''.$REL_SEO->make_link('mynotifs','settings','1').'\'}); return false;">'.$REL_LANG->_("Go to configuration page of my notifications").'</a>',1,'my_title','my_sent');
 div($REL_LANG->say_by_key('my_style'), "<select class=\"linkselect\" id=\"stylesheet\" name=stylesheet>\n$stylesheets\n</select>",1,'my_title','my_style');
 div($REL_LANG->say_by_key('view_xxx'),"<p><input type=radio class=\"styled\" name=pron" . (!$CURUSER["pron"] ? " checked" : "") . " value=0><span>".$REL_LANG->say_by_key('no')."</span></p><p>
 <input type=radio class=\"styled\" name=pron" . ($CURUSER["pron"]? " checked" : "") . " value=1><span>".$REL_LANG->say_by_key('yes')."</span></p>",1,'my_title','my_xxx');

@@ -22,7 +22,7 @@ $level = get_class_priority($classes['staffbegin']);
 foreach ($classes as $cid=>$class) {
 	if (is_int($cid)&&$class['priority']&&$class['priority']>=$level) $to_select[] = $cid;
 }
-$res = $REL_DB->query("SELECT id,username,class, donor, warned, enabled, (SELECT SUM(1) FROM sessions WHERE uid=users.id AND time>$dt) AS online FROM users WHERE class IN (".implode(',',$to_select).") AND confirmed=1 GROUP BY users.id ORDER BY class DESC, username ASC" );
+$res = $REL_DB->query("SELECT users.id,users.username,users.class, users.donor, users.warned, users.enabled, (SELECT SUM(1) FROM sessions WHERE uid=users.id AND time>$dt) AS online FROM users LEFT JOIN classes ON users.class=classes.id WHERE classes.id IN (".implode(',',$to_select).") ORDER BY classes.prior DESC, username ASC" );
 
 while ($arr = mysql_fetch_assoc($res))
 {

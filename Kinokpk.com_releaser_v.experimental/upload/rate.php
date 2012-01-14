@@ -21,6 +21,7 @@ $type = (string)$_GET['type'];
 
 $allowed_types = array('torrents','users','rel','poll','news','user','req','relgroups','rg','forum');
 $comment_types = array('poll', 'news', 'users', 'req', 'rel', 'rg','forum');
+
 /**
  * Checks that user cannot change himself ratings
  * @param int $id ID of element to change rating
@@ -49,7 +50,8 @@ $voted = @mysql_result($REL_DB->query("SELECT id FROM ratings WHERE userid={$CUR
 if (!$voted) {
 	$REL_DB->query("INSERT INTO ratings (rid,userid,type,added) VALUES ($rid,{$CURUSER['id']},'$type',".time().")");
 	$REL_DB->query("UPDATE ".(in_array($type,$comment_types)?"comments":$type)." SET ratingsum=ratingsum$act WHERE id=$rid");
-	$REL_DB->query("UPDATE users SET ratingsum=ratingsum$act WHERE id=(SELECT user FROM ".(in_array($type,$comment_types)?"comments":$type)." WHERE id=$rid)");
+	if (in_array($type,$comment_types))
+	$REL_DB->query("UPDATE users SET ratingsum=ratingsum$act WHERE id=(SELECT user FROM comments WHERE id=$rid)");
 	$_SESSION['already_rated'][$type][] = $rid;
 	$REL_TPL->stderr($REL_LANG->say_by_key('rating'),$REL_LANG->say_by_key('voted'),'success');
 } else {

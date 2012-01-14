@@ -308,7 +308,7 @@ else {
 
 		}
 		else {
-			$limit = ajaxpager(25, $count, array('relgroups','id',$id), 'comments-table > tbody:last');
+			$limit = ajaxpager(25, $count, array('relgroups','id',$id), 'comments-table');
 			$subres = $REL_DB->query("SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
 												  "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .
 												  "$id AND c.type='rg' GROUP BY c.id ORDER BY c.id DESC $limit");

@@ -113,7 +113,7 @@ class REL_LANG {
 		if ($this->lang[$language]) return;
 		$this->lang[$language] = $REL_CACHE->get('languages',$language);
 		if ($this->lang[$language]===false) {
-			$res = $REL_DB->query("SELECT lkey,lvalue FROM languages WHERE ltranslate='$language'");
+			$res = $REL_DB->query("SELECT lkey,lvalue FROM languages WHERE ltranslate='$language' ORDER by lkey ASC");
 			while ($row = mysql_fetch_assoc($res))
 			$this->lang[$language][$row['lkey']] = $row['lvalue'];
 			if (!$this->lang[$language]) {
