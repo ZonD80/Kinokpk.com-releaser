@@ -1698,6 +1698,7 @@ function prepare_for_commenttable($subres,$subject='',$link='') {
 	while ( $row = mysql_fetch_array ( $subres ) ) {
 		$visited_type = $row['type'].'comments';
 		if ($row['last_access']>(time()-300)) $row['userstate'] = 'online'; else $row['userstate'] = 'offline';
+		if ($subject) $row['subject'] = $subject;
 		if (strlen($row['subject'])>70) $row['subject'] = substr($row['subject'],0,67).'...';
 		if ($row['user']) {
 			$row['ratearea']['comment'] = ratearea($row['ratingsum'],$row['id'],$row['type'],(($CURUSER['id']==$row['user'])?$row['id']:0));
@@ -1709,7 +1710,6 @@ function prepare_for_commenttable($subres,$subject='',$link='') {
 		if (!$avatar){$avatar = "pic/default_avatar.gif"; }
 		$row['avatar'] = $avatar;
 		set_visited($visited_type,$row['id']);
-		if ($subject) $row['subject'] = $subject;
 		if ($link) $row['link'] = $link; else {
 			$row['link'] = sprintf($allowed_links[$row['type']],$row['toid']);
 		}
