@@ -484,9 +484,11 @@ function AgeToStr($age)
 
 
 
+
 function substrr($text, $length)
 {
     $length = strripos(substr($text, 0, $length), '.');
+
     return substr($text, 0, $length);
 }
 
@@ -1692,7 +1694,8 @@ function prepare_for_commenttable($subres,$subject='',$link='') {
 	while ( $row = mysql_fetch_array ( $subres ) ) {
 		$visited_type = $row['type'].'comments';
 		if ($row['last_access']>(time()-300)) $row['userstate'] = 'online'; else $row['userstate'] = 'offline';
-		if (mb_strlen($row['subject'])>70) $row['subject'] = substr($row['subject'],0,67).'...';
+		if ($subject) $row['subject'] = $subject;
+		if (mb_strlen($row['subject'])>70) $row['subject'] = mb_substr($row['subject'],0,67).'...';
 		if ($row['user']) {
 			$row['ratearea']['comment'] = ratearea($row['ratingsum'],$row['id'],$row['type'],(($CURUSER['id']==$row['user'])?$row['id']:0));
 			$row['ratearea']['user'] = ratearea($row['urating'],$row['user'],'users',$CURUSER['id']);
@@ -1703,7 +1706,6 @@ function prepare_for_commenttable($subres,$subject='',$link='') {
 		if (!$avatar){$avatar = "pic/default_avatar.gif"; }
 		$row['avatar'] = $avatar;
 		set_visited($visited_type,$row['id']);
-		if ($subject) $row['subject'] = $subject;
 		if ($link) $row['link'] = $link; else {
 			$row['link'] = sprintf($allowed_links[$row['type']],$row['toid']);
 		}
@@ -1718,7 +1720,7 @@ function prepare_for_commenttable($subres,$subject='',$link='') {
  * @param string $custom_tpl Custom template to use, default commenttable.tpl
  * @return void|string
  */
-function commenttable($rows,$fetch = false, $custom_tpl='commenttable.tpl') {
+function commenttable($rows,$fetch =false, $custom_tpl='commenttable.tpl') {
 	global  $CURUSER, $REL_CONFIG, $REL_LANG, $REL_SEO, $REL_TPL, $REL_DB;
 
 	$IS_MODERATOR = (get_privilege('is_moderator',false));
@@ -2196,7 +2198,7 @@ function gen_select_area($name, $tree, $selected='', $selectparents = false, $mu
 	$pass_sel = $selected;
 	$selected = explode(',',$selected);
 	if (!$recurs) {
-		$t_content = "<div class=\"sp-wrap\" style=\"width:200px\"><div class=\"sp-head folded clickable\">{$REL_LANG->_('Select category')}</div><div class=\"sp-body\">";
+		$t_content = "<div class=\"sp-wrap\" style=\"width:200px\"><div class=\"sp-head folded clickable\">{$REL_LANG->_('Select category')}</div><div class=\"sp-body\" style=\"text-align:left\">";
 	}
 
 	foreach ($tree as $branch) {
@@ -2499,7 +2501,7 @@ function generate_lang_js() {
  * Outputs beta warning. Default false.
  * @var boolean
  */
-define ("BETA", false);
+define ("BETA", true);
 /**
  * Beta warning as it is
  * @var string
@@ -2509,5 +2511,5 @@ define ("BETA_NOTICE", "\n<br />This isn't complete release of source!");
  * Kinokpk.com releaser's version
  * @var string
  */
-define("RELVERSION","3.39");
+define("RELVERSION","4.00 experimental alpha");
 ?>
