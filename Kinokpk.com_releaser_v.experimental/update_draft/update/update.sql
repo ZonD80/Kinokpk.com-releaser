@@ -518,3 +518,31 @@ ALTER TABLE  `trackers` ADD  `check_start` INT( 10 ) UNSIGNED NOT NULL DEFAULT  
 alter table trackers add index (check_start,state);
 alter table trackers add index (state);
 alter table trackers add index (num_failed);
+
+ALTER TABLE `users` DROP `old_password`;
+
+ALTER TABLE  `users` ADD  `forum_id` INT( 10 ) UNSIGNED NULL COMMENT  'ID of forum account';
+
+INSERT INTO  `cache_stats` (
+`cache_name` ,
+`cache_value`
+)
+VALUES (
+'forumurl',  'http://www.torrentsbook.com/forum'
+);
+
+INSERT INTO  `cache_stats` (
+`cache_name` ,
+`cache_value`
+)
+VALUES (
+'forumname',  'Форум'
+);
+
+INSERT INTO  `cache_stats` (
+`cache_name` ,
+`cache_value`
+)
+VALUES (
+'forum_signup_class',  '3'
+);
