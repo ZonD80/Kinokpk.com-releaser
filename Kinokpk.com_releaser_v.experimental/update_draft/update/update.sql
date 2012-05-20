@@ -546,3 +546,7 @@ INSERT INTO  `cache_stats` (
 VALUES (
 'forum_signup_class',  '3'
 );
+
+DROP TABLE `forum_categories`, `forum_topics`;
+
+delete from comments where type='forum';
