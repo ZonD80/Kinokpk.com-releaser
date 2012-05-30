@@ -236,7 +236,7 @@ function bdec($s) {
 		if (strlen($v) != $l) return;
 		return array('type' => "string", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
 	}
-	if (preg_match('/^i(\d+)e/', $s, $m)) {
+	if (preg_match('/^i(-?\d+)e/', $s, $m)) {
 		$v = $m[1];
 		$ss = "i" . $v . "e";
 		if ($v === "-0")
