@@ -61,7 +61,7 @@ if (!$count) { $content = "<div align=\"center\">{$REL_LANG->_('No releases yet'
 		
 
 
-if (strlen($row['descr'])>1000) $rowdescr = substr($row['descr'],0,1000).'...';
+if (strlen($row['descr'])>1000) $row['descr'] = substr($row['descr'],0,1000).'...';
 
 	if ($pron) { $image = 'pic/nopron.gif';  $row['name'] = $REL_LANG->say_by_key('xxx_release'); } else
 		if ($row['images']) $image = array_shift(explode(",",$row['images'])); else $image='pic/noimage.gif';
@@ -83,7 +83,7 @@ if (strlen($row['descr'])>1000) $rowdescr = substr($row['descr'],0,1000).'...';
 
   <td style=\"padding-top:10px;\">
     <div align=\"left\">
-      {$rowdescr}
+      {$row['descr']}
     </div>
     <br>
     <br>
