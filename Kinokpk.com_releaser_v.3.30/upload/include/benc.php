@@ -6,6 +6,10 @@
  * @author ZonD80 <admin@kinokpk.com>
  * @copyright (C) 2008-now, ZonD80, Germany, TorrentsBook.com
  * @link http://dev.kinokpk.com
+ *
+ * UDP scraper by Johannes Zinnau <johannes@johnimedia.de> (C) 2010
+ * Licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License
+ * http://creativecommons.org/licenses/by-sa/3.0/
  */
 
 if(!defined("IN_ANNOUNCE") && !defined("IN_TRACKER")) die("Direct access to this page not allowed");
@@ -445,8 +449,6 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 
 	if ($http_port === 0)
 	return array('tracker' => $http_host, 'state' => 'failed:no_port_detected', 'method' => $method, 'remote_method' => 'N/A');
-	else
-	$http_port = ':' . $http_port;
 
 	$http_path = $urlInfo['path'];
 	$get_request_params = explode('&', $urlInfo['query']);
@@ -475,13 +477,62 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 		$http_path = '/scrape';
 	}
 	
-	$req_uri = $scheme.'://'.$http_host.$http_port.$http_path.($http_params ? '?'.$http_params : '');
+	$req_uri = $scheme.'://'.$http_host.':'.$http_port.$http_path.($http_params ? '?'.$http_params : '');
 
-	if ($scheme=='udp'&&$method=='announce') {
-		// here it is. Packets http://xbtt.sourceforge.net/udp_tracker_protocol.html
-		return array('tracker' => $http_host, 'state' => 'failed:udp_not_supported', 'method' => $method, 'remote_method' => 'not_supported');
-		
-	}
+    if ($scheme=='udp'&&$method=='scrape') {
+        // most of UDP trackers provides scrape via HTTP. Strange, but true. So I use this little tweak.
+        $scheme = 'http';
+        $http_path = '/scrape';
+    }
+
+    $req_uri = $scheme.'://'.$http_host.':'.$http_port.$http_path.($http_params ? '?'.$http_params : '');
+
+    if ($scheme=='udp'&&$method=='announce') { // this IS NOT actually UDP announce. If method above fails, we try to parse real UDP scrape.
+
+        $transaction_id = mt_rand(0,65535);
+        $fp = fsockopen($scheme.'://'.$http_host, $http_port, $errno, $errstr); //sockets only
+        if(!$fp) return array('tracker' => $http_host, 'state' => 'failed:timeout', 'method' => 'scrape', 'remote_method' => 'socket');
+        stream_set_timeout($fp, 3);
+
+        $current_connid = "\x00\x00\x04\x17\x27\x10\x19\x80";
+
+        //Connection request
+        $packet = $current_connid . pack("N", 0) . pack("N", $transaction_id);
+        fwrite($fp,$packet);
+
+        //Connection response
+        $ret = fread($fp, 16);
+        if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => 'scrape', 'remote_method' => 'socket'); }
+        if(strlen($ret) < 16){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => 'scrape', 'remote_method' => 'socket'); }
+        $retd = unpack("Naction/Ntransid",$ret);
+        if($retd['action'] != 0 || $retd['transid'] != $transaction_id){
+            return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => 'scrape', 'remote_method' => 'socket');
+        }
+        $current_connid = substr($ret,8,8);
+
+        //Scrape request
+
+        $packet = $current_connid . pack("N", 2) . pack("N", $transaction_id) . pack('H*', hex($info_hash));
+        fwrite($fp,$packet);
+
+        //Scrape response
+        $readlength = 20;//8 + (12);
+        $ret = fread($fp, $readlength);
+        if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => 'scrape', 'remote_method' => 'socket'); }
+        if(strlen($ret) < 8){ array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => 'scrape', 'remote_method' => 'socket'); }
+        $retd = unpack("Naction/Ntransid",$ret);
+        // Todo check for error string if response = 3
+        if($retd['action'] != 2 || $retd['transid'] != $transaction_id){
+            array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => 'scrape', 'remote_method' => 'socket');
+        }
+        if(strlen($ret) < $readlength){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => 'scrape', 'remote_method' => 'socket'); }
+
+        $index = 8;
+        $retd = unpack("Nseeders/Ncompleted/Nleechers",substr($ret,$index,12));
+
+        return array('tracker' => $http_host, 'seeders' => $retd['seeders'], 'leechers' => $retd['leechers'], 'state'=> 'ok', 'method' => 'scrape', 'remote_method' => 'socket');
+
+    }
 
 	elseif ( function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1 ) {
 		$context = @stream_context_create($opts);
