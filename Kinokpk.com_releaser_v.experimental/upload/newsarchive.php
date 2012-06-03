@@ -31,7 +31,9 @@ if ($count)
 		print("<tr><td>");
 		print("<table border='0' cellspacing='0' width='100%' cellpadding='5'>
             <tr><td class='colhead'>".$subject."");
-		print("</td></tr><tr><td>".format_comment($body)."</td></tr>");
+	
+
+	print("</td></tr><tr><td>".format_comment($body)."</td></tr>");
 		print("</td></tr>");
 		print("<tr><td style='background-color: #F9F9F9'>
 

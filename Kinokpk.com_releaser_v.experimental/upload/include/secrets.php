@@ -12,7 +12,7 @@
 
 if(!defined('IN_TRACKER') && !defined('IN_ANNOUNCE')) die("Direct access to this page not allowed");
 
-$db['host'] = 'localhost';
+$db['host'] = '';
 $db['user'] = '';
 $db['pass'] = '';
 $db['db'] = '';

@@ -136,5 +136,6 @@ $REL_TPL->begin_frame("Администрация");
 
 		?>
 		<?php		$REL_TPL->end_main_frame();
+
 		$REL_TPL->stdfoot();
 		?>

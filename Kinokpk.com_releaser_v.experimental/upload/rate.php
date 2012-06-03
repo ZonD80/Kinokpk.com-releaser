@@ -19,8 +19,8 @@ $rid = (int)$_GET['id'];
 $type = (string)$_GET['type'];
 
 
-$allowed_types = array('torrents','users','rel','poll','news','user','req','relgroups','rg','forum');
-$comment_types = array('poll', 'news', 'users', 'req', 'rel', 'rg','forum');
+$allowed_types = array('torrents','users','rel','poll','news','user','req','relgroups','rg');
+$comment_types = array('poll', 'news', 'users', 'req', 'rel', 'rg');
 
 /**
  * Checks that user cannot change himself ratings

@@ -14,7 +14,7 @@ INIT();
 loggedinorreturn();
 
 
-$allowed_types_view = array ('unread', 'torrents', 'relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments','forumcomments'/*,'rgnewscomments'*/,'friends');
+$allowed_types_view = array ('unread', 'torrents', 'relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments'/*,'rgnewscomments'*/,'friends');
 if (get_privilege('is_moderator',false)) {
 	//   $allowed_types_moderator = array('users' => 'userdetails.php?id=', 'reports' => 'reports.php?id=', 'unchecked' => 'details.php?id=');
 	$allowed_types_moderator = array('users', 'reports', 'unchecked');
@@ -107,10 +107,10 @@ if (!$type) {
 	$REL_TPL->stdfoot();
 	die();
 	}
-	$allowed_links = array (/*'unread' => $REL_SEO->make_link('message','action','viewmessage','id',''), */'torrents' => $REL_SEO->make_link('details','id',''), 'relcomments' => $REL_SEO->make_link('details','id',''), 'pollcomments' => $REL_SEO->make_link('polloverview','id',''), 'newscomments' => $REL_SEO->make_link('newsoverview','id',''), 'usercomments' => $REL_SEO->make_link('userdetails','id',''), 'reqcomments' => $REL_SEO->make_link('requests','id',''), 'rgcomments' => $REL_SEO->make_link('relgroups','id',''), 'users' => $REL_SEO->make_link('userdetails','id',''), 'reports' => $REL_SEO->make_link('reports','id',''), 'unchecked' => $REL_SEO->make_link('details','id',''), 'friends' => $REL_SEO->make_link('userdetails','id',''), 'forumcomments'=> $REL_SEO->make_link('forum','a','viewtopic','id','%s','p','%s'));
+	$allowed_links = array (/*'unread' => $REL_SEO->make_link('message','action','viewmessage','id',''), */'torrents' => $REL_SEO->make_link('details','id',''), 'relcomments' => $REL_SEO->make_link('details','id',''), 'pollcomments' => $REL_SEO->make_link('polloverview','id',''), 'newscomments' => $REL_SEO->make_link('newsoverview','id',''), 'usercomments' => $REL_SEO->make_link('userdetails','id',''), 'reqcomments' => $REL_SEO->make_link('requests','id',''), 'rgcomments' => $REL_SEO->make_link('relgroups','id',''), 'users' => $REL_SEO->make_link('userdetails','id',''), 'reports' => $REL_SEO->make_link('reports','id',''), 'unchecked' => $REL_SEO->make_link('details','id',''), 'friends' => $REL_SEO->make_link('userdetails','id',''));
 
-	$name_fields = array('relcomments' => 'torrents.name', 'pollcomments' => 'polls.question', 'newscomments' => 'news.subject', 'usercomments' => '(SELECT username FROM users WHERE users.id = comments.toid AND comments.type=\'user\')', 'reqcomments' => 'requests.request', 'rgcomments' => 'relgroups.name', 'forumcomments'=>'forum_topics.subject');
-	$leftjoin_fields = array('relcomments' => ' LEFT JOIN torrents ON comments.toid=torrents.id', 'reqcomments'=> ' LEFT JOIN requests ON comments.toid=requests.id', 'pollcomments'=> ' LEFT JOIN polls ON comments.toid=polls.id',  'newscomments' => ' LEFT JOIN news ON comments.toid=news.id', 'rgcomments' => ' LEFT JOIN relgroups ON comments.toid=relgroups.id', 'forumcomments'=>' LEFT JOIN forum_topics ON forum_topics.id=comments.toid LEFT JOIN forum_categories ON forum_topics.category=forum_categories.id');
+	$name_fields = array('relcomments' => 'torrents.name', 'pollcomments' => 'polls.question', 'newscomments' => 'news.subject', 'usercomments' => '(SELECT username FROM users WHERE users.id = comments.toid AND comments.type=\'user\')', 'reqcomments' => 'requests.request', 'rgcomments' => 'relgroups.name');
+	$leftjoin_fields = array('relcomments' => ' LEFT JOIN torrents ON comments.toid=torrents.id', 'reqcomments'=> ' LEFT JOIN requests ON comments.toid=requests.id', 'pollcomments'=> ' LEFT JOIN polls ON comments.toid=polls.id',  'newscomments' => ' LEFT JOIN news ON comments.toid=news.id', 'rgcomments' => ' LEFT JOIN relgroups ON comments.toid=relgroups.id');
 	if ($type=='reports') {
 		$addition = 'reports.id, NULL, reports.type, reports.userid, users.username, users.class, reports.added'; $from = 'FROM reports LEFT JOIN users ON reports.userid=users.id ORDER BY reports.added DESC';
 	}
@@ -130,9 +130,9 @@ if (!$type) {
 	elseif ($type=='friends') {
 		$addition = "friends.userid, friends.id, friends.id, friends.userid, users.username, users.class, NULL"; $from = "FROM friends LEFT JOIN users ON friends.userid=users.id WHERE friends.confirmed=0 AND friends.friendid={$CURUSER['id']}";
 	}
-	elseif (in_array($type,array('relcomments','pollcomments','newscomments','usercomments','reqcomments','rgcomments','forumcomments'))) {
+	elseif (in_array($type,array('relcomments','pollcomments','newscomments','usercomments','reqcomments','rgcomments'))) {
 		$typeq = str_replace('comments','',$type);
-		$addition = ($type<>'forumcomments'?"CONCAT_WS('#comm',comments.toid,comments.id) AS cid, NULL":'comments.toid AS cid, comments.id').", {$name_fields[$type]}, comments.user, users.username, users.class, comments.added"; $from = "FROM comments LEFT JOIN users ON comments.user = users.id{$leftjoin_fields[$type]} WHERE comments.added>{$CURUSER['last_login']} AND comments.type='$typeq'".($type=='forumcomments'?" AND FIND_IN_SET(".get_user_class().",forum_categories.class)":'')." ORDER BY comments.added DESC"; 
+		$addition = "CONCAT_WS('#comm',comments.toid,comments.id) AS cid, NULL, {$name_fields[$type]}, comments.user, users.username, users.class, comments.added"; $from = "FROM comments LEFT JOIN users ON comments.user = users.id{$leftjoin_fields[$type]} WHERE comments.added>{$CURUSER['last_login']} AND comments.type='$typeq'".($type=='forumcomments'?" AND FIND_IN_SET(".get_user_class().",forum_categories.class)":'')." ORDER BY comments.added DESC"; 
 	}
 	$limited = 50;
 	$count = @mysql_result($REL_DB->query("SELECT SUM(1) $from"),0);
@@ -143,13 +143,13 @@ if (!$type) {
 
 	print '<div id="mynotif">';
 	while ($array = mysql_fetch_array($query, MYSQL_NUM)) {
-		if ($type<>'forumcomments') $disp = $array[1]; else $disp='';
+		$disp = $array[1];
 		
 		print ('<div class="column_notifs">
 		<div class="column_left">'.sprintf($REL_LANG->say_by_key('notify_is_'.$type),$disp, $array[2], ($array[3]?
 			"<a href=\"".$REL_SEO->make_link('userdetails','id',$array[3],'username',translit($array[4]))."\">".get_user_class_color($array[5],$array[4])."</a>"
 			:$REL_LANG->say_by_key('from_system')),($array[6]?mkprettytime($array[6]).' ('.get_elapsed_time($array[6],false)."{$REL_LANG->say_by_key('ago')})":''))."</div>
-		<div class='column_right'><strong><a href=\"".($type=='forumcomments'?sprintf($allowed_links[$type],$array[0],"{$array[1]}#comm{$array[1]}"):"{$allowed_links[$type]}{$array[0]}")."\" >{$REL_LANG->say_by_key('view')}</a></strong></div>
+		<div class='column_right'><strong><a href=\"{$allowed_links[$type]}{$array[0]}\" >{$REL_LANG->say_by_key('view')}</a></strong></div>
 		</div>");
 	}
 	print '</div>';

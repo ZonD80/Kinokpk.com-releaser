@@ -39,7 +39,7 @@ function gensitemap(){
 
 ';
 
-	@file_put_contents(ROOT_PATH."/Sitemap.xml",$txt) or $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unable to write Sitemap.xml file'));
+	@file_put_contents(ROOT_PATH."/Sitemap.xml",$txt) or die($REL_LANG->_('Unable to write Sitemap.xml file'));
 }
 
 function t($t=false){

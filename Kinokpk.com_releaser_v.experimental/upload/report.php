@@ -19,8 +19,8 @@ $type = trim ( ( string ) $_GET ['type'] );
 
 if (!$type) $type='rel';
 
-$allowed_types = array ('messages', 'torrents', 'users', 'relgroups', 'poll', 'news', 'user', 'req', 'rel', 'rg','forum');
-$comment_types = array('poll', 'news', 'user', 'req', 'rel', 'rg','forum');
+$allowed_types = array ('messages', 'torrents', 'users', 'relgroups', 'poll', 'news', 'user', 'req', 'rel', 'rg');
+$comment_types = array('poll', 'news', 'user', 'req', 'rel', 'rg');
 if (! in_array ( $type, $allowed_types ))
 $REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid report type') );
 

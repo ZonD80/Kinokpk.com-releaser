@@ -114,7 +114,7 @@ print('</table>');
 $REL_TPL->end_frame();
 
 
-print('<h3><a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'info','1').'">'.$REL_LANG->_('View .torrent file details').'</a> или <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'dllist','1').'">'.$REL_LANG->_('View realtime local tracker data').'</a></h3>');
+print('<h3><a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'info','1').'">'.$REL_LANG->_('View .torrent file details').'</a> '.$REL_LANG->_('or').' <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($name),'dllist','1').'">'.$REL_LANG->_('View realtime local tracker data').'</a></h3>');
 if (isset($_GET['info'])) {
 	/**
 	 * Prints Nice array
@@ -256,16 +256,11 @@ li span.title {
 
 		$info = bdec_file($fn, (1024*1024));
 
-		// Start table
-		/*print("<table cellspacing=\"0\" cellpadding=\"0\" class=\"tabs\"><tbody><tr>
-		<td class=\"tab0\"> </td><td nowrap=\"\" class=\"tab2\"><a href=\"details.php?id=$id\">Описание</a></td>
-		<td class=\"tab\"> </td><td nowrap=\"\" class=\"tab1\"><a href=\"torrent_info.php?id=$id\">Данные о торренте</a></td>
-		<td class=\"tab3\"> </td></tr></tbody></table>\n");*/
 		print("<table width=100% border=1 cellspacing=0 cellpadding=5>");
 
 		print("<td>");
 
-		$info['value']['pieces']['value'] = "0x".bin2hex(substr($info['value']['pieces']['value'], 0, 25))."...";
+		$info['value']['pieces']['value'] = "0x".bin2hex(mb_substr($info['value']['pieces']['value'], 0, 25))."...";
 
 		echo "<ul id=colapse>";
 		print_array($info,"*", "", "info");
@@ -300,7 +295,7 @@ function compactChildren( oOb, oLev, oBsID, oCol, oPM, oT, oML ) {
 			if( oML ) { var theHTML = ''; } else {
 				var theT = y[x].innerHTML.toUpperCase().indexOf('<'+oT);
 				var theA = y[x].innerHTML.toUpperCase().indexOf('<A');
-				var theHTML = y[x].innerHTML.substr(0, ( theA + 1 && theA < theT ) ? theA : theT );
+				var theHTML = y[x].innerHTML.mb_substr(0, ( theA + 1 && theA < theT ) ? theA : theT );
 				while( !y[x].childNodes[0].tagName || ( y[x].childNodes[0].tagName.toUpperCase() != oT && y[x].childNodes[0].tagName.toUpperCase() != 'A' ) ) {
 					y[x].removeChild( y[x].childNodes[0] ); }
 			}

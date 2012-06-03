@@ -11,7 +11,7 @@
 require_once ("include/bittorrent.php");
 
 INIT();
-
+define("NO_WYSIWYG",true);
 
 if (! is_valid_id ( $_GET ['id'] ))
 $REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
@@ -34,7 +34,7 @@ else {
 		if ((!get_privilege('access_to_private_relgroups',false)) && !$row['relgroup_allowed'] && $row['rgid']) $REL_TPL->stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('private_release_access_denied'),$rgcontent));
 
 		$REL_TPL->stdhead( $row ["name"]." - {$REL_LANG->say_by_key('torrent_details')}" );
-
+$REL_TPL->begin_frame($REL_LANG->say_by_key('torrent_details'));
 		$spacer = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		/*	  print("<table cellspacing=\"0\" cellpadding=\"0\" class=\"tabs\"><tbody><tr>
 		 <td class=\"tab0\"> </td><td nowrap=\"nowrap\" class=\"tab1\"><a href=\"details.php?id=$id\">Описание</a></td>
@@ -120,10 +120,10 @@ else {
 				if (preg_match('/http\:\/\/(www\.|)tysa\.me\/i\/([a-zA-Z0-9]+)\.(.*)/',$img,$imgid)) {
 					$imgext = $imgid[3];
 					$imgid = $imgid[2];
-					$img='<a href="http://www.tysa.me/view.php?img='.$imgid.'.'.$imgext.'" target="_blank"><img style="border: 2px dashed #c1d0d8;" title="Изображение для ' . $row ["name"] . ' (кликните для просмотра полного изображения)" width="240"  src="http://www.tysa.me/i/'.$imgid.'_preview.'.$imgext.'"></a><br />';
+					$img='<a href="http://www.tysa.me/view.php?img='.$imgid.'.'.$imgext.'" target="_blank"><img  title="Изображение для ' . $row ["name"] . ' (кликните для просмотра полного изображения)" width="180"  class="corners" src="http://www.tysa.me/i/'.$imgid.'_preview.'.$imgext.'"></a>&nbsp;';
 					
 				/*tysa.me add end, remove above to delete*/} else {
-					$img = "<a href=\"$img\" onclick=\"javascript: $.facebox({image:'$img'}); return false;\"><img style=\"border: 2px dashed #c1d0d8;\" title='Изображение для " . $row ["name"] . " (кликните для просмотра полного изображения)' width=\"240\" src=\"$img\" /></a><br />";
+					$img = "<a href=\"$img\" onclick=\"javascript: $.facebox({image:'$img'}); return false;\"><img  title='Изображение для " . $row ["name"] . " (кликните для просмотра полного изображения)' width=\"180\" class=\"corners\" src=\"$img\" /></a>&nbsp;";
 				}
 				if ($k <= 1)
 				$imgcontent .= $img;
@@ -133,10 +133,11 @@ else {
 			}
 		}
 
-		print ( '<tr><td colspan="2"><table width="100%"><tr><td style="vertical-align: top;">' . ($imgcontent ? $imgcontent : '<img src="pic/noimage.gif"/>') . (! empty ( $imgspoiler ) ? sprintf($spbegin,"{$REL_LANG->say_by_key('screens')} ({$REL_LANG->say_by_key('view')})") . $imgspoiler . $spend : '') . '</td><td style="vertical-align: top; text-align:left; width:100%">' .$OUT.'<hr/>'. format_comment ( $row ['descr'] ) . '</td></tr></table></td></tr>' );
+		print ( '<tr><td colspan="2"><table width="100%"><tr><td style="vertical-align: top;">' . ($imgcontent ? $imgcontent : '<img src="pic/noimage.gif"/>') .  '</td><td style="vertical-align: top; text-align:left; width:100%">' .$OUT.'<hr/>'. format_comment ( $row ['descr'] ) .'</td></tr></table></td></tr>' );
 
 		if (! $CURUSER) {
 			print ( "</table>\n" );
+$REL_TPL->end_frame();
 			$REL_TPL->stdfoot();
 			die ();
 		}
@@ -164,6 +165,55 @@ else {
 		}
 		if ($row ['filename'] != 'nofile')
 		tr ( $REL_LANG->say_by_key('downloading') . "<br /><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($row['name']),'dllist',1)."$keepget#seeders\" class=\"sublink\">[" . $REL_LANG->say_by_key('open_list') . "]</a>", $row ["seeders"] . " " . $REL_LANG->say_by_key('seeders_l') . ", " . $row ["leechers"] . " " . $REL_LANG->say_by_key('leechers_l') . " = " . ($row ["seeders"] + $row ["leechers"]) . " " . $REL_LANG->say_by_key('peers_l').'<br/><small>Если торрент мультитрекерный, то возможно мы не успели получить данные о количестве пиров. <a href="'.$REL_SEO->make_link('torrent_info','id',$id,'name',translit($row['name'])).'">Посмотреть данные о торренте</a></small>', 1 );
+
+	tr ( $REL_LANG->say_by_key('screens'), $imgspoiler, 1 );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  
+    $csto=array(" - ","%","&","?","\"","'","*","$","^","#","@","!",">","<","(","!)","=","+","/","|");
+    $name = strlen($row["name"])>8?(substr($row["name"],0,8).""):$row["name"];
+    $name = preg_replace("#\([0-9]{4}\)#is","",preg_replace("#\[(.+?)\]#is","",$name ));
+    $name = str_replace($csto, " ", preg_replace("# ([a-zA-Z0-9]{1,5})Rip#is","",$name));
+    $name = preg_replace("#\([0-9]{1,4}.+[0-9]{1,4}\)#is","",preg_replace("#by (.+?)$#is","",$name));
+    $name = trim(sqlwildcardesc(htmlspecialchars(preg_replace("#[\.,\\/\?\(\)\!\`\~]#is","",$name))));
+    $name = str_replace(" ","%",$name);
+
+    $sql = $REL_DB->query("SELECT name, id FROM torrents WHERE name LIKE ('%".$name."%')  AND id <>'".$id."' ORDER BY added DESC LIMIT 10") or sqlerr(__FILE__,__LINE__);
+    
+    $num_p=0;
+   $ono=""; 
+
+ while($t = mysql_fetch_array($sql)) {    
+      if (!empty($ono))
+    $ono.="<br>";     
+ $ono.="<a href=\"{$REL_SEO->make_link('details','id',$t['id'],'name',translit($t['name']))}\">{$t['name']}</a>";
+
+++$num_p;
+}
+ if ($num_p<>0)
+tr("Похожие", $ono,1);
+
+
+
+
+
+
+
+
+
+
 
 		print ( '<tr><td colspan="2" align="center"><a href="'.$REL_SEO->make_link('present','type','torrent','to',$id).'">' . $REL_LANG->say_by_key('present_to_friend') . '</a></td></tr>' );
 
@@ -207,13 +257,7 @@ return no_ajax;
 <a href=\"".$REL_SEO->make_link('browse','cat',$row['category'])."\">Все релизы этой категории</a></div>" );
 
 	}
-	$REL_TPL->assignByRef('to_id',$id);
-	$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'relcomments' ));
-	$REL_TPL->assign('textbbcode',textbbcode('text'));
-	$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release'));
-	$FORM_TYPE = 'rel';
-	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-	$REL_TPL->display('commenttable_form.tpl');
+
 	
 	$subres = $REL_DB->query ( "SELECT SUM(1) FROM comments WHERE toid = $id AND type='rel'" );
 	$subrow = mysql_fetch_array ( $subres );
@@ -231,7 +275,7 @@ return no_ajax;
 
 	} else {
 		$limit = ajaxpager(25, $count, array('details','id',$id,'name',translit($row['name'])), 'comments-table');
-		$subres = $REL_DB->query ( "SELECT c.id, c.type, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = " . "$id AND c.type='rel' GROUP BY c.id ORDER BY c.id DESC $limit" );
+		$subres = $REL_DB->query ( "SELECT c.id, c.type, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = " . "$id AND c.type='rel' GROUP BY c.id ORDER BY c.id ASC $limit" );
 		$allrows = prepare_for_commenttable($subres,$row['name'],$REL_SEO->make_link('details','id',$id,'name',translit($row['name'])));
 
 		if (!pagercheck()) {
@@ -253,8 +297,23 @@ return no_ajax;
 		}
 	}
 
+
+
+
+	$REL_TPL->assignByRef('to_id',$id);
+	$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'relcomments' ));
+	$REL_TPL->assign('textbbcode',textbbcode('text'));
+	$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release'));
+	$FORM_TYPE = 'rel';
+	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+	$REL_TPL->display('commenttable_form.tpl');
+
+
+
+
 	$REL_DB->query ( "UPDATE torrents SET views = views + 1 WHERE id = $id" );
 	set_visited('torrents',$id);
+$REL_TPL->end_frame();
 	$REL_TPL->stdfoot();
 }
 ?>

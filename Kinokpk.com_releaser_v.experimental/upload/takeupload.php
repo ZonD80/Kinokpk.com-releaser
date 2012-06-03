@@ -25,7 +25,7 @@ get_privilege('upload_releases');
 
 foreach(explode(":","type:name") as $v) {
 	if (!isset($_POST[$v]))
-	bark("Не все поля заполнены");
+	bark($REL_LANG->_('Some of required fields does not filled'));
 }
 
 
@@ -36,16 +36,16 @@ if ($_POST['nofile']) {} else {
 	if (!isset($_FILES["tfile"]))
 	bark("missing form data");
 
-	if (($_POST['nofile']) && (empty($_POST['nofilesize']))) bark("Вы не указали размер не торрент релиза!");
+	if (($_POST['nofile']) && (empty($_POST['nofilesize']))) bark($REL_LANG->_('You does not fill release size'));
 
 	$f = $_FILES["tfile"];
 	$fname = unesc($f["name"]);
 	if (empty($fname))
-	bark("Файл не загружен. Пустое имя файла!");
+	bark($REL_LANG->_('File does not uploaded. Empty filename.'));
 }
 
 if (!is_array($_POST["type"]))
-bark("Ошибка обработки выбранных категорий!");
+bark($REL_LANG->_('Error parsing selected categories'));
 else
 foreach ($_POST['type'] as $cat) if (!is_valid_id($cat)) bark($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
 
@@ -54,9 +54,9 @@ $catsstr = implode(',',$_POST['type']);
 if ($_POST['nofile']) {} else {
 
 	if (!validfilename($fname))
-	bark("Неверное имя файла!");
+	bark($REL_LANG->_('Invalid filename'));
 	if (!preg_match('/^(.+)\.torrent$/si', $fname, $matches))
-	bark("Неверное имя файла (не .torrent).");
+	bark($REL_LANG->_('Invalid filename (not .torrent)'));
 	$shortfname = $torrent = $matches[1];
 	$tiger_hash = trim((string)$_POST['tiger_hash']);
 	if ((!preg_match("/[^a-zA-Z0-9]/",$tiger_hash) || (mb_strlen($tiger_hash)<>38)) && $tiger_hash) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_tiger_hash'));
@@ -65,21 +65,20 @@ if ($_POST['nofile']) {} else {
 if ($_POST['multi']) $multi=1; else $multi=0;
 
 if (!empty($_POST["name"]))
-$torrent = unesc((string)$_POST["name"]); else bark("Вы не ввели название релиза");
+$torrent = unesc((string)$_POST["name"]); else bark($REL_LANG->_('Empty release name'));
 
-if (!preg_match("#(.*?) \([0-9-]+\) \[(.*?)\]#si",$torrent))
-bark ("{$REL_LANG->_("Release name does not corresponding to rule, please change it and try again:")}<br/>{$REL_LANG->say_by_key('taken_from_torrent')}");
+
 
 if ($_POST['nofile']) {} else {
 	$tmpname = $f["tmp_name"];
 	if (!is_uploaded_file($tmpname))
-	bark("eek");
+	bark($REL_LANG->_('Error moving uploaded torrent. Contact <a href="%s">site staff</a>',$REL_SEO->make_link('staff')));
 	if (!filesize($tmpname))
-	bark("Пустой файл!");
+	bark($REL_LANG->_('Empty file'));
 
 	$dict = bdec_file($tmpname, $REL_CONFIG['max_torrent_size']);
 	if (!isset($dict))
-	bark("Что за хрень ты загружаешь? Это не бинарно-кодированый файл!");
+	bark($REL_LANG->_('It is not binary-encoded file'));
 }
 
 if ($_POST['free'] AND get_privilege('edit_releases',false)) {
@@ -114,7 +113,7 @@ if ($_POST['nofile']) {} else {
 
 	} else $anarray = get_announce_urls($dict);
 
-	if ($multi && !$anarray) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Этот торрент-файл не является мультитрекерным. <a href="javascript:history.go(-1);">Назад</a>');
+	if ($multi && !$anarray) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('This torrent is not a multitracker').'. <a href="javascript:history.go(-1);">'.$REL_LANG->_('Go back').'</a>');
 
 	$dict=bdec(benc($dict)); // double up on the becoding solves the occassional misgenerated infohash
 
@@ -122,11 +121,9 @@ if ($_POST['nofile']) {} else {
 
 	list($dname, $plen, $pieces) = dict_check($info, "name(string):piece length(integer):pieces(string)");
 
-	/*if (!in_array($ann, $announce_urls, 1))
-	 bark("Неверный Announce URL! Должен быть ".$announce_urls[0]);*/
 
 	if (strlen($pieces) % 20 != 0)
-	bark("invalid pieces");
+	bark($REL_LANG->_('Invalid dictionary'));
 
 	$filelist = array();
 	$totallen = dict_get($info, "length", "integer");
@@ -136,9 +133,9 @@ if ($_POST['nofile']) {} else {
 	} else {
 		$flist = dict_get($info, "files", "list");
 		if (!isset($flist))
-		bark("missing both length and files");
+		bark($REL_LANG->_("missing both length and files"));
 		if (!count($flist))
-		bark("no files");
+		bark($REL_LANG->_("no files"));
 		$totallen = 0;
 		foreach ($flist as $fn) {
 			list($ll, $ff) = dict_check($fn, "length(integer):path(list)");
@@ -150,17 +147,15 @@ if ($_POST['nofile']) {} else {
 				$ffa[] = $ffe["value"];
 			}
 			if (!count($ffa))
-			bark("filename error");
+			bark($REL_LANG->_("filename error"));
 			$ffe = implode("/", $ffa);
 			$filelist[] = array($ffe, $ll);
-			/*	if ($ffe == 'Thumbs.db')
-			 {
-			 $REL_TPL->stderr("Ошибка", "В торрентах запрещено держать файлы Thumbs.db!");
-			 die;
-			 }*/
-		}
-		$type = 1;
-	}
+
+			 }
+		
+                         $type = 1;
+                }
+		
 
 	$infohash = sha1($info["string"]);
 
@@ -198,10 +193,10 @@ for ($x=0; $x < $REL_CONFIG['max_images']; $x++) {
 
 	if (!empty($_POST['img'.$x])) {
 		$img=trim(htmlspecialchars((string)$_POST['img'.$x]));
-		if (strpos($img,',') || strpos($img,'?')) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Динамические изображения запрещены');
+		if (strpos($img,',') || strpos($img,'?')) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Dynamic image links are forbidden'));
 
 		if (!preg_match('/^(.+)\.(gif|png|jpeg|jpg)$/si', $img))
-		$REL_TPL->stderr($REL_LANG->say_by_key('error'),'Загружаемая картинка '.($x+1).' - не картинка');
+		$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('File %s is not an image',($x+1)));
 
 		//$check = remote_fsize($img);
 		if ($image_upload[$x]) {
@@ -233,11 +228,11 @@ if ($image_upload[0]) $image = $REL_CONFIG['defaultbaseurl'].'/'.$image;
 
 // FORUMDESC will be used in email notifs
 if (!$image) $forumdesc = "<div align=\"center\"><img src=\"{$REL_CONFIG['defaultbaseurl']}/pic/noimage.gif\" border=\"0\" class=\"linked-image\" /></div><br />";
-if ($image) $forumdesc = "<div align=\"center\"><a href=\"$image\" target=\"_blank\"><img alt=\"Постер для релиза (кликните для просмотра полного изображения)\" src=\"$image\" border=\"0\" class=\"linked-image\" /></a></div><br />";
+if ($image) $forumdesc = "<div align=\"center\"><a href=\"$image\" target=\"_blank\"><img alt=\"{$REL_LANG->_to(0,'Release screenshot (click to view full size)')}\" src=\"$image\" border=\"0\" class=\"linked-image\" /></a></div><br />";
 $catssql= $REL_DB->query("SELECT name FROM categories WHERE id IN ($catsstr)");
 while (list($catname) = mysql_fetch_array($catssql)) $forumcats[]=$catname;
 $forumcats = implode(', ',$forumcats);
-$forumdesc .= "<table width=\"100%\" border=\"1\"><tr><td valign=\"top\"><b>Тип (жанр):</b></td><td>".$forumcats."</td></tr><tr><td><b>Название:</b></td><td>" . sqlesc($torrent) ."</td></tr>";
+$forumdesc .= "<table width=\"100%\" border=\"1\"><tr><td valign=\"top\"><b>{$REL_LANG->_to(0,'Type (genre)')}:</b></td><td>".$forumcats."</td></tr><tr><td><b>{$REL_LANG->_('Name')}:</b></td><td>" . sqlesc($torrent) ."</td></tr>";
 
 
 // DEFINE size FOR forum & email notifs
@@ -251,7 +246,7 @@ if ($_POST['nofile']) {
 	if (!$descr&&!$descrtpl) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Release description is missing'));
 
 	if ($descrtpl) {
-		$allowed_types = array('movie');
+		$allowed_types = array('movie','music','soft','play');
 		if (!in_array($descrtpl['type'], $allowed_types)) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Unknown release type'));
 		$REL_TPL->assign('descr',$descrtpl);
 		$descr = $REL_TPL->fetch("modules/upload/{$descrtpl['type']}_descr.tpl");
@@ -276,7 +271,7 @@ if ($_POST['nofile']) {
 		$infohash = md5($torrent);
 		$torrent = htmlspecialchars(str_replace("_", " ", $torrent));
 		if ($_POST['annonce'])
-		$torrent .= " | АНОНС"; else $torrent .= " - релиз без торрента";
+		$torrent .= " | {$REL_LANG->_to(0,'ANNOUNCE')}"; else $torrent .= " - {$REL_LANG->_to(0,'Release without torrent')}";
 
 		$totallen = (float)($nofilesize*1024*1024);
 
@@ -289,7 +284,7 @@ if ($_POST['nofile']) {
 	}
 	if (!$ret) {
 		if (mysql_errno() == 1062)
-		bark("$id torrent already uploaded!");
+		bark($REL_LANG->_('This torrent was already uploaded'));
 		bark("mysql puked: ".mysql_error());
 	}
 	$id = mysql_insert_id();
@@ -309,9 +304,9 @@ if ($_POST['nofile']) {
 	// making forum desc
 	$forumdesc .= "<tr><td valign=\"top\"><b>".$REL_LANG->say_by_key('description').":</b></td><td>".format_comment($descr)."</td></tr>";
 
-	$forumdesc .= "<tr><td valign=\"top\"><b>Размер файла:</b></td><td>".$forumsize."</td></tr>";
+	$forumdesc .= "<tr><td valign=\"top\"><b>{$REL_LANG->_to(0,'Release size')}:</b></td><td>".$forumsize."</td></tr>";
 
-	$topicfooter .= "<tr><td valign=\"top\"><b>".((!$_POST['nofile'])?"Торрент {$REL_CONFIG['defaultbaseurl']}:":"Релиз {$REL_CONFIG['defaultbaseurl']}:")."</b></td><td><div align=\"center\">[<span style=\"color:#FF0000\"><a href=\"{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}\">Посмотреть этот релиз на {$REL_CONFIG['defaultbaseurl']}</a></span>]</div></td></tr></table>";
+	$topicfooter .= "<tr><td valign=\"top\"><b>".("{$REL_LANG->_('Release')} {$REL_CONFIG['defaultbaseurl']}:")."</b></td><td><div align=\"center\">[<span style=\"color:#FF0000\"><a href=\"{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}\">{$REL_LANG->_('View release on')} {$REL_CONFIG['defaultbaseurl']}</a></span>]</div></td></tr></table>";
 
 	$forumdesc .=$topicfooter;
 	// end
@@ -329,30 +324,41 @@ if ($_POST['nofile']) {
 	}
 	if ($_POST['nofile']) {} else {
 		$fp = @file_put_contents("torrents/$id.torrent", benc($dict['value']['info']));
-		if (!$fp) $REL_TPL->stderr($REL_LANG->say_by_key('error'),'Загрузка torrent файла не удалась');
+		if (!$fp) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Error moving uploaded torrent. Contact <a href="%s">site staff</a>',$REL_SEO->make_link('staff')));
 	}
 
-	write_log("Торрент номер $id ($torrent) был залит пользователем " . $CURUSER["username"],"torrent");
+        $text=$REL_LANG->_('Release #%s (<a target=\"_blank\" href=\"%s\">%s</a> was uploaded by %s',$id,$REL_SEO->make_link('details','id',$id,'name',translit($torrent)),$torrent,  make_user_link());
+
+
+	write_log($text,"torrent");
+
+        
+
+
+ $REL_DB->query("INSERT INTO shoutbox (id, userid, date, text, orig_text) VALUES ('id',0, ".time().", " . sqlesc($text) . ", " . sqlesc($text) . ")") or sqlerr(__FILE__, __LINE__);
+
+
+
 
 	/* Email notifs */
 
 	$body = <<<EOD
-Новый непроверенный релиз на {$REL_CONFIG['sitename']}!
+{$REL_LANG->_('New unchecked release')} {$REL_CONFIG['sitename']}!
 
-Внимание! Это сообщение отправлено автоматически, и релиз может быть еще не проверен модератором и может быть удален!
-Название: $torrent
-Размер файла: $forumsize
-Категория: {$forumcats}
-Залил: {$CURUSER['username']}
+{$REL_LANG->_('Attention! This message sent automatically. Release may be deleted by moderator')}!
+{$REL_LANG->_('Name')}: $torrent
+{$REL_LANG->_('Size')}: $forumsize
+{$REL_LANG->_('Category')}: {$forumcats}
+{$REL_LANG->_('Uploader')}: {$CURUSER['username']}
 
-Информация о Релизе:
+{$REL_LANG->_('Release information')}:
 -------------------------------------------------------------------------------
 $forumdesc
 -------------------------------------------------------------------------------
 EOD;
 
 $bfooter = <<<EOD
-Чтобы посмотреть релиз, перейдите по этой ссылке:
+{$REL_LANG->_('To view this release follow this link')}:
 
 {$REL_SEO->make_link('details','id',$id,'name',translit($torrent))}
 

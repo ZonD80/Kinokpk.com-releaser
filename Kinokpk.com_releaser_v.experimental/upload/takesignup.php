@@ -113,7 +113,8 @@ if (isset($_COOKIE["uid"]) && is_numeric($_COOKIE["uid"]) && $users) {
 }
 
 $secret = mksecret();
-$wantpasshash = md5($secret . $_POST['wantpassword'] . $secret);
+$wantpassword = (string)$_POST['wantpassword'];
+$wantpasshash = md5($secret . $wantpassword . $secret);
 $editsecret = (!$users?"":mksecret());
 
 if ((!$users) || (!$REL_CONFIG['use_email_act'] == true))
@@ -134,6 +135,8 @@ if (!$ret) {
 }
 
 $id = mysql_insert_id();
+
+$CURUSER = get_user($id);
 
 $REL_DB->query("INSERT INTO xbt_users (uid) VALUES ($id)");
 
@@ -157,17 +160,7 @@ write_log($REL_LANG->_("New user registered (%s)",$wantusername),"tracker");
 $psecret = md5($editsecret);
 
 $body = <<<EOD
-Вы зарегистрировались на {$REL_CONFIG['sitename']} и указали этот адрес как обратный ($email).
-
-Если это были не вы, пожалуста проигнорируйте это письмо. Персона которая ввела ваш E-Mail адресс имеет IP адрес {$_SERVER["REMOTE_ADDR"]}. Пожалуста, не отвечайте.
-
-Для подтверждения вашей регистрации, вам нужно пройти по следующей ссылке:
-
-{$REL_SEO->make_link('confirm','id',$id,'secret',$psecret)}
-
-После того как вы это сделаете, вы сможете использовать ваш аккаунт. Если вы этого не сделаете,
- ваш новый аккаунт будет удален через пару дней. Мы рекомендуем вам прочитать правила
-и ЧаВо прежде чем вы начнете использовать {$REL_CONFIG['sitename']}.
+{$REL_LANG->_('Welcome to %s! This is confirmation message required to verify your e-mail. Please <a href="%s">go to this link</a> to verify your account. Thanks!',$REL_CONFIG['sitename'],$REL_SEO->make_link('confirm','id',$id,'secret',$psecret))}.
 EOD;
 
 if($REL_CONFIG['use_email_act'] && $users) {
@@ -176,6 +169,8 @@ if($REL_CONFIG['use_email_act'] && $users) {
 	}
 } else {
 	logincookie($id, $wantpasshash, $REL_CONFIG['default_language']);
+        require_once(ROOT_PATH . 'include/functions_integration.php');
+        ipb_login($CURUSER,$wantpassword);
 }
 
 send_notifs('users');

@@ -54,66 +54,10 @@ if (!pagercheck()) {
 	style="margin-top: 5px; margin-right: 5px;" /></a></div>
 
 </div>
-<div id="relgroups_table_right">
-<div id="relgroups_image" class="relgroups_image_right">
-<div class="relgroups_avatar_right"><img src="<?php print $relgroup['image']; ?>"
-	title="<?php print makesafe($relgroup['name']); ?>" /><?php $REL_LANG->say_by_key('no_image')?>
-<div id="input_right" class="relgroups_input_right"><? //print (int)$relgroup['users'].'&nbsp;';
-	//ПЕРЕДЕЛАТЬ
-	//$i_subscribed = @mysql_result($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid=$id"),0);
-	if ($relgroup['private'])
-	$i_subscribed = mysql_fetch_row($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$relgroup['id']}"));
-	if ($i_subscribed) print ("<li><a href=\"".$REL_SEO->make_link('relgroups','id',$relgroup['id'],'action','deny')."\">Отписаться от группы</a></li><li><a href=\"".$REL_SEO->make_link('relgroups','id',$relgroup['id'],'action','invite')."\">{$REL_LANG->say_by_key('create_invite')}</a></li>");
-	else print ("<li>".(($relgroup['private']&&$relgroup['only_invites'])?$REL_LANG->say_by_key('private_group_friend_subscribe'):"<a href=\"".($relgroup['page_pay']?$relgroup['page_pay']:$REL_SEO->make_link('relgroups','id',$id,'action','suggest"'))."\">Подписаться на релизы</a>")."</li>");
-	?></div>
-</div>
-<div id="boxes_right" class="box_right">
-<div id="box_app_right">
-<h3 class="box_right_block"><span>Директор</span><?print('<div align="center">'.((get_privilege('edit_relgroups',false) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
-<div class="inside basic_infor_summary_list">
-<dl class="infor">
-	<dd><?php print $ownersview; ?></dd>
 
-</div>
-</div>
-</div>
-<div id="boxes_right" class="box_right">
-<div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Состав Группы</span><?php print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
-<div class="inside basic_infor_summary_list">
-<dl class="infor">
-	<dd><?php print $membersview; ?></dd>
-
-</div>
-</div>
-</div>
-<div id="boxes_right" class="box_right">
-<div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Тип Группы</span><?php print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
-<div class="inside basic_infor_summary_list">
-<dl class="infor">
-	<dd><?php 
-	if ($relgroup['page_pay']) print $REL_LANG->say_by_key('pay_required');
-	elseif ($relgroup['private']) print $REL_LANG->say_by_key('private');
-	else print $REL_LANG->say_by_key('no_pay');?></dd>
-
-</div>
-</div>
-</div>
-<div id="boxes_right" class="box_right">
-<div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Группы Друзья</span><?print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
-<div class="inside basic_infor_summary_list">
-<dl class="infor">
-	<dd>Нет</dd>
-
-</div>
-</div>
-</div>
-</div>
-</div>
 <div id="relgroups_table_left">
 <div id="boxes_left" class="box_left">
+
 <div id="box_left" style="margin-top: 9px;">
 <h3 class="box_right_left"><span>Обсуждаем: <?php print $rgnews['subject']; ?></span>
 	<?print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" title=".$REL_LANG->say_by_key('edit')." href=\"".$REL_SEO->make_link('rgnews','action','edit','id',$relgroup['id'],'newsid',$rgnewsid,'returnto',$REL_SEO->make_link('rgnews','id',$rgnewsid))."\"></a>" : "").'</div>');?></h3>

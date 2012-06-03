@@ -376,7 +376,7 @@ INSERT INTO `cache_stats` (`cache_name`, `cache_value`) VALUES
 ('debug_template', '0'),
 ('default_emailnotifs', 'unread,torrents,friends'),
 ('default_notifs', 'unread,torrents,relcomments,pollcomments,newscomments,usercomments,reqcomments,rgcomments,pages,pagecomments,friends'),
-('forum_enabled', '1'),
+('forum_enabled', '0'),
 ('low_comment_hide', '-3'),
 ('sign_length', '250'),
 ('use_dc',0);

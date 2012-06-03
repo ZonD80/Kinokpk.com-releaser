@@ -11,7 +11,7 @@ else
 $latestuser = $a['username'];
 $title_who = array();
 $gues = array();
-$dt = sqlesc(time() - 300);
+$dt = sqlesc(time() - 90000);
 $result = $REL_DB->query("SELECT DISTINCT s.uid as id, s.username, s.class, s.ip, users.donor, users.warned, users.enabled FROM sessions AS s LEFT JOIN users ON s.uid=users.id WHERE s.time > $dt ORDER BY s.class DESC");
 $classes = init_class_array();
 while ($row = mysql_fetch_array($result)) {

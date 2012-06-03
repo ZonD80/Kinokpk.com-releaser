@@ -10,9 +10,9 @@ if (!defined('BLOCK_FILE')) {
 $content .= '<table border="0" width="100%" cellspacing="0" cellpadding="5">';
 if ($CURUSER) {
 if ($CURUSER['avatar']) {
-$content .= '<center><a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'name',translit($CURUSER['username'])).'"><img src="'.$CURUSER['avatar'].'" alt="'.$CURUSER['username'].'" /></a></center></br>';
+$content .= '<center><a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'name',translit($CURUSER['username'])).'"><img class="corners" src="'.$CURUSER['avatar'].'" alt="'.$CURUSER['username'].'" /></a></center></br>';
 } else {
-$content .= '<center><a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'name',translit($CURUSER['username'])).'"><img src="themes/'.$REL_CONFIG['ss_uri'].'/images/default_avatar.gif" alt="'.$CURUSER['username'].'" /></a></center></br>';
+$content .= '<center><a href="'.$REL_SEO->make_link('userdetails','id',$CURUSER['id'],'name',translit($CURUSER['username'])).'"><img class="corners" src="themes/'.$REL_CONFIG['ss_uri'].'/images/default_avatar.gif" alt="'.$CURUSER['username'].'" /></a></center></br>';
 }
 
 
@@ -32,7 +32,7 @@ $content .= '<tr>
 		<td class="stblock"><a href="'.$REL_SEO->make_link('upload').'">'.$REL_LANG->say_by_key('upload').'</a></td>
 </tr><tr>
 		<!-- <td class="imgblock" ><img src="themes/'.$REL_CONFIG['ss_uri'].'/images/forum.png" alt="forum" width="16" height="16" /></td>
-	 <td class="stblock"><a href="'.$REL_SEO->make_link('forums').'">'.$REL_LANG->_("Forum").'</a></td> -->
+	 <td class="stblock"><a href="'.$REL_CONFIG['forumurl'].'">'.$REL_LANG->_("Forum").'</a></td> -->
 		<td class="imgblock" style="padding-top: 5px;"><img src="themes/'.$REL_CONFIG['ss_uri'].'/images/mytorrents.png" alt="mytorrents" width="16" height="16" /></td>
 		<td class="stblock"><a href="'.$REL_SEO->make_link('mytorrents').'">'.$REL_LANG->say_by_key('my_torrents').'</a></td>
 </tr><tr>	

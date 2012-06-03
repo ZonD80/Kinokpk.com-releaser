@@ -36,8 +36,7 @@ $REL_TPL->stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('delete_
 'usercomments'=>'users',
 'rgcomments'=>'relgroups',
 'rgnewscomments'=>'rgnews',
-'newscomments'=>'news',
-'forumcomments'=>'forum_topics');
+'newscomments'=>'news');
 
 	if (!array_key_exists($type,$valid_types))
 	$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_type'));

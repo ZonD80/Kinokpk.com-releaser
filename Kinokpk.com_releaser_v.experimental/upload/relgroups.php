@@ -128,65 +128,14 @@ else {
 	style="margin-top: 5px; margin-right: 5px;" /></a></div>
 
 </div>
-<div id="relgroups_table_right">
-<div id="relgroups_image" class="relgroups_image_right">
-<div class="relgroups_avatar_right"><img src="<?php print $row['image']; ?>"
-	title="<?php print makesafe($row['name']); ?>" /><?php $REL_LANG->say_by_key('no_image')?>
 
-<div id="input_right" class="relgroups_input_right"><? //print (int)$row['users'].'&nbsp;';
-			//ПЕРЕДЕЛАТЬ
-			//$i_subscribed = @mysql_result($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid=$id"),0);
-			if ($row['private'])
-			$i_subscribed = mysql_fetch_row($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$row['id']}"));
-			if ($i_subscribed) print ("<li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','deny')."\">Отписаться от группы</a></li><li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','invite')."\">{$REL_LANG->say_by_key('create_invite')}</a></li>");
-			else print ("<li>".(($row['private']&&$row['only_invites'])?$REL_LANG->say_by_key('private_group_friend_subscribe'):"<a href=\"".($row['page_pay']?$row['page_pay']:$REL_SEO->make_link('relgroups','id',$id,'action','suggest'))."\">Подписаться на релизы</a>")."</li>");
-			?></div>
-</div>
-<div id="boxes_right" class="box_right">
-<div id="box_app_right">
-<h3 class="box_right_block"><span>Директор</span><?print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
-<div class="inside basic_infor_summary_list">
-<dl class="infor">
-	<dd><?php print $ownersview; ?></dd>
 
-</div>
-</div>
-</div>
-<div id="boxes_right" class="box_right">
-<div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Состав Группы</span><?php print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
-<div class="inside basic_infor_summary_list">
-<dl class="infor">
-	<dd><?php print $membersview; ?></dd>
 
-</div>
-</div>
-</div>
-<div id="boxes_right" class="box_right">
-<div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Тип Группы</span><?php print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
-<div class="inside basic_infor_summary_list">
-<dl class="infor">
-	<dd><?php
-	if ($row['page_pay']) print $REL_LANG->say_by_key('pay_required');
-	elseif ($row['private']) print $REL_LANG->say_by_key('private');
-	else print $REL_LANG->say_by_key('no_pay');?></dd>
 
-</div>
-</div>
-</div>
-<div id="boxes_right" class="box_right">
-<div id="box_app_right_adm">
-<h3 class="box_right_block"><span>Группы Друзья</span><?print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
-<div class="inside basic_infor_summary_list">
-<dl class="infor">
-	<dd>Нет</dd>
 
-</div>
-</div>
-</div>
-</div>
-</div>
+
+
+
 
 
 <div id="relgroups_table_left">
@@ -194,9 +143,40 @@ else {
 <div id="box_left" style="margin-top: 9px;">
 <h3 class="box_right_left"><span>Информация о группе</span><?print('<div align="center">'.(((get_privilege('edit_relgroups',false)) || $I_OWNER) ? "<a class=\"box_editor_left\" href=\"#\"></a>" : "").'</div>');?></h3>
 <div class="basic_infor_summary_list box_left_page">
+
 <dl class="infor_left">
 	<dt>Название</dt>
-	<dd><b><?php print makesafe($row['name']) ; ?></b></dd>
+	<dd><b><?php print makesafe($row['name']) ; ?></b>
+<img style="float:right;padding-right:20px;" src="<?php print $row['image']; ?>" title="<?php print makesafe($row['name']); ?>" />
+</dd>
+
+
+
+<dt>Директор</dt>
+	<dd><?php print $ownersview; ?></dd>
+<dt>Состав Группы</dt>
+	<dd><?php print $membersview; ?></dd>
+<dt>Тип Группы</dt>
+	<dd><?php
+	if ($row['page_pay']) print $REL_LANG->say_by_key('pay_required');
+	elseif ($row['private']) print $REL_LANG->say_by_key('private');
+	else print $REL_LANG->say_by_key('no_pay');?></dd>
+
+
+
+	<? //print (int)$row['users'].'&nbsp;';
+			//ПЕРЕДЕЛАТЬ
+			//$i_subscribed = @mysql_result($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid=$id"),0);
+			if ($row['private']) 
+			$i_subscribed = mysql_fetch_row($REL_DB->query("SELECT 1 FROM rg_subscribes WHERE userid={$CURUSER['id']} AND rgid={$row['id']}")); 
+		if ($i_subscribed ) print ("<dt>Подписаться</dt><dd><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','deny')."\">Отписаться от группы</a></li><li><a href=\"".$REL_SEO->make_link('relgroups','id',$row['id'],'action','invite')."\">{$REL_LANG->say_by_key('create_invite')}</a></dd>");
+			else print ("<dt>Подписаться</dt><dd>".(($row['private']&&$row['only_invites'])?$REL_LANG->say_by_key('private_group_friend_subscribe'):"<a href=\"".($row['page_pay']?$row['page_pay']:$REL_SEO->make_link('relgroups','id',$id,'action','suggest'))."\">Подписаться на релизы</a>")."</dd>"); 
+
+			?>
+
+
+
+
 	<dt>Специализация</dt>
 	<dd><?php print $row['spec']; ?></dd>
 	<dt><?php print $REL_LANG->say_by_key('description'); ?></dt>
@@ -286,13 +266,7 @@ else {
 
 		}
 		
-		$REL_TPL->assignByRef('to_id',$id);
-		$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'rgcomments' ));
-		$REL_TPL->assign('textbbcode',textbbcode('text'));
-		$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release group'));
-		$FORM_TYPE = 'rg';
-		$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-		$REL_TPL->display('commenttable_form.tpl');
+
 		
 		$count = get_row_count("comments","WHERE toid=$id AND type='rg'");
 
@@ -311,7 +285,7 @@ else {
 			$limit = ajaxpager(25, $count, array('relgroups','id',$id), 'comments-table');
 			$subres = $REL_DB->query("SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
 												  "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .
-												  "$id AND c.type='rg' GROUP BY c.id ORDER BY c.id DESC $limit");
+												  "$id AND c.type='rg' GROUP BY c.id ORDER BY c.id ASC $limit");
 			$allrows = prepare_for_commenttable($subres,$row['name'],$REL_SEO->make_link('relgroups','id',$id));
 			if (!pagercheck()) {
 				print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=\"rgcomm\" cellspacing=\"0\" cellPadding=\"5\">");
@@ -333,7 +307,13 @@ else {
 				die();
 			}
 		}
-
+		$REL_TPL->assignByRef('to_id',$id);
+		$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'rgcomments' ));
+		$REL_TPL->assign('textbbcode',textbbcode('text'));
+		$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release group'));
+		$FORM_TYPE = 'rg';
+		$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+		$REL_TPL->display('commenttable_form.tpl');
 
 		?></div>
 </div>
@@ -387,8 +367,11 @@ else {
 			$content .= "<div align=\"center\"><h3>".$REL_LANG->say_by_key('no_news')."</h3></div>\n";
 			$content .= "</td></tr></table>";
 
-			$REL_TPL->end_frame();
+			
 		}
+$REL_TPL->end_frame();
+
+
 		$REL_TPL->stdfoot();
 	}
 	elseif ($action=='suggest') {

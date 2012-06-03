@@ -30,8 +30,7 @@ $REL_TPL->begin_main_frame();
 	</tr>
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('blocksadmin');?>"><?=$REL_LANG->_("Blocks administration");?></a></td>
-		<td><a href="<?=$REL_SEO->make_link('templatesadmin');?>"><?=$REL_LANG->_("Skins administration");?></a></td>
-		<td colspan="2"><a href="<?=$REL_SEO->make_link('forumadmin');?>"><?=$REL_LANG->_("Forum");?></a></td>
+		<td colspan="3"><a href="<?=$REL_SEO->make_link('templatesadmin');?>"><?=$REL_LANG->_("Skins administration");?></a></td>
 	</tr>
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('spam');?>"><?=$REL_LANG->_("View private messages");?></a></td>

@@ -46,14 +46,18 @@ elseif ($action == 'add')
 	if (!$subject)
 	$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
 
+        $image = ((string)$_POST["image"]);
+	if (!$image)
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Картинка новости не может быть пустой!");
+
 	$body = ((string)$_POST["body"]);
 	if (!$body)
 	$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Тело новости не может быть пустым!");
 
 	$added = time();
 
-	$REL_DB->query("INSERT INTO news (userid, added, body, subject) VALUES (".
-	$CURUSER['id'] . ", $added, " . sqlesc($body) . ", " . sqlesc($subject) . ")");
+	$REL_DB->query("INSERT INTO news (userid, added, body, image, subject) VALUES (".
+	$CURUSER['id'] . ", $added, " . sqlesc($body) . ", " . sqlesc($image) . ", " . sqlesc($subject) . ")");
 
 	$REL_CACHE->clearGroupCache("block-news");
 	$warning = "Новость <b>успешно добавлена</b>";
@@ -76,16 +80,22 @@ elseif ($action == 'edit')
 		if (!$subject)
 		$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Тема новости не может быть пустой!");
 
+$image = ((string)$_POST["image"]);
+	if (!$image)
+	$REL_TPL->stderr($REL_LANG->say_by_key('error'),"Картинка новости не может быть пустой!");
+
+
+
 		if (!$body)
 		$REL_TPL->stderr($REL_LANG->say_by_key('error'), "Тело новости не может быть пустым!");
 
 		$body = sqlesc(($body));
-
+$image = sqlesc($image);
 		$subject = sqlesc($subject);
 
 		$editedat = sqlesc(time());
 
-		$REL_DB->query("UPDATE news SET body=$body, subject=$subject WHERE id=$newsid");
+		$REL_DB->query("UPDATE news SET body=$body, image=$image, subject=$subject WHERE id=$newsid");
 
 		$REL_CACHE->clearGroupCache("block-news");
 
@@ -110,6 +120,7 @@ elseif ($action == 'edit')
 		print("<table border=1 cellspacing=0 cellpadding=5>\n");
 		print("<tr><td class=colhead>Редактирование новости<input type=hidden name=returnto value=$returnto></td></tr>\n");
 		print("<tr><td>Тема: <input type=text name=subject maxlength=70 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
+                print("<tr><td>Картинка: <input type=text name=image maxlength=90 size=50 value=\"" . makesafe($arr["image"]) . "\"/></td></tr>");
 		print("<tr><td style='padding: 0px'>");
 		print textbbcode("body",$arr["body"]);
 		//<textarea name=body cols=145 rows=5 style='border: 0px'>" . htmlspecialchars($arr["body"]) .
@@ -131,6 +142,7 @@ print("<form method=post name=news action=\"".$REL_SEO->make_link('news','action
 print("<table border=1 cellspacing=0 cellpadding=5>\n");
 print("<tr><td class=colhead>Добавить новость</td></tr>\n");
 print("<tr><td>Тема: <input type=text name=subject maxlength=40 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
+print("<tr><td>Картинка: <input type=text name=image maxlength=90 size=50 value=\"" . makesafe($arr["image"]) . "\"/></td></tr>");
 print("<tr><td style='padding: 0px'>");
 print textbbcode("body",$arr["body"]);
 //<textarea name=body cols=145 rows=5 style='border: 0px'>

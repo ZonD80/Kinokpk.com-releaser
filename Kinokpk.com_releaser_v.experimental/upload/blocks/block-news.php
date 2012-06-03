@@ -24,24 +24,24 @@ if ($resource) {
 	foreach($resource as $array) {
 		if ($news_flag == 0) {
 			$content .=
-      "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable unfolded\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"bottom\" width=\"50%\"><i>".mkprettytime($array['added'])."</i> - <b>".$array['subject']."</b></td></tr></table></div><div style=\"display: block;\" class=\"sp-body\">".format_comment($array['body']);
+      "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable unfolded\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"bottom\" width=\"50%\"><i>".mkprettytime($array['added'])."</i> - <b>".$array['subject']."</b></td></tr></table></div><div style=\"display: block;\" class=\"sp-body\"><span class=\"fl mr10\"><img src=\"".$array['image']."\" class=\"corners\" height=\"160px\" width=\"200px\"></span><h5>".format_comment($array['body'])."</h5>";
 			$content .="<hr/><div align=\"right\">";
 			if (get_privilege('news_operation',false)) {
 				$content .= "[<a href=\"".$REL_SEO->make_link('news','action','edit','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>E</b></a>]";
 				$content .= "[<a onclick=\"return confirm('{$REL_LANG->_('Are you sure?')}');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
 			}
-			$content .= "".$REL_LANG->say_by_key('comms_2')."".$array['comments']." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$array['id'])."#comments\">".$REL_LANG->say_by_key('to_comment')."</a>]</div>";
+			$content .= "".$REL_LANG->say_by_key('comms_2')."".$array['comments']." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$array['id'])."#comments\">".$REL_LANG->say_by_key('to_comment')."</a>]</div><br/>";
 			$content .= "</div></div>";
 			$news_flag = 1;
 		} else {
 			$content .=
-      "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"bottom\" width=\"50%\"><i>".mkprettytime($array['added'])."</i> - <b>".$array['subject']."</b></td></tr></table></div><div class=\"sp-body\">".format_comment($array['body']);
+      "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"bottom\" width=\"50%\"><i>".mkprettytime($array['added'])."</i> - <b>".$array['subject']."</b></td></tr></table></div><div class=\"sp-body\"><span class=\"fl mr10\"><img src=\"".$array['image']."\" class=\"corners\" height=\"120px\" width=\"140px\"></span><h5>".format_comment($array['body'])."</h5>";
 			$content .="<hr/><div align=\"right\">";
 			if (get_privilege('news_operation',false)) {
 				$content .= "[<a href=\"".$REL_SEO->make_link('news','action','edit','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>E</b></a>]";
 				$content .= "[<a onclick=\"return confirm('{$REL_LANG->_('Are you sure?')}');\" href=\"".$REL_SEO->make_link('news','action','delete','newsid',$array['id'],'returno',urlencode($_SERVER['PHP_SELF']))."\"><b>D</b></a>] ";
 			}
-			$content .= "".$REL_LANG->say_by_key('comms_2')."".$array['comments']." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$array['id'])."\">".$REL_LANG->say_by_key('to_comment')."</a>]</div>";
+			$content .= "".$REL_LANG->say_by_key('comms_2')."".$array['comments']." [<a href=\"".$REL_SEO->make_link('newsoverview','id',$array['id'])."\">".$REL_LANG->say_by_key('to_comment')."</a>]</div><br/>";
 			$content .= "</div></div>";
 		}
 	}

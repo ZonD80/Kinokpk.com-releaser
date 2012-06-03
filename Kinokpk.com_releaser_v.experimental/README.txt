@@ -1,9 +1,9 @@
 ---------------------------------------------------------------------------------------------------------------
--------THIS IS AN APLHA/BETA VERSION, POST ANY COMMENTS TO http://dev.kinokpk.com/viewforum.php?f=19-----------
+------ THIS IS AN APLHA/BETA VERSION, POST ANY COMMENTS TO http://dev.kinokpk.com/viewforum.php?f=19 ----------
 ---------------------------------------------------------------------------------------------------------------
-Kinokpk.com relaser 3.40 WITH XBTT SUPPORT INSTALLATION NOTES
-
-Installation (UPDATE FROM 3.00 MAY BE UNCOMPATIBLE SINCE 3.40 ALPHA):
+Kinokpk.com relaser 4.00 WITH XBTT SUPPORT INSTALLATION NOTES
+===============================================================================================================
+Installation:
 
 Upload all contents from "upload" folder to the root of your site
 Import SQL-file from "update_draft/install/install.sql"
@@ -11,10 +11,19 @@ Import SQL-file from "update_draft/install/install.sql"
 SET your site URL by SQL-query:
 UPDATE cache_stats SET cache_value='http://yoursite.com' WHERE cache_name='defaultbaseurl'
 
-Import language files from "update_draft/install/lang"
+Edit include/secrets.php an fill your database connection properties
 
-IF YOU PREFORMED AN UPDATE, execute this script to reorder classes:
-------
+Register first admin account through huge amount language system errors:) sorry, this is alpha, as I said.
+
+Import language files from "update_draft/install/lang" in http://your.site/langadmin.php
+
+Now you must to setup XBT, scroll page down to see how to do this.
+===============================================================================================================
+Updating from 3.30 (it does not tested at all!)
+
+Import SQL-file from "update_draft/update/update.sql"
+Execute this script to reorder classes:
+
 <pre>
 <?php
 require_once('include/bittorrent.php');
@@ -56,8 +65,8 @@ $REL_DB->query("UPDATE users SET class=3 where id in ($mods)");
 $REL_DB->query("UPDATE users SET class=4 where id in ($upls)");
 $REL_DB->query("UPDATE users SET class=5 where id in ($vips)");
 ?>
-------
----------------------------------------------------------------------------
+
+===============================================================================================================
 
 INSTALL XBTT BY MANUAL: http://xbtt.sourceforge.net/tracker/
 
@@ -124,13 +133,24 @@ print "{$row['id']} processed<br/>";
 }
 ?>
 
-Preform code modifications described in commits
 ---------------------------------------------------------------------------------------------
 Clear cache named "system"
 ----------------------------------------------------------------------------------------------
 Start xbtt, try to download/upload files to your tracker
 ------------------
-WARNING: No configuration files are written yet for xbtt at all or "use_xbt" parameter in cache_stats. Please edit them manually, clearing cache "system" after modification.
-Also, php scaper/announcer is disabled due incompatibility. (it need to be rewritten for xbtt for pure noob-admins)
+WARNING: Native PHP-announcer does not included yet. So, you MUST to use XBT only. You can set XBT parameters via http://your.site/configadmin.php
+You can try https://github.com/hander/Kinokpk.com-releaser/commit/7c0c285d7b224cdec67a4eb678788369c82b6c18 , but it must be fixed too.
 
-No configuration files are wiritten yet for class system. Please edit table "classes" manually
+===============================================================================================================
+IPB 3.2+ INTEGRATION
+
+Setup your IPB.
+Verify, that "Forum enabled" in http://your.site/configadmin.php is NO.
+Edit classes/ipbwi/config.inc.php, fill these parameters:
+ipbwi_BOARD_PATH
+ipbwi_ROOT_PATH
+
+Execute this query:
+update users set forum_id=ID_OF_YOUR_FORUM_ACCOUNT where id=ID_OF_YOUR_TRACKER_ACCOUNT
+
+Set "Forum enabled" in http://your.site/configadmin.php to YES.

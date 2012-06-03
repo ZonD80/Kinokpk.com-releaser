@@ -146,7 +146,7 @@ $REL_TPL->stdmsg($REL_LANG->_("Attention"), $REL_LANG->_("Only invite registrati
 	}
 
 	if ($REL_CONFIG['allow_invite_signup']) {
-		tr($REL_LANG->_("Invite code"), "<p>{$REL_LANG->_("If you have an invite code, past it into field below")}</p><input type=\"text\" name=\"invite\" maxlength=\"32\" size=\"32\" />", 1);
+		tr($REL_LANG->_("Invite code"), "<p>{$REL_LANG->_("If you have an invite code, past it into field below")}</p><input type=\"text\" name=\"invite\" maxlength=\"32\" value=\"".htmlspecialchars((string)$_GET['h'])."\" size=\"32\" />", 1);
 	}
 
 	$returnto = trim((string)$_GET['returnto']);

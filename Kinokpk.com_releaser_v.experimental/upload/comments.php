@@ -16,8 +16,8 @@ INIT();
 
 loggedinorreturn();
 
-$allowed_types = array('rel'=>'torrents','poll'=>'polls','news'=>'news','user'=>'users','req'=>'requests','rg'=>'relgroups','rgnews'=>'rgnews','forum'=>'forum_topics');
-$names = array('rel'=>'name','poll'=>'question','news'=>'subject','user'=>'username','req'=>'request','rg'=>'name','rgnews'=>'subject','forum'=>'subject');
+$allowed_types = array('rel'=>'torrents','poll'=>'polls','news'=>'news','user'=>'users','req'=>'requests','rg'=>'relgroups','rgnews'=>'rgnews');
+$names = array('rel'=>'name','poll'=>'question','news'=>'subject','user'=>'username','req'=>'request','rg'=>'name','rgnews'=>'subject');
 $returnto = strip_tags((string)($_POST['returnto']?$_POST['returnto']:$_SERVER['HTTP_REFERER']));
 if ($action == "add")
 {
@@ -50,18 +50,18 @@ if ($action == "add")
 		if ($last_pmrow[0]){
 			if (($REL_CONFIG['as_timeout'] > round($last_pmrow[0]['seconds'])) && $REL_CONFIG['as_timeout']) {
 				$seconds =  $REL_CONFIG['as_timeout'] - round($last_pmrow[0]['seconds']);
-				$REL_TPL->stderr($REL_LANG->say_by_key('error'),"На нашем сайте стоит защита от флуда, пожалуйста, повторите попытку через $seconds секунд. <a href=\"javascript: history.go(-1)\">Назад</a>");
+				$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('We have anti-flood system. Please try to send comment again in %s seconds',$seconds).' '."<a href=\"javascript: history.go(-1)\">{$REL_LANG->_('Go back')}</a>");
 			}
 
 			if ($REL_CONFIG['as_check_messages'] && ($last_pmrow[0]['msg'] == $text) && ($last_pmrow[1]['msg'] == $text) && ($last_pmrow[2]['msg'] == $text) && ($last_pmrow[3]['msg'] == $text)) {
 				$msgview='';
 				foreach ($msgids as $key => $msgid){
-					$msgview.= "\n<a href=\"".$REL_SEO->make_link('details','id',$torids[$key])."#comm$msgid\">Комментарий ID={$msgid}</a> от пользователя ".$CURUSER['username'];
+					$msgview.= "\n<a href=\"".$REL_SEO->make_link('details','id',$torids[$key])."#comm$msgid\">{$REL_LANG->_('View comment')} ID={$msgid}</a> (".$CURUSER['username'].")";
 				}
 				$modcomment = $REL_DB->query("SELECT modcomment FROM users WHERE id=".$CURUSER['id']);
 				$modcomment = mysql_result($modcomment,0);
 				if (strpos($modcomment,"Maybe spammer in comments") === false) {
-					$reason = sqlesc("Пользователь ".make_user_link()." может быть спамером, т.к. его 5 последних посланных комментариев полностью совпадают.$msgview");
+					$reason = sqlesc($REL_LANG->_('User %s can be spammer because his last 5 comments are the same',make_user_link())." ".$msgview);
 					$REL_DB->query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
 					$modcomment .= "\n".time()." - Maybe spammer in comments";
 					$REL_DB->query("UPDATE users SET modcomment = ".sqlesc($modcomment)." WHERE id =".$CURUSER['id']);
@@ -69,12 +69,12 @@ if ($action == "add")
 				} else {
 					$REL_DB->query("UPDATE users SET enabled=0, dis_reason='Spam in comments' WHERE id=".$CURUSER['id']);
 
-					$reason = sqlesc("Пользователь ".make_user_link()." забанен системой за спам, его IP адрес (".$CURUSER['ip'].")");
+					$reason = sqlesc($REL_LANG->_('User %s banned by system due spam. His IP address is %',make_user_link(),$CURUSER['ip']));
 					$REL_DB->query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
 					
-					$REL_TPL->stderr("Поздравляем!","Вы успешно забанены системой за спам в комментариях! Если вы не согласны с решением системы, <a href=\"".$REL_SEO->make_link('contact')."\">подайте жалобу админам</a>.");
+					$REL_TPL->stderr($REL_LANG->_('Congratulations'),$REL_LANG->_('You are automatically banned due to spam in comments. You can report this issue to <a href="%s">Administrators</a>',$REL_SEO->make_link('contact')));
 						}
-				$REL_TPL->stderr($REL_LANG->say_by_key('error'),"На нашем сайте стоит защита от спама, ваши 5 последних комментариев совпадают. В отсылке комментария отказано. <b><u>ВНИМАНИЕ! ЕСЛИ ВЫ ЕЩЕ РАЗ ПОПЫТАЕТЕСЬ ОТПРАВИТЬ ИДЕНТИЧНОЕ СООБЩЕНИЕ, ВЫ БУДЕТЕ АВТОМАТИЧЕСКИ ЗАБЛОКИРОВАНЫ СИСТЕМОЙ!!!</u></b> <a href=\"javascript: history.go(-1)\">Назад</a>");
+				$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('We have anti-spam system. Last 5 comments from you are the same. Please, write something else:) <b><u>ATTENTION! IF YOU TRY TO SEND THE SAME COMMENT AGAIN, YOU WILL BE AUTOMATICALLY BANNED BY SYSTEM!!!</u></b>')." <a href=\"javascript: history.go(-1)\">{$REL_LANG->_('Go back')}</a>");
 
 			}
 		}
@@ -89,9 +89,8 @@ if ($action == "add")
 		$clearcache = array('block-indextorrents','block-comments');
 		foreach ($clearcache as $cachevalue) $REL_CACHE->clearGroupCache($cachevalue);
 
-		$REL_DB->query("UPDATE {$allowed_types[$type]} SET comments = comments + 1".($type=='forum'?", lastposted_id=$newid":'')." WHERE id = $to_id");
+		$REL_DB->query("UPDATE {$allowed_types[$type]} SET comments = comments + 1 WHERE id = $to_id");
 		clear_comment_caches($type);
-		/////////////////СЛЕЖЕНИЕ ЗА КОММЕНТАМИ/////////////////
 		
 		if ($type=='rel'&&get_privilege('edit_releases',false)) {
 			$release = $REL_DB->query_row("SELECT id,name,owner FROM torrents WHERE id=$to_id AND moderatedby=0");
@@ -103,7 +102,6 @@ if ($action == "add")
 		send_comment_notifs($to_id,"<a href=\"$returnto\">$name</a>","{$type}comments");
 		
 		set_visited("{$type}comments",$newid);
-		/////////////////СЛЕЖЕНИЕ ЗА КОММЕНТАМИ/////////////////
 		if (!REL_AJAX) {
 			safe_redirect($returnto);
 			$REL_TPL->stderr($REL_LANG->_('Successfull'),$REL_LANG->_('Comment added'),'success'); }
@@ -237,15 +235,7 @@ elseif ($action == "delete")
 		$REL_DB->query("DELETE FROM comments WHERE id=$commentid");
 		if ($to_id && mysql_affected_rows() > 0) {
 		$REL_DB->query("UPDATE {$allowed_types[$type]} SET comments = comments - 1 WHERE id = $to_id");
-		if ($type=='forum') {
-			
-			$check = mysql_fetch_assoc($REL_DB->query("SELECT (SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id>$commentid ORDER BY id ASC LIMIT 1) AS next, (SELECT comments.id FROM comments WHERE toid=$to_id AND type='forum' AND comments.id<$commentid ORDER BY id DESC LIMIT 1) AS prev"));
-			//die(var_dump($check));
-			if (!$check['next']&&!$check['prev']) $REL_DB->query("DELETE FROM forum_topics WHERE id=$to_id");
-			elseif (!$check['next']) {
-				$REL_DB->query("UPDATE forum_topics SET lastposted_id={$check['prev']} WHERE id=$to_id");
-			}
-		}
+
 		clear_comment_caches($type);
 		}
 	}

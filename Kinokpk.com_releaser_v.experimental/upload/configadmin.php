@@ -40,6 +40,7 @@ elseif ($_GET['action'] == 'save'){
 'use_ttl','use_email_act','use_captcha','use_blocks','use_gzip','use_ipbans',
 'as_timeout','as_check_messages','debug_mode','debug_language','debug_template','pron_cats','register_timezone','site_timezone','low_comment_hide','sign_length','default_notifs','default_emailnotifs','use_kinopoisk_trailers','use_xbt');
 	$captcha_param = array('re_publickey','re_privatekey');
+        $forum_param = array('forumurl','forumname','forum_signup_class');
 
 	$updateset = array();
 
@@ -52,6 +53,13 @@ elseif ($_GET['action'] == 'save'){
 	if ($_POST['use_captcha'] == 1) {
 		foreach ($captcha_param as $param) {
 			if (!$_POST[$param] || !isset($_POST[$param])) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Public and private ReCaptcha fields does not defined'));
+			$updateset[] = "UPDATE cache_stats SET cache_value=".sqlesc($_POST[$param])." WHERE cache_name='$param'";
+		}
+	}
+        
+        if ($_POST['forum_enabled'] == 1) {
+		foreach ($forum_param as $param) {
+			if (!$_POST[$param] || !isset($_POST[$param])) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Fill all requested fields for forum operation'));
 			$updateset[] = "UPDATE cache_stats SET cache_value=".sqlesc($_POST[$param])." WHERE cache_name='$param'";
 		}
 	}

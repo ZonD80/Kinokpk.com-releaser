@@ -128,7 +128,7 @@ INSERT INTO `cache_stats` (`cache_name`, `cache_value`) VALUES
 ('default_theme', 'releaser330'),
 ('deny_signup', '0'),
 ('description', 'Kinokpk.com releaser 3.30 new installation'),
-('forum_enabled', '1'),
+('forum_enabled', '0'),
 ('keywords', 'kinokpk.com, releaser, 3.30, 330, ZonD80, TorrentsBook.com'),
 ('low_comment_hide', '-3'),
 ('maxusers', '0'),
@@ -1388,3 +1388,37 @@ ALTER TABLE  `trackers` ADD  `check_start` INT( 10 ) UNSIGNED NOT NULL DEFAULT  
 alter table trackers add index (check_start,state);
 alter table trackers add index (state);
 alter table trackers add index (num_failed);
+
+
+
+ALTER TABLE `users` DROP `old_password`;
+
+ALTER TABLE  `users` ADD  `forum_id` INT( 10 ) UNSIGNED NULL COMMENT  'ID of forum account';
+
+INSERT INTO  `cache_stats` (
+`cache_name` ,
+`cache_value`
+)
+VALUES (
+'forumurl',  'forum'
+);
+
+INSERT INTO  `cache_stats` (
+`cache_name` ,
+`cache_value`
+)
+VALUES (
+'forumname',  'Форум'
+);
+
+INSERT INTO  `cache_stats` (
+`cache_name` ,
+`cache_value`
+)
+VALUES (
+'forum_signup_class',  '3'
+);
+
+DROP TABLE `forum_categories`, `forum_topics`;
+
+delete from comments where type='forum';

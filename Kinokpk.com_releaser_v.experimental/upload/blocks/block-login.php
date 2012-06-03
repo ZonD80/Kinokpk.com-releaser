@@ -20,7 +20,7 @@ if ($CURUSER)  $content = "<a class=\"menu\" href=\"".$REL_SEO->make_link('my').
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('index')."\">&nbsp;".$REL_LANG->say_by_key('homepage')."</a>"
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('browse','unchecked','')."\">&nbsp;".$REL_LANG->say_by_key('test_releaser')."</a>"
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('viewrequests')."\">&nbsp;".$REL_LANG->say_by_key('requests')."</a>"
-."<a class=\"menu\" href=\"{$REL_CONFIG['forumurl']}/index.php\">&nbsp;".$REL_LANG->say_by_key('forum')." {$REL_CONFIG['forumname']}</a>"
+."<a class=\"menu\" href=\"{$REL_CONFIG['forumurl']}\">&nbsp;".$REL_LANG->say_by_key('forum')." {$REL_CONFIG['forumname']}</a>"
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('testport')."\">&nbsp;".$REL_LANG->say_by_key('check_port')."</a>"
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('topten')."\">&nbsp;".$REL_LANG->say_by_key('topten')."</a>"
 ."<a class=\"menu\" href=\"".$REL_SEO->make_link('bookmarks')."\">&nbsp;".$REL_LANG->say_by_key('bookmarks')."</a>"

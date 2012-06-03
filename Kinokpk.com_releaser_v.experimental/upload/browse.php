@@ -156,6 +156,32 @@ if (!pagercheck()) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	print("<div align=\"center\"><form action=\"".$REL_SEO->make_link('browse')."\" method=\"get\">".$REL_LANG->_('Type name here').':&nbsp;<input type="text" class="browse_search" name="search" size="30" style="margin-right: 10px;" value="'.$cleansearchstr.'"/>
 			&nbsp;'.gen_select_area('cat',$tree,implode(',',$cat), true,true).'
 			'.$rgselect.'

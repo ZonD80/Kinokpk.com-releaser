@@ -29,7 +29,6 @@ if (! $action) {
 	}
 }
 
-// начало просмотр почтового ящика
 if ($action == "viewmailbox") {
 	// Get Mailbox Number
 	$mailbox = ( int ) $_GET ['box'];
@@ -60,13 +59,13 @@ if ($action == "viewmailbox") {
 	$inbox_all_procent = round(($inbox_all/$REL_CONFIG['pm_max'])*100);
 	$outbox_all_procent = round(($outbox_all/$REL_CONFIG['pm_max'])*100);
 
-	print("<b>Ваш ящик заполнен на:</b><font color=\"#8da6cf\"> $all_mess</font><font color=\"green\"> ($all_mess_procent%) </font> <small>максимальное количество сообщений - ". $REL_CONFIG['pm_max'] ."</small><br />");
+	print("<b>{$REL_LANG->_('Your mailbox filled by')}:</b><font color=\"#8da6cf\"> $all_mess</font><font color=\"green\"> ($all_mess_procent%) </font> <small>{$REL_LANG->_('Maximum amoutm of messages is %s',$REL_CONFIG['pm_max'])}</small><br />");
 	#amount end
 
 	print('<form id="message" action="'.$REL_SEO->make_link('message').'" method="POST"><input type="hidden" name="action" value="moveordel">');
 	print("<div id=\"tabs\"><ul>
-	<li class=\"tab".(($mailbox != PM_SENTBOX)?'1':'2')."\"><a href=\"".$REL_SEO->make_link('message','action','viewmailbox','box',1)."\"><span>Входящие <font color=\"#8da6cf\">$inbox_all </font><font color=\"green\">($inbox_all_procent%) </font></span></a></li>
-	<li nowrap=\"\" class=\"tab".(($mailbox != PM_SENTBOX)?'2':'1')."\"><a href=\"".$REL_SEO->make_link('message','action','viewmailbox','box',-1)."\"><span>Отправленные <font color=\"#8da6cf\">$outbox_all </font><font color=\"green\">($outbox_all_procent%) </font></span></a></li>
+	<li class=\"tab".(($mailbox != PM_SENTBOX)?'1':'2')."\"><a href=\"".$REL_SEO->make_link('message','action','viewmailbox','box',1)."\"><span>{$REL_LANG->_('Received')} <font color=\"#8da6cf\">$inbox_all </font><font color=\"green\">($inbox_all_procent%) </font></span></a></li>
+	<li nowrap=\"\" class=\"tab".(($mailbox != PM_SENTBOX)?'2':'1')."\"><a href=\"".$REL_SEO->make_link('message','action','viewmailbox','box',-1)."\"><span>{$REL_LANG->_('Sent')} <font color=\"#8da6cf\">$outbox_all </font><font color=\"green\">($outbox_all_procent%) </font></span></a></li>
 	</ul></div>");
 	?>
 
@@ -81,8 +80,8 @@ if ($action == "viewmailbox") {
 		print ("<TD width=\"30%\" class=\"colhead\">".$REL_LANG->say_by_key('receiver')."</TD>");
 		?>
 		<TD width="10%" class="colhead"><?php print $REL_LANG->say_by_key('date'); ?></TD>
-		<TD width="10%" class="colhead">В архиве</TD>
-		<TD width="10%" class="colhead">Срок хранения</TD>
+		<TD width="10%" class="colhead"><?php print $REL_LANG->_('Archived'); ?></TD>
+		<TD width="10%" class="colhead"><?php print $REL_LANG->_('Storage period'); ?></TD>
 		<TD width="2%" class="colhead"><input id="toggle-all"
 			style="float: right;" type="checkbox"
 			title="<?php print $REL_LANG->say_by_key('mark_all'); ?>"
@@ -90,10 +89,10 @@ if ($action == "viewmailbox") {
 
 	</TR>
 	<?php
-	$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
-	$dt_system = time() - $secs_system; // Сегодня минус количество дней
-	$secs_all = $REL_CRON['pm_delete_user_days']*86400; // Количество дней
-	$dt_all = time() - $secs_all; // Сегодня минус количество дней
+	$secs_system = $REL_CRON['pm_delete_sys_days']*86400; 
+	$dt_system = time() - $secs_system;
+	$secs_all = $REL_CRON['pm_delete_user_days']*86400;
+	$dt_all = time() - $secs_all;
 
 	if ($mailbox != PM_SENTBOX) {
 		$res = $REL_DB->query ( "SELECT m.*, u.username AS sender_username, friends.id AS fid, friends.confirmed AS fconf FROM messages AS m LEFT JOIN users AS u ON m.sender = u.id LEFT JOIN friends ON (friends.userid=m.sender AND friends.friendid={$CURUSER['id']}) OR (friends.friendid=m.sender AND friends.userid={$CURUSER['id']}) WHERE receiver=" . sqlesc ( $CURUSER ['id'] ) . " AND location=" . sqlesc ( $mailbox ) . " AND IF(m.archived_receiver=1, 1=1, IF(m.sender=0,m.added>$dt_system,m.added>$dt_all)) ORDER BY id DESC" );
@@ -144,7 +143,7 @@ if ($action == "viewmailbox") {
 				echo ("<TR>\n<TD><IMG src=\"pic/pn_inbox.gif\" alt=\"" . $REL_LANG->say_by_key('mail_read') . "\"></TD>\n");
 			}
 			$msgtext = strip_tags($row['msg']);
-			$msgtext = "<small>".(mb_strlen($msgtext)>70?'...'.substr($msgtext,-70):$msgtext)."</small>";
+			$msgtext = "<small>".(mb_strlen($msgtext)>70?'...'.mb_substr($msgtext,-70):$msgtext)."</small>";
 			echo ("<TD><A href=\"".$REL_SEO->make_link('message','action','viewmessage','id',$row ['id'])."\">" . $subject . "</A><br/>$msgtext</TD>\n");
 			if ($mailbox != PM_SENTBOX) {
 				echo ("<TD>$username</TD>\n");
@@ -153,13 +152,13 @@ if ($action == "viewmailbox") {
 			}
 			echo ("<TD>" . mkprettytime ( $row ['added'] ) . "</TD>\n");
 
-			echo ("<TD>" . (($row ['archived']) ? "<font color=\"red\">Да</font>" : "Нет") . "</TD>\n");
+			echo ("<TD>" . (($row ['archived']) ? "<font color=\"red\">{$REL_LANG->_('Yes')}</font>" : $REL_LANG->_('No')) . "</TD>\n");
 			if ($row ['sender'] == 0)
 			$pm_del = $REL_CRON ['pm_delete_sys_days'];
 			else
 			$pm_del = $REL_CRON ['pm_delete_user_days'];
 
-			echo ("<TD>" . (($row ['archived']) ? "N/A" : ($pm_del - round ( (time () - $row ['added']) / 86400 )) . " дня(ей)</TD>\n"));
+			echo ("<TD>" . (($row ['archived']) ? "N/A" : ($pm_del - round ( (time () - $row ['added']) / 86400 )) . " {$REL_LANG->_('day(s)')}</TD>\n"));
 			echo ("<TD><INPUT type=\"checkbox\" name=\"messages[]\" title=\"" . $REL_LANG->say_by_key('mark') . "\" value=\"" . $row ['id'] . "\" id=\"checkbox_tbl_" . $row ['id'] . "\"></TD>\n</TR>\n");
 		}
 	}
@@ -176,25 +175,24 @@ if ($action == "viewmailbox") {
 			title="<?php print $REL_LANG->say_by_key('mark_as_read'); ?>"
 			value="<?php print $REL_LANG->say_by_key('mark_read'); ?>"
 			onClick="return confirm('<?php print $REL_LANG->say_by_key('sure_mark_read'); ?>')" />
-		<input type="submit" name="archive" title="Архивировать"
-			value="Архивировать"
-			onClick="return confirm('Архивировать выбранные сообщения? (они не будут удалены системой автоматически)')" />
-		<input type="submit" name="unarchive" title="Разархивировать"
-			value="Разархивировать"
-			onClick="return confirm('Разархивировать выбранные сообщения? (они будут удалены системой автоматически)')" />
+		<input type="submit" name="archive" title="<?php print $REL_LANG->_('Add to archive'); ?>"
+			value="<?php print $REL_LANG->_('Add to archive'); ?>"
+			onClick="return confirm('<?php print $REL_LANG->_('Do you want to add these messages to arcive? It will not be deleted by system automatically.'); ?>')" />
+		<input type="submit" name="unarchive" title="<?php print $REL_LANG->_('Remove from archive'); ?>"
+			value="<?php print $REL_LANG->_('Remove from archive'); ?>"
+			onClick="return confirm('<?php print $REL_LANG->_('Do you want to remove these messages from arcive? It will be deleted by system automatically.'); ?>')" />
 		</td>
 
 	</tr>
 </table>
 </form>
-<div align="left"><img src="pic/pn_inboxnew.gif" alt="Непрочитанные" />
+<div align="left"><img src="pic/pn_inboxnew.gif" alt="<?php print $REL_LANG->_('Unread'); ?>" />
 	<?php print $REL_LANG->say_by_key('mail_unread_desc'); ?><br />
-<img src="pic/pn_inbox.gif" alt="Прочитанные" /> <?php print $REL_LANG->say_by_key('mail_read_desc'); ?></div>
+<img src="pic/pn_inbox.gif" alt="<?php print $REL_LANG->_('Readed'); ?>" /> <?php print $REL_LANG->say_by_key('mail_read_desc'); ?></div>
 	<?php	$REL_TPL->stdfoot();
-} // конец просмотр почтового ящика
+}
 
 
-// начало просмотр тела сообщения
 elseif ($action == "viewmessage") {
 	if (! is_valid_id ( $_GET ["id"] ))
 	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
@@ -204,13 +202,13 @@ elseif ($action == "viewmessage") {
 	if (!get_privilege('view_pms',false)) {
 		$res = $REL_DB->query ( 'SELECT * FROM messages WHERE messages.id=' . sqlesc ( $pm_id ) . ' AND (messages.receiver=' . sqlesc ( $CURUSER ['id'] ) . ' OR (messages.sender=' . sqlesc ( $CURUSER ['id'] ) . ' AND messages.saved=1)) LIMIT 1' );
 		if (mysql_num_rows ( $res ) == 0) {
-			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Такого сообщения не существует." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('There is no such message') );
 		}
 
 	} else {
 		$res = $REL_DB->query ( 'SELECT * FROM messages WHERE messages.id=' . sqlesc ( $pm_id ) );
 		if (mysql_num_rows ( $res ) == 0) {
-			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Такого сообщения не существует." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'),  $REL_LANG->_('There is no such message') );
 		}
 		$adminview = 1;
 	}
@@ -223,44 +221,44 @@ elseif ($action == "viewmessage") {
 		$sender = mysql_fetch_array ( $res2 );
 		$sender = "<A href=\"".$REL_SEO->make_link('userdetails','id',$message['receiver'],'username',translit($sender [0]))."\">" . $sender [0] . "</A>";
 		$reply = "";
-		$from = "Кому";
+		$from = $REL_LANG->_('To');
 	} else {
-		$from = "От кого";
+		$from = $REL_LANG->_('From');
 		if ($message ['sender'] == 0) {
-			$sender = "Системное";
+			$sender = $REL_LANG->_('From system');
 			$reply = "";
 		} else {
 			$res2 = $REL_DB->query ( "SELECT username FROM users WHERE id=" . sqlesc ( $message ['sender'] ) );
 			$sender = mysql_fetch_array ( $res2 );
 			$sender = "<A href=\"".$REL_SEO->make_link('userdetails','id',$message['sender'],'username',translit($sender [0]))."\">{$sender [0]}</A>";
-			$reply = " [ <A href=\"".$REL_SEO->make_link('message','action','sendmessage','receiver',$message['sender'],'replyto',$pm_id)."\">Ответить</A> ]";
+			$reply = " [ <A href=\"".$REL_SEO->make_link('message','action','sendmessage','receiver',$message['sender'],'replyto',$pm_id)."\">{$REL_LANG->_('Reply')}</A> ]";
 		}
 	}
 	$body = format_comment ( $message ['msg'] );
 	$added = mkprettytime ( $message ['added'] );
-	$unread = ($message ['unread'] ? "<SPAN style=\"color: #FF0000;\"><b>(Новое)</b></A>" : "");
+	$unread = ($message ['unread'] ? "<SPAN style=\"color: #FF0000;\"><b>({$REL_LANG->_('New message')})</b></A>" : "");
 
 	$subject = makesafe ( $message ['subject'] );
 	if (mb_strlen ( $subject ) <= 0) {
-		$subject = "Без темы";
+		$subject = $REL_LANG->_('(No subject)');
 	}
 	// Mark message unread
 	if ($adminview && ($CURUSER ['id'] != $message ['receiver']) && ($CURUSER ['id'] != $message ['sender'])) {
 	} else
 	$REL_DB->query ( "UPDATE messages SET unread=0 WHERE id=" . sqlesc ( $pm_id ) . " AND receiver=" . sqlesc ( $CURUSER ['id'] ) . " LIMIT 1" );
 	// Display message
-	$REL_TPL->stdhead( "Личное Сообщение (Тема: $subject)" );
+	$REL_TPL->stdhead( $REL_LANG->_('Private message (subject: %s)',$subject) );
 	?>
 <TABLE width="100%" border="0" cellpadding="4" cellspacing="0">
 
 	<TR>
-		<TD class="colhead" colspan="2">Тема: <?php print $subject; ?><span class="higo"><a
-			href="javascript:history.go(-1);">назад</a></span></TD>
+		<TD class="colhead" colspan="2"><?php print $REL_LANG->_('Subject') ?>: <?php print $subject; ?><span class="higo"><a
+			href="javascript:history.go(-1);"><?php print $REL_LANG->_('Go back') ?></a></span></TD>
 
 	</TR>
 	<TR>
 		<TD width="50%" class="colhead"><?php print $from; ?></TD>
-		<TD width="50%" class="colhead">Дата отправки</TD>
+		<TD width="50%" class="colhead"><?php print $REL_LANG->_('Date sent') ?></TD>
 	</TR>
 	<TR>
 		<TD><?php print $sender; ?></TD>
@@ -275,38 +273,37 @@ elseif ($action == "viewmessage") {
 			$a_receiver = $REL_DB->query ( "SELECT username FROM users WHERE id = " . $message ['receiver'] );
 			$a_receiver = mysql_result ( $a_receiver, 0 );
 
-			print ( '<font color="red">Вы просматриваете это сообщение от прав администратора!</font> Получатель: <a href="'.$REL_SEO->make_link('userdetails','id',$message['receiver'],'username',translit($a_receiver)).'">' . $a_receiver . '</a><br />' );
+			print ( '<font color="red">'.$REL_LANG->_('You are viewing this message as administrator').'</font> '.$REL_LANG->_('Receiver').': <a href="'.$REL_SEO->make_link('userdetails','id',$message['receiver'],'username',translit($a_receiver)).'">' . $a_receiver . '</a><br />' );
 		}
-		print ( "[ <A onClick=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('message','action','deletemessage','id',$pm_id)."\">Удалить</A> ]$reply [ <A href=\"".$REL_SEO->make_link('message','action','forward','id',$pm_id)."\">Переслать</A> ]" . reportarea ( $message ['id'], 'messages' ) );
+		print ( "[ <A onClick=\"return confirm('{$REL_LANG->_('Are you sure?')}')\" href=\"".$REL_SEO->make_link('message','action','deletemessage','id',$pm_id)."\">{$REL_LANG->_('Delete')}</A> ]$reply [ <A href=\"".$REL_SEO->make_link('message','action','forward','id',$pm_id)."\">{$REL_LANG->_('Forward')}</A> ]" . reportarea ( $message ['id'], 'messages' ) );
 		?></TD>
 	</TR>
 </TABLE>
 		<?php		set_visited('messages',$pm_id);
 		$REL_TPL->stdfoot();
-} // конец просмотр тела сообщения
+}
 
 
-// начало просмотр посылка сообщения
 elseif ($action == "sendmessage") {
 
 	if (! is_valid_id ( $_GET ["receiver"] ))
-	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Неверное ID получателя" );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid receiver') );
 	$receiver = ( int ) $_GET ["receiver"];
 
 	if ($_GET ['replyto'] && ! is_valid_id ( $_GET ["replyto"] ))
-	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Неверное ID сообщения" );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid message ID') );
 	$replyto = ( int ) $_GET ["replyto"];
 
 	$res = $REL_DB->query ( "SELECT * FROM users WHERE id=$receiver" ) or die ( mysql_error () );
 	$user = mysql_fetch_assoc ( $res );
 	if (! $user)
-	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Пользователя с таким ID не существует." );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('There is no user with such ID') );
 
 	if ($replyto) {
 		$res = $REL_DB->query ( "SELECT * FROM messages WHERE id=$replyto" );
 		$msga = mysql_fetch_assoc ( $res );
 		if ($msga ["receiver"] != $CURUSER ["id"])
-		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Вы пытаетесь ответить не на свое сообщение!" );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('You are trying to reply on not yours message') );
 
 		$res = $REL_DB->query ( "SELECT username FROM users WHERE id=" . $msga ["sender"] );
 		$usra = mysql_fetch_assoc ( $res );
@@ -322,13 +319,13 @@ elseif ($action == "sendmessage") {
 		// End of Change
 	}
 
-	$REL_TPL->stdhead( "Отсылка сообщений", false );
+	$REL_TPL->stdhead( $REL_LANG->_('Private messages sender'), false );
 	?>
 <script language="JavaScript">
 <!--
 
 required = new Array("subject");
-required_show = new Array("тему сообщения");
+required_show = new Array("<?php print $REL_LANG->_('Message subject'); ?>");
 
 
 function SendForm () {
@@ -338,7 +335,7 @@ for(j=0; j<required.length; j++) {
     for (i=0; i<document.message.length; i++) {
         if (document.message.elements[i].name == required[j] &&
   document.forms[0].elements[i].value == "" ) {
-            alert('Пожалуйста, введите ' + required_show[j]);
+            alert('<?php print $REL_LANG->_('Please fill'); ?> ' + required_show[j]);
             document.message.elements[i].focus();
             return false;
         }
@@ -359,11 +356,11 @@ for(j=0; j<required.length; j++) {
 			value=takemessage>
 		<table class=message cellspacing=0 cellpadding=5>
 			<tr>
-				<td colspan=2 class=colhead>Сообщение для <a class=altlink_white
+				<td colspan=2 class=colhead><?php print $REL_LANG->_('Receiver');?> <a class=altlink_white
 					href="<?php print $REL_SEO->make_link('userdetails','id',$receiver,'username',translit($user['username'])); ?>"><?php print $user ["username"]; ?></a></td>
 			</tr>
 			<TR>
-				<TD colspan="2"><B>Тема:&nbsp;&nbsp;</B> <INPUT name="subject"
+				<TD colspan="2"><B><?php print $REL_LANG->_('Subject'); ?>:&nbsp;&nbsp;</B> <INPUT name="subject"
 					type="text" size="60" value="<?php print $subject; ?>" maxlength="255"></TD>
 			</TR>
 			<tr>
@@ -374,21 +371,18 @@ for(j=0; j<required.length; j++) {
 			<?php			if ($replyto) {
 				?>
 				<td align=center><input type=checkbox name='delete' value='1'
-				<?php print $CURUSER ['deletepms'] ? "checked" : ""; ?> />Удалить сообщение
-				после ответа <input type=hidden name=origmsg value=<?php print $replyto; ?> /></td>
+				<?php print $CURUSER ['deletepms'] ? "checked" : ""; ?> /><?php print $REL_LANG->_('Delete message after sending'); ?> <input type=hidden name=origmsg value=<?php print $replyto; ?> /></td>
 				<?php			}
 			?>
 				<td align=center><input type=checkbox name='save' value='1'
-				<?php print $CURUSER ['savepms'] ? "checked" : ""; ?> />Сохранить сообщение в
-				отправленных</td>
+				<?php print $CURUSER ['savepms'] ? "checked" : ""; ?> /><?php print $REL_LANG->_('Save message in "sent" mailbox'); ?></td>
 			</tr>
 			<tr>
-				<td align="center"><input type="checkbox" name='archive' value='1' />Архивировать
-				после отправки</td>
+				<td align="center"><input type="checkbox" name='archive' value='1' /><?php print $REL_LANG->_('Add message to archive after sending'); ?></td>
 			</tr>
 			<tr>
 				<td <?php print $replyto ? " colspan=2" : ""; ?> align=center><input
-					type=submit value="Послать!" class=btn /></td>
+					type=submit value="<?php print $REL_LANG->_('Send message'); ?>!" class=btn /></td>
 			</tr>
 		</table>
 		<input type=hidden name=receiver value=<?php print $receiver; ?> /></form>
@@ -397,10 +391,8 @@ for(j=0; j<required.length; j++) {
 	</tr>
 </table>
 				<?php				$REL_TPL->stdfoot();
-} // конец посылка сообщения
+}
 
-
-// начало прием посланного сообщения
 elseif ($action == 'takemessage') {
 
 	$receiver = ( int ) $_POST ["receiver"];
@@ -412,10 +404,10 @@ elseif ($action == 'takemessage') {
 	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
 	$msg = trim ( $_POST ["msg"] );
 	if (! $msg)
-	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Пожалуйста введите сообщение!" );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Please fill message text') );
 	$subject = trim ( $_POST ['subject'] );
 	if (! $subject)
-	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Пожалуйста введите тему сообщения!" );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Please fill message subject') );
 
 	// ANTISPAM SYSTEM BEGIN
 	$last_pmres = $REL_DB->query ( "SELECT " . time () . "-added AS seconds, msg,id FROM messages WHERE sender=" . $CURUSER ['id'] . " OR poster=" . $CURUSER ['id'] . " ORDER BY added DESC LIMIT 4" );
@@ -427,29 +419,29 @@ elseif ($action == 'takemessage') {
 	if ($last_pmrow [0]) {
 		if (($REL_CONFIG ['as_timeout'] > round ( $last_pmrow [0] ['seconds'] )) && $REL_CONFIG ['as_timeout']) {
 			$seconds = $REL_CONFIG ['as_timeout'] - round ( $last_pmrow [0] ['seconds'] );
-			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "На нашем сайте стоит защита от флуда, пожалуйста, повторите попытку через $seconds секунд. <a href=\"javascript: history.go(-1)\">Назад</a>" );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('We have anti-flood system. Please try to send comment again in %s seconds',$seconds).' '."<a href=\"javascript: history.go(-1)\">{$REL_LANG->_('Go back')}</a>");
 		}
 
 		if ($REL_CONFIG ['as_check_messages'] && ($last_pmrow [0] ['msg'] == $msg) && ($last_pmrow [1] ['msg'] == $msg) && ($last_pmrow [2] ['msg'] == $msg) && ($last_pmrow [3] ['msg'] == $msg)) {
 			$msgview = '';
 			foreach ( $msgids as $msgid ) {
-				$msgview .= "\n<a href=\"".$REL_SEO->make_link('message','action','viewmessage','id',$msgid)."\">Сообщение с ID={$msgid}</a> от пользователя " . $CURUSER ['username'];
+				$msgview .= "\n{$REL_LANG->_to(0,'<a href="%s">Message with ID = %s</a> from %s',$REL_SEO->make_link('message','action','viewmessage','id',$msgid),$msgid,  make_user_link())}";
 			}
 			$modcomment = $REL_DB->query ( "SELECT modcomment FROM users WHERE id=" . $CURUSER ['id'] );
 			$modcomment = mysql_result ( $modcomment, 0 );
 			if (strpos ( $modcomment, "Maybe spammer" ) === false) {
-				$reason = sqlesc("Пользователь <a href=\"".$REL_SEO->make_link('userdetails','id',$CURUSER ['id'],'username',translit($CURUSER['username']))."\">" . $CURUSER ['username'] . "</a> может быть спамером, т.к. его 5 последних посланных сообщений полностью совпадают.$msgview");
+				$reason = sqlesc($REL_LANG->_('User %s can be spammer because his last 5 comments are the same',make_user_link())." ".$msgview);
 				$REL_DB->query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
 				$modcomment .= "\n" . time () . " - Maybe spammer";
 				$REL_DB->query ( "UPDATE users SET modcomment = " . sqlesc ( $modcomment ) . " WHERE id =" . $CURUSER ['id'] );
-				$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "На нашем сайте стоит защита от спама, ваши 5 последних сообщений совпадают. В отсылке личного сообщения отказано. <b><u>ВНИМАНИЕ! ЕСЛИ ВЫ ЕЩЕ РАЗ ПОПЫТАЕТЕСЬ ОТПРАВИТЬ ИДЕНТИЧНОЕ СООБЩЕНИЕ, ВЫ БУДЕТЕ АВТОМАТИЧЕСКИ ЗАБЛОКИРОВАНЫ СИСТЕМОЙ!!!</u></b> <a href=\"javascript: history.go(-1)\">Назад</a>" );
+				$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('We have anti-spam system. Last 5 messages from you are the same. Please, write something else:) <b><u>ATTENTION! IF YOU TRY TO SEND THE SAME COMMENT AGAIN, YOU WILL BE AUTOMATICALLY BANNED BY SYSTEM!!!</u></b>')." <a href=\"javascript: history.go(-1)\">{$REL_LANG->_('Go back')}</a>" );
 					
 			} else {
 				$REL_DB->query ( "UPDATE users SET enabled=0, dis_reason='Spam' WHERE id=" . $CURUSER ['id'] );
 
-				$reason = sqlesc("Пользователь ".make_user_link()." забанен системой за спам, его IP адрес (" . $CURUSER ['ip'] . ")");
+				$reason = sqlesc($REL_LANG->_('User %s banned by system due spam. His IP address is %',make_user_link(),$CURUSER['ip']));
 				$REL_DB->query ( "INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time () . ")" );
-				$REL_TPL->stderr ( "Поздравляем!", "Вы успешно забанены системой за спам в Личных Сообщениях! Если вы не согласны с решением системы, <a href=\"".$REL_SEO->make_link('contact')."\">подайте жалобу админам</a>." );
+				$REL_TPL->stderr ( $REL_LANG->_('Congratulations'),$REL_LANG->_('You are automatically banned due to spam in comments. You can report this issue to <a href="%s">Administrators</a>',$REL_SEO->make_link('contact')));
 			}
 		}
 		
@@ -458,13 +450,13 @@ elseif ($action == 'takemessage') {
 	$pms = $REL_DB->query ( "SELECT SUM(1) FROM messages WHERE (receiver = $receiver AND location=1) OR (sender = $receiver AND saved = 1)" );
 	$pms = (int)mysql_result ( $pms, 0 );
 	if ($pms >= $REL_CONFIG ['pm_max'])
-	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Ящик личных сообщений получателя заполнен, вы не можете отправить ему сообщение." );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Inbox of receiver is full. You can not send message to this user.') );
 
 	if ($save) {
 		$pms = $REL_DB->query ( "SELECT SUM(1) FROM messages WHERE (receiver = " . $CURUSER ['id'] . " AND location=1) OR (sender = " . $CURUSER ['id'] . " AND saved = 1)" );
 		$pms = (int)mysql_result ( $pms, 0 );
 		if ($pms >= $REL_CONFIG ['pm_max'])
-		$REL_TPL->stderr ( "Невозможно сохранить сообщение", "Ваш ящик личных сообщений заполнен, максимальное кол-во {$REL_CONFIG['pm_max']}. Вы не можете отправить сообщение, вам необходимо очистить ящик личных сообщений" );
+		$REL_TPL->stderr ( $REL_LANG->_('Error'), $REL_LANG->_('Unable to send and save message. Your mailbox is full. Please free some space for more messages (maximum is %s)',$REL_CONFIG['pm_max'] ));
 	}
 
 	// Change
@@ -474,27 +466,26 @@ elseif ($action == 'takemessage') {
 	$res = $REL_DB->query ( "SELECT email, acceptpms, notifs, last_access AS la FROM users WHERE id=$receiver" );
 	$user = mysql_fetch_assoc ( $res );
 	if (! $user)
-	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Нет пользователя с таким ID $receiver." );
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid receiver') );
 	//Make sure recipient wants this message
 
 	if (!get_privilege('is_moderator',false)) {
 		if ($user ["acceptpms"] == "friends") {
 			$res2 = $REL_DB->query ( "SELECT * FROM friends WHERE userid=$receiver AND friendid=" . $CURUSER ["id"] );
 			if (mysql_num_rows ( $res2 ) != 1)
-			$REL_TPL->stderr ( "Отклонено", "Этот пользователь принимает сообщение только из списка своих друзей" );
+			$REL_TPL->stderr ( $REL_LANG->_('Message denied'), $REL_LANG->_('This user accepting messages only from his(her) friends. <a href="%s">Make frinedship request to receiver</a>',$REL_SEO->make_link('friends','action','add','id',$receiver)) );
 		} elseif ($user ["acceptpms"] == "no")
-		$REL_TPL->stderr ( "Отклонено", "Этот пользователь не принимает сообщения." );
+		$REL_TPL->stderr ( $REL_LANG->_('Message denied'), $REL_LANG->_('This user does not accept private messages') );
 	}
 	$REL_DB->query ( "INSERT INTO messages (poster, sender, receiver, added, msg, subject, saved, location, archived) VALUES(" . $CURUSER ["id"] . ", " . $CURUSER ["id"] . ",
 	$receiver, '" . time () . "', " . sqlesc ( ($msg) ) . ", " . sqlesc ( $subject ) . ", " . sqlesc ( $save ) . ",  1, " . sqlesc ( $archive ) . ")" );
 	$sended_id = mysql_insert_id ();
 
-	$username = $CURUSER ["username"];
-	$usremail = $user ["email"];
-	$body = "
-	$username послал вам личное сообщение!
 
-Пройдите по ссылке ниже, чтобы его прочитать.
+	$body = "
+	{$REL_LANG->_('%s sent private message to you!',  make_user_link())}
+
+{$REL_LANG->_('To view this message follow this link')}:
 
 ".$REL_SEO->make_link('message','action','viewmessage','id',$sended_id)."
 
@@ -512,7 +503,7 @@ elseif ($action == 'takemessage') {
 			if (mysql_num_rows ( $res ) == 1) {
 				$arr = mysql_fetch_assoc ( $res );
 				if ($arr ["receiver"] != $CURUSER ["id"])
-				$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Вы пытаетесь удалить не свое сообщение!" );
+				$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('You are trying to delete message, that does not belong to you') );
 				if (! $arr ["saved"])
 				$REL_DB->query ( "DELETE FROM messages WHERE id=$origmsg" );
 				elseif ($arr ["saved"])
@@ -530,10 +521,8 @@ elseif ($action == 'takemessage') {
 		$REL_TPL->stderr ( $REL_LANG->say_by_key('success'), $REL_LANG->_("Message was successfuly sent") ,'success');
 	}
 
-} // конец прием посланного сообщения
+}
 
-
-//начало массовая рассылка
 elseif ($action == 'mass_pm') {
 	get_privilege('mass_pm');
 	if (! is_valid_id ( $_POST ['n_pms'] ))
@@ -541,7 +530,7 @@ elseif ($action == 'mass_pm') {
 	$n_pms = ( int ) $_POST ['n_pms'];
 	$pmees = htmlspecialchars ( $_POST ['pmees'] );
 
-	$REL_TPL->stdhead( "Отсылка сообщений", false );
+	$REL_TPL->stdhead( $REL_LANG->_('Private messages sender'), false );
 	?>
 <table class=main border=0 cellspacing=0 cellpadding=0>
 	<tr>
@@ -554,11 +543,10 @@ elseif ($action == 'mass_pm') {
 			?>
 		<table border=1 cellspacing=0 cellpadding=5>
 			<tr>
-				<td class=colhead colspan=2>Массовая рассылка для <?php print $n_pms; ?>
-				пользовате<?php print ($n_pms > 1 ? "лей" : "ля"); ?></td>
+				<td class=colhead colspan=2><?php print $REL_LANG->_('Amout of messages to sent: %s',$n_pms); ?></td>
 			</tr>
 			<TR>
-				<TD colspan="2"><B>Тема:&nbsp;&nbsp;</B> <INPUT name="subject"
+				<TD colspan="2"><B><?php print $REL_LANG->_('Subject'); ?>:&nbsp;&nbsp;</B> <INPUT name="subject"
 					type="text" size="60" maxlength="255"></TD>
 			</TR>
 			<tr>
@@ -568,19 +556,19 @@ elseif ($action == 'mass_pm') {
 			</tr>
 			<tr>
 				<td colspan="2">
-				<div align="center"><b>Комментарий:&nbsp;&nbsp;</b> <input
+				<div align="center"><b><?php print $REL_LANG->_('Comment to profile'); ?>:&nbsp;&nbsp;</b> <input
 					name="comment" type="text" size="70" /></div>
 				</td>
 			</tr>
 			<tr>
 				<td>
-				<div align="center"><b>От:&nbsp;&nbsp;</b> <?php print $CURUSER ['username']; ?>
+				<div align="center"><b><?php print $REL_LANG->_('From'); ?>:&nbsp;&nbsp;</b> <?php print $CURUSER ['username']; ?>
 				<input name="sender" type="radio" value="self" checked /> &nbsp;
-				Системное <input name="sender" type="radio" value="system" /></div>
+				<?php print $REL_LANG->_('From system'); ?> <input name="sender" type="radio" value="system" /></div>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" align=center><input type=submit value="Послать!"
+				<td colspan="2" align=center><input type=submit value="<?php print $REL_LANG->_('Send'); ?>!"
 					class=btn /></td>
 			</tr>
 		</table>
@@ -595,21 +583,19 @@ elseif ($action == 'mass_pm') {
 			<?php
 			$REL_TPL->stdfoot();
 
-} //конец массовая рассылка
+}
 
-
-//начало прием сообщений из массовой рассылки
 elseif ($action == 'takemass_pm') {
 	get_privilege('mass_pm');
 	$msg = trim ( $_POST ["msg"] );
 	if (! $msg)
-	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Пожалуйста введите сообщение." );
-	$sender_id = ($_POST ['sender'] == 'system' ? 0 : $CURUSER ['id']);
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Please fill message text') );
+	$sender_id = ((string)$_POST ['sender'] == 'system' ? 0 : $CURUSER ['id']);
 	$n_pms = ( int ) $_POST ['n_pms'];
 	$comment = ( string ) $_POST ['comment'];
-	$from_is = mysql_real_escape_string ( unesc ( $_POST ['pmees'] ) );
+	$from_is = mysql_real_escape_string ( unesc ( (string)$_POST ['pmees'] ) );
 	// Change
-	$subject = trim ( $_POST ['subject'] );
+	$subject = trim ( (string)$_POST ['subject'] );
 	$query = "INSERT INTO messages (sender, receiver, added, msg, subject, location, poster) " . "SELECT $sender_id, u.id, " . time () . ", " . sqlesc (  $msg ) . ", " . sqlesc ( $subject ) . ", 1, $sender_id " . $from_is;
 	// End of Change
 	$REL_DB->query ( $query );
@@ -633,15 +619,13 @@ elseif ($action == 'takemass_pm') {
 		}
 	}
 	safe_redirect($REL_SEO->make_link('message'),3);
-	$REL_TPL->stderr ( $REL_LANG->say_by_key('success'), (($n_pms > 1) ? "$n сообщений из $n_pms было" : "Сообщение было") . " успешно отправлено!" . ($l ? " $l комментарий(ев) в профиле " . (($l > 1) ? "были" : " был") . " обновлен!" : ""), 'success' );
-} //конец прием сообщений из массовой рассылки
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('success'), $REL_LANG->_('Amout of sent messages: %s',$n_pms) . ($l ? $REL_LANG->_('Profile comments updated: %s',$l) : ""), 'success' );
+}
 
-
-//начало перемещение, помечание как прочитанного
 elseif ($action == "moveordel") {
 	if (isset ( $_POST ["id"] ) && ! is_valid_id ( $_POST ["id"] ))
 	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
-	$pm_id = $_POST ['id'];
+	$pm_id = (int)$_POST ['id'];
 
 	$pm_box = ( int ) $_POST ['box'];
 	if (! is_array ( $_POST ['messages'] ))
@@ -657,7 +641,7 @@ elseif ($action == "moveordel") {
 		}
 		// Check if messages were moved
 		if (@mysql_affected_rows () == 0) {
-			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Не возможно переместить сообщения!" );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Unable to move messages') );
 		}
 		safe_redirect($REL_SEO->make_link('message','action','viewmailbox','box',$pm_box));
 		exit ();
@@ -694,16 +678,15 @@ elseif ($action == "moveordel") {
 		}
 		// Check if messages were moved
 		if (@mysql_affected_rows () == 0) {
-			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Сообщение не может быть удалено!" );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Messages can not be moved') );
 		} else {
 			safe_redirect($REL_SEO->make_link('message','action','viewmailbox','box',$pm_box));
 			exit ();
 		}
 	} elseif ($_POST ["markread"]) {
-		//помечаем одно сообщение
 		if ($pm_id) {
 			$REL_DB->query ( "UPDATE messages SET unread=0 WHERE id = " . sqlesc ( $pm_id ) );
-		} //помечаем множество сообщений
+		}
 		else {
 			if (is_array ( $pm_messages ))
 			foreach ( $pm_messages as $id ) {
@@ -712,16 +695,14 @@ elseif ($action == "moveordel") {
 				$REL_DB->query ( "UPDATE messages SET unread=0 WHERE id = " . sqlesc ( ( int ) $id ) );
 			}
 		}
-		// Проверяем, были ли помечены сообщения
 
 		safe_redirect($REL_SEO->make_link('message','action','viewmailbox','box',$pm_box));
 		exit ();
 
 	} elseif ($_POST ["archive"]) {
-		//архивируем одно сообщение
 		if ($pm_id) {
 			$REL_DB->query ( "UPDATE messages SET archived=IF(sender={$CURUSER['id']},1,archived), archived_receiver=IF(sender={$CURUSER['id']},archived_receiver,1) WHERE id = " . sqlesc ( $pm_id ) );
-		} //архивируем множество сообщений
+		}
 		else {
 			if (is_array ( $pm_messages ))
 			foreach ( $pm_messages as $id ) {
@@ -732,13 +713,12 @@ elseif ($action == "moveordel") {
 		}
 
 		safe_redirect($REL_SEO->make_link('message','action','viewmailbox','box',$pm_box),1 );
-		$REL_TPL->stderr($REL_LANG->say_by_key('success'), "Сообщение(я) архивировано(ы)!",'success');
+		$REL_TPL->stderr($REL_LANG->say_by_key('success'), $REL_LANG->_('Messages sucessfully archived'),'success');
 
 	} elseif ($_POST ["unarchive"]) {
-		//архивируем одно сообщение
 		if ($pm_id) {
 			$REL_DB->query ( "UPDATE messages SET archived=IF(sender={$CURUSER['id']},0,archived), archived_receiver=IF(sender={$CURUSER['id']},archived_receiver,0) AND id = " . sqlesc ( $pm_id ) );
-		} //архивируем множество сообщений
+		}
 		else {
 			if (is_array ( $pm_messages ))
 			foreach ( $pm_messages as $id ) {
@@ -749,29 +729,26 @@ elseif ($action == "moveordel") {
 		}
 
 		safe_redirect($REL_SEO->make_link('message','action','viewmailbox','box',$pm_box),1 );
-		$REL_TPL->stderr($REL_LANG->say_by_key('success'), "Сообщение(я) разархивировано(ы)!",'success');
+		$REL_TPL->stderr($REL_LANG->say_by_key('success'), $REL_LANG->_('Messages sucessfully removed from archive'),'success');
 	}
 
-	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Нет действия." );
-} //конец перемещение, помечание как прочитанного
-
-
-//начало пересылка
+	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Unknown action') );
+}
 elseif ($action == "forward") {
 	if ($_SERVER ['REQUEST_METHOD'] == 'GET') {
 		// Display form
 		if (! is_valid_id ( $_GET ["id"] ))
 		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
-		$pm_id = $_GET ['id'];
+		$pm_id = (int)$_GET ['id'];
 
 		// Get the message
 		$res = $REL_DB->query ( 'SELECT * FROM messages WHERE id=' . sqlesc ( $pm_id ) . ' AND (receiver=' . sqlesc ( $CURUSER ['id'] ) . ' OR sender=' . sqlesc ( $CURUSER ['id'] ) . ') LIMIT 1' );
 
 		if (! $res) {
-			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "У вас нет разрешения пересылать это сообщение." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('You can not forward this message') );
 		}
 		if (mysql_num_rows ( $res ) == 0) {
-			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "У вас нет разрешения пересылать это сообщение." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('You can not forward this message') );
 		}
 		$message = mysql_fetch_assoc ( $res );
 
@@ -789,14 +766,14 @@ elseif ($action == "forward") {
 		$orig2 = mysql_fetch_assoc ( $res );
 		$orig_name = make_user_link($orig2);
 		if ($from == 0) {
-			$from_name = "Системное";
-			$from2 ['username'] = "Системное";
+			$from_name = $REL_LANG->_('From system');
+			$from2 ['username'] = $REL_LANG->_('From system');
 		} else {
 			$from2 = mysql_fetch_assoc ( $res );
 			$from_name = make_user_link($from2);
 		}
 
-		$body = "Оригинальное сообщение:<hr /><blockquote>" . format_comment ( $message ['msg'] . "</blockquote><cite>{$from2['username']}</cite><hr /><br /><br />" );
+		$body = "{$REL_LANG->_('Original message')}:<hr /><blockquote>" . format_comment ( $message ['msg'] . "</blockquote><cite>{$from2['username']}</cite><hr /><br /><br />" );
 
 		$REL_TPL->stdhead( $subject );
 		?>
@@ -809,31 +786,30 @@ elseif ($action == "forward") {
 		<TD class="colhead" colspan="2"><?php print $subject; ?></TD>
 	</TR>
 	<TR>
-		<TD>Кому:</TD>
-		<TD><INPUT type="text" name="to" value="Введите имя" size="83"></TD>
+		<TD><?php print $REL_LANG->_('Receiver'); ?>:</TD>
+		<TD><INPUT type="text" name="to" value="<?php print $REL_LANG->_('Enter username'); ?>" onclick="javascript:$(this).val('');" size="83"></TD>
 	</TR>
 	<TR>
-		<TD>Оригинальный<br />
-		отправитель:</TD>
+		<TD><?php print $REL_LANG->_('Original sender'); ?>:</TD>
 		<TD><?php print $orig_name; ?></TD>
 	</TR>
 	<TR>
-		<TD>От:</TD>
+		<TD><?php print $REL_LANG->_('Sender'); ?>:</TD>
 		<TD><?php print $from_name; ?></TD>
 	</TR>
 	<TR>
-		<TD>Тема:</TD>
+		<TD><?php print $REL_LANG->_('Subject'); ?>:</TD>
 		<TD><INPUT type="text" name="subject" value="<?php print $subject; ?>" size="83"></TD>
 	</TR>
 	<TR>
-		<TD>Сообщение:</TD>
+		<TD><?php print $REL_LANG->_('Message'); ?>:</TD>
 		<TD><?php print ( textbbcode ( "msg" ) ); ?></TD>
 	</TR>
 	<TR>
-		<TD colspan="2" align="center">Сохранить сообщение <INPUT
+		<TD colspan="2" align="center"><?php print $REL_LANG->_('Save message'); ?> <INPUT
 			type="checkbox" name="save" value="1"
 			<?php print $CURUSER ['savepms'] ? " checked" : ""; ?>>&nbsp;<INPUT
-			type="submit" value="Переслать"></TD>
+			type="submit" value="<?php print $REL_LANG->_('Forward'); ?>"></TD>
 	</TR>
 </TABLE>
 </FORM>
@@ -850,11 +826,11 @@ elseif ($action == "forward") {
 		// Get the message
 		$res = $REL_DB->query ( 'SELECT * FROM messages WHERE id=' . sqlesc ( $pm_id ) . ' AND (receiver=' . sqlesc ( $CURUSER ['id'] ) . ' OR sender=' . sqlesc ( $CURUSER ['id'] ) . ') LIMIT 1' );
 		if (! $res) {
-			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "У вас нет разрешения пересылать это сообщение." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('You can not forward this message') );
 		}
 
 		if (mysql_num_rows ( $res ) == 0) {
-			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "У вас нет разрешения пересылать это сообщение." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('You can not forward this message') );
 		}
 
 		$message = mysql_fetch_assoc ( $res );

@@ -29,21 +29,40 @@ if (isset($_GET['id'])) {
 		print("<h1>{$news['subject']}</h1>\n");
 		print("<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n" .
  "<tr><td class=\"colhead\">Содержание&nbsp;<a href=\"".$REL_SEO->make_link('newsoverview','id',$newsid)."#comments\">Комментировать</a></td></tr>\n");
-		print("<tr><td style=\"vertical-align: top; text-align: left;\">".format_comment($news['body'])."</td></tr>\n");
-		print("<tr align=\"right\"><td class=\"colhead\">Добавлена:&nbsp;{$added}</td></tr>\n");
+		
+
+
+
+
+
+
+
+print("<tr><td style=\"vertical-align: top; text-align: left;\"><span class=\"fl mr10\"><img src=\"".$news['image']."\" class=\"corners\" height=\"120px\" width=\"140px\"></span><h5>".format_comment($news['body'])."</h5></td></tr>\n");
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+	print("<tr align=\"right\"><td class=\"colhead\">Добавлена:&nbsp;{$added}</td></tr>\n");
 
 		print("</table><br />\n");
 	}
 		
 
 
-	$REL_TPL->assignByRef('to_id',$newsid);
-	$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $newsid, 'newscomments' ));
-	$REL_TPL->assign('textbbcode',textbbcode('text'));
-	$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('News'));
-	$FORM_TYPE = 'news';
-	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-	$REL_TPL->display('commenttable_form.tpl');
+
 	
 	$subres = $REL_DB->query("SELECT SUM(1) FROM comments WHERE toid = ".$newsid." AND type='news'");
 	$subrow = mysql_fetch_array($subres);
@@ -67,7 +86,7 @@ if (isset($_GET['id'])) {
 
 		$subres = $REL_DB->query("SELECT nc.type, nc.id, nc.ip, nc.text, nc.ratingsum, nc.user, nc.added, nc.editedby, nc.editedat, u.avatar, u.warned, ".
                   "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS nc LEFT JOIN users AS u ON nc.user = u.id LEFT JOIN sessions ON nc.user=sessions.uid LEFT JOIN users AS e ON nc.editedby = e.id WHERE nc.toid = " .
-                  "".$newsid." AND nc.type='news' GROUP BY nc.id ORDER BY nc.id DESC $limit");
+                  "".$newsid." AND nc.type='news' GROUP BY nc.id ORDER BY nc.id ASC $limit");
 		$allrows = prepare_for_commenttable($subres,$news['subject'],$REL_SEO->make_link('newsoverview','id',$newsid));
 		if (!pagercheck()) {
 			print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" style=\"float:left;\">");
@@ -77,6 +96,7 @@ if (isset($_GET['id'])) {
 			print("</td></tr>");
 			
 			print("<tr><td>");
+
 			commenttable($allrows);
 			print("</td></tr>");
 
@@ -88,7 +108,13 @@ if (isset($_GET['id'])) {
 			die();
 		}
 	}
-
+	$REL_TPL->assignByRef('to_id',$newsid);
+	$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $newsid, 'newscomments' ));
+	$REL_TPL->assign('textbbcode',textbbcode('text'));
+	$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('News'));
+	$FORM_TYPE = 'news';
+	$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+	$REL_TPL->display('commenttable_form.tpl');
 }
 
 $REL_TPL->stdfoot();

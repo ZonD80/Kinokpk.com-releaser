@@ -18,10 +18,14 @@ loggedinorreturn();
 get_privilege('upload_releases');
 
 if (!$_GET['ts']) {
-$REL_TPL->stderr($REL_LANG->_('Select what to upload'),"<a href=\"{$REL_SEO->make_link('upload','type','movie','ts','1')}\">Фильм</a>, <a href=\"{$REL_SEO->make_link('upload','ts','1')}\">Без формы</a>",'success');
+$REL_TPL->stderr($REL_LANG->_('Select what to upload'),"<a href=\"{$REL_SEO->make_link('upload','type','movie','ts','1')}\">{$REL_LANG->_('Movie')}</a>,<a href=\"{$REL_SEO->make_link('upload','type','music','ts','1')}\">{$REL_LANG->_('Music')}</a>,<a href=\"{$REL_SEO->make_link('upload','type','play','ts','1')}\">{$REL_LANG->_('Game')}</a>,<a href=\"{$REL_SEO->make_link('upload','type','soft','ts','1')}\">{$REL_LANG->_('Software')}</a>,<a href=\"{$REL_SEO->make_link('upload','ts','1')}\">{$REL_LANG->_('Without form')}</a>",'success');
+
+
+
+
 }
 
-$allowed_types = array('movie');
+$allowed_types = array('movie','music','play','soft');
 
 $type=(string)$_GET['type'];
 
@@ -47,20 +51,7 @@ if (mb_strlen($CURUSER['passkey']) != 32) {
 }
 
 ?>
-<script type="text/javascript">
-//<!--
-function checkname() {
-	pcre = /(.*?) \([0-9-]+\) \[(.*?)\]/g;
-	ERRORTEXT = "<?php print $REL_LANG->_("Release name does not corresponding to rule, please change it and try again:");?>"+"\n\n"+$("#namematch").text();
-	if (!pcre.test($("#name").val())) {
-		alert(ERRORTEXT);
-		$("#name").focus();
-		return false;
-	}
-	else return true;
-}
-//-->
-</script>
+
 <form name="upload" enctype="multipart/form-data"
 	action="<?php print $REL_SEO->make_link('takeupload'); ?>" method="post"
 	onsubmit="return checkname();">
@@ -73,7 +64,7 @@ function checkname() {
 	if (get_privilege('edit_releases',false) && $REL_CONFIG['use_dc'])
 	tr($REL_LANG->say_by_key('tiger_hash'),"<input type=\"text\" size=\"60\" maxlength=\"38\" name=\"tiger_hash\" value=\"{$row['tiger_hash']}\"><br/>".$REL_LANG->say_by_key('tiger_hash_notice'),1);
 
-	tr($REL_LANG->say_by_key('torrent_name')."<font color=\"red\">*</font>", "<input type=\"text\" id=\"name\" name=\"name\" size=\"80\" value=\"Русский / Original (год или диапазон годов) [качество, примечание]\"/><br /><div id=\"namematch\">{$REL_LANG->_("Example")}: ".$REL_LANG->say_by_key('taken_from_torrent')."</div>\n", 1);
+	tr($REL_LANG->say_by_key('torrent_name')."<font color=\"red\">*</font>", "<input type=\"text\" id=\"name\" name=\"name\" size=\"80\" value=\"{$REL_LANG->_('Your language / Original language (year or range of years) [quality, etc]')}\"/><br /><div id=\"namematch\">{$REL_LANG->_("Example")}: ".$REL_LANG->say_by_key('taken_from_torrent')."</div>\n", 1);
 
 	$imagecontent = '<br />';
 
@@ -108,13 +99,13 @@ function checkname() {
 
 
 	if(get_privilege('post_releases_to_mainpage',false))
-		tr($REL_LANG->_("Viewing"), "<input type=\"checkbox\" name=\"visible\" value=\"1\" /> Видимый на главной", 1);
+		tr($REL_LANG->_("Viewing"), "<input type=\"checkbox\" name=\"visible\" value=\"1\" /> {$REL_LANG->_('Seen on main page')}", 1);
 	if (get_privilege('edit_releases',false)) {
 		tr($REL_LANG->say_by_key('golden'), "<input type=checkbox name=free value=\"1\"> ".$REL_LANG->say_by_key('golden_descr'), 1);
-		tr("Важный", "<input type=\"checkbox\" name=\"sticky\" value=\"1\">Прикрепить этот торрент (всегда наверху)", 1);
+		tr($REL_LANG->_('Important'), "<input type=\"checkbox\" name=\"sticky\" value=\"1\">{$REL_LANG->_('Stick this torrent (it will be on the top always)')}", 1);
 	}
-	tr("Релиз без торрента", "<input type=\"checkbox\" name=\"nofile\" value=\"1\">Этот релиз без торрента ; Размер: <input type=\"text\" name=\"nofilesize\" size=\"20\" /> МБ", 1);
-	tr("<font color=\"red\">АНОНС</font>", "<input type=\"checkbox\" name=\"annonce\" value=\"1\">Это всего-лишь анонс релиза. Ссылки указывать не обязательно,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;но обязательно выложить релиз после анонсирования!", 1);
+	tr($REL_LANG->_('Release without torrent'), "<input type=\"checkbox\" name=\"nofile\" value=\"1\">{$REL_LANG->_('This is release without torrent')} ; {$REL_LANG->_('Size')}: <input type=\"text\" name=\"nofilesize\" size=\"20\" /> {$REL_LANG->_('Megabytes')}", 1);
+	tr("<font color=\"red\">{$REL_LANG->_('Announce')}</font>", "<input type=\"checkbox\" name=\"annonce\" value=\"1\">{$REL_LANG->_('This is only announce of a release. You must upload torrent after some time after this announe')}", 1);
 	?>
 	<tr>
 		<td align="center" colspan="2"><input type="submit" class="btn button"
@@ -125,4 +116,4 @@ function checkname() {
 	<?php
 	$REL_TPL->stdfoot();
 
-	?>
+?>

@@ -10,6 +10,110 @@
 
 if(!defined("IN_TRACKER") && !defined("IN_ANNOUNCE")) die("Direct access to this page not allowed");
 
+
+$smilies = array(
+  ":-)" => "ab.gif",
+  "=)" => "ap.gif",
+  ":bj:" => "bj.gif",
+  ":-D" => "ag.gif",
+  ":lol:" => "bm.gif",
+  ":w00t:" => "ai.gif",
+  ":-P" => "ae.gif",
+  ";-)" => "af.gif",
+  ":-|" => "an.gif",
+  ":-/" => "ao.gif",
+  ":-(" => "ac.gif",
+  ":'-(" => "ak.gif",
+  ":aa:" => "ad.gif",
+  ":ah:" => "ah.gif",
+  ":aj:" => "aj.gif",
+  ":al:" => "al.gif",
+  ":am:" => "am.gif",
+  ":ao:" => "ao.gif",
+  ":aq:" => "aq.gif",
+  ":as:" => "as.gif",
+  ":at:" => "at.gif",
+  ":au:" => "au.gif",
+  ":av:" => "av.gif",
+  ":aw:" => "aw.gif",
+  ":axt:" => "ax.gif",
+  ":ay:" => "ay.gif",
+  ":az:" => "az.gif",
+  ":ba:" => "ba.gif",
+  ":bb:" => "bb.gif",
+  ":bc:" => "bc.gif",
+  ":bd:" => "bd.gif",
+  ":be:" => "be.gif",
+  ":bf:" => "bf.gif",
+  ":bg:" => "bg.gif",
+  ":bh:" => "bh.gif",
+  ":bi:" => "bi.gif",
+  ":bk:" => "bk.gif",
+  ":bl:" => "bl.gif",
+  ":bn:" => "bn.gif",
+  ":bo:" => "bo.gif",
+  ":bp:" => "bp.gif",
+  ":hi:" => "bq.gif",
+  ":bay:" => "br.gif",
+  ":bs:" => "bs.gif",
+  ":bt:" => "bt.gif",
+  ":bu:" => "bu.gif",
+  ":bv:" => "bv.gif",
+  ":bw:" => "bw.gif",
+  ":с:" => "с.gif",
+  ":acute:" => "acute.gif",
+  ":angry2:" => "angry2.gif",
+  ":butcher:" => "butcher.gif",
+  ":close_tema:" => "close_tema.gif",
+  ":comando:" => "comando.gif",
+  ":dance2:" => "dance2.gif",
+  ":feminist:" => "feminist.gif",
+  ":flood:" => "flood.gif",
+  ":grin:" => "grin.gif",
+  ":heart:" => "heart.gif",
+  ":meowth:" => "meowth.gif",
+  ":grisha:" => "grisha.gif",
+  ":p_s:" => "p_s.gif",
+  ":p_d:" => "p_d.gif",
+  ":russian:" => "russian.gif",
+  ":skull:" => "skull.gif",
+  ":spam:" => "spam.gif",
+
+
+);
+
+$privatesmilies = array(
+  ":)" => "ab.gif",
+  ";)" => "af.gif",
+  ":D" => "ag.gif",
+  ":P" => "ae.gif",
+  ":(" => "ac.gif",
+  ":'(" => "ak.gif",
+  ":|" => "an.gif",
+
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Pager in ajax-scroolbox
  * @param integer $perpage Number of entries per page
@@ -21,7 +125,7 @@ if(!defined("IN_TRACKER") && !defined("IN_ANNOUNCE")) die("Direct access to this
  */
 function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
 	global  $REL_SEO,$REL_TPL, $REL_LANG, $REL_DB;
-	$page = (int)$_GET['page'];
+$page = (int)$_GET['page'];
 	if ($page) $page=$page-1;
 	$maxpage = floor($count/$perpage);
 	$hrefarray[] = 'AJAXPAGER';
@@ -31,19 +135,46 @@ function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
 	$href = call_user_func_array(array($REL_SEO, 'make_link'),$hrefarray);
 
 	if (!$page) {
-	/*$REL_TPL->assign("AJAXPAGER", "
+	$REL_TPL->assign("AJAXPAGER", "
 	<script type=\"text/javascript\">
 	var CURR_PAGE = 0;
 	var MAX_PAGE = $maxpage;
 	var PAGER_HREF = \"$href\";
-	$('document').ready(function(){
-	$('#pager_scrollbox').after('<div align=\"center\"><input type=\"button\" id=\"pager_button\" value=\"{$REL_LANG->_('Show more')}\" onclick=\"javascript:do_pager();\"/></div>');
+
+		$('document').ready(function(){
+	$('#pager_scrollbox').after('<div align=\"center\"><input class=\"button\" type=\"submit\" type=\"button\" id=\"pager_button\" value=\"{$REL_LANG->_('Show more')}\" onclick=\"javascript:do_pager();\"/></div>');
 });
-	function do_pager() {
+/*
+$('document').ready(function () {
+         $(window).scroll(function () {
+           if (($(window).scrollTop()+1) ==
+($(document).height() - $(window).height())) {
+           do_pager();
+          };
+        });  
+     });
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function do_pager() {
 	if (CURR_PAGE>=MAX_PAGE) { $('#pager_button').val('{$REL_LANG->_('This is an end')}'); $('#pager_button').attr('disabled','disabled'); return false; }
 		$('#pager_button').val('{$REL_LANG->_('Loading')}...');
 		$('#pager_button').attr('disabled','disabled');
-		CURR_PAGE=CURR_PAGE+1;
+		CURR_PAGE=CURR_PAGE+2;
 		page = PAGER_HREF.replace(/%number%/i,CURR_PAGE);
 
 		$.get(page, '', function(newitems){
@@ -52,10 +183,10 @@ function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
 			$('#pager_button').val('{$REL_LANG->_('Show more')}');
 		});
 	}
-</script>");*/
-		$REL_TPL->assign("AJAXPAGER", "
+</script>");/*
+$REL_TPL->assign("AJAXPAGER", "
 				<script type=\"text/javascript\">
-				var CURR_PAGE = $page;
+				var CURR_PAGE = 0;
 				var MAX_PAGE = $maxpage;
 				var PAGER_HREF = \"$href\";
 				$('document').ready(function(){
@@ -64,7 +195,7 @@ function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
 		            
 				$('.paginator').paginator({
                 pagesTotal  : MAX_PAGE, 
-				pagesSpan   : 11, 
+				pagesSpan   : 10, 
 				pageCurrent : CURR_PAGE, 
 				baseUrl     : PAGER_HREF,
 								clickHandler : function (page){
@@ -78,8 +209,8 @@ function ajaxpager($perpage=25,$count,$hrefarray,$el_id,$timeout=500) {
             });
 	});
 
-		</script>");
-	
+		</script>");*/
+
 	return "LIMIT $perpage";
 	} else {
 		return "LIMIT ".($page*$perpage).",$perpage";
@@ -398,7 +529,7 @@ theme_advanced_buttons4 : "'./*insertlayer,moveforward,movebackward,absolute,|,s
  */
 function textbbcode($name, $content="") {
 
-	return '<textarea id="rel_wysiwyg" class="rel_wysiwyg" name="'.$name.'" cols="100" rows="10">'.$content.'</textarea>'.wysiwyg_init();
+	return '<textarea id="rel_wysiwyg" class="rel_wysiwyg" onClick="javascript:wysiwygjs();" name="'.$name.'" cols="100" rows="10">'.$content.'</textarea>'.wysiwyg_init();
 }
 
 /**
@@ -429,7 +560,13 @@ function make_user_link($data=false) {
  * @return void
  */
 function delete_user($id) {
-	global  $CURUSER, $REL_SEO, $REL_DB;
+	global  $CURUSER, $REL_SEO, $REL_DB, $REL_CONFIG;
+        $user = get_user($id);
+        if ($REL_CONFIG['forum_enabled']) {
+           require_once(ROOT_PATH.'classes/ipbwi/ipbwi.inc.php');
+
+            $ipbwi->member->delete($user['forum_id']);
+        }
 	$REL_DB->query("DELETE FROM users WHERE id = $id");
 	$REL_DB->query("DELETE FROM comments WHERE toid=$id AND type='user'");
 	$REL_DB->query("DELETE FROM notifs WHERE type='usercomments' AND checkid=$id");
@@ -1050,7 +1187,7 @@ function user_session() {
 	}
 	if ($CURUSER) {
 
-		$allowed_types = array ('torrents', 'relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments','forumcomments','friends');//,'seeding','leeching','downloaded');
+		$allowed_types = array ('torrents', 'relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments','friends');//,'seeding','leeching','downloaded');
 		if (get_privilege('is_moderator',false)) {
 			$allowed_types_moderator = array('users', 'reports', 'unchecked');
 			$allowed_types = array_merge($allowed_types,$allowed_types_moderator);
@@ -1081,10 +1218,6 @@ function user_session() {
 			elseif ($type=='reports') $noadd=true;
 			elseif ($type=='friends') {
 				$noadd=true; $addition = "friendid={$CURUSER['id']} AND confirmed=0";
-			}
-			elseif($type=='forumcomments') {
-				$addition = " AND type = 'forum' AND FIND_IN_SET(".get_user_class().",forum_categories.class)"; $table = 'comments LEFT JOIN forum_topics ON forum_topics.id=comments.toid LEFT JOIN forum_categories ON forum_topics.category=forum_categories.id';
-				$sel_id = 'comments.';
 			}
 			elseif (in_array($type,array('relcomments','pollcomments','newscomments',
 			'usercomments','reqcomments','rgcomments'))) {
@@ -1689,7 +1822,7 @@ function clear_comment_caches($type) {
 function prepare_for_commenttable($subres,$subject='',$link='') {
 	global  $CURUSER,$REL_SEO, $CURUSER, $REL_DB;
 	$allrows = array();
-	$allowed_links = array (/*'unread' => $REL_SEO->make_link('message','action','viewmessage','id',''), */'comments' => $REL_SEO->make_link('details','id','%s'), 'forum' => $REL_SEO->make_link('forum','a','viewtopic','id','%s'), 'poll' => $REL_SEO->make_link('polloverview','id','%s'), 'news' => $REL_SEO->make_link('newsoverview','id','%s'), 'user' => $REL_SEO->make_link('userdetails','id','%s'), 'req' => $REL_SEO->make_link('requests','id','%s'), 'rg' => $REL_SEO->make_link('relgroups','id','%s'), 'rgnews' => $REL_SEO->make_link('rgnewsoverview','id','%s'));
+	$allowed_links = array (/*'unread' => $REL_SEO->make_link('message','action','viewmessage','id',''), */'comments' => $REL_SEO->make_link('details','id','%s'), 'poll' => $REL_SEO->make_link('polloverview','id','%s'), 'news' => $REL_SEO->make_link('newsoverview','id','%s'), 'user' => $REL_SEO->make_link('userdetails','id','%s'), 'req' => $REL_SEO->make_link('requests','id','%s'), 'rg' => $REL_SEO->make_link('relgroups','id','%s'), 'rgnews' => $REL_SEO->make_link('rgnewsoverview','id','%s'));
 
 	while ( $row = mysql_fetch_array ( $subres ) ) {
 		$visited_type = $row['type'].'comments';
@@ -2408,6 +2541,7 @@ function set_visited($type,$id) {
  * Gets kinopoisk.ru trailer
  * @param string $descr Text where find film link
  * @return string Html code of player
+ * @toto Fix it!
  */
 function get_trailer($descr) {
 	global  $REL_CONFIG, $REL_DB;
@@ -2511,5 +2645,5 @@ define ("BETA_NOTICE", "\n<br />This isn't complete release of source!");
  * Kinokpk.com releaser's version
  * @var string
  */
-define("RELVERSION","4.00 experimental alpha");
+define("RELVERSION","4.00 alpha");
 ?>

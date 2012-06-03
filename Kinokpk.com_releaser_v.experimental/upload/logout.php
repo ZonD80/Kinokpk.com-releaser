@@ -14,6 +14,12 @@ INIT();
 
 logoutcookie();
 
+if ($REL_CONFIG['forum_enabled']) {
+    require_once(ROOT_PATH.'classes/ipbwi/ipbwi.inc.php');
+
+    $ipbwi->member->logout();
+}
+
 unset($CURUSER);
 
 $REL_TPL->stdhead($REL_LANG->say_by_key('succ_logout'));

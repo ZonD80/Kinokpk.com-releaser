@@ -65,7 +65,7 @@ if ($action=='recountorrents') {
 	$REL_TPL->stderr($REL_LANG->say_by_key('success'),sprintf($REL_LANG->say_by_key('torrent_recounted'),count($delids)),'success');
 }
 elseif ($action=='recountcomments') {
-	$allowed_types = array(''=>'torrents','poll'=>'polls','news'=>'news','user'=>'users','req'=>'requests','rg'=>'relgroups','rgnews'=>'rgnews','forum'=>'forum_topics');
+	$allowed_types = array(''=>'torrents','poll'=>'polls','news'=>'news','user'=>'users','req'=>'requests','rg'=>'relgroups','rgnews'=>'rgnews');
 	foreach ($allowed_types AS $ctype=>$table) {
 		$REL_DB->query("UPDATE $table SET comments = (SELECT SUM(1) FROM comments WHERE type='$ctype' AND toid=$table.id) WHERE $table.id=$table.id");
 		$num_changed = mysql_affected_rows();

@@ -12,7 +12,7 @@
 require_once "include/bittorrent.php";
 INIT();
 
-$REL_TPL->stdhead("Аплоадеры");
+$REL_TPL->stdhead($REL_LANG->_('Releasers'));
 
 loggedinorreturn();
 get_privilege('is_moderator');
@@ -28,8 +28,8 @@ $to_select = implode(',',$to_select);
 $query = "SELECT id, username, added, ratingsum, donor, warned, enabled, class, (SELECT MAX(added) FROM torrents WHERE owner=users.id) AS last_added, (SELECT SUM(1) FROM torrents WHERE owner=users.id) AS num_added FROM users WHERE class IN (".$to_select.") ORDER BY users.class ASC";
 $result = $REL_DB->query($query);
 $num = mysql_num_rows($result); // how many uploaders
-print "<h2>Информация о аплоадерах</h2>";
-print "<p>У нас " . $num . " аплоадер" . ($num > 1 ? "ов" : "") . "</p>";
+print "<h2>{$REL_LANG->_('Releasers information')}</h2>";
+print "<p>{$REL_LANG->_('Total releasers: %s',$num)}</p>";
 
 $zerofix = $num - 1; // remove one row because mysql starts at zero
 
@@ -37,11 +37,11 @@ if ($num > 0)
 {
 	print "<table cellpadding=4 align=center border=1>";
 	print "<tr>";
-	print "<td class=colhead>Пользователь</td>";
-	print "<td class=colhead>Рейтинг</td>";
-	print "<td class=colhead>Залил&nbsp;релизов</td>";
-	print "<td class=colhead>Последняя&nbsp;заливка</td>";
-	print "<td class=colhead>Отправить ЛС</td>";
+	print "<td class=colhead>{$REL_LANG->_('Username')}</td>";
+	print "<td class=colhead>{$REL_LANG->_('Rating')}</td>";
+	print "<td class=colhead>{$REL_LANG->_('Uploaded releases count')}</td>";
+	print "<td class=colhead>{$REL_LANG->_('Last upload time')}</td>";
+	print "<td class=colhead>{$REL_LANG->_('Send PM')}</td>";
 	print "</tr>";
 
 	while (list($id,$username,$added,$ratingsum,$donor,$warned,$enabled,$class, $lastadded,$numtorrents) = mysql_fetch_array($result)) {
@@ -54,10 +54,10 @@ if ($num > 0)
 		print "<td><a href=\"".$REL_SEO->make_link('userdetails','id',$id,'username',translit($username))."\">$username</a> ".get_user_icons(array('donor'=>$donor,'warned'=>$warned,'enabled'=>$enabled))." (".get_user_class_name($class).")</td>";
 
 		print "<td>$ratio</td>";
-		print "<td>".(int)$numtorrents." торрентов</td>";
+		print "<td>".(int)$numtorrents." {$REL_LANG->_('releases')}</td>";
 
 		if ($lastadded)
-		print "<td>" . get_elapsed_time($lastadded) . " назад (" . mkprettytime($lastadded) . ")</td>";
+		print "<td>" . get_elapsed_time($lastadded) . " {$REL_LANG->_('ago')} (" . mkprettytime($lastadded) . ")</td>";
 		else
 		print "<td>---</td>";
 		print "<td align=center><a href=\"".$REL_SEO->make_link('message','action','sendmessage','receiver',$id)."\"><img border=0 src=pic/button_pm.gif></a></td>";

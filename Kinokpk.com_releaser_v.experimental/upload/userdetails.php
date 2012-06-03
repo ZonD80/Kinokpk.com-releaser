@@ -34,7 +34,7 @@ if (!pagercheck()) {
 	$it = $REL_DB->query ( "SELECT u.id, u.username, u.class, i.id AS invitedid, i.username AS invitedname, i.class AS invitedclass FROM users AS u LEFT JOIN users AS i ON i.id = u.invitedby WHERE u.invitedroot = $id OR u.invitedby = $id ORDER BY u.invitedby" );
 	if (mysql_num_rows ( $it ) >= 1) {
 		while ( $inviter = mysql_fetch_array ( $it ) )
-		$invitetree .= "<a href=\"".$REL_SEO->make_link('userdetails','id',$inviter['id'],'username',translit($inviter ["username"]))."\">" . get_user_class_color ( $inviter ["class"], $inviter ["username"] ) . "</a> приглашен <a href=\"".$REL_SEO->make_link('userdetails','id',$inviter['invitedid'],'username',translit($inviter ["invitedname"]))."\">" . get_user_class_color ( $inviter ["invitedclass"], $inviter ["invitedname"] ) . "</a><br />";
+		$invitetree .= "<a href=\"".$REL_SEO->make_link('userdetails','id',$inviter['id'],'username',translit($inviter ["username"]))."\">" . get_user_class_color ( $inviter ["class"], $inviter ["username"] ) . "</a> {$REL_LANG->_('Invited by')} <a href=\"".$REL_SEO->make_link('userdetails','id',$inviter['invitedid'],'username',translit($inviter ["invitedname"]))."\">" . get_user_class_color ( $inviter ["invitedclass"], $inviter ["invitedname"] ) . "</a><br />";
 
 	}
 
@@ -120,9 +120,9 @@ if (!pagercheck()) {
 
 
 	if ($user ["gender"] == "1")
-	$gender = "<img src=\"pic/male.gif\" alt=\"Парень\" title=\"Парень\">";
+	$gender = "<img src=\"pic/male.gif\" alt=\"{$REL_LANG->_('Male')}\" title=\"{$REL_LANG->_('Male')}\">";
 	elseif ($user ["gender"] == "2")
-	$gender = "<img src=\"pic/female.gif\" alt=\"Девушка\" title=\"Девушка\">";
+	$gender = "<img src=\"pic/female.gif\" alt=\"{$REL_LANG->_('Female')}\" title=\"{$REL_LANG->_('Female')}\">";
 	elseif ($user ["gender"] == "3")
 	$gender = "N/A";
 
@@ -152,24 +152,24 @@ if (!pagercheck()) {
 	///////////////// BIRTHDAY MOD /////////////////////
 
 
-	$REL_TPL->stdhead( "Просмотр профиля " . $user ["username"] );
+	$REL_TPL->stdhead( "{$REL_LANG->_('Viewing profile of')} " . $user ["username"] );
 	$enabled = $user ["enabled"] == 1;
 	if ($disallow_view&&get_privilege('view_private_user_profiles',false)) print "<p>".$REL_LANG->_("You are viewing private profile as administration member")."</p>";
 	print ( '<table width="100%"><tr><td width="100%" style="vertical-align: top;">' );
 
 	$REL_TPL->begin_main_frame ();
 
-	print ( "<tr><td colspan=\"2\" align=\"center\">".($user['avatar']&&$CURUSER['avatars']?"<br/><img src=\"{$user['avatar']}\" title=\"{$REL_LANG->_("Avatar of %s",$user['username'])}\"/><br/>":'')."<p><h1 style=\"margin:0px\">$user[username]" . get_user_icons ( $user, true ) . "</h1>" . reportarea ( $id, 'users' ) . "</p>\n" );
+	print ( "<tr><td colspan=\"2\" align=\"center\">".($user['avatar']&&$CURUSER['avatars']?"<br/><img class=\"corners\" src=\"{$user['avatar']}\" title=\"{$REL_LANG->_("Avatar of %s",$user['username'])}\"/><br/>":'')."<p><h1 style=\"margin:0px\">$user[username]" . get_user_icons ( $user, true ) . "</h1>" . reportarea ( $id, 'users' ) . "</p>\n" );
 
 	if (! $enabled)
-	print ( "<p><b>Этот аккаунт отключен</b><br/>Причина: " . $user ['dis_reason'] . "</p>\n" );
+	print ( "<p><b>{$REL_LANG->_('This account disabled')}</b><br/>{$REL_LANG->_('Reason')}: " . $user ['dis_reason'] . "</p>\n" );
 	elseif ($CURUSER ["id"] != $user ["id"]) {
 		$r = $REL_DB->query ( "SELECT id FROM friends WHERE (userid=$id AND friendid={$CURUSER['id']}) OR (friendid = $id AND userid={$CURUSER['id']})" );
 		list ( $friend ) = mysql_fetch_array ( $r );
 		if ($friend)
-		print ( "<p>(<a href=\"".$REL_SEO->make_link('friends','action','deny','id',$friend)."\">Убрать из друзей</a>)<br />(<a href=\"".$REL_SEO->make_link('present','id',$id)."\">Подарить подарок</a>)</p>\n" );
+		print ( "<p>(<a href=\"".$REL_SEO->make_link('friends','action','deny','id',$friend)."\">{$REL_LANG->_('Remove from friends')}</a>)<br />(<a href=\"".$REL_SEO->make_link('present','id',$id)."\">{$REL_LANG->_('Present gift')}</a>)</p>\n" );
 		else {
-			print ( "<p>(<a href=\"".$REL_SEO->make_link('friends','action','add','id',$id)."\">Добавить в друзья</a>)</p>\n" );
+			print ( "<p>(<a href=\"".$REL_SEO->make_link('friends','action','add','id',$id)."\">{$REL_LANG->_('Add to friends')}</a>)</p>\n" );
 		}
 	}
 	print ( "<p>" . ratearea ( $user ['ratingsum'], $user ['id'], 'users', $CURUSER['id'] ) . "$country</p>" );
@@ -183,13 +183,13 @@ if (!pagercheck()) {
 		print ( "<p><form method=\"get\" action=\"".$REL_SEO->make_link('message')."\">
 				<input type=\"hidden\" name=\"receiver\" value=" . $user ["id"] . ">
 				<input type=\"hidden\" name=\"action\" value=\"sendmessage\">
-				<input type=submit value=\"Послать ЛС\" style=\"height: 23px\">
+				<input type=submit value=\"{$REL_LANG->_('Send PM')}\" style=\"height: 23px\">
 				</form></p>" . ((get_privilege('send_emails',false)) ? "<p><form method=\"get\" action=\"".$REL_SEO->make_link('email-gateway')."\">
 						<input type=\"hidden\" name=\"id\" value=\"" . $user ["id"] . "\">
-						<input type=submit value=\"Послать e-mail\" style=\"height: 23px\">
+						<input type=submit value=\"{$REL_LANG->_('Send e-mail')}\" style=\"height: 23px\">
 						</form></p>" : '') );
-	print ( '<tr><td class=rowhead width=1%>Зарегистрирован</td><td align=left width=99%>' . $joindate . '</td></tr>
-<tr><td class=rowhead>Последний раз был на трекере</td><td align=left>' . $lastseen . '</td></tr>' );
+	print ( '<tr><td class=rowhead width=1%>'.$REL_LANG->_('Registered at').'</td><td align=left width=99%>' . $joindate . '</td></tr>
+<tr><td class=rowhead>'.$REL_LANG->_('Last seen').'</td><td align=left>' . $lastseen . '</td></tr>' );
 
 
 	print ( "<tr><td class=\"rowhead\">{$REL_LANG->say_by_key('comments_and_social')}</td>" );
@@ -202,16 +202,16 @@ if (!pagercheck()) {
 	print ( "<tr><td class=\"rowhead\">IP</td><td align=\"left\">$addr</td></tr>\n" );
 
 	if (get_privilege('add_invites',false))
-	print ( "<tr><td class=\"rowhead\">Приглашений</td><td align=left><a href=\"".$REL_SEO->make_link('invite','id',$id)."\">" . $user ["invites"] . "</a></td></tr>" );
+	print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Invites')}</td><td align=left><a href=\"".$REL_SEO->make_link('invite','id',$id)."\">" . $user ["invites"] . "</a></td></tr>" );
 	if ($user ["invitedby"] != 0) {
 		$inviter = mysql_fetch_assoc ( $REL_DB->query ( "SELECT username FROM users WHERE id = " . sqlesc ( $user ["invitedby"] ) ) );
-		print ( "<tr><td class=\"rowhead\">Пригласил</td><td align=\"left\"><a href=\"".$REL_SEO->make_link('userdetails','id',$user['invitedby'],'username',translit($inviter['username']))."\">$inviter[username]</a></td></tr>" );
+		print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Invited')}</td><td align=\"left\"><a href=\"".$REL_SEO->make_link('userdetails','id',$user['invitedby'],'username',translit($inviter['username']))."\">$inviter[username]</a></td></tr>" );
 	}
 	//}
 	if ($user ["icq"] || $user ["msn"] || $user ["aim"] || $user ["yahoo"] || $user ["skype"]) {
 		?>
 <tr>
-	<td class=rowhead><b>Связь</b></td>
+	<td class=rowhead><b><?php print $REL_LANG->_('Contacts'); ?></b></td>
 	<td align=left><?php	if ($user ["icq"])
 	print ( "<img src=\"http://web.icq.com/whitepages/online?icq=" . ( int ) $user [icq] . "&amp;img=5\" alt=\"icq\" border=\"0\" /> " . ( int ) $user [icq] . " <br />\n" );
 	if ($user ["msn"])
@@ -227,21 +227,21 @@ if (!pagercheck()) {
 	?></td>
 </tr>
 	<?php	}
-	print ( "<tr><td class=\"rowhead\">Класс</td><td align=\"left\"><b>" . get_user_class_color ( $user ["class"], get_user_class_name ( $user ["class"] ) ) . ($user ["title"] != "" ? " / <span style=\"color: purple;\">{$user["title"]}</span>" : "") . "</b></td></tr>\n" );
-	print ( "<tr><td class=\"rowhead\">Пол</td><td align=\"left\">$gender</td></tr>\n" );
-	//мод предупреждений
-	print ( "<tr><td class=\"rowhead\">Уровень<br />предупреждений</td><td align=\"left\">" );
+	print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Class')}</td><td align=\"left\"><b>" . get_user_class_color ( $user ["class"], get_user_class_name ( $user ["class"] ) ) . ($user ["title"] != "" ? " / <span style=\"color: purple;\">{$user["title"]}</span>" : "") . "</b></td></tr>\n" );
+	print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Gender')}</td><td align=\"left\">$gender</td></tr>\n" );
+
+	print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Warnings level')}</td><td align=\"left\">" );
 	for($i = 0; $i < $user ["num_warned"]; $i ++) {
-		$img .= "<img src=\"pic/star_warned.gif\" alt=\"Уровень предупреждений\" title=\"Уровень предупреждений\">";
+		$img .= "<img src=\"pic/star_warned.gif\" alt=\"{$REL_LANG->_('Warnings level')}\" title=\"{$REL_LANG->_('Warnings level')}\">";
 	}
 	if (! $img)
-	$img = "Нет предупреждений";
-	print ( $img . ((($CURUSER ['id'] == $id) && ($CURUSER ['num_warned'] != 0)) ? " <a href=\"".$REL_SEO->make_link('mywarned')."\">Купить помилование за аплоад</a>" : "") . "</td></tr>\n" );
+	$img = "{$REL_LANG->_('No warnings')}";
+	print ( $img . ((($CURUSER ['id'] == $id) && ($CURUSER ['num_warned'] != 0)) ? " <a href=\"".$REL_SEO->make_link('mywarned')."\">{$REL_LANG->_('Remove warnings by rating')}</a>" : "") . "</td></tr>\n" );
 
 	if ($user ["birthday"] != '0000-00-00') {
-		print ( "<tr><td class=\"rowhead\">Возраст</td><td align=\"left\">" . AgeToStr ( $age ) . "</td></tr>\n" );
+		print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Age')}</td><td align=\"left\">" . AgeToStr ( $age ) . "</td></tr>\n" );
 		$birthday = date ( "d.m.Y", strtotime ( $birthday ) );
-		print ( "<tr><td class=\"rowhead\">Дата Рождения</td><td align=\"left\">$birthday</td></tr>\n" );
+		print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Birthday')}</td><td align=\"left\">$birthday</td></tr>\n" );
 
 		$month_of_birth = substr ( $user ["birthday"], 5, 2 );
 		$day_of_birth = substr ( $user ["birthday"], 8, 2 );
@@ -263,13 +263,13 @@ if (!pagercheck()) {
 
 		}
 
-		print ( "<tr><td class=\"rowhead\">Знак зодиака</td><td align=\"left\"><img src=\"pic/zodiac/" . $zodiac_img . "\" alt=\"" . $zodiac_name . "\" title=\"" . $zodiac_name . "\"></td></tr>\n" );
+		print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Sign of the zodiac')}</td><td align=\"left\"><img src=\"pic/zodiac/" . $zodiac_img . "\" alt=\"" . $zodiac_name . "\" title=\"" . $zodiac_name . "\"></td></tr>\n" );
 
 	}
 
 
 	if ($invitetree)
-	print ( "<tr valign=\"top\"><td colspan=\"2\"><div class=\"sp-wrap\"><div class=\"sp-head folded clickable\">Приглашенные</div><div class=\"sp-body\">$invitetree</div></div></td></tr>\n" );
+	print ( "<tr valign=\"top\"><td colspan=\"2\"><div class=\"sp-wrap\"><div class=\"sp-head folded clickable\">{$REL_LANG->_('Invited')}</div><div class=\"sp-body\">$invitetree</div></div></td></tr>\n" );
 
 	if ($user ["info"])
 	print ( "<tr valign=\"top\"><td align=\"left\" colspan=\"2\" class=\"text\" bgcolor=\"#F4F4F0\">" . format_comment ( $user ["info"] ) . "</td></tr>\n" );
@@ -277,7 +277,7 @@ if (!pagercheck()) {
 	print ( "</table>\n" );
 	print ( '</td><td>' );
 	
-	print '<div class="sp-wrap"><div class="sp-head folded clickable" style="background: red;"><h1>'.$REL_LANG->_("Open social features").'</h1></div><div class="sp-body">';
+	//print '<div class="sp-wrap"><div class="sp-head folded clickable" style="background: red;"><h1>'.$REL_LANG->_("Open social features").'</h1></div><div class="sp-body">';
 	
 	$REL_TPL->begin_frame ();
 
@@ -303,13 +303,7 @@ if (!pagercheck()) {
 }
 
 
-$REL_TPL->assignByRef('to_id',$id);
-$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'usercomments' ));
-$REL_TPL->assign('textbbcode',textbbcode('text'));
-$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('User'));
-$FORM_TYPE = 'user';
-$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
-$REL_TPL->display('commenttable_form.tpl');
+
 
 $subres = $REL_DB->query ( "SELECT SUM(1) FROM comments WHERE toid = $id AND type='user'" );
 $subrow = mysql_fetch_array ( $subres );
@@ -320,20 +314,20 @@ if (! $count) {
 	print ('<div id="newcomment_placeholder">'. "<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">" );
 	print ( "<tr><td class=colhead align=\"left\" colspan=\"2\">" );
 	print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: {$REL_LANG->_("Comments list")}</div>" );
-	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('userdetails','id',$id,'username',translit($user['username']))."#comments\" class=altlink_white>Добавить комментарий</a></div>" );
+	print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('userdetails','id',$id,'username',translit($user['username']))."#comments\" class=altlink_white>{$REL_LANG->_('Add a comment')}</a></div>" );
 	print ( "</td></tr><tr><td align=\"center\">" );
-	print ( "Комментариев нет. <a href=\"".$REL_SEO->make_link('userdetails','id',$id,'username',translit($user['username']))."#comments\">Желаете добавить?</a>" );
+	print ( "{$REL_LANG->_('There are no comments')}. <a href=\"".$REL_SEO->make_link('userdetails','id',$id,'username',translit($user['username']))."#comments\">{$REL_LANG->_('Add new')}?</a>" );
 	print ( "</td></tr></table><br /></div>" );
 
 } else {
 	$limit = ajaxpager(25, $count, array('userdetails','id',$id,'username',translit($user['username'])), 'comments-table');
 	//var_dump($count);
-	$subres = $REL_DB->query ( "SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " . "$id AND c.type='user' GROUP BY (c.id) ORDER BY c.id DESC $limit" );
+	$subres = $REL_DB->query ( "SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " . "$id AND c.type='user' GROUP BY (c.id) ORDER BY c.id ASC $limit" );
 	$allrows = prepare_for_commenttable($subres, $user['username'],$REL_SEO->make_link('userdetails','id',$id,'username',translit($user['username'])));
 	if (!pagercheck()) {
 		print ( "<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
 		print ( "<tr><td class=\"colhead\" align=\"center\">" );
-		print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>" );
+		print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: {$REL_LANG->_('Comments list')}</div>" );
 		print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('userdetails','id',$id,'username',translit($user['username']))."#comments\" class=\"altlink_white\">{$REL_LANG->_('Add comment (%s)',$REL_LANG->_('User'))}</a></div>" );
 		print ( "</td></tr>" );
 		
@@ -346,73 +340,79 @@ if (! $count) {
 	commenttable ( $allrows);
 	print ( "</td></tr>" ); die(); }
 }
-
+$REL_TPL->assignByRef('to_id',$id);
+$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'usercomments' ));
+$REL_TPL->assign('textbbcode',textbbcode('text'));
+$REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('User'));
+$FORM_TYPE = 'user';
+$REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
+$REL_TPL->display('commenttable_form.tpl');
 
 $REL_TPL->end_frame ();
 // print '</table>';
-  print '</div></div>';
+  //print '</div></div>';
 
 if (get_privilege('edit_users',false) && get_class_priority($user ["class"]) < get_class_priority(get_user_class ())) {
-	$REL_TPL->begin_frame ( "Редактирование пользователя", true );
+	$REL_TPL->begin_frame ( $REL_LANG->_('User editing'), true );
 	print ( "<form method=\"post\" action=\"".$REL_SEO->make_link('modtask')."\">\n" );
 	print ( "<input type=\"hidden\" name=\"action\" value=\"edituser\">\n" );
 	print ( "<input type=\"hidden\" name=\"userid\" value=\"$id\">\n" );
 	print ( "<input type=\"hidden\" name=\"returnto\" value=\"".$REL_SEO->make_link('userdetails','id',$id,'username',$user['username'])."\">\n" );
 	print ( "<table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n" );
-	print ( "<tr><td class=\"rowhead\">Заголовок</td><td colspan=\"2\" align=\"left\"><input type=\"text\" size=\"60\" name=\"title\" value=\"" . htmlspecialchars ( $user [title] ) . "\"></td></tr>\n" );
+	print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Title (not username)')}</td><td colspan=\"2\" align=\"left\"><input type=\"text\" size=\"60\" name=\"title\" value=\"" . htmlspecialchars ( $user [title] ) . "\"></td></tr>\n" );
 	print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Username')}</td><td colspan=\"2\" align=\"left\"><input type=\"text\" size=\"60\" name=\"username\" value=\"" . htmlspecialchars ( $user [username] ) . "\"></td></tr>\n" );
 	print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Password')}</td><td colspan=\"2\" align=\"left\"><input type=\"password\" size=\"60\" name=\"password\"></td></tr>\n" );	
 	print ( "<tr><td class=\"rowhead\">Email</td><td colspan=\"2\" align=\"left\"><input type=\"text\" size=\"60\" name=\"email\" value=\"" . htmlspecialchars ( $user [email] ) . "\"></td></tr>\n" );
-	print ( "<tr><td class=\"rowhead\">Удалить аватар</td><td colspan=\"2\" align=\"left\"><input type=\"checkbox\" name=\"avatar\" value=\"1\"></td></tr>\n" );
+	print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Delete avatar')}</td><td colspan=\"2\" align=\"left\"><input type=\"checkbox\" name=\"avatar\" value=\"1\"></td></tr>\n" );
 	// we do not want mods to be able to change user classes or amount donated...
 	if (!get_privilege('is_administrator',false))
 	print ( "<input type=\"hidden\" name=\"donor\" value=\"$user[donor]\">\n" );
 	else {
-		print ( "<tr><td class=\"rowhead\">Донор</td><td colspan=\"2\" align=\"left\"><input type=\"radio\" name=\"donor\" value=\"1\"" . ($user ["donor"] ? " checked" : "") . ">Да <input type=\"radio\" name=\"donor\" value=\"0\"" . (! $user ["donor"] ? " checked" : "") . ">Нет</td></tr>\n" );
+		print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Donated star')}</td><td colspan=\"2\" align=\"left\"><input type=\"radio\" name=\"donor\" value=\"1\"" . ($user ["donor"] ? " checked" : "") . ">{$REL_LANG->_('Yes')} <input type=\"radio\" name=\"donor\" value=\"0\"" . (! $user ["donor"] ? " checked" : "") . ">{$REL_LANG->_('No')}</td></tr>\n" );
 	}
 
 	if (get_privilege('edit_users',false) && get_class_priority($user["class"]) > get_class_priority(get_user_class ()))
 	print ( "<input type=\"hidden\" name=\"class\" value=\"$user[class]\">\n" );
 	else {
 
-		print ( "<tr><td class=\"rowhead\">Класс</td><td colspan=\"2\" align=\"left\">".make_classes_select('class',$user['class'],get_user_class())."</td></tr>\n" );
+		print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Class')}</td><td colspan=\"2\" align=\"left\">".make_classes_select('class',$user['class'],get_user_class())."</td></tr>\n" );
 	}
-	print ( "<tr><td class=\"rowhead\">Сбросить день рождения</td><td colspan=\"2\" align=\"left\"><input type=\"radio\" name=\"resetb\" value=\"1\">Да<input type=\"radio\" name=\"resetb\" value=\"0\" checked>Нет</td></tr>\n" );
+	print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Reset birthday')}</td><td colspan=\"2\" align=\"left\"><input type=\"radio\" name=\"resetb\" value=\"1\">{$REL_LANG->_('Yes')}<input type=\"radio\" name=\"resetb\" value=\"0\" checked>{$REL_LANG->_('No')}</td></tr>\n" );
 	$modcomment = makesafe ( $user ["modcomment"] );
 	$supportfor = makesafe ( $user ["supportfor"] );
-	print ( "<tr><td class=rowhead>Поддержка</td><td colspan=2 align=left><input type=radio name=support value=\"1\"" . ($user ["supportfor"] ? " checked" : "") . ">Да <input type=radio name=support value=\"0\"" . (! $user ["supportfor"] ? " checked" : "") . ">Нет</td></tr>\n" );
-	print ( "<tr><td class=rowhead>Поддержка для:</td><td colspan=2 align=left><textarea cols=60 rows=6 name=supportfor>$supportfor</textarea></td></tr>\n" );
-	print ( "<tr><td class=rowhead>История пользователя</td><td colspan=2 align=left><textarea cols=60 rows=6" . (!get_privilege('add_comments_to_user',false) ? " readonly" : " name=modcomment") . ">$modcomment</textarea></td></tr>\n" );
+	print ( "<tr><td class=rowhead>{$REL_LANG->_('Support')}</td><td colspan=2 align=left><input type=radio name=support value=\"1\"" . ($user ["supportfor"] ? " checked" : "") . ">{$REL_LANG->_('Yes')} <input type=radio name=support value=\"0\"" . (! $user ["supportfor"] ? " checked" : "") . ">{$REL_LANG->_('No')}</td></tr>\n" );
+	print ( "<tr><td class=rowhead>{$REL_LANG->_('Support for')}:</td><td colspan=2 align=left><textarea cols=60 rows=6 name=supportfor>$supportfor</textarea></td></tr>\n" );
+	print ( "<tr><td class=rowhead>{$REL_LANG->_('User history')}</td><td colspan=2 align=left><textarea cols=60 rows=6" . (!get_privilege('add_comments_to_user',false) ? " readonly" : " name=modcomment") . ">$modcomment</textarea></td></tr>\n" );
 	$warned = $user ["warned"] == 1;
 
-	print ( "<tr><td class=\"rowhead\"" . (! $warned ? " rowspan=\"2\"" : "") . ">Предупреждение</td>
- 	<td align=\"left\" width=\"20%\">" . ($warned ? "<input name=\"warned\" value=\"1\" type=\"radio\" checked>Да<input name=\"warned\" value=\"0\" type=\"radio\">Нет" : "Нет") . "</td>" );
+	print ( "<tr><td class=\"rowhead\"" . (! $warned ? " rowspan=\"2\"" : "") . ">{$REL_LANG->_('Warning')}</td>
+ 	<td align=\"left\" width=\"20%\">" . ($warned ? "<input name=\"warned\" value=\"1\" type=\"radio\" checked>{$REL_LANG->_('Yes')}<input name=\"warned\" value=\"0\" type=\"radio\">{$REL_LANG->_('No')}" : $REL_LANG->_('No')) . "</td>" );
 
 	if ($warned) {
 		$warneduntil = $user ['warneduntil'];
 		if (! $warneduntil)
-		print ( "<td align=\"center\">На неограниченый срок</td></tr>\n" );
+		print ( "<td align=\"center\">{$REL_LANG->_('For an unlimited time')}</td></tr>\n" );
 		else {
-			print ( "<td align=\"center\">До " . mkprettytime ( $warneduntil ) );
-			print ( " (" . get_elapsed_time ( $warneduntil ) . " осталось)</td></tr>\n" );
+			print ( "<td align=\"center\">{$REL_LANG->_('Till')} " . mkprettytime ( $warneduntil ) );
+			print ( " (" . get_elapsed_time ( $warneduntil ) . " {$REL_LANG->_('left')})</td></tr>\n" );
 		}
 	} else {
-		print ( "<td>Предупредить на <select name=\"warnlength\">\n" );
+		print ( "<td>{$REL_LANG->_('Warn user for')} <select name=\"warnlength\">\n" );
 		print ( "<option value=\"0\">------</option>\n" );
-		print ( "<option value=\"1\">1 неделю</option>\n" );
-		print ( "<option value=\"2\">2 недели</option>\n" );
-		print ( "<option value=\"4\">4 недели</option>\n" );
-		print ( "<option value=\"8\">8 недель</option>\n" );
-		print ( "<option value=\"255\">Неограничено</option>\n" );
-		print ( "</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Комментарий в ЛС:</td></tr>\n" );
+		print ( "<option value=\"1\">1 {$REL_LANG->_('week')}</option>\n" );
+		print ( "<option value=\"2\">2 {$REL_LANG->_('weeks')}</option>\n" );
+		print ( "<option value=\"4\">4 {$REL_LANG->_('weeks')}</option>\n" );
+		print ( "<option value=\"8\">8 {$REL_LANG->_('weeks')}</option>\n" );
+		print ( "<option value=\"255\">{$REL_LANG->_('forever')}</option>\n" );
+		print ( "</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$REL_LANG->_('Send PM with this comment')}:</td></tr>\n" );
 		print ( "<tr><td colspan=\"2\" align=\"left\"><input type=\"text\" size=\"60\" name=\"warnpm\"></td></tr>" );
 	}
 	if (get_privilege('edit_users',false) && get_class_priority($user ["class"]) < get_class_priority(get_user_class ())) {
-		print ( "<tr><td class=\"rowhead\" rowspan=\"2\">Включен</td><td colspan=\"2\" align=\"left\"><input name=\"enabled\" value=\"1\" type=\"radio\"" . ($enabled ? " checked" : "") . ">Да <input name=\"enabled\" value=\"0\" type=\"radio\"" . (! $enabled ? " checked" : "") . ">Нет</td></tr>\n" );
+		print ( "<tr><td class=\"rowhead\" rowspan=\"2\">{$REL_LANG->_('Enabled')}</td><td colspan=\"2\" align=\"left\"><input name=\"enabled\" value=\"1\" type=\"radio\"" . ($enabled ? " checked" : "") . ">{$REL_LANG->_('Yes')} <input name=\"enabled\" value=\"0\" type=\"radio\"" . (! $enabled ? " checked" : "") . ">{$REL_LANG->_('No')}</td></tr>\n" );
 		if ($enabled)
-		print ( "<tr><td colspan=\"2\" align=\"left\">Причина отключения:&nbsp;<input type=\"text\" name=\"disreason\" size=\"60\" /></td></tr>" );
+		print ( "<tr><td colspan=\"2\" align=\"left\">{$REL_LANG->_('Reason')}:&nbsp;<input type=\"text\" name=\"disreason\" size=\"60\" /></td></tr>" );
 		else
-		print ( "<tr><td colspan=\"2\" align=\"left\">Причина включения:&nbsp;<input type=\"text\" name=\"enareason\" size=\"60\" /></td></tr>" );}
+		print ( "<tr><td colspan=\"2\" align=\"left\">{$REL_LANG->_('Reason')}:&nbsp;<input type=\"text\" name=\"enareason\" size=\"60\" /></td></tr>" );}
 		?>
 <script type="text/javascript">
 
@@ -433,13 +433,13 @@ function togglepic(bu, picid, formid)
 
 </script>
 		<?php
-		print ( "<tr><td class=\"rowhead\">Изменить рейтинг</td><td align=\"left\"><img src=\"pic/plus.gif\" id=\"ratingpic\" onClick=\"togglepic('{$REL_CONFIG['defaultbaseurl']}','ratingpic','ratingchange')\" style=\"cursor: pointer;\">&nbsp;<input type=\"text\" name=\"amountrating\" size=\"10\" /><td>Сейчас рейтинга у пользователя: {$user['ratingsum']}</td></tr>" );
-		print ( "<tr><td class=\"rowhead\">Изменить откуп</td><td align=\"left\"><img src=\"pic/plus.gif\" id=\"discountpic\" onClick=\"togglepic('{$REL_CONFIG['defaultbaseurl']}','discountpic','discountchange')\" style=\"cursor: pointer;\">&nbsp;<input type=\"text\" name=\"amountdiscount\" size=\"10\" /><td>Сейчас откупа у пользователя: {$user['discount']}</td></tr>" );
-		print ( "<tr><td class=\"rowhead\">Сбросить passkey</td><td colspan=\"2\" align=\"left\"><input name=\"resetkey\" value=\"1\" type=\"checkbox\"></td></tr>\n" );
+		print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Change rating')}</td><td align=\"left\"><img src=\"pic/plus.gif\" id=\"ratingpic\" onClick=\"togglepic('{$REL_CONFIG['defaultbaseurl']}','ratingpic','ratingchange')\" style=\"cursor: pointer;\">&nbsp;<input type=\"text\" name=\"amountrating\" size=\"10\" /><td>{$REL_LANG->_('Current rating')}: {$user['ratingsum']}</td></tr>" );
+		print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Change discount')}</td><td align=\"left\"><img src=\"pic/plus.gif\" id=\"discountpic\" onClick=\"togglepic('{$REL_CONFIG['defaultbaseurl']}','discountpic','discountchange')\" style=\"cursor: pointer;\">&nbsp;<input type=\"text\" name=\"amountdiscount\" size=\"10\" /><td>{$REL_LANG->_('Current discount')}: {$user['discount']}</td></tr>" );
+		print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Reset passkey')}</td><td colspan=\"2\" align=\"left\"><input name=\"resetkey\" value=\"1\" type=\"checkbox\"></td></tr>\n" );
 		if (!get_privilege('delete_site_users',false))
 		print ( "<input type=\"hidden\" name=\"deluser\">" );
 		else
-		print ( "<tr><td class=\"rowhead\">Удалить</td><td colspan=\"2\" align=\"left\"><input type=\"checkbox\" name=\"deluser\"></td></tr>" );
+		print ( "<tr><td class=\"rowhead\">{$REL_LANG->_('Delete user')}</td><td colspan=\"2\" align=\"left\"><input type=\"checkbox\" name=\"deluser\"></td></tr>" );
 		print ( "</td></tr>" );
 		if (get_privilege('edit_user_privileges',false)) {
 			print ( "<tr><td colspan=\"3\" align=\"center\">{$REL_LANG->_("Edit custom user privileges (these priveleges will be added to default for user class)")}</td></tr>\n" );
@@ -458,7 +458,7 @@ function togglepic(bu, picid, formid)
 				}
 				print "</table></div></td></tr>";
 				}
-		print ( "<tr><td colspan=\"3\" align=\"center\"><input type=\"submit\" class=\"btn\" value=\"ОК\"></td></tr>\n" );
+		print ( "<tr><td colspan=\"3\" align=\"center\"><input type=\"submit\" class=\"btn\" value=\"{$REL_LANG->_('Continue')}\"></td></tr>\n" );
 		print ( "</table>\n" );
 		print ( "<input type=\"hidden\" id=\"ratingchange\" name=\"ratingchange\" value=\"plus\"><input type=\"hidden\" id=\"discountchange\" name=\"discountchange\" value=\"plus\"><input type=\"hidden\" id=\"upchange\" name=\"upchange\" value=\"plus\"><input type=\"hidden\" id=\"downchange\" name=\"downchange\" value=\"plus\">\n" );
 		print ( "</form>\n" );

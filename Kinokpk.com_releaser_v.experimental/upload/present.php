@@ -68,6 +68,7 @@ if (!$type) {
 	$REL_TPL->stdhead($REL_LANG->say_by_key('presents'));
 	$REL_TPL->begin_frame($REL_LANG->say_by_key('what_present'));
 //var_Dump(array_merge($q,array('type','ratingsum')));
+
 	print('<table border="1" align="center">'.($REL_CRON['rating_enabled']?'<tr><td align="center"><a href="'.$REL_SEO->make_link(array_merge($q,array('type','torrent'))).'">'.$REL_LANG->say_by_key('big_present_torrent').'</a></td><td align="center"><a href="'.$REL_SEO->make_link(array_merge($q,array('type','discount'))).'">'.$REL_LANG->say_by_key('big_present_discount').'</a></td>
   ':'').'<td align="center"><a href="'.$REL_SEO->make_link(array_merge($q,array('type','ratingsum'))).'">'.$REL_LANG->say_by_key('big_present_ratingsum').'</a></td></tr></table>');
 	$REL_TPL->end_frame();
@@ -191,13 +192,12 @@ $query = $querycount." GROUP BY friends.id";
 $reason = cleanhtml((string)$_POST['reason']);
 
 if (!$reason) {
-	$REL_TPL->begin_frame($REL_LANG->_("Enter a short message to attach to your present"));
+	$REL_TPL->begin_frame($REL_LANG->_("You can add beautiful postcard to your present. Write some poetry, or leave postcard blank."));
 	print "<form method=\"post\" action=\"{$REL_SEO->make_link('present','id',$fid,'to',$to,'type',$type)}\">";
 	?>
 <table width="100%">
 	<tr>
-		<td align="center"><input type="text" name="reason" size="120"
-			maxlength="255" /></td>
+            <td align="center"><?php        print textbbcode('reason'); ?></td>
 	</tr>
 	<tr>
 		<td align="center"><input type="submit"

@@ -39,13 +39,13 @@ $highlight = " bgcolor=#BBAF9B";
 	<table border="1" cellspacing="0" cellpadding="5">
 		<tr>
 
-			<td valign="middle" class=rowhead>Имя:</td>
+			<td valign="middle" class=rowhead><?php print $REL_LANG->_('Username');?>:</td>
 			<td <?php print $_GET['n']?$highlight:""; ?>><input name="n" type="text"
 				value="<?php print htmlspecialchars($_GET['n']); ?>" size=35></td>
 
-			<td valign="middle" class=rowhead>Рейтинг:</td>
+			<td valign="middle" class=rowhead><?php print $REL_LANG->_('Rating');?>:</td>
 			<td <?php print $_GET['r']?$highlight:""; ?>><select name="rt">
-			<?php			$options = array("равен","выше","ниже","между");
+			<?php			$options = array($REL_LANG->_('Equals to'),$REL_LANG->_('Higher'),$REL_LANG->_('Lower'),$REL_LANG->_('Between'));
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['rt']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -55,9 +55,9 @@ $highlight = " bgcolor=#BBAF9B";
 				name="r2" type="text" value="<?php print htmlspecialchars($_GET['r2']); ?>"
 				size="5" maxlength="4"></td>
 
-			<td valign="middle" class=rowhead>Статус:</td>
+			<td valign="middle" class=rowhead><?php print $REL_LANG->_('Status');?>:</td>
 			<td <?php print $_GET['st']?$highlight:""; ?>><select name="st">
-			<?php			$options = array("(Любой)","Подтвержден","Не подтвержден");
+			<?php			$options = array($REL_LANG->_('Any'),$REL_LANG->_('Confirmed'),$REL_LANG->_('Unconfirmed'));
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['st']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -72,9 +72,9 @@ $highlight = " bgcolor=#BBAF9B";
 			<td <?php print $_GET['ip']?$highlight:""; ?>><input name="ip" type="text"
 				value="<?php print htmlspecialchars($_GET['ip']); ?>" maxlength="17"></td>
 
-			<td valign="middle" class=rowhead>Отключен:</td>
+			<td valign="middle" class=rowhead><?php print $REL_LANG->_('Disabled');?>:</td>
 			<td <?php print $_GET['as']?$highlight:""; ?>><select name="as">
-			<?php			$options = array("(Любой)","Нет","Да");
+			<?php			$options = array($REL_LANG->_('Any'),$REL_LANG->_('No'),$REL_LANG->_('Yes'));
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['as']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -82,21 +82,21 @@ $highlight = " bgcolor=#BBAF9B";
 			</select></td>
 		</tr>
 		<tr>
-			<td valign="middle" class=rowhead>Комментарий:</td>
+			<td valign="middle" class=rowhead><?php print $REL_LANG->_('Comment');?>:</td>
 			<td <?php print $_GET['co']?$highlight:""; ?>><input name="co" type="text"
 				value="<?php print htmlspecialchars($_GET['co']); ?>" size="35"></td>
-			<td valign="middle" class=rowhead>Маска:</td>
+			<td valign="middle" class=rowhead><?php print $REL_LANG->_('Subnet mask');?>:</td>
 			<td <?php print $_GET['ma']?$highlight:""; ?>><input name="ma" type="text"
 				value="<?php print htmlspecialchars($_GET['ma']); ?>" maxlength="17"></td>
-			<td valign="middle" class=rowhead>Класс:</td>
+			<td valign="middle" class=rowhead><?php print $REL_LANG->_('Class');?>:</td>
 			<td <?php print ((int)$_GET['c'] && (int)$_GET['c'] != 1)?$highlight:""; ?>><?php print make_classes_select('c',(int)$_GET['c']);?></td>
 		</tr>
 		<tr>
 
-			<td valign="middle" class=rowhead>Регистрация:</td>
+			<td valign="middle" class=rowhead><?php print $REL_LANG->_('Registration');?>:</td>
 
 			<td <?php print $_GET['d']?$highlight:""; ?>><select name="dt">
-			<?php			$options = array("в","раньше","после","между");
+			<?php			$options = array($REL_LANG->_('at'),$REL_LANG->_('sooner'),$REL_LANG->_('later'),$REL_LANG->_('between'));
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['dt']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -107,10 +107,10 @@ $highlight = " bgcolor=#BBAF9B";
 			<input name="d2" type="text"
 				value="<?php print htmlspecialchars($_GET['d2']); ?>" size="12" maxlength="10"></td>
 
-			<td valign="middle" class="rowhead" colspan="3">Донор:</td>
+			<td valign="middle" class="rowhead" colspan="3"><?php print $REL_LANG->_('Donator');?>:</td>
 
 			<td <?php print $_GET['do']?$highlight:""; ?>><select name="do">
-			<?php			$options = array("(Любой)","Да","Нет");
+			<?php			$options = array($REL_LANG->_('Any'),$REL_LANG->_('Yes'),$REL_LANG->_('No'));
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['do']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -119,10 +119,10 @@ $highlight = " bgcolor=#BBAF9B";
 		</tr>
 		<tr>
 
-			<td valign="middle" class=rowhead>Последняя активность:</td>
+			<td valign="middle" class=rowhead><?php print $REL_LANG->_('Last activity');?>:</td>
 
 			<td <?php print $_GET['ls']?$highlight:""; ?>><select name="lst">
-			<?php			$options = array("в","раньше","после","между");
+			<?php			$options = array($REL_LANG->_('at'),$REL_LANG->_('sooner'),$REL_LANG->_('later'),$REL_LANG->_('between'));
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['lst']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -133,10 +133,10 @@ $highlight = " bgcolor=#BBAF9B";
 			<input name="ls2" type="text"
 				value="<?php print htmlspecialchars($_GET['ls2']); ?>" size="12" maxlength="10"></td>
 
-			<td valign="middle" class=rowhead colspan="3">Предупрежден:</td>
+			<td valign="middle" class=rowhead colspan="3"><?php print $REL_LANG->_('Warned');?>:</td>
 
 			<td <?php print $_GET['w']?$highlight:""; ?>><select name="w">
-			<?php			$options = array("(Любой)","Да","Нет");
+			<?php			$options = array($REL_LANG->_('Any'),$REL_LANG->_('Yes'),$REL_LANG->_('No'));
 			for ($i = 0; $i < count($options); $i++){
 				print "<option value=$i ".(((int)$_GET['w']=="$i")?"selected":"").">".$options[$i]."</option>\n";
 			}
@@ -147,16 +147,16 @@ $highlight = " bgcolor=#BBAF9B";
 		<tr>
 			<td class="rowhead"></td>
 			<td></td>
-			<td valign="middle" class=rowhead>Только&nbsp;активные:</td>
+			<td valign="middle" class=rowhead><?php print $REL_LANG->_('Only active');?>:</td>
 			<td <?php print $_GET['ac']?$highlight:""; ?>><input name="ac" type="checkbox"
 				value="1" <?php print ($_GET['ac'])?"checked":"" ; ?>></td>
-			<td valign="middle" class=rowhead>Забаненые&nbsp;IP:</td>
+			<td valign="middle" class=rowhead><?php print $REL_LANG->_('Banned IP');?>:</td>
 			<td <?php print $_GET['dip']?$highlight:""; ?>><input name="dip" type="checkbox"
 				value="1" <?php print ($_GET['dip'])?"checked":"" ; ?>></td>
 		</tr>
 		<tr>
 			<td colspan="6" align=center><input name="submit" type=submit
-				class=btn value=Искать></td>
+				class=btn value="<?php print $REL_LANG->_('Search');?>"></td>
 		</tr>
 	</table>
 	<br />
@@ -201,10 +201,10 @@ $highlight = " bgcolor=#BBAF9B";
 		{
 			foreach($names as $name)
 			{
-	  	if (substr($name,0,1) == '~')
+	  	if (mb_substr($name,0,1) == '~')
 	  	{
 	  		if ($name == '~') continue;
-	  		$names_exc[] = substr($name,1);
+	  		$names_exc[] = mb_substr($name,1);
 	  	}
 	  	else
 	  	$names_inc[] = $name;
@@ -289,7 +289,7 @@ $highlight = " bgcolor=#BBAF9B";
 
 					{
 
-						$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Второй рейтинг должен быть больше первого.");
+						$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->_('Second rating can not be greather then frist'));
 
 						$REL_TPL->stdfoot();
 
@@ -335,7 +335,7 @@ $highlight = " bgcolor=#BBAF9B";
 	  	{
 	  		if (!validemail($email))
 	  		{
-	  			$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неправильный E-mail.");
+	  			$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid e-mail'));
 	  			$REL_TPL->stdfoot();
 	  			die();
 	  		}
@@ -369,7 +369,7 @@ $highlight = " bgcolor=#BBAF9B";
 			$regex = "/^(((1?\d{1,2})|(2[0-4]\d)|(25[0-5]))(\.\b|$)){4}$/";
 			if (!preg_match($regex, $ip))
 			{
-				$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неверный IP.");
+				$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid IP'));
 				$REL_TPL->stdfoot();
 				die();
 			}
@@ -379,12 +379,12 @@ $highlight = " bgcolor=#BBAF9B";
 			$where_is .= (isset($where_is)?" AND ":"")."u.ip = '$ip'";
 			else
 			{
-				if (substr($mask,0,1) == "/")
+				if (mb_substr($mask,0,1) == "/")
 				{
-					$n = substr($mask, 1, mb_strlen($mask) - 1);
+					$n = mb_substr($mask, 1, mb_strlen($mask) - 1);
 					if (!is_numeric($n) or $n < 0 or $n > 32)
 					{
-						$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неверная макса подсети.");
+						$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid subnet mask'));
 						$REL_TPL->stdfoot();
 						die();
 					}
@@ -393,7 +393,7 @@ $highlight = " bgcolor=#BBAF9B";
 				}
 				elseif (!preg_match($regex, $mask))
 				{
-					$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неверная макса подсети.");
+					$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid subnet mask'));
 					$REL_TPL->stdfoot();
 					die();
 				}
@@ -412,10 +412,10 @@ $highlight = " bgcolor=#BBAF9B";
 		{
 			foreach($comments as $comment)
 			{
-				if (substr($comment,0,1) == '~')
+				if (mb_substr($comment,0,1) == '~')
 				{
 					if ($comment == '~') continue;
-					$comments_exc[] = substr($comment,1);
+					$comments_exc[] = mb_substr($comment,1);
 				}
 				else
 				$comments_inc[] = $comment;
@@ -465,7 +465,7 @@ $highlight = " bgcolor=#BBAF9B";
 		{
 			if (!$date = mkdate($date))
 			{
-				$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
+				$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid date'));
 				$REL_TPL->stdfoot();
 				die();
 			}
@@ -489,7 +489,7 @@ $highlight = " bgcolor=#BBAF9B";
 					{
 						if (!$date = mkdate($date))
 						{
-							$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
+							$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid date'));
 							$REL_TPL->stdfoot();
 							die();
 						}
@@ -499,7 +499,7 @@ $highlight = " bgcolor=#BBAF9B";
 					}
 					else
 					{
-						$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Нужны две даты для этого типа поиска.");
+						$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->_('Two dates required for this type of search'));
 						$REL_TPL->stdfoot();
 						die();
 					}
@@ -517,7 +517,7 @@ $highlight = " bgcolor=#BBAF9B";
 		{
 			if (!$last = mkdate($last))
 			{
-				$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Неправильная дата.");
+				$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid date'));
 				$REL_TPL->stdfoot();
 				die();
 			}
@@ -542,7 +542,7 @@ $highlight = " bgcolor=#BBAF9B";
 					}
 					else
 					{
-						$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), "Вторая дата неверна.");
+						$REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid second date'));
 						$REL_TPL->stdfoot();
 						die();
 					}
@@ -638,9 +638,9 @@ $highlight = " bgcolor=#BBAF9B";
 		//    <temporary>    /////////////////////////////////////////////////////
 		if ($DEBUG_MODE > 0)
 		{
-			$REL_TPL->stdmsg("Запрос подсчета",$queryc);
+			$REL_TPL->stdmsg($REL_LANG->_('Query count'),$queryc);
 			print "<br /><br />";
-			$REL_TPL->stdmsg("Поисковый запрос",$query);
+			$REL_TPL->stdmsg($REL_LANG->_('Search query'),$query);
 			print "<br /><br />";
 			$REL_TPL->stdmsg("URL ",$q);
 			if ($DEBUG_MODE == 2)
@@ -663,18 +663,18 @@ $highlight = " bgcolor=#BBAF9B";
 		$res = $REL_DB->query($query);
 
 		if (mysql_num_rows($res) == 0)
-		$REL_TPL->stdmsg("Внимание","Пользователь не был найден.");
+		$REL_TPL->stdmsg($REL_LANG->_('Attention'),$REL_LANG->_('No users found'));
 		else
 		{
 			print "<table border=1 cellspacing=0 cellpadding=5>\n";
-			print "<tr><td class=colhead align=left>Пользователь</td>
-    		<td class=colhead align=left>Рейтинг</td>
+			print "<tr><td class=colhead align=left>{$REL_LANG->_('User')} {$REL_LANG->_('Username')}</td>
+    		<td class=colhead align=left>{$REL_LANG->_('Rating')}</td>
         <td class=colhead align=left>IP</td>
         <td class=colhead align=left>Email</td>".
-        "<td class=colhead align=left>Регистрация:</td>".
-        "<td class=colhead align=left>Последняя активность:</td>".
-        "<td class=colhead align=left>Подтвержден</td>".
-        "<td class=colhead align=left>Включен</td>";
+        "<td class=colhead align=left>{$REL_LANG->_('Registered at')}:</td>".
+        "<td class=colhead align=left>{$REL_LANG->_('ILast activity')}:</td>".
+        "<td class=colhead align=left>{$REL_LANG->_('Confirmed')}</td>".
+        "<td class=colhead align=left>{$REL_LANG->_('Enabled')}</td>";
 			while ($user = mysql_fetch_array($res))
 			{
 
@@ -695,7 +695,7 @@ $highlight = " bgcolor=#BBAF9B";
 	<table border="1" cellpadding="5" cellspacing="0">
 		<tr>
 			<td>
-			<div align="center">Рассылка сообщений найденным юзерам<br />
+			<div align="center"><?php print $REL_LANG->_('Send PMs to these users'); ?><br />
 			<input name="pmees" type="hidden" value="<?print $querypm?>" size=10>
 			<input name="PM" type="submit" value="PM" class=btn> <input
 				name="n_pms" type="hidden" value="<?print $count?>" size=10> <input

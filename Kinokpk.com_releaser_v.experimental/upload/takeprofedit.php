@@ -163,17 +163,11 @@ if ($changedemail) {
 	$obemail = urlencode($email);
 	$updateset[] = "editsecret = " . sqlesc($sec);
 	$body = <<<EOD
-Вы подали запрос на изменения e-mail для пользователя {$CURUSER["username"]}
-на {$REL_CONFIG['defaultbaseurl']}. Новым адресом станет:$email.
-
-Если вы НЕ совершали действий, указанных в этом письме, то проигнорируйте это письмо.
-
-Если вы действительно хотите изменить e-mail, то проследуйте по следующей ссылке:
-	{$REL_CONFIG['defaultbaseurl']}/{$REL_SEO->make_link('confirmemail','id',$CURUSER['id'],'confirmcode',$hash,'email',$obemail)}
+        {$REL_LANG->_('Hello! Somebody just requested to change your e-mail address on %s to %s. If it was you, <a href="%s">follow this link</a> to continue changing of your e-mail. Thanks!',$REL_CONFIG['sitename'],$email,$REL_SEO->make_link('confirmemail','id',$CURUSER['id'],'confirmcode',$hash,'email',$obemail))}
 
 EOD;
 
-	sent_mail($email, $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], "{$REL_CONFIG['defaultbaseurl']} подтверждение изменения профиля", $body);
+	sent_mail($email, $REL_CONFIG['sitename'], $REL_CONFIG['siteemail'], $REL_LANG->_('Profile change confirmation on %s',$REL_CONFIG['sitename']), $body);
 	$string.= "<br /><h2>".$REL_LANG->say_by_key('my_mail_sent')."</h2>";
 }
 
