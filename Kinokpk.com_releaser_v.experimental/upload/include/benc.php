@@ -421,71 +421,63 @@ function check_fail($result) {
  */
 function get_remote_peers($url, $info_hash, $method = 'scrape') {
 
-	if ($method == "announce") {
-		$get_params = array(
-    			"info_hash" => pack("H*", $info_hash),
-    			"peer_id" => "-UT1820-5dmPcUOYGnrx",
-    			"port" => rand(10000, 65535),
-    			"uploaded" => 0,
-				"no_peer_id" => 1,
-    			"downloaded" => 0,
-				"compact" => 1,
-    			"left" => 1,
-    			"numwant" => 9999
-		);
-	} else {
-		$urlorig=$url;
-		$url = str_replace('announce', 'scrape', $url);
-		$get_params = array(
-    			"info_hash" => pack("H*", $info_hash)
-		);
-	}
+    if ($method == "announce") {
+        $get_params = array(
+            "info_hash" => pack("H*", $info_hash),
+            "peer_id" => "-UT1820-5dmPcUOYGnrx",
+            "port" => rand(10000, 65535),
+            "uploaded" => 0,
+            "no_peer_id" => 1,
+            "downloaded" => 0,
+            "compact" => 1,
+            "left" => 1,
+            "numwant" => 9999
+        );
+    } else {
+        $urlorig=$url;
+        $url = str_replace('announce', 'scrape', $url);
+        $get_params = array(
+            "info_hash" => pack("H*", $info_hash)
+        );
+    }
 
 
-	$urlInfo = @parse_url($url);
-	$http_host = $urlInfo['host'];
-	$http_port = getUrlPort($urlInfo);
-	$scheme = $urlInfo['scheme'];
+    $urlInfo = @parse_url($url);
+    $http_host = $urlInfo['host'];
+    $http_port = getUrlPort($urlInfo);
+    $scheme = $urlInfo['scheme'];
 
-	if ($http_port === 0)
-	return array('tracker' => $http_host, 'state' => 'failed:no_port_detected', 'method' => $method, 'remote_method' => 'N/A');
+    if ($http_port === 0)
+        return array('tracker' => $http_host, 'state' => 'failed:no_port_detected', 'method' => "$scheme:$method", 'remote_method' => 'N/A');
 
 
-	$http_path = $urlInfo['path'];
-	$get_request_params = explode('&', $urlInfo['query']);
+    $http_path = $urlInfo['path'];
+    $get_request_params = explode('&', $urlInfo['query']);
 
-	foreach (array_filter($get_request_params) as $array_value) {
-		list($key, $value) = explode('=', $array_value);
-		$new_get_request_params[$key] = $value;
-	}
+    foreach (array_filter($get_request_params) as $array_value) {
+        list($key, $value) = explode('=', $array_value);
+        $new_get_request_params[$key] = $value;
+    }
 
-	if (!$new_get_request_params) $new_get_request_params=array();
-	// Params gathering complete
+    if (!$new_get_request_params) $new_get_request_params=array();
+    // Params gathering complete
 
-	// Creating params
-	$http_params = @http_build_query(@array_merge($new_get_request_params, $get_params));
-	$opts = array($scheme =>
-	array(
+    // Creating params
+    $http_params = @http_build_query(@array_merge($new_get_request_params, $get_params));
+    $opts = array($scheme =>
+    array(
         'method' => 'GET',
-    	'header' => 'User-Agent: uTorrent/1820',
-    	'timeout' => 3
-	//'Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2',
-	)
-	);
+        'header' => 'User-Agent: uTorrent/1820',
+        'timeout' => 3
+        //'Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2',
+    )
+    );
 
-	if ($scheme=='udp'&&$method=='scrape') {
-        // most of UDP trackers provides scrape via HTTP. Strange, but true. So I use this little tweak.
-		$scheme = 'http';
-		$http_path = '/scrape';
-	}
-	
-	$req_uri = $scheme.'://'.$http_host.':'.$http_port.$http_path.($http_params ? '?'.$http_params : '');
-
-	if ($scheme=='udp'&&$method=='announce') { // this IS NOT actually UDP announce. If method above fails, we try to parse real UDP scrape.
+    if ($scheme=='udp'&&$method=='scrape') {
 
         $transaction_id = mt_rand(0,65535);
-        $fp = fsockopen($scheme.'://'.$http_host, $http_port, $errno, $errstr); //sockets only
-        if(!$fp) return array('tracker' => $http_host, 'state' => 'failed:timeout', 'method' => 'scrape', 'remote_method' => 'socket');
+        $fp = @fsockopen($scheme.'://'.$http_host, $http_port, $errno, $errstr); //sockets only
+        if(!$fp) return array('tracker' => $http_host, 'state' => 'failed:timeout', 'method' => "$scheme:$method", 'remote_method' => 'socket');
         stream_set_timeout($fp, 3);
 
         $current_connid = "\x00\x00\x04\x17\x27\x10\x19\x80";
@@ -496,103 +488,155 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 
         //Connection response
         $ret = fread($fp, 16);
-        if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => 'scrape', 'remote_method' => 'socket'); }
-        if(strlen($ret) < 16){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => 'scrape', 'remote_method' => 'socket'); }
+        if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
+        if(strlen($ret) < 16){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
         $retd = unpack("Naction/Ntransid",$ret);
         if($retd['action'] != 0 || $retd['transid'] != $transaction_id){
-            return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => 'scrape', 'remote_method' => 'socket');
+            return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => "$scheme:$method", 'remote_method' => 'socket');
         }
         $current_connid = substr($ret,8,8);
 
         //Scrape request
-
-        $packet = $current_connid . pack("N", 2) . pack("N", $transaction_id) . pack('H*', hex($info_hash));
+        $packet = $current_connid . pack("N", 2) . pack("N", $transaction_id) . pack('H*',  $info_hash);
         fwrite($fp,$packet);
-
         //Scrape response
         $readlength = 20;//8 + (12);
         $ret = fread($fp, $readlength);
-        if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => 'scrape', 'remote_method' => 'socket'); }
-        if(strlen($ret) < 8){ array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => 'scrape', 'remote_method' => 'socket'); }
+        if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
+        if(strlen($ret) < 8){ array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
         $retd = unpack("Naction/Ntransid",$ret);
         // Todo check for error string if response = 3
         if($retd['action'] != 2 || $retd['transid'] != $transaction_id){
-            array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => 'scrape', 'remote_method' => 'socket');
+            array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => "$scheme:$method", 'remote_method' => 'socket');
         }
-        if(strlen($ret) < $readlength){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => 'scrape', 'remote_method' => 'socket'); }
+        if(strlen($ret) < $readlength){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
 
         $index = 8;
         $retd = unpack("Nseeders/Ncompleted/Nleechers",substr($ret,$index,12));
 
-        return array('tracker' => $http_host, 'seeders' => $retd['seeders'], 'leechers' => $retd['leechers'], 'state'=> 'ok', 'method' => 'scrape', 'remote_method' => 'socket');
-		
-	}
-	elseif ( function_exists('curl_init') ) {
-		if ($ch = @curl_init()) {
-			@curl_setopt($ch, CURLOPT_URL, $req_uri);
-			@curl_setopt($ch, CURLOPT_PORT, $http_port);
-			@curl_setopt($ch, CURLOPT_HEADER, false);
-			@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-			@curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			@curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-			@curl_setopt($ch, CURLOPT_BUFFERSIZE, 1000);
-			@curl_setopt($ch, CURLOPT_USERAGENT, 'uTorrent/1820');
+        return array('tracker' => $http_host, 'seeders' => $retd['seeders'], 'leechers' => $retd['leechers'], 'state'=> 'ok', 'method' => "$scheme:$method", 'remote_method' => 'socket');
 
-			$result = @curl_exec($ch);
-			@curl_close($ch);
-		}
-		$remote_method = 'curl';
-	} 	elseif ( function_exists('fsockopen') ){
-		if ($fp = fsockopen($http_host, preg_replace("#[\D]#i", "", $http_port), $errno, $errstr, 3)) {
-			$h  = "GET ".$http_path.($http_params ? '?'.$http_params : '')." HTTP/1.0\r\n";
-			$h .= "Host: {$http_host}\r\n";
-			$h .= "Connection: close\r\n";
-			$h .= "User-Agent: uTorrent/1820\r\n\r\n";
-			fputs($fp, $h);
-			$buff = '';
-			while (!feof($fp)) {
-				$buff .= fgets($fp, 128);
-			}
-			fclose($fp);
-			if ($buff) {
-				$data = explode("\r\n\r\n", $buff);
-				$result = $data[1];
-			}
-		}
-		$remote_method = 'socket';
-	}
-	elseif ( function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1 ) {
-		$context = @stream_context_create($opts);
-		$result = @file_get_contents($req_uri , false, $context);
-		$remote_method = 'file';
-	}
-	if (!$result)
-	{
-		if ($method=='scrape')
-		return get_remote_peers($urlorig, $info_hash, "announce"); else
-		return array('tracker' => $http_host, 'state' => 'failed:no_benc_result_or_timeout', 'method' => $method, 'remote_method' => $remote_method);
+    }
 
-	}
+    $req_uri = $scheme.'://'.$http_host.':'.$http_port.$http_path.($http_params ? '?'.$http_params : '');
+
+    if ($scheme=='udp'&&$method=='announce') {
+        $transaction_id = mt_rand(0,65535);
+        $fp = @fsockopen($scheme.'://'.$http_host, $http_port, $errno, $errstr); //sockets only
+        if(!$fp) return array('tracker' => $http_host, 'state' => 'failed:timeout', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        stream_set_timeout($fp, 3);
+
+        $current_connid = "\x00\x00\x04\x17\x27\x10\x19\x80";
+
+        //Connection request
+        $packet = $current_connid . pack("N", 0) . pack("N", $transaction_id);
+        //var_dump($packet);
+        fwrite($fp,$packet);
+
+        //Connection response
+        $ret = fread($fp, 16);
+
+        if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
+        if(strlen($ret) < 16){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
+        $retd = unpack("Naction/Ntransid",$ret);
+        if($retd['action'] != 0 || $retd['transid'] != $transaction_id){
+            return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        }
+        $current_connid = substr($ret,8,8);
+        //Announce request
+
+        $downloaded = "\x30\x30\x30\x30\x30\x30\x30\x30";
+        $left = $downloaded;
+        $uploaded = $downloaded;
+        $packet = $current_connid . pack("N", 1) . pack("N", $transaction_id) . pack('H*',$info_hash). pack('H*','ee3eb1acec1dc7adc73eda16d05a495bea1ddab1').$downloaded.$left.$uploaded.pack("N", 2).pack("N", ip2long($_SERVER['SERVER_ADDR'])).pack("N", 69).pack("N", 500).pack("N", rand(0,65535));
+
+        fwrite($fp,$packet);
+
+        //Announce response
+        $readlength = 20;//8 + (12);
+        $ret = fread($fp, $readlength);
+
+        if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
+        if(strlen($ret) < 20){ array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
+        $retd = unpack("Naction/Ntransid",$ret);
+        // Todo check for error string if response = 3
+        if($retd['action'] != 2 || $retd['transid'] != $transaction_id){
+            array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        }
+        if(strlen($ret) < $readlength){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
+
+        $index = 8;
+        $retd = unpack("Nleechers/Nseeders",substr($ret,$index,8));
+
+        return array('tracker' => $http_host, 'seeders' => $retd['seeders'], 'leechers' => $retd['leechers'], 'state'=> 'ok', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+
+    }
+    elseif ( function_exists('curl_init') ) {
+        if ($ch = @curl_init()) {
+            @curl_setopt($ch, CURLOPT_URL, $req_uri);
+            @curl_setopt($ch, CURLOPT_PORT, $http_port);
+            @curl_setopt($ch, CURLOPT_HEADER, false);
+            @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            @curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            @curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+            @curl_setopt($ch, CURLOPT_BUFFERSIZE, 1000);
+            @curl_setopt($ch, CURLOPT_USERAGENT, 'uTorrent/1820');
+
+            $result = @curl_exec($ch);
+            @curl_close($ch);
+        }
+        $remote_method = 'curl';
+    } 	elseif ( function_exists('fsockopen') ){
+        if ($fp = fsockopen($http_host, preg_replace("#[\D]#i", "", $http_port), $errno, $errstr, 3)) {
+            $h  = "GET ".$http_path.($http_params ? '?'.$http_params : '')." HTTP/1.0\r\n";
+            $h .= "Host: {$http_host}\r\n";
+            $h .= "Connection: close\r\n";
+            $h .= "User-Agent: uTorrent/1820\r\n\r\n";
+            fputs($fp, $h);
+            $buff = '';
+            while (!feof($fp)) {
+                $buff .= fgets($fp, 128);
+            }
+            fclose($fp);
+            if ($buff) {
+                $data = explode("\r\n\r\n", $buff);
+                $result = $data[1];
+            }
+        }
+        $remote_method = 'socket';
+    }
+    elseif ( function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1 ) {
+        $context = @stream_context_create($opts);
+        $result = @file_get_contents($req_uri , false, $context);
+        $remote_method = 'file';
+    }
+    if (!$result)
+    {
+        if ($method=='scrape')
+            return get_remote_peers($urlorig, $info_hash, "announce"); else
+            return array('tracker' => $http_host, 'state' => 'failed:no_benc_result_or_timeout', 'method' => "$scheme:$method", 'remote_method' => $remote_method);
+
+    }
 
 
-	//var_dump($method);
-	$resulttemp=$result;
-	$result = @bdec($result);
+    //var_dump($method);
+    $resulttemp=$result;
+    $result = @bdec($result);
 
-	if (!is_array($result)) return array('tracker' => $http_host, 'state' => 'failed:unable_to_bdec:'.$resulttemp, 'method' => $method, 'remote_method' => $remote_method);
-	unset($resulttemp);
-	//    print('<pre>'); var_dump($result);
-	if ($method == 'scrape') {
+    if (!is_array($result)) return array('tracker' => $http_host, 'state' => 'failed:unable_to_bdec:'.$resulttemp, 'method' => "$scheme:$method", 'remote_method' => $remote_method);
+    unset($resulttemp);
+    //    print('<pre>'); var_dump($result);
+    if ($method == 'scrape') {
 
-		if ($result['value']['files']['value']) {
-			$peersarray = @array_shift($result['value']['files']['value']);
-			return array('tracker' => $http_host, 'seeders' => $peersarray['value']['complete']['value'], 'leechers' => $peersarray['value']['incomplete']['value'], 'state' => check_fail($result), 'method' => $method, 'remote_method' => $remote_method);
-		} else return get_remote_peers($urlorig, $info_hash, "announce");
-	}
+        if ($result['value']['files']['value']) {
+            $peersarray = @array_shift($result['value']['files']['value']);
+            return array('tracker' => $http_host, 'seeders' => $peersarray['value']['complete']['value'], 'leechers' => $peersarray['value']['incomplete']['value'], 'state' => check_fail($result), 'method' => "$scheme:$method", 'remote_method' => $remote_method);
+        } else return get_remote_peers($urlorig, $info_hash, "announce");
+    }
 
-	if($method == 'announce') {
-		return array('tracker' => $http_host, 'seeders' => (is_array($result['value']['peers']['value'])?count($result['value']['peers']['value']):(strlen($result['value']['peers']['value'])/6)), 'leechers' => 0, 'state'=> check_fail($result), 'method' => $method, 'remote_method' => $remote_method);
-	}
+    if($method == 'announce') {
+        return array('tracker' => $http_host, 'seeders' => (is_array($result['value']['peers']['value'])?count($result['value']['peers']['value']):(strlen($result['value']['peers']['value'])/6)), 'leechers' => 0, 'state'=> check_fail($result), 'method' => "$scheme:$method", 'remote_method' => $remote_method);
+    }
 
 }
 
