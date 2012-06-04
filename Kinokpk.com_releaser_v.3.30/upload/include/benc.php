@@ -557,13 +557,12 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
         $ret = fread($fp, $readlength);
 
         if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
-        if(strlen($ret) < 20){ array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
+        if(strlen($ret) < $readlength){ array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
         $retd = unpack("Naction/Ntransid",$ret);
         // Todo check for error string if response = 3
         if($retd['action'] != 2 || $retd['transid'] != $transaction_id){
             array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => "$scheme:$method", 'remote_method' => 'socket');
         }
-        if(strlen($ret) < $readlength){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
 
         $index = 8;
         $retd = unpack("Nleechers/Nseeders",substr($ret,$index,8));
