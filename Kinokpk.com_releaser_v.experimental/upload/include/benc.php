@@ -20,11 +20,11 @@ if(!defined("IN_ANNOUNCE") && !defined("IN_TRACKER")) die("Direct access to this
  * @return string Converted string
  */
 function hex($string){
-	$hex='';
-	for ($i=0; $i < strlen($string); $i++){
-		$hex .= dechex(ord($string[$i]));
-	}
-	return $hex;
+    $hex='';
+    for ($i=0; $i < strlen($string); $i++){
+        $hex .= dechex(ord($string[$i]));
+    }
+    return $hex;
 }
 
 /**
@@ -35,8 +35,8 @@ function hex($string){
  * @return string
  */
 function make_magnet($info_hash,$filename,$trackers){
-	if (is_array($trackers)) $trackers = implode('&tr=',array_map('urlencode',$trackers)); else $trackers = urlencode($trackers);
-	return 'magnet:?xt=urn:btih:'.$info_hash.'&dn='.urlencode($filename).'&tr='.$trackers;
+    if (is_array($trackers)) $trackers = implode('&tr=',array_map('urlencode',$trackers)); else $trackers = urlencode($trackers);
+    return 'magnet:?xt=urn:btih:'.$info_hash.'&dn='.urlencode($filename).'&tr='.$trackers;
 
 }
 
@@ -49,8 +49,8 @@ function make_magnet($info_hash,$filename,$trackers){
  * @return string
  */
 function make_dc_magnet($tiger_hash,$filename,$filesize,$hubs){
-	if (is_array($hubs)) $hubs = implode('&xs=',array_map('urlencode',$hubs)); else $hubs = urlencode($hubs);
-	return 'magnet:?xt=urn:tree:tiger:'.$tiger_hash.'&xl='.$filesize.'&dn='.urlencode($filename).'&xs='.$hubs;
+    if (is_array($hubs)) $hubs = implode('&xs=',array_map('urlencode',$hubs)); else $hubs = urlencode($hubs);
+    return 'magnet:?xt=urn:tree:tiger:'.$tiger_hash.'&xl='.$filesize.'&dn='.urlencode($filename).'&xs='.$hubs;
 
 }
 
@@ -62,31 +62,31 @@ function make_dc_magnet($tiger_hash,$filename,$filesize,$hubs){
  * @return array Array of retrackers or empty array if no retrackers present
  */
 function get_retrackers($all = false, $table = 'retrackers') {
-	global  $IPCHECK, $REL_DB;
-	$ip = getip();
-	$res = $REL_DB->query("SELECT announce_url, mask FROM $table ORDER BY sort ASC");
-	while ($row = mysql_fetch_assoc($res)) {
-		$masks = explode(',',$row['mask']);
-		foreach ($masks as $mask)
-		$rtarray[] = array('announce_url'=>$row['announce_url'],'mask'=>$mask);
-		if ($all) $return[] = $row['announce_url'];
-	}
+    global  $IPCHECK, $REL_DB;
+    $ip = getip();
+    $res = $REL_DB->query("SELECT announce_url, mask FROM $table ORDER BY sort ASC");
+    while ($row = mysql_fetch_assoc($res)) {
+        $masks = explode(',',$row['mask']);
+        foreach ($masks as $mask)
+            $rtarray[] = array('announce_url'=>$row['announce_url'],'mask'=>$mask);
+        if ($all) $return[] = $row['announce_url'];
+    }
 
-	if (!$rtarray) return array();
+    if (!$rtarray) return array();
 
-	if ($all) return $return;
+    if ($all) return $return;
 
-	foreach ($rtarray as $retracker) {
+    foreach ($rtarray as $retracker) {
 
-		if (!empty($retracker['mask'])) {
-			$RTCHECK = new IPAddressSubnetSniffer(array($retracker['mask']));
+        if (!empty($retracker['mask'])) {
+            $RTCHECK = new IPAddressSubnetSniffer(array($retracker['mask']));
 
-			if ($RTCHECK->ip_is_allowed($ip)) $retrackers[] = $retracker['announce_url'];
-		}
-		else $retrackers[] = $retracker['announce_url'];
-	}
+            if ($RTCHECK->ip_is_allowed($ip)) $retrackers[] = $retracker['announce_url'];
+        }
+        else $retrackers[] = $retracker['announce_url'];
+    }
 
-	if ($retrackers) return $retrackers; else return array();
+    if ($retrackers) return $retrackers; else return array();
 }
 
 /**
@@ -98,15 +98,15 @@ function get_retrackers($all = false, $table = 'retrackers') {
  * @see bdec_dict()
  */
 function dict_get($d, $k, $t) {
-	if ($d["type"] != "dictionary")
-	print("not a dictionary");
-	$dd = $d["value"];
-	if (!isset($dd[$k]))
-	return;
-	$v = $dd[$k];
-	if ($v["type"] != $t)
-	print("invalid dictionary entry type");
-	return $v["value"];
+    if ($d["type"] != "dictionary")
+        print("not a dictionary");
+    $dd = $d["value"];
+    if (!isset($dd[$k]))
+        return;
+    $v = $dd[$k];
+    if ($v["type"] != $t)
+        print("invalid dictionary entry type");
+    return $v["value"];
 }
 
 /**
@@ -116,28 +116,28 @@ function dict_get($d, $k, $t) {
  * @return Ambigous <multitype:, unknown> Undocumented
  */
 function dict_check($d, $s) {
-	if ($d["type"] != "dictionary")
-	print("not a dictionary");
-	$a = explode(":", $s);
-	$dd = $d["value"];
-	$ret = array();
-	foreach ($a as $k) {
-		unset($t);
-		if (preg_match('/^(.*)\((.*)\)$/', $k, $m)) {
-			$k = $m[1];
-			$t = $m[2];
-		}
-		if (!isset($dd[$k]))
-		print("dictionary is missing key(s)");
-		if (isset($t)) {
-			if ($dd[$k]["type"] != $t)
-			print("invalid entry in dictionary");
-			$ret[] = $dd[$k]["value"];
-		}
-		else
-		$ret[] = $dd[$k];
-	}
-	return $ret;
+    if ($d["type"] != "dictionary")
+        print("not a dictionary");
+    $a = explode(":", $s);
+    $dd = $d["value"];
+    $ret = array();
+    foreach ($a as $k) {
+        unset($t);
+        if (preg_match('/^(.*)\((.*)\)$/', $k, $m)) {
+            $k = $m[1];
+            $t = $m[2];
+        }
+        if (!isset($dd[$k]))
+            print("dictionary is missing key(s)");
+        if (isset($t)) {
+            if ($dd[$k]["type"] != $t)
+                print("invalid entry in dictionary");
+            $ret[] = $dd[$k]["value"];
+        }
+        else
+            $ret[] = $dd[$k];
+    }
+    return $ret;
 }
 
 /**
@@ -150,21 +150,21 @@ function dict_check($d, $s) {
  * @see benc_dict()
  */
 function benc($obj) {
-	if (!is_array($obj) || !isset($obj["type"]) || !isset($obj["value"]))
-	return;
-	$c = $obj["value"];
-	switch ($obj["type"]) {
-		case "string":
-			return benc_str($c);
-		case "integer":
-			return benc_int($c);
-		case "list":
-			return benc_list($c);
-		case "dictionary":
-			return benc_dict($c);
-		default:
-			return;
-	}
+    if (!is_array($obj) || !isset($obj["type"]) || !isset($obj["value"]))
+        return;
+    $c = $obj["value"];
+    switch ($obj["type"]) {
+        case "string":
+            return benc_str($c);
+        case "integer":
+            return benc_int($c);
+        case "list":
+            return benc_list($c);
+        case "dictionary":
+            return benc_dict($c);
+        default:
+            return;
+    }
 }
 /**
  * Binary encodes a string
@@ -172,7 +172,7 @@ function benc($obj) {
  * @return string Encoded string
  */
 function benc_str($s) {
-	return strlen($s) . ":$s";
+    return strlen($s) . ":$s";
 }
 /**
  * Binary encodes an integer
@@ -180,7 +180,7 @@ function benc_str($s) {
  * @return string Encoded Integer
  */
 function benc_int($i) {
-	return "i" . $i . "e";
+    return "i" . $i . "e";
 }
 /**
  * Binary encodes a list
@@ -188,12 +188,12 @@ function benc_int($i) {
  * @return string Encoded list
  */
 function benc_list($a) {
-	$s = "l";
-	foreach ($a as $e) {
-		$s .= benc($e);
-	}
-	$s .= "e";
-	return $s;
+    $s = "l";
+    foreach ($a as $e) {
+        $s .= benc($e);
+    }
+    $s .= "e";
+    return $s;
 }
 
 /**
@@ -203,16 +203,16 @@ function benc_list($a) {
  * @see benc() benc_str()
  */
 function benc_dict($d) {
-	$s = "d";
-	$keys = array_keys($d);
-	sort($keys);
-	foreach ($keys as $k) {
-		$v = $d[$k];
-		$s .= benc_str($k);
-		$s .= benc($v);
-	}
-	$s .= "e";
-	return $s;
+    $s = "d";
+    $keys = array_keys($d);
+    sort($keys);
+    foreach ($keys as $k) {
+        $v = $d[$k];
+        $s .= benc_str($k);
+        $s .= benc($v);
+    }
+    $s .= "e";
+    return $s;
 }
 /**
  * Binary decodes a torrent file
@@ -221,10 +221,10 @@ function benc_dict($d) {
  * @see bdec()
  */
 function bdec_file($f) {
-	$f = file_get_contents($f);
-	if (!$f)
-	return;
-	return bdec($f);
+    $f = file_get_contents($f);
+    if (!$f)
+        return;
+    return bdec($f);
 }
 /**
  * Binary decodes a Value
@@ -232,31 +232,31 @@ function bdec_file($f) {
  * @return array Decoded value
  */
 function bdec($s) {
-	if (preg_match('/^(\d+):/', $s, $m)) {
-		$l = $m[1];
-		$pl = strlen($l) + 1;
-		$v = substr($s, $pl, $l);
-		$ss = substr($s, 0, $pl + $l);
-		if (strlen($v) != $l) return;
-		return array('type' => "string", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
-	}
-	if (preg_match('/^i(-?\d+)e/', $s, $m)) {
-		$v = $m[1];
-		$ss = "i" . $v . "e";
-		if ($v === "-0")
-		return;
-		if ($v[0] == "0" && strlen($v) != 1)
-		return;
-		return array('type' => "integer", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
-	}
-	switch ($s[0]) {
-		case "l":
-			return bdec_list($s);
-		case "d":
-			return bdec_dict($s);
-		default:
-			return;
-	}
+    if (preg_match('/^(\d+):/', $s, $m)) {
+        $l = $m[1];
+        $pl = strlen($l) + 1;
+        $v = substr($s, $pl, $l);
+        $ss = substr($s, 0, $pl + $l);
+        if (strlen($v) != $l) return;
+        return array('type' => "string", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
+    }
+    if (preg_match('/^i(-?\d+)e/', $s, $m)) {
+        $v = $m[1];
+        $ss = "i" . $v . "e";
+        if ($v === "-0")
+            return;
+        if ($v[0] == "0" && strlen($v) != 1)
+            return;
+        return array('type' => "integer", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
+    }
+    switch ($s[0]) {
+        case "l":
+            return bdec_list($s);
+        case "d":
+            return bdec_dict($s);
+        default:
+            return;
+    }
 }
 /**
  * Binary decodes a list
@@ -264,26 +264,26 @@ function bdec($s) {
  * @return array Decoded list
  */
 function bdec_list($s) {
-	if ($s[0] != "l")
-	return;
-	$sl = strlen($s);
-	$i = 1;
-	$v = array();
-	$ss = "l";
-	for (;;) {
-		if ($i >= $sl)
-		return;
-		if ($s[$i] == "e")
-		break;
-		$ret = bdec(substr($s, $i));
-		if (!isset($ret) || !is_array($ret))
-		return;
-		$v[] = $ret;
-		$i += $ret["strlen"];
-		$ss .= $ret["string"];
-	}
-	$ss .= "e";
-	return array('type' => "list", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
+    if ($s[0] != "l")
+        return;
+    $sl = strlen($s);
+    $i = 1;
+    $v = array();
+    $ss = "l";
+    for (;;) {
+        if ($i >= $sl)
+            return;
+        if ($s[$i] == "e")
+            break;
+        $ret = bdec(substr($s, $i));
+        if (!isset($ret) || !is_array($ret))
+            return;
+        $v[] = $ret;
+        $i += $ret["strlen"];
+        $ss .= $ret["string"];
+    }
+    $ss .= "e";
+    return array('type' => "list", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
 }
 /**
  * Binary decodes a dictionary
@@ -291,34 +291,34 @@ function bdec_list($s) {
  * @return array Decoded dictionary
  */
 function bdec_dict($s) {
-	if ($s[0] != "d")
-	return;
-	$sl = strlen($s);
-	$i = 1;
-	$v = array();
-	$ss = "d";
-	for (;;) {
-		if ($i >= $sl)
-		return;
-		if ($s[$i] == "e")
-		break;
-		$ret = bdec(substr($s, $i));
-		if (!isset($ret) || !is_array($ret) || $ret["type"] != "string")
-		return;
-		$k = $ret["value"];
-		$i += $ret["strlen"];
-		$ss .= $ret["string"];
-		if ($i >= $sl)
-		return;
-		$ret = bdec(substr($s, $i));
-		if (!isset($ret) || !is_array($ret))
-		return;
-		$v[$k] = $ret;
-		$i += $ret["strlen"];
-		$ss .= $ret["string"];
-	}
-	$ss .= "e";
-	return array('type' => "dictionary", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
+    if ($s[0] != "d")
+        return;
+    $sl = strlen($s);
+    $i = 1;
+    $v = array();
+    $ss = "d";
+    for (;;) {
+        if ($i >= $sl)
+            return;
+        if ($s[$i] == "e")
+            break;
+        $ret = bdec(substr($s, $i));
+        if (!isset($ret) || !is_array($ret) || $ret["type"] != "string")
+            return;
+        $k = $ret["value"];
+        $i += $ret["strlen"];
+        $ss .= $ret["string"];
+        if ($i >= $sl)
+            return;
+        $ret = bdec(substr($s, $i));
+        if (!isset($ret) || !is_array($ret))
+            return;
+        $v[$k] = $ret;
+        $i += $ret["strlen"];
+        $ss .= $ret["string"];
+    }
+    $ss .= "e";
+    return array('type' => "dictionary", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
 }
 
 /**
@@ -327,20 +327,20 @@ function bdec_dict($s) {
  * @return array|boolean Array of urls on success, false on fail
  */
 function get_announce_urls($dict){
-	if ($dict['value']['announce'] && !$dict['value']['announce-list']) {$anarray[0] = $dict['value']['announce']['value']; return $anarray; }
+    if ($dict['value']['announce'] && !$dict['value']['announce-list']) {$anarray[0] = $dict['value']['announce']['value']; return $anarray; }
 
-	if ($dict['value']['announce-list']) {
+    if ($dict['value']['announce-list']) {
 
-		if (!$dict['value']['announce-list']['value']) return false;
-		foreach ($dict['value']['announce-list']['value'] as $urls) {
-			// Remove retrackers
-			if (!preg_match('/retracker/', $urls['value'][0]['value']))
-			$anarray[] = $urls['value'][0]['value'];
-		}
+        if (!$dict['value']['announce-list']['value']) return false;
+        foreach ($dict['value']['announce-list']['value'] as $urls) {
+            // Remove retrackers
+            if (!preg_match('/retracker/', $urls['value'][0]['value']))
+                $anarray[] = $urls['value'][0]['value'];
+        }
 
-		return $anarray;
+        return $anarray;
 
-	}
+    }
 }
 
 /**
@@ -350,24 +350,24 @@ function get_announce_urls($dict){
  * @return void Uses global $dict
  */
 function put_announce_urls($dict,$anarray){
-	global  $dict, $REL_DB;
-	$liststring = '';
-	unset($dict['value']['announce']);
-	unset($dict['value']['announce-list']);
-	$dict['value']['announce'] = bdec(benc_str($anarray[0]));
+    global  $dict, $REL_DB;
+    $liststring = '';
+    unset($dict['value']['announce']);
+    unset($dict['value']['announce-list']);
+    $dict['value']['announce'] = bdec(benc_str($anarray[0]));
 
 
-	if (is_array($anarray))
-	foreach ($anarray as $announce) {
-		$announces[] = array('type' => 'list', 'value' => array(bdec(benc_str($announce))), 'strlen' => strlen("l".$announce."e"), 'string' => "l".$announce."e");
-		$liststring .= "l".$announce."e";
-	}
-	$dict['value']['announce-list']['type'] = 'list';
-	$dict['value']['announce-list']['value'] = $announces;
+    if (is_array($anarray))
+        foreach ($anarray as $announce) {
+            $announces[] = array('type' => 'list', 'value' => array(bdec(benc_str($announce))), 'strlen' => strlen("l".$announce."e"), 'string' => "l".$announce."e");
+            $liststring .= "l".$announce."e";
+        }
+    $dict['value']['announce-list']['type'] = 'list';
+    $dict['value']['announce-list']['value'] = $announces;
 
 
-	$dict['value']['announce-list']['string'] = "l".$liststring."e";
-	$dict['value']['announce-list']['strlen'] = strlen($dict['value']['announce-list']['string']);
+    $dict['value']['announce-list']['string'] = "l".$liststring."e";
+    $dict['value']['announce-list']['strlen'] = strlen($dict['value']['announce-list']['string']);
 
 }
 
@@ -377,30 +377,30 @@ function put_announce_urls($dict,$anarray){
  * @return int Port
  */
 function getUrlPort($urlInfo) {
-	if( isset($urlInfo['port']) ) {
-		$port = $urlInfo['port'];
-	} else { // no port specified; get default port
-		if (isset($urlInfo['scheme'])) {
-			switch($urlInfo['scheme']) {
-				case 'http':
-					$port = 80; // default for http
-					break;
-				case 'udp': //default for udp
-					$port = 80;
-					break;
-				case 'https':
-					$port = 443; // default for https
-					break;
+    if( isset($urlInfo['port']) ) {
+        $port = $urlInfo['port'];
+    } else { // no port specified; get default port
+        if (isset($urlInfo['scheme'])) {
+            switch($urlInfo['scheme']) {
+                case 'http':
+                    $port = 80; // default for http
+                    break;
+                case 'udp': //default for udp
+                    $port = 80;
+                    break;
+                case 'https':
+                    $port = 443; // default for https
+                    break;
 
-				default:
-					$port = 0; // error; unsupported scheme
-					break;
-			}
-		} else {
-			$port = 80; // error; unknown scheme, using default 80 port
-		}
-	}
-	return $port;
+                default:
+                    $port = 0; // error; unsupported scheme
+                    break;
+            }
+        } else {
+            $port = 80; // error; unknown scheme, using default 80 port
+        }
+    }
+    return $port;
 }
 
 /**
@@ -409,7 +409,7 @@ function getUrlPort($urlInfo) {
  * @return string String to be used in remote tracker statistics
  */
 function check_fail($result) {
-	if ($result['value']['failure reason']['value']) return 'failed:'.$result['value']['failure reason']['value']; else return 'ok';
+    if ($result['value']['failure reason']['value']) return 'failed:'.$result['value']['failure reason']['value']; else return 'ok';
 }
 
 /**
@@ -473,6 +473,8 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
     )
     );
 
+    $req_uri = $scheme.'://'.$http_host.':'.$http_port.$http_path.($http_params ? '?'.$http_params : '');
+
     if ($scheme=='udp'&&$method=='scrape') {
 
         $transaction_id = mt_rand(0,65535);
@@ -518,9 +520,7 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 
     }
 
-    $req_uri = $scheme.'://'.$http_host.':'.$http_port.$http_path.($http_params ? '?'.$http_params : '');
-
-    if ($scheme=='udp'&&$method=='announce') {
+    elseif ($scheme=='udp'&&$method=='announce') {
         $transaction_id = mt_rand(0,65535);
         $fp = @fsockopen($scheme.'://'.$http_host, $http_port, $errno, $errstr); //sockets only
         if(!$fp) return array('tracker' => $http_host, 'state' => 'failed:timeout', 'method' => "$scheme:$method", 'remote_method' => 'socket');
