@@ -287,7 +287,7 @@ ALTER TABLE `torrents`
 
 /* Alter table in target */
 ALTER TABLE `trackers` 
-	ADD COLUMN `method` varchar(10)  COLLATE cp1251_general_ci NOT NULL DEFAULT 'local' after `state`, 
+	ADD COLUMN `method` varchar(15)  COLLATE cp1251_general_ci NOT NULL DEFAULT 'local' after `state`,
 	ADD COLUMN `remote_method` varchar(10)  COLLATE cp1251_general_ci NOT NULL DEFAULT 'N/A' after `method`, 
 	CHANGE `num_failed` `num_failed` int(5) unsigned   NOT NULL DEFAULT '0' after `remote_method`, ENGINE=InnoDB; 
 

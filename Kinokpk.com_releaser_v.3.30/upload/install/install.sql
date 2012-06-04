@@ -1165,7 +1165,7 @@ CREATE TABLE IF NOT EXISTS `trackers` (
   `leechers` int(5) unsigned NOT NULL DEFAULT '0',
   `lastchecked` int(10) unsigned NOT NULL DEFAULT '0',
   `state` varchar(300) NOT NULL,
-  `method` varchar(10) NOT NULL DEFAULT 'local',
+  `method` varchar(15) NOT NULL DEFAULT 'local',
   `remote_method` varchar(10) NOT NULL DEFAULT 'N/A',
   `num_failed` int(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
