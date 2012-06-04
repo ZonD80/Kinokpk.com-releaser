@@ -307,7 +307,7 @@ elseif ($action == "sendmessage") {
 
 		$res = $REL_DB->query ( "SELECT username FROM users WHERE id=" . $msga ["sender"] );
 		$usra = mysql_fetch_assoc ( $res );
-		$body .= "<blockquote>" . format_comment ( $msga ['msg'] ) . "</blockquote><cite>$usra[username]</cite><hr /><br /><br />";
+		$body .= "{$REL_LANG->_('%s wrote:',$usra[username])}<br/>" . format_comment ( $msga ['msg'] ) . "<hr /><br />";
 		// Change
 		if (!preg_match("/^Re\(([0-9]+)\)\:/",$msga ['subject']))
 
@@ -773,7 +773,7 @@ elseif ($action == "forward") {
 			$from_name = make_user_link($from2);
 		}
 
-		$body = "{$REL_LANG->_('Original message')}:<hr /><blockquote>" . format_comment ( $message ['msg'] . "</blockquote><cite>{$from2['username']}</cite><hr /><br /><br />" );
+		$body = "{$REL_LANG->_('%s wrote:',$from2['username'])}<br />" . format_comment ( $message ['msg'] . "<hr /><br />" );
 
 		$REL_TPL->stdhead( $subject );
 		?>
@@ -790,7 +790,7 @@ elseif ($action == "forward") {
 		<TD><INPUT type="text" name="to" value="<?php print $REL_LANG->_('Enter username'); ?>" onclick="javascript:$(this).val('');" size="83"></TD>
 	</TR>
 	<TR>
-		<TD><?php print $REL_LANG->_('Original sender'); ?>:</TD>
+		<TD><?php print $REL_LANG->_('Will be sent from'); ?>:</TD>
 		<TD><?php print $orig_name; ?></TD>
 	</TR>
 	<TR>
@@ -803,7 +803,7 @@ elseif ($action == "forward") {
 	</TR>
 	<TR>
 		<TD><?php print $REL_LANG->_('Message'); ?>:</TD>
-		<TD><?php print ( textbbcode ( "msg" ) ); ?></TD>
+		<TD><?php print ( textbbcode ( "msg",$body ) ); ?></TD>
 	</TR>
 	<TR>
 		<TD colspan="2" align="center"><?php print $REL_LANG->_('Save message'); ?> <INPUT
@@ -860,7 +860,7 @@ elseif ($action == "forward") {
 			$from = $from ['username'];
 		}
 		$body = ( string ) $_POST ['msg'];
-		$body .= "Оригинальное сообщение:<hr /><blockquote>" . $message ['msg'] . "</blockquote><cite>{$from}</cite><hr /><br /><br />";
+		$body .= "{$REL_LANG->_('%s wrote:'.$from)}<br />" . $message ['msg'] . "<hr /><br />";
 		$save = ( int ) $_POST ['save'];
 		if ($save) {
 			$save = 1;
