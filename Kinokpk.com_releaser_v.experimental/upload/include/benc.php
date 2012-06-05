@@ -490,7 +490,7 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 
         //Connection response
         $ret = fread($fp, 16);
-        if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
+        if(strlen($ret) < 1){ return get_remote_peers($urlorig, $info_hash, "announce"); }
         if(strlen($ret) < 16){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
         $retd = unpack("Naction/Ntransid",$ret);
         if($retd['action'] != 0 || $retd['transid'] != $transaction_id){
@@ -504,7 +504,7 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
         //Scrape response
         $readlength = 20;//8 + (12);
         $ret = fread($fp, $readlength);
-        if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
+        if(strlen($ret) < 1){ return get_remote_peers($urlorig, $info_hash, "announce"); }
         if(strlen($ret) < 8){ array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
         $retd = unpack("Naction/Ntransid",$ret);
         // Todo check for error string if response = 3
