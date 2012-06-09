@@ -57,9 +57,8 @@ $REL_TPL->begin_main_frame();
 		<td><a href="<?=$REL_SEO->make_link('pollsadmin');?>"><?=$REL_LANG->_("Polls administration");?></a></td>
 	</tr>
 	<tr>
-		<td><a href="<?=$REL_SEO->make_link('mysqlstats');?>"><?=$REL_LANG->_("MySQL status");?></a></td>
 		<td><a href="<?=$REL_SEO->make_link('clearcache');?>"><?=$REL_LANG->_("Clear caches");?></a></td>
-		<td colspan="2"><a href="<?=$REL_SEO->make_link('reltemplatesadmin');?>"><?=$REL_LANG->_("Release's templates adminsitration");?></a></td>
+		<td colspan="3"><a href="<?=$REL_SEO->make_link('reltemplatesadmin');?>"><?=$REL_LANG->_("Release's templates adminsitration");?></a></td>
 	</tr>
 	<tr>
 		<td><a href="<?=$REL_SEO->make_link('news');?>"><?=$REL_LANG->_("Add a news");?></a>

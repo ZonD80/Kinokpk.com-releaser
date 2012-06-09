@@ -147,8 +147,6 @@ $res = $REL_DB->query("(SELECT friends.friendid AS friend, 0 AS init, friends.id
 
 print ('<div id="users-table">');
 print ("<br />");
-//print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-//print("<tr><td class=\"colhead\">Аффка</td> <td class=\"colhead\" align=\"left\">Имя</td><td class=\"colhead\">Зарегестрирован</td><td class=\"colhead\">Последний вход</td><td class=\"colhead\">Рейтинг</td><td class=\"colhead\">Пол</td><td class=\"colhead\" align=\"left\">Уровень</td><td class=\"colhead\">Страна</td><td class=\"colhead\">Подтвержден</td><td class=\"colhead\">Действия</td></tr>\n");
 while ($arr = mysql_fetch_assoc($res)) {
 
 	if ($arr['country'] > 0) {
@@ -157,8 +155,8 @@ while ($arr = mysql_fetch_assoc($res)) {
 	else
 	$country = "";
 
-	if ($arr["gender"] == "1") $gender = "<img style=\"border:none;\" src=\"pic/male.gif\" alt=\"Парень\" title=\"Парень\" style=\"margin-left: 4pt\">";
-	elseif ($arr["gender"] == "2") $gender = "<img style=\"border:none;\" src=\"pic/female.gif\" alt=\"Девушка\" title=\"Девушка\" style=\"margin-left: 4pt\">";
+	if ($arr["gender"] == "1") $gender = "<img style=\"border:none;\" src=\"pic/male.gif\" alt=\"{$REL_LANG->_('Male')}\" title=\"{$REL_LANG->_('Male')}\" style=\"margin-left: 4pt\">";
+	elseif ($arr["gender"] == "2") $gender = "<img style=\"border:none;\" src=\"pic/female.gif\" alt=\"{$REL_LANG->_('Female')}\" title=\"{$REL_LANG->_('Female')}\" style=\"margin-left: 4pt\">";
 	else $gender = "<div align=\"center\"><b>?</b></div>";
 
 	print("<div id=\"relgroups\" class=\"relgroups_table\">
@@ -171,24 +169,24 @@ while ($arr = mysql_fetch_assoc($res)) {
 	print("</a></div>
 			<div class=\"relgroups_name\">
 				<dl class=\"clearfix\" style=\"align:left;\">
-				<dt>Ник</dt><dd><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',translit($arr["username"]))."\"><b>".get_user_class_color($arr["class"], $arr["username"]).$gender.get_user_icons($arr).$country."</b></a></dd>
-				<dt>Рейтинг</dt><dd>".ratearea($arr['ratingsum'],$arr['friend'],'users', $CURUSER['id'])."</dd>
-				<dt>Уровень</dt><dd>" . get_user_class_name($arr["class"]) . "</dd>
-				<dt>Когда был</dt><dd>".(time()-$arr['last_access']<300?$REL_LANG->_("Online"):mkprettytime($arr['last_access']))."</dd>
-				<dt>Зарегестрирован</dt><dd>".mkprettytime($arr['added'])."</dd>
+				<dt>{$REL_LANG->_('Username')}</dt><dd><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',translit($arr["username"]))."\"><b>".get_user_class_color($arr["class"], $arr["username"]).$gender.get_user_icons($arr).$country."</b></a></dd>
+				<dt>{$REL_LANG->_('Rating')}</dt><dd>".ratearea($arr['ratingsum'],$arr['friend'],'users', $CURUSER['id'])."</dd>
+				<dt>{$REL_LANG->_('Class')}</dt><dd>" . get_user_class_name($arr["class"]) . "</dd>
+				<dt>{$REL_LANG->_('Last seen')}</dt><dd>".(time()-$arr['last_access']<300?$REL_LANG->_("Online"):mkprettytime($arr['last_access']))."</dd>
+				<dt>{$REL_LANG->_('Registered at')}</dt><dd>".mkprettytime($arr['added'])."</dd>
 				</dl>
 			 </div>
 			 <div id=\"input\"  class=\"relgroups_input\" >
 				<ul  class=\"relgroups_input\">
-					<li><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',translit($arr["username"]))."\">Просмотр</a></li>
+					<li><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',translit($arr["username"]))."\">{$REL_LANG->_('View')}</a></li>
 					");
-	if ($state<>'p')print ("<li><a href=\"".$REL_SEO->make_link('friends','action','deny','id',$arr['id'])."\">".$REL_LANG->say_by_key('delete_from_friends')."</a></li><li><a href=\"".$REL_SEO->make_link('present','id',$arr['friend'])."\"><span>Подарок Другу</span><img src=\"pic/presents/present.gif\" title=\"Подарить подарок\" style=\"margin-top: -6px; border:none; width:12px; height:12px;\" /> </a></li><li>");
+	if ($state<>'p')print ("<li><a href=\"".$REL_SEO->make_link('friends','action','deny','id',$arr['id'])."\">".$REL_LANG->say_by_key('delete_from_friends')."</a></li><li><a href=\"".$REL_SEO->make_link('present','id',$arr['friend'])."\"><span>{$REL_LANG->_('Give a gift')}</span><img src=\"pic/presents/present.gif\" title=\"{$REL_LANG->_('Give a gift')}\" style=\"margin-top: -6px; border:none; width:12px; height:12px;\" /> </a></li><li>");
 	elseif ($state=='p' && !$arr['init']) print('<li>'.$REL_LANG->say_by_key('friend_pending').'</li>');
 	else print ("<li><a href=\"".$REL_SEO->make_link('friends','action','confirm','id',$arr['id'])."\">".$REL_LANG->say_by_key('confirm')."</a></li>
 			<li><a href=\"".$REL_SEO->make_link('friends','action','deny','id',$arr['id'])."\">".$REL_LANG->say_by_key('delete_on_friends')."</a></li>
 		  ");
 
-	print("<li><a href=\"".$REL_SEO->make_link('message','action','sendmessage','receiver',$arr['friend'])."\">Личное Сообщение</a></li>");
+	print("<li><a href=\"".$REL_SEO->make_link('message','action','sendmessage','receiver',$arr['friend'])."\">{$REL_LANG->_('PM')}</a></li>");
 	print ($arr['init']?"<li>{$REL_LANG->say_by_key('init')}</li>":'');
 
 	print("<ul>

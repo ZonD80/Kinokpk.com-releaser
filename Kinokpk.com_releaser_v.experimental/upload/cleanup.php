@@ -104,13 +104,13 @@ if ($torrents) {
 
  */
 
-//Удаляем системные прочтенные сообщения старше n дней
-$secs_system = $REL_CRON['pm_delete_sys_days']*86400; // Количество дней
-$dt_system = time() - $secs_system; // Сегодня минус количество дней
+// delete old system and user messages
+$secs_system = $REL_CRON['pm_delete_sys_days']*86400;
+$dt_system = time() - $secs_system;
 $REL_DB->query("DELETE FROM messages WHERE sender = 0 AND archived = 0 AND archived_receiver = 0 AND unread = 0 AND added < $dt_system");
-//Удаляем ВСЕ прочтенные сообщения старше n дней
-$secs_all = $REL_CRON['pm_delete_user_days']*86400; // Количество дней
-$dt_all = time() - $secs_all; // Сегодня минус количество дней
+
+$secs_all = $REL_CRON['pm_delete_user_days']*86400;
+$dt_all = time() - $secs_all;
 $REL_DB->query("DELETE FROM messages WHERE unread = 0 AND archived = 0 AND archived_receiver = 0 AND added < $dt_all");
 
 
@@ -124,7 +124,7 @@ if (mysql_num_rows($res) > 0) {
 
 	}
 }
-//отключение предупрежденных пользователей (у тех у кого 5 звезд)
+//disabled 5 times warned users
 /*$res = $REL_DB->query("SELECT id, username, modcomment FROM users WHERE num_warned > 4 AND enabled = 1 ");
  $num = mysql_num_rows($res);
  while ($arr = mysql_fetch_assoc($res)) {

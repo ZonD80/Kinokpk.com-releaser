@@ -29,23 +29,42 @@ INIT();
 
 //loggedinorreturn();
 
-$REL_TPL->stdhead("Правила");
+$REL_TPL->stdhead($REL_LANG->_('Copyrights'));
 
 $REL_TPL->begin_main_frame();
-$REL_TPL->begin_frame("Для правообладателей");
-print(nl2br('Для того, чтобы сообщить о размещении нелицензионного контента на нашем сайте, отправьте соответствующее письмо на
-<div align="center"><img src="pic/abusemail.gif"/></div>
-<b>ВНИМАНИЕ!</b> Письма, направленные на какие-либо другие ящики внутри домена не рассматриваются.
-Не забудьте указать, как с вами связаться, представителем какой компании вы являетесь, основание, по которому наш контент считается нелицензионным и т.д. и т.п.
-Мы с удовольствием не ждем ваших писем, но все же перед отправкой хорошо все обдумайте и прочитайте это:
+$REL_TPL->begin_frame($REL_LANG->_('Copyrights'));
+print(nl2br('Kinokpk.com releaser '.RELVERSION.'
+    Copyright (C) 2008-'.date('Y').'  ZonD80, Germani
 
-Предупреждение! Информация, расположенная на данном сервере, предназначена исключительно для частного использования в образовательных целях и не может быть загружена/перенесена на другой компьютер. Ни владелец сайта, ни хостинг-провайдер, ни любые другие физические или юридические лица не могут нести никакой отвественности за любое использование материалов данного сайта. Входя на сайт, Вы, как пользователь, тем самым подтверждаете полное и безоговорочное согласие со всеми условиями использования. Авторы проекта относятся особо негативно к нелегальному использованию информации, полученной на сайте. Все фильмы, представленные на FTP и HTTP серверах имеют худшее качество и являются рекламой. За фильмы, представленные с помощью Torrent-сети ответственность несут выложившие релиз. Если вам понравился фильм, то вы можете преобрести оригинальную копию в HD качестве у правообладателей.
-Если вы являетесь правообладателем фильма и не хотите, чтобы рекламный фильм был размещен на сайте, напишите администрации сайта. Тоже самое правило применимо к остальным файлам сервера.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-<div align="center">
-Релизер был переписан из <b>TBDev YSE PRE RC 6</b>. Конечная версия движка является собственностью команды Kinokpk.com
-Публичная версия данного релизера обсуждается и разрабатывается в <a target="_blank" href="http://dev.kinokpk.com">Уголке разработчика релизера Kinokpk.com</a></div>
-'));
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see http://www.gnu.org/licenses/.
+
+    In this software included:
+
+    * IP Subnet Caltucaltor class by Jeff Silverman, Copyright 2005, The Johns Hopkins University.
+    * Cache class by Mateusz "MatheW" Wojcik, GPL.
+    * IPBWI forum integration by Matthias Reuter, GNU General Public License v3.
+    * PHPMailer class by Andy Prevost, Marcus Bointon, Jim Jagielski, GNU Lesser General Public License.
+    * Snoopy PHP net client by Monte Ohrt, GNU Lesser General Public License.
+    * FeedGenerator by Mateusz "MatheW" Wojcik, GPL.
+    * Smarty PHP compiling template engine by Monte Ohrt, Uwe Tews, GNU Lesser General Public License.
+    * ZIP class by A. Grandt, GNU LGPL.
+    * Parts of TBDEV tracker engine by TorrentBits, GPLv2.
+    * Parts of Yuna Scatari modifications to TBDEV, GPLv2.
+    * UDP scraper by Johannes Zinnau, Creative Commons Attribution-ShareAlike 3.0 Unported License.
+
+
+	 '));
 $REL_TPL->end_frame();
 $REL_TPL->end_main_frame();
 $REL_TPL->stdfoot();

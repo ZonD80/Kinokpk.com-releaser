@@ -842,10 +842,10 @@ elseif ($action == "forward") {
 
 		$res = $REL_DB->query ( "SELECT id FROM users WHERE LOWER(username)=LOWER(" . sqlesc ( $username ) . ") LIMIT 1" );
 		if (! $res) {
-			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Пользователя, с таким именем не существует." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('There is no user with this username'));
 		}
 		if (mysql_num_rows ( $res ) == 0) {
-			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Пользователя, с таким именем не существует." );
+			$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('There is no user with this username') );
 		}
 
 		$to = mysql_fetch_array ( $res );
@@ -853,7 +853,7 @@ elseif ($action == "forward") {
 
 		// Get Orignal sender's username
 		if ($message ['sender'] == 0) {
-			$from = "Системное";
+			$from = $REL_LANG->_('From system');
 		} else {
 			$res = $REL_DB->query ( "SELECT * FROM users WHERE id=" . sqlesc ( $message ['sender'] ) );
 			$from = mysql_fetch_assoc ( $res );
@@ -873,25 +873,24 @@ elseif ($action == "forward") {
 			if ($from ["acceptpms"] == "friends") {
 				$res2 = $REL_DB->query ( "SELECT * FROM friends WHERE userid=$to AND friendid=" . $CURUSER ["id"] );
 				if (mysql_num_rows ( $res2 ) != 1)
-				$REL_TPL->stderr ( "Отклонено", "Этот пользователь принимает сообщение только из списка своих друзей." );
+				$REL_TPL->stderr ( $REL_LANG->_('Denied'), $REL_LANG->_('This user allows only messages from his(her) friends') );
 			}
 
 			elseif ($from ["acceptpms"] == "no")
-			$REL_TPL->stderr ( "Отклонено", "Этот пользователь не принимает сообщения." );
+			$REL_TPL->stderr ( $REL_LANG->_('Denied'), $REL_LANG->_('This user does not allow private messages') );
 		}
 
 		$pms = $REL_DB->query ( "SELECT SUM(1) FROM messages WHERE (receiver = " . ($receiver ? $receiver : $to) . " AND location=1) OR (sender = " . ($receiver ? $receiver : $to) . " AND saved = 1) GROUP BY messages.id" );
 		$pms = mysql_result ( $pms, 0 );
 		if ($pms >= $REL_CONFIG ['pm_max'])
-		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Ящик личных сообщений получателя заполнен, вы не можете переслать ему сообщение." );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('User mailbox is full. You can not send message.') );
 
 		$REL_DB->query ( "INSERT INTO messages (poster, sender, receiver, added, subject, msg, location, saved) VALUES(" . $CURUSER ["id"] . ", " . $CURUSER ["id"] . ", $to, '" . time () . "', " . sqlesc ( $subject ) . "," . sqlesc ( ($body) ) . ", " . sqlesc ( PM_INBOX ) . ", " . sqlesc ( $save ) . ")" );
-		stdmsg ( "Удачно", "ЛС переслано." );
+		stdmsg ($REL_LANG->_('Successful'), $REL_LANG->_('Private message sent'));
 	}
-} //конец пересылка
+}
 
 
-//начало удаление сообщения
 elseif ($action == "deletemessage") {
 	if (! is_valid_id ( $_GET ["id"] ))
 	$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id') );
@@ -900,10 +899,10 @@ elseif ($action == "deletemessage") {
 	// Delete message
 	$res = $REL_DB->query ( "SELECT * FROM messages WHERE id=" . sqlesc ( $pm_id ) );
 	if (! $res) {
-		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Сообщения с таким ID не существует." );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid ID') );
 	}
 	if (mysql_num_rows ( $res ) == 0) {
-		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Сообщения с таким ID не существует." );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid ID') );
 	}
 	$message = mysql_fetch_assoc ( $res );
 	if ($message ['receiver'] == $CURUSER ['id'] && ! $message ['saved']) {
@@ -916,15 +915,14 @@ elseif ($action == "deletemessage") {
 		$res2 = $REL_DB->query ( "UPDATE messages SET saved=0 WHERE id=" . sqlesc ( $pm_id ) );
 	}
 	if (! $res2) {
-		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Невозможно удалить сообщение." );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Unable to delete message') );
 	}
 	if (mysql_affected_rows () == 0) {
-		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), "Невозможно удалить сообщение." );
+		$REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('Unable to delete message') );
 	} else {
 		safe_redirect($REL_SEO->make_link('message','action','viewmailbox','id',$message['location']));
 		exit ();
 	}
-	//конец удаление сообщения
 }
 //else $REL_TPL->stderr("Access Denied.","Unknown action");
 ?>

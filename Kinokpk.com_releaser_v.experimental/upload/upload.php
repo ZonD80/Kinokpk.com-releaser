@@ -101,7 +101,7 @@ if (mb_strlen($CURUSER['passkey']) != 32) {
 	if(get_privilege('post_releases_to_mainpage',false))
 		tr($REL_LANG->_("Viewing"), "<input type=\"checkbox\" name=\"visible\" value=\"1\" /> {$REL_LANG->_('Seen on main page')}", 1);
 	if (get_privilege('edit_releases',false)) {
-		tr($REL_LANG->say_by_key('golden'), "<input type=checkbox name=free value=\"1\"> ".$REL_LANG->say_by_key('golden_descr'), 1);
+		tr($REL_LANG->_('Golden release'), "<input type=checkbox name=free value=\"1\"> {$REL_LANG->_('Golden release (rating will not decrease on downloading)')}", 1);
 		tr($REL_LANG->_('Important'), "<input type=\"checkbox\" name=\"sticky\" value=\"1\">{$REL_LANG->_('Stick this torrent (it will be on the top always)')}", 1);
 	}
 	tr($REL_LANG->_('Release without torrent'), "<input type=\"checkbox\" name=\"nofile\" value=\"1\">{$REL_LANG->_('This is release without torrent')} ; {$REL_LANG->_('Size')}: <input type=\"text\" name=\"nofilesize\" size=\"20\" /> {$REL_LANG->_('Megabytes')}", 1);

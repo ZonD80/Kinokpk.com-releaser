@@ -22,11 +22,11 @@ if (!pagercheck()) {
 		$REL_DB->query("DELETE FROM polls_votes WHERE vid=$vid");
 
 		$REL_CACHE->clearGroupCache("block-polls");
-		$REL_TPL->stderr($REL_LANG->say_by_key('success'),"Голос удален");
+		$REL_TPL->stderr($REL_LANG->say_by_key('success'),$REL_LANG->_('Vote deleted'));
 	}
 	loggedinorreturn();
 
-	$spbegin = "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\" style=\"height: 15px;\"><div cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\"><ul><li class=\"bottom\" width=\"50%\"><i>Посмотреть голосовавших</i></li></ul></div></div><div class=\"sp-body\" style=\"position:absolute;max-width:485px;\">";
+	$spbegin = "<div class=\"sp-wrap\"><div class=\"sp-head folded clickable\" style=\"height: 15px;\"><div cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\"><ul><li class=\"bottom\" width=\"50%\"><i>{$REL_LANG->_('View votes')}</i></li></ul></div></div><div class=\"sp-body\" style=\"position:absolute;max-width:485px;\">";
 	$spend = "</div></div>";
 
 	if (isset($_GET['vote'])  && ($_SERVER['REQUEST_METHOD'] == 'POST')){
@@ -36,13 +36,13 @@ if (!pagercheck()) {
 
 		$pexprow = $REL_DB->query("SELECT exp FROM polls WHERE id=$pid");
 		list($pexp) = mysql_fetch_array($pexprow);
-		if (!is_null($pexp) && ($pexp < time())) $REL_TPL->stderr($REL_LANG->say_by_key('error'),"Срок действия опроса или вопроса истек, вы не можете голосовать");
+		if (!is_null($pexp) && ($pexp < time())) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('Poll expired. You can not vote'));
 
 
 
 		$votedrow = $REL_DB->query("SELECT sid FROM polls_votes WHERE user=".$CURUSER['id']." AND pid=$pid");
 		list($voted) = mysql_fetch_array($votedrow);
-		if ($voted) $REL_TPL->stderr($REL_LANG->say_by_key('error'),"Вы уже голосовали в этом опросе");
+		if ($voted) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->_('You already voted here'));
 
 		$REL_DB->query("INSERT INTO polls_votes (sid,user,pid) VALUES ($voteid,".$CURUSER['id'].",$pid)");
 
@@ -82,7 +82,7 @@ if (!pagercheck()) {
 	}
 	$pstart = @array_unique($pstart);
 	$pstart = $pstart[0];
-	if (!$pstart) $REL_TPL->stderr($REL_LANG->say_by_key('error'), "Такого опроса не существует");
+	if (!$pstart) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Invalid ID'));
 	$pexp = @array_unique($pexp);
 	$pexp = $pexp[0];
 	$pquestion = @array_unique($pquestion);
@@ -98,13 +98,13 @@ if (!pagercheck()) {
 
 
 
-	$REL_TPL->stdhead("Обзор опроса");
+	$REL_TPL->stdhead($REL_LANG->_('Poll details'));
 	print '<div border="1" id="polls" style="width: 937px;">
 		<ul class="polls_title">
-			<li style="margin:0px;"><h1 style="margin:0px; text-align: center;">Опрос № '.$id.'	</h1><h4 style="margin-bottom: 10px;text-align:center;">Открыт: '.mkprettytime($pstart).(!is_null($pexp)?(($pexp > time())?", заканчивается: ".mkprettytime($pexp):", <font color=\"red\">закончен</font>: ".mkprettytime($pexp)):'').'</h4></li>
+			<li style="margin:0px;"><h1 style="margin:0px; text-align: center;">'.$REL_LANG->_('Poll').' № '.$id.'	</h1><h4 style="margin-bottom: 10px;text-align:center;">'.$REL_LANG->_('Added').': '.mkprettytime($pstart).(!is_null($pexp)?(($pexp > time())?", {$REL_LANG->_('expires on')}: ".mkprettytime($pexp):", <font color=\"red\">{$REL_LANG->_('expired')}</font>: ".mkprettytime($pexp)):'').'</h4></li>
 		</ul>
 		<ul class="polls_title_q">
-			<li align="center" class="colheadli" colspan="2"><h3 style="margin-top: 7px;margin-bottom:0;">'.$pquestion.'</h3>'.((get_privilege('polls_operation',false))?" <span style=\"margin-left: 335px;\">[<a href=\"".$REL_SEO->make_link('pollsadmin','action','add')."\">Создать новый</a>] [<a href=\"".$REL_SEO->make_link('pollsadmin','action','edit','id',$id)."\">Редактировать</a>] [<a onClick=\"return confirm('Вы уверены?')\" href=\"".$REL_SEO->make_link('pollsadmin','action','delete','id',$id)."\">Удалить</a>]":"<span>").'</li>
+			<li align="center" class="colheadli" colspan="2"><h3 style="margin-top: 7px;margin-bottom:0;">'.$pquestion.'</h3>'.((get_privilege('polls_operation',false))?" <span style=\"margin-left: 335px;\">[<a href=\"".$REL_SEO->make_link('pollsadmin','action','add')."\">{$REL_LANG->_('Create new')}</a>] [<a href=\"".$REL_SEO->make_link('pollsadmin','action','edit','id',$id)."\">{$REL_LANG->_('Edit')}</a>] [<a onClick=\"return confirm('{$REL_LANG->_('Are you sure?')}')\" href=\"".$REL_SEO->make_link('pollsadmin','action','delete','id',$id)."\">{$REL_LANG->_('Delete')}</a>]":"<span>").'</li>
 		</ul>';
 
 	foreach ($sids as $sid)
@@ -142,7 +142,7 @@ if (!pagercheck()) {
 			if (!is_null($vid)) $votecount[$votedrow]++;
 
 			if ((($public) || (get_privilege('polls_operation',false))) && !is_null($vid))
-			$usercode[$votedrow] .= make_user_link($user).((get_privilege('polls_operation',false))?" [<a onClick=\"return confirm('Удалить этот голос?')\" href=\"".$REL_SEO->make_link('polloverview','deletevote','','vid',$vid)."\">D</a>] ":" ");
+			$usercode[$votedrow] .= make_user_link($user).((get_privilege('polls_operation',false))?" [<a onClick=\"return confirm('{$REL_LANG->_('Are you sure?')}')\" href=\"".$REL_SEO->make_link('polloverview','deletevote','','vid',$vid)."\">D</a>] ":" ");
 
 			if (($votecount[$votedrow]) >= $maxvotes) $maxvotes = $votecount[$votedrow];
 
@@ -158,32 +158,25 @@ if (!pagercheck()) {
 		if (!$percent) $percent = 0;
 		// print("<ul><li class=\"polls_l_div\">");
 		if ($vsid == $voted)
-		print("<ul><dt class=\"polls_right\"><b>".$sidvals[$sidkey]." - ваш голос</b>");
+		print("<ul><dt class=\"polls_right\"><b>".$sidvals[$sidkey]." - {$REL_LANG->_('your vote')}</b>");
 		elseif (((!is_null($pexp) && ($pexp > time())) || is_null($pexp)) && !$voted) print "<form name=\"voteform\" method=\"post\" action=\"".$REL_SEO->make_link('polloverview','vote','','id',$id)."\"><ul><dt class=\"polls_right\">
   <input type=\"radio\" name=\"vote\" value=\"$vsid\">
   <input type=\"hidden\" name=\"type\" value=\"$ptype\">".$sidvals[$sidkey];
 
 		else print"<ul><dt class=\"polls_right\">".$sidvals[$sidkey];
-		print"</dt><dt class=\"polls_left\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_left.gif\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar.gif\" height=\"12\" width=\"".round($percentpervote*$votecount[$vsid])."%\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_right.gif\">&nbsp;&nbsp;$percent%, голосов:  ".$votecount[$vsid]."<br />".((!$usercode[$vsid])?"Опрос приватный или никто не голосовал":$spbegin.$usercode[$vsid].$spend)."</dt></ul>";
+		print"</dt><dt class=\"polls_left\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_left.gif\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar.gif\" height=\"12\" width=\"".round($percentpervote*$votecount[$vsid])."%\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_right.gif\">&nbsp;&nbsp;$percent%, {$REL_LANG->_('amount of votes')}:  ".$votecount[$vsid]."<br />".((!$usercode[$vsid])?$REL_LANG->_('Poll is private or nobody voted yet'):$spbegin.$usercode[$vsid].$spend)."</dt></ul>";
 	}
 	if (((!is_null($pexp) && ($pexp > time())) || is_null($pexp)) && !$voted) $novote=true;
-	if ($novote) print"<ul><li><input type=\"submit\" class=\"button\" value=\"Голосовать за этот вариант!\" style=\"margin-top: 2px;\"/></li>";
-	elseif (!is_null($pexp) && ($pexp < time())) print'<ul><li><span style="color:red;">Опрос закрыт</span></li>';
-	elseif ($voted) print'<ul><li><span style="color: red; float: left; padding-right: 5px;">Вы уже голосовали в этом опросе</span></li>';
-	print'<li align="center">Всего голосов: '.$tvotes.', Комментариев: '.$comments.' [<a href="'.$REL_SEO->make_link('polloverview','id',$id).'"><b>Подробнее</b></a>] [<a href="'.$REL_SEO->make_link('polloverview','id',$id).'#comments"><b>Комментировать</b></a>] [<a href="'.$REL_SEO->make_link('pollsarchive').'"><b>Архив опросов</b></a>]</li></ul>'.($novote?'</form>':'');
+	if ($novote) print"<ul><li><input type=\"submit\" class=\"button\" value=\"{$REL_LANG->_('Vote for this variant')}!\" style=\"margin-top: 2px;\"/></li>";
+	elseif (!is_null($pexp) && ($pexp < time())) print'<ul><li><span style="color:red;">'.$REL_LANG->_('Poll closed').'</span></li>';
+	elseif ($voted) print'<ul><li><span style="color: red; float: left; padding-right: 5px;">'.$REL_LANG->_('You already voted here').'</span></li>';
+	print'<li align="center">'.$REL_LANG->_('Total votest').': '.$tvotes.', '.$REL_LANG->_('Comments').': '.$comments.' [<a href="'.$REL_SEO->make_link('polloverview','id',$id).'"><b>'.$REL_LANG->_('Details').'</b></a>] [<a href="'.$REL_SEO->make_link('polloverview','id',$id).'#comments"><b>'.$REL_LANG->_('Add new comment').'</b></a>] [<a href="'.$REL_SEO->make_link('pollsarchive').'"><b>'.$REL_LANG->_('Polls archive').'</b></a>]</li></ul>'.($novote?'</form>':'');
 
 	print ('</div>');
 
 
 
 }
-
-
-
-
-// POLLCOMMENTS START
-//где то потерял начало таблицы
-
 
 $subres = $REL_DB->query("SELECT SUM(1) FROM comments WHERE toid = ".$pid." AND type='poll'");
 $subrow = mysql_fetch_array($subres);
@@ -193,10 +186,10 @@ if (!$count) {
 
 	print ('<div id="newcomment_placeholder">'. "<table style=\"margin-top: 2px;\" cellpadding=\"5\" width=\"100%\">");
 	print("<tr><td class=colhead align=\"left\" colspan=\"2\">");
-	print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев к опросу</div>");
+	print("<div style=\"float: left; width: auto;\" align=\"left\"> :: {$REL_LANG->_('Comments list')}</div>");
 	print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('polloverview','id',$pid)."#comments\" class=altlink_white>{$REL_LANG->say_by_key('add_comment')}</a></div>");
 	print("</td></tr><tr><td align=\"center\">");
-	print("Комментариев нет. <a href=\"".$REL_SEO->make_link('polloverview','id',$pid)."#comments\">Желаете добавить?</a>");
+	print("{$REL_LANG->_('No comments')}. <a href=\"".$REL_SEO->make_link('polloverview','id',$pid)."#comments\">{$REL_LANG->_('Add new comment')}</a>");
 	print("</td></tr></table><br /></div>");
 
 }
@@ -210,8 +203,8 @@ else {
 	if (!pagercheck()) {
 		print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >");
 		print("<tr><td class=\"colhead\" align=\"center\" >");
-		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>");
-		print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('polloverview','id',$pid)."#comments\" class=altlink_white>Добавить комментарий</a></div>");
+		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: {$REL_LANG->_('Comments list')}</div>");
+		print("<div align=\"right\"><a href=\"".$REL_SEO->make_link('polloverview','id',$pid)."#comments\" class=altlink_white>{$REL_LANG->_('Add new comment')}</a></div>");
 		print("</td></tr>");
 		
 		print("<tr><td>");

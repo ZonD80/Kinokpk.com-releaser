@@ -45,7 +45,7 @@ $script = '        <script type="text/javascript">
             });
         });
         </script>';
-$REL_TPL->stdhead("Редактирование Релиза \"" . makesafe($row["name"]) . "\"",'','','<script src="js/jquery.tokeninput.js"></script><link rel="stylesheet" href="css/token-input-facebook.css" type="text/css" />'.$script);
+$REL_TPL->stdhead($REL_LANG->_('Editing release "%s"',makesafe($row["name"])),'','','<script src="js/jquery.tokeninput.js"></script><link rel="stylesheet" href="css/token-input-facebook.css" type="text/css" />'.$script);
 
 ?>
 <script type="text/javascript" language="javascript">
@@ -69,14 +69,14 @@ function checkname() {
 <?php
 
 if (($CURUSER["id"] != $row["owner"]) && !get_privilege('edit_releases',false)) {
-	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),"Вы не можете редактировать этот торрент.");
+	$REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->_('You can not edit this release'));
 } else {
 	print("<form name=\"edit\" method=post action=\"".$REL_SEO->make_link('takeedit')."\" enctype=\"multipart/form-data\" onsubmit=\"return checkname();\">\n");
 	print("<input type=\"hidden\" name=\"id\" value=\"$id\">\n");
 	if (isset($_GET["returnto"]))
 	print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_GET["returnto"]) . "\" />\n");
 	print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-	print("<tr><td class=\"colhead\" colspan=\"2\">Редактировать торрент</td></tr>");
+	print("<tr><td class=\"colhead\" colspan=\"2\">{$REL_LANG->_('Edit release')}</td></tr>");
 	if (get_privilege('edit_releases',false)) tr($REL_LANG->say_by_key('check'),"<input type=\"checkbox\" name=\"approve\" value=\"1\"".($row['moderatedby']?' checked':'')."> {$REL_LANG->say_by_key('approve')}",1);
 	tr($REL_LANG->say_by_key('torrent_file'), "<input type=file name=tfile size=80><br /><input type=\"checkbox\" name=\"multi\" value=\"1\">&nbsp;{$REL_LANG->say_by_key('multitracker_torrent')}<br /><small>{$REL_LANG->say_by_key('multitracker_torrent_notice')}</small>\n", 1);
 	if (get_privilege('is_releaser',false) && $REL_CONFIG['use_dc'])
@@ -116,42 +116,42 @@ if (($CURUSER["id"] != $row["owner"]) && !get_privilege('edit_releases',false)) 
 	tr ($REL_LANG->_('Tags'),'<input type="text" name="tags" id="tags" size="100">',1);
 
 	if(get_privilege('post_releases_to_mainpage',false))
-	tr($REL_LANG->_("Viewing"), "<input type=\"checkbox\" name=\"visible\"" . (($row["visible"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Видимый на главной", 1);
+	tr($REL_LANG->_("Viewing"), "<input type=\"checkbox\" name=\"visible\"" . (($row["visible"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> {$REL_LANG->_('Seen on main page')}", 1);
 	if(get_privilege('edit_releases',false)) {
-	tr($REL_LANG->_("Updated"), "<input type=\"checkbox\" name=\"upd\" value=\"1\" />Сделать первым на главной", 1);
+	tr($REL_LANG->_("Updated"), "<input type=\"checkbox\" name=\"upd\" value=\"1\" />{$REL_LANG->_('Make first on main page')}", 1);
 	tr($REL_LANG->_("Banned"), "<input type=\"checkbox\" name=\"banned\"" . (($row["banned"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" />", 1);
 	}
 
 	if(get_privilege('edit_releases',false)) {
-	tr("Золотая раздача", "<input type=\"checkbox\" name=\"free\"" . (($row["free"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Золотая раздача (считается только раздача, скачка не учитывается)", 1);
-		tr("Важный", "<input type=\"checkbox\" name=\"sticky\"" . (($row["sticky"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> Прикрепить этот торрент (всегда наверху)", 1);
-		tr("Комментарии модераторов<br /><small>Подписываться не надо</small></td>","<textarea cols=60 rows=6 name=modcomm" . ">".htmlspecialchars($row['modcomm'])."</textarea>\n",1);
+	tr($REL_LANG->_('Golden release'), "<input type=\"checkbox\" name=\"free\"" . (($row["free"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> {$REL_LANG->_('Golden release (rating will not decrease on downloading)')}", 1);
+		tr($REL_LANG->_('Important'), "<input type=\"checkbox\" name=\"sticky\"" . (($row["sticky"]) ? " checked=\"checked\"" : "" ) . " value=\"1\" /> {$REL_LANG->_('Stick this torrent (it will be on the top always)')}", 1);
+		tr("{$REL_LANG->_('Moderator comments')}<br /><small>{$REL_LANG->_('No signature required')}</small></td>","<textarea cols=60 rows=6 name=modcomm" . ">".htmlspecialchars($row['modcomm'])."</textarea>\n",1);
 
 	}
 	if ($row['filename'] != 'nofile') $word = ''; else $word = 'checked=\"checked\"';
 	$nofsize = $row['size'] / 1024 / 1024;
-	tr("Релиз без торрента", "<input type=\"checkbox\" name=\"nofile\" ".$word." value=\"1\">Релиз без торрента ; Размер (МБ) <input type=\"text\" name=\"nofilesize\" value=\"" . $nofsize . "\" size=\"20\" />", 1);
+	tr($REL_LANG->_('Release without torrent'), "<input type=\"checkbox\" name=\"nofile\" ".$word." value=\"1\">{$REL_LANG->_('This is release without torrent')} ; {$REL_LANG->_('Size')} <input type=\"text\" name=\"nofilesize\" value=\"" . $nofsize . "\" size=\"20\" /> {$REL_LANG->_('Megabytes')}", 1);
 
 	if (get_privilege('edit_releases',false))
-	tr("Защита от правообладателей","<a href=\"javascript:openwindow()\">Анонимизировать / восстановить обладателя релиза</a> (откроется новое окошко)",1,1);
+	tr($REL_LANG->_('Copyright protection'),"<a href=\"javascript:openwindow()\">{$REL_LANG->_('Anonymize release / Recover release owner')}</a> ({$REL_LANG->_('Popup will open')})",1,1);
 
-	print("<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"{$REL_LANG->say_by_key('edit')}\" style=\"height: 25px; width: 100px\"> <input type=reset value=\"Обратить изменения\" style=\"height: 25px; width: 100px\"></td></tr>\n");
+	print("<tr><td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"{$REL_LANG->say_by_key('edit')}\" style=\"height: 25px; width: 100px\"> <input type=reset value=\"{$REL_LANG->_('Reset form')}\" style=\"height: 25px; width: 100px\"></td></tr>\n");
 	print("</table>\n");
 	print("</form>\n");
 	if(get_privilege('delete_releases',false)) {
 		print("<p>\n");
 		print("<form method=\"post\" action=\"".$REL_SEO->make_link('delete')."\">\n");
 		print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
-		print("<tr><td class=embedded style='background-color: #F5F4EA;padding-bottom: 5px' colspan=\"2\"><b>Удалить торрент</b> Причина:</td></tr>");
-		print("<td><input name=\"reasontype\" type=\"radio\" value=\"1\">&nbsp;Мертвяк </td><td> 0 раздающих, 0 качающих = 0 соединений</td></tr>\n");
-		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"2\">&nbsp;Дупликат</td><td><input type=\"text\" size=\"40\" name=\"reason[]\"></td></tr>\n");
-		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"3\">&nbsp;Nuked</td><td><input type=\"text\" size=\"40\" name=\"reason[]\"></td></tr>\n");
-		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"4\">&nbsp;Правила</td><td><input type=\"text\" size=\"40\" name=\"reason[]\">(Обязательно)</td></tr>");
-		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"5\" checked>&nbsp;Другое:</td><td><input type=\"text\" size=\"40\" name=\"reason[]\">(Обязательно)</td></tr>\n");
+		print("<tr><td class=embedded style='background-color: #F5F4EA;padding-bottom: 5px' colspan=\"2\"><b>{$REL_LANG->_('Delete release')}</b> {$REL_LANG->_('Reason')}:</td></tr>");
+		print("<td><input name=\"reasontype\" type=\"radio\" value=\"1\">&nbsp;{$REL_LANG->_('Dead')} </td><td> {$REL_LANG->_('0 seeders, 0 leechers = 0 peers')}</td></tr>\n");
+		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"2\">&nbsp;{$REL_LANG->_('Duplicate')}</td><td><input type=\"text\" size=\"40\" name=\"reason[]\"></td></tr>\n");
+		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"3\">&nbsp;{$REL_LANG->_('Nuked')}</td><td><input type=\"text\" size=\"40\" name=\"reason[]\"></td></tr>\n");
+		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"4\">&nbsp;{$REL_LANG->_('Rules violation')}</td><td><input type=\"text\" size=\"40\" name=\"reason[]\">({$REL_LANG->_('Required')})</td></tr>");
+		print("<tr><td><input name=\"reasontype\" type=\"radio\" value=\"5\" checked>&nbsp;{$REL_LANG->_('Other')}:</td><td><input type=\"text\" size=\"40\" name=\"reason[]\">({$REL_LANG->_('Required')})</td></tr>\n");
 		print("<input type=\"hidden\" name=\"id\" value=\"$id\">\n");
 		if (isset($_GET["returnto"]))
 		print("<input type=\"hidden\" name=\"returnto\" value=\"" . htmlspecialchars($_GET["returnto"]) . "\" />\n");
-		print("<td colspan=\"2\" align=\"center\"><input type=submit value='Удалить' style='height: 25px'></td></tr>\n");
+		print("<td colspan=\"2\" align=\"center\"><input type=submit value='{$REL_LANG->_('Delete')}' style='height: 25px'></td></tr>\n");
 		print("</table>");
 		print("</form>\n");
 		print("</p>\n");

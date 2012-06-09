@@ -88,13 +88,13 @@ $row = mysql_fetch_array($res);
 if (!$row)
 $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
-if ($row['rgid']) $rgcontent = "<a href=\"relgroups.php?id={$row['rgid']}\">".($row['rgimage']?"<img style=\"border:none;\" title=\"Релиз группы {$row['rgname']}\" src=\"{$row['rgimage']}\"/>":'Релиз группы '.$row['rgname'])."</a>&nbsp;";
+if ($row['rgid']) $rgcontent = "<a href=\"relgroups.php?id={$row['rgid']}\">".($row['rgimage']?"<img style=\"border:none;\" title=\"{$REL_LANG->_('Release of group %s',$row['rgname'])}\" src=\"{$row['rgimage']}\"/>":$REL_LANG->_('Release of group %s',$row['rgname']))."</a>&nbsp;";
 
 if ((!get_privilege('access_to_private_relgroups',false)) && !$row['relgroup_allowed'] && $row['rgid']) $REL_TPL->stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('private_release_access_denied'),$rgcontent));
 
 
 
-if ($row["filename"] == 'nofile') $REL_TPL->stderr ("Сообщение","Это релиз без TORRENT файла! Скачать его с нашего сервера невозможно, посмотрите ссылки в описаниии релиза <a href='details.php?id=".$id."'>К описанию релиза</a>");
+if ($row["filename"] == 'nofile') $REL_TPL->stderr ($REL_LANG->_('Error'),$REL_LANG->_('This is release without .torrent. You can not download it. <a href="javascript:history.go(-1);">Go back</a>'));
 
 if ($row['freefor']) {
 	$row['freefor']=explode(',',$row['freefor']);
