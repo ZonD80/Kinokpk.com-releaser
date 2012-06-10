@@ -53,7 +53,7 @@ $male = $block_online['males'];
 $female = $block_online['females'];
 $torrents = $block_online['torrents'];
 $nofiler = $block_online['torrents_nofile'];
-$peersrow = $REL_DB->query("(SELECT SUM(1) AS peers FROM peers WHERE seeder=1) UNION (SELECT SUM(1) AS peers FROM peers WHERE seeder=0)");
+$peersrow = $REL_DB->query("(SELECT SUM(1) AS peers FROM xbt_files_users WHERE active=1) UNION (SELECT SUM(1) AS peers FROM xbt_files_users WHERE active=0)");
 while (list($peersarray) = mysql_fetch_array($peersrow))
 $peers[] = $peersarray;
 $seeders = $peers[0];

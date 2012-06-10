@@ -2051,6 +2051,7 @@ function prepare_for_torrenttable($res) {
 				$resvalue['label'] = $REL_LANG->_("Yesterday");	$yd_used = true;
 			}
 		}
+        $resvalue['free'] = ($resvalue['free']?$resvalue['free']:in_array($CURUSER['id'],explode(',',$resvalue['freefor'])));
 		$resvalue['month_added'] = mkprettymonth($resvalue["added"]);
 		$resvalue['new'] = (@in_array($resvalue['id'],$CURUSER['torrents']));
 		$resvalue['tags'] = str_replace(',',', ',$resvalue['tags']);
