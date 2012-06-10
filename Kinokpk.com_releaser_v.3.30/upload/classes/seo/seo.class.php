@@ -11,7 +11,7 @@
 class REL_SEO {
 	private $SR, $SO, $SU;
 	function __construct() {
-		global $REL_CACHE, $REL_DB;
+		global  $REL_CACHE, $REL_DB;
 		$cache = $REL_CACHE->get('system','seorules');
 
 		if ($cache===false) {
@@ -37,11 +37,11 @@ class REL_SEO {
 	 * @return string
 	 */
 	public function make_link() {
-		global $REL_CONFIG;
+		global  $REL_CONFIG, $REL_DB;
 
 		$linkar = func_get_args();
 		if (is_array($linkar[0]))
-      $linkar = $linkar[0];
+		$linkar = $linkar[0];
 
 		$script = $linkar[0];
 
@@ -50,27 +50,36 @@ class REL_SEO {
 		unset($linkar[0]);
 		if ($linkar) {
 
-			foreach ($linkar as $place => $param) {
+		foreach ($linkar as $place => $param) {
 				if ($place % 2 == 0) continue;
 				if ($this->SR[$script][$param]) {
-					$destar[$this->SO[$script][$param]] = sprintf($this->SR[$script][$param],$linkar[$place+1]);
+					$destar[$this->SO[$script][$param]][] = sprintf($this->SR[$script][$param],$linkar[$place+1]);
 					if ($this->SU[$script][$param]) {
 						foreach ($this->SU[$script][$param] as $to_unset) unset($destar[$this->SO[$script][$to_unset]]);
 					}
 				} else {
-					$destar2[$param] = "$param={$linkar[$place+1]}";
+					$destar2[$param][] = "$param={$linkar[$place+1]}";
 				}
 			}
 		}
+
 		if (isset($destar['{base}'])) {
 			$dest = $destar['{base}'];
 			unset($destar['{base}']);
 		}
 		ksort($destar);
 		if ($destar) {
+			foreach ($destar as $dkey=>$dval) {
+				if (is_array($dval))
+				$destar[$dkey] = implode('&',$dval);
+			}
 			$dest .= addslashes(implode('',$destar));
 		}
 		if ($destar2) {
+			foreach ($destar2 as $dkey=>$dval) {
+				if ($dval)
+				$destar2[$dkey] = implode('&',$dval);
+			}
 			$dest .= '?'.addslashes(implode('&',$destar2));
 		}
 		return $REL_CONFIG['defaultbaseurl'].'/'.addslashes($dest);
