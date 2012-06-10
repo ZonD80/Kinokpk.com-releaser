@@ -45,12 +45,12 @@ class REL_SEO {
 
 		$script = $linkar[0];
 
-		if (isset($this->SR[$script]['{base}'])) $dest = $this->SR[$script]['{base}'];
-		else $dest = "$script.php";
+		if (isset($this->SR[$script]['{base}'])) $destar[0] = $this->SR[$script]['{base}'];
+		else $destar['{base}'] = "$script.php";
 		unset($linkar[0]);
 		if ($linkar) {
 
-			foreach ($linkar as $place => $param) {
+		foreach ($linkar as $place => $param) {
 				if ($place % 2 == 0) continue;
 				if ($this->SR[$script][$param]) {
 					$destar[$this->SO[$script][$param]][] = sprintf($this->SR[$script][$param],$linkar[$place+1]);
@@ -63,10 +63,14 @@ class REL_SEO {
 			}
 		}
 
+		if (isset($destar['{base}'])) {
+			$dest = $destar['{base}'];
+			unset($destar['{base}']);
+		}
+		ksort($destar);
 		if ($destar) {
-			ksort($destar);
 			foreach ($destar as $dkey=>$dval) {
-				if ($dval)
+				if (is_array($dval))
 				$destar[$dkey] = implode('&',$dval);
 			}
 			$dest .= addslashes(implode('',$destar));
