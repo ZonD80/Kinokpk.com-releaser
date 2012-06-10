@@ -1055,7 +1055,31 @@ function userlogin() {
 
 	$updateset = array();
 
+    $peersstat = $REL_DB->query_row("SELECT (SELECT COUNT(`snatched`.`id`) FROM `snatched` LEFT JOIN `torrents` ON `snatched`.`torrent`=`torrents`.`id` WHERE `userid`={$row['id']} AND `torrents`.`owner`<>{$row['id']} AND `torrents`.`free`=0 AND NOT FIND_IN_SET({$row['id']},`torrents`.`freefor`)) AS `downloaded`, (SELECT SUM(1) FROM `xbt_files_users` WHERE `uid`={$row['id']} AND `active`=1 AND `left`=0) AS seeding, (SELECT SUM(1) FROM `xbt_files_users` WHERE `uid`={$row['id']} AND `active`=1 AND `left`<>0) AS leeching");
+    $row['downloaded'] = (int)$peersstat['downloaded'];
+    $row['seeding'] = (int)$peersstat['seeding'];
+    $row['leeching'] = (int)$peersstat['leeching'];
 
+    if ($REL_CRON['rating_enabled']&&$row['downloaded']) {
+        $classes = init_class_array();
+
+        if (($row['seeding']||$row['leeching'])&&($row['last_checked']<(time()-$REL_CRON['rating_checktime']*60))&&$row['class']!=$classes['vip']&&$row['added']<(time()-$REL_CRON['rating_freetime']*86400)) {
+            if ($row['downloaded']>($row['seeding']+$row['discount'])) $rateup = -$REL_CRON['rating_perleech'];
+            else { $upcount = @round(($row['seeding']+$row['discount'])/$row['downloaded']);
+                if (!$upcount) $upcount=1;
+                $rateup = $REL_CRON['rating_perseed']*$upcount;
+            }
+
+
+            $updateset[] = "ratingsum = CASE WHEN ((ratingsum+$rateup>{$REL_CRON['rating_max']}) AND $rateup>0 AND ratingsum<{$REL_CRON['rating_max']}) THEN {$REL_CRON['rating_max']} WHEN ($rateup>0 AND ratingsum>{$REL_CRON['rating_max']}) THEN ratingsum ELSE ratingsum+$rateup END";
+            $updateset[] = "last_checked = ".time();
+        }
+
+        if ($row['ratingsum']<$REL_CRON['rating_dislimit']) {
+            $updateset[] = 'enabled = 0';
+            $updateset[] = "dis_reason = ".$REL_DB->sqlesc($REL_LANG->_to($row['id'],'Your rating was too low'));
+        }
+    }
 	if ($ip != $row['ip'])
 	$updateset[] = 'ip = '. sqlesc($ip);
 	$updateset[] = 'last_access = ' . time();
@@ -1187,7 +1211,7 @@ function user_session() {
 	}
 	if ($CURUSER) {
 
-		$allowed_types = array ('torrents', 'relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments','friends');//,'seeding','leeching','downloaded');
+		$allowed_types = array ('torrents', 'relcomments', 'pollcomments', 'newscomments', 'usercomments', 'reqcomments', 'rgcomments','friends');
 		if (get_privilege('is_moderator',false)) {
 			$allowed_types_moderator = array('users', 'reports', 'unchecked');
 			$allowed_types = array_merge($allowed_types,$allowed_types_moderator);
@@ -1224,9 +1248,6 @@ function user_session() {
 			$addition = " AND type = '".str_replace('comments','',$type)."'"; $table = 'comments';
 			}
 
-			//case 'seeding' : $addition = "seeder=1 AND userid={$CURUSER['id']}"; $table= 'peers'; $noadd=true; break;
-			// case 'leeching' : $addition = "seeder=0 AND userid={$CURUSER['id']}"; $table= 'peers'; $noadd=true; break;
-			// case 'downloaded' : $addition = "snatched.finished=1 AND torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid={$CURUSER['id']}"; $table = 'peers'; $noadd=true; break;
 
 			$noselect = @implode(',',@array_map("intval",$_SESSION['visited_'.$type]));
 
@@ -1240,7 +1261,6 @@ function user_session() {
 			unset($string);
 			unset($noselect);
 		}
-
 		if ($sql_query) {
 			$sql_query = "SELECT ".implode(', ', $sql_query);
 
@@ -1248,8 +1268,6 @@ function user_session() {
 			$notifysql = $REL_DB->query($sql_query);
 			$notifs = mysql_fetch_assoc($notifysql);
 			foreach ($notifs as $type => $value) if ($value) $CURUSER[$type] = explode(',', $value);
-			//$notifs = array_combine($allowed_types,explode(',',$notifs));
-			//foreach ($notifs as $name => $value) $CURUSER[$name] = $value;
 		}
 
 	}
@@ -1668,19 +1686,13 @@ function generate_notify_array()
 function generate_ratio_popup_warning($blockmode = false) {
 	global  $CURUSER, $REL_CRON, $REL_LANG, $REL_SEO, $REL_DB;
 
+    $classes = init_class_array();
 	if (!$CURUSER) return;
 
 	if (!$REL_CRON['rating_enabled']) return;
 	if ($_COOKIE['denynotifs'] && !$blockmode) return;
-	if (!$CURUSER['downloaded_rel'] && !$CURUSER['seeding']) {
-		$query = $REL_DB->query("SELECT (SELECT SUM(1) FROM peers WHERE seeder=1 AND userid={$CURUSER['id']}) AS seeding, (SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE snatched.finished=1 AND torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid={$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']}) AS downloaded");
 
-		list($seeding,$downloaded) = mysql_fetch_array($query);
-		$CURUSER['seeding'] = (int)$seeding;
-		$CURUSER['downloaded_rel'] = (int)$downloaded;
-	}
-
-	if ($CURUSER['seeding'] && ((time()-$CURUSER['added'])>($REL_CRON['rating_freetime']*86400)) && (!get_privilege('is_vip',false)) && $CURUSER['downloaded_rel'] && (($CURUSER['seeding']+$CURUSER['discount'])<$CURUSER['downloaded_rel'])) {
+	if ($CURUSER['seeding'] && ($CURUSER['added']<(time()-$REL_CRON['rating_freetime']*86400)) && ($CURUSER['class']!=$classes['vip']) && $CURUSER['downloaded'] && (($CURUSER['seeding']+$CURUSER['discount'])<$CURUSER['downloaded'])) {
 
 		$znak = (($CURUSER['ratingsum']>0)?'+':'');
 
@@ -2262,10 +2274,10 @@ function is_i_notified($id,$type) {
 }
 
 /**
- * Makes tree of elemants
+ * Makes tree of elements
  * @param string $table Table to be used to make tree
- * @param unknown_type $condition Condition to be added to sql query whitch making a tree
- * @return multitype:|multitype:
+ * @param unknown_type $condition Condition to be added to sql query which making a tree
+ * @return array Tree
  */
 function &make_tree($table='categories',$condition='')
 {
@@ -2541,7 +2553,6 @@ function set_visited($type,$id) {
  * Gets kinopoisk.ru trailer
  * @param string $descr Text where find film link
  * @return string Html code of player
- * @toto Fix it!
  */
 function get_trailer($descr) {
 	global  $REL_CONFIG, $REL_DB;

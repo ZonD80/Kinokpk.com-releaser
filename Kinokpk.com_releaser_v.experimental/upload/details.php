@@ -28,7 +28,7 @@ $owned = 1;
 if (! $row || ($row ["banned"] && ! $moderator))
 $REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_torrent_with_such_id') );
 else {
-	if (!pagercheck()) {
+
 		if ($row['rgid']) $rgcontent = "<a href=\"".$REL_SEO->make_link('relgroups','id',$row['rgid'],'name',translit($row['rgname']))."\">".($row['rgimage']?"<img style=\"border:none;\" title=\"{$REL_LANG->_('Release of group %s',$row['rgname'])}\" src=\"{$row['rgimage']}\"/>":$REL_LANG->_('Release of group %s',$row['rgname']))."</a>&nbsp;";
 
 		if ((!get_privilege('access_to_private_relgroups',false)) && !$row['relgroup_allowed'] && $row['rgid']) $REL_TPL->stderr($REL_LANG->say_by_key('error'),sprintf($REL_LANG->say_by_key('private_release_access_denied'),$rgcontent));
@@ -230,7 +230,7 @@ return no_ajax;
 <a href=\"#\" onclick=\"location.href='".$REL_SEO->make_link('pass_on','to','next','from',$id)."'; return false;\">
 {$REL_LANG->_('Next release')} >></a><br />
 <a href=\"".$REL_SEO->make_link('browse')."\">{$REL_LANG->_('View all releases')}</a>
-&nbsp; | &nbsp;'");
+&nbsp; | &nbsp;");
         $linkar[] = 'browse';
         foreach (explode(',',$row['category']) as $sc) {
             $linkar[] = 'cat';
@@ -238,7 +238,7 @@ return no_ajax;
         }
 print ("<a href=\"".$REL_SEO->make_link($linkar)."\">{$REL_LANG->_('View all releases of this category')}</a></div>" );
 
-	}
+
 
 	
 	$subres = $REL_DB->query ( "SELECT SUM(1) FROM comments WHERE toid = $id AND type='rel'" );
@@ -252,31 +252,23 @@ print ("<a href=\"".$REL_SEO->make_link($linkar)."\">{$REL_LANG->_('View all rel
 		print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: {$REL_LANG->_('Comments list')}</div>" );
 		print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\" class=\"altlink_white\">{$REL_LANG->_('Add comment (%s)',$REL_LANG->_('Release'))}</a></div>" );
 		print ( "</td></tr><tr><td align=\"center\">" );
-		print ( "{$REL_LANG->_('There are no comments yet')}. <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\">{$REL_LANG->_('Add new comment')}</a>" );
+		print ( "{$REL_LANG->_('No comments')}. <a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\">{$REL_LANG->_('Add new comment')}</a>" );
 		print ( "</td></tr></table><br /></div>");
 
 	} else {
-		$limit = ajaxpager(25, $count, array('details','id',$id,'name',translit($row['name'])), 'comments-table');
-		$subres = $REL_DB->query ( "SELECT c.id, c.type, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = " . "$id AND c.type='rel' GROUP BY c.id ORDER BY c.id ASC $limit" );
+        $subres = $REL_DB->query ( "SELECT c.id, c.type, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.class, u.donor, u.info, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN sessions ON c.user=sessions.uid LEFT JOIN users AS e ON c.editedby = e.id WHERE c.toid = " . "$id AND c.type='rel' GROUP BY c.id ORDER BY c.id ASC" );
 		$allrows = prepare_for_commenttable($subres,$row['name'],$REL_SEO->make_link('details','id',$id,'name',translit($row['name'])));
 
-		if (!pagercheck()) {
 			print ( "<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
 			print ( "<tr><td class=\"colhead\" align=\"center\" >" );
 			print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: {$REL_LANG->_('Comments list')}</div>" );
 			print ( "<div align=\"right\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."#comments\" class=\"altlink_white\">{$REL_LANG->_('Add comment (%s)',$REL_LANG->_('Release'))}</a></div>" );
 			print ( "</td></tr>" );
-			
+
 			print ( "<tr><td>" );
 			commenttable ( $allrows );
 			print ( "</td></tr>" );
 			print ( "</table></div>" );
-		} else {
-			print ( "<tr><td>" );
-			commenttable ( $allrows );
-			print ( "</td></tr>" );
-			die();
-		}
 	}
 
 

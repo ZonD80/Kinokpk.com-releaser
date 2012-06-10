@@ -103,7 +103,9 @@ if ($row['freefor']) {
 
 $already_downloaded = @mysql_result($REL_DB->query("SELECT 1 FROM snatched WHERE torrent = $id AND userid = {$CURUSER['id']}"),0);
 
-$rating_enabled = (($REL_CRON['rating_enabled'] && ((time()-$CURUSER['added'])>($REL_CRON['rating_freetime']*86400)) && ($row['userid']<>$CURUSER['id']) && (!get_privilege('is_vip')) && !$userfree && !$row['free'] && !$already_downloaded)?true:false);
+$classes = init_class_array();
+
+$rating_enabled = (($REL_CRON['rating_enabled'] && ((time()-$CURUSER['added'])>($REL_CRON['rating_freetime']*86400)) && ($row['userid']<>$CURUSER['id']) && ($CURUSER['class']!=$classes['vip']) && !$userfree && !$row['free'] && !$already_downloaded)?true:false);
 
 
 if ($rating_enabled && ($CURUSER['ratingsum']<$REL_CRON['rating_downlimit'])) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('rating_low'));

@@ -25,7 +25,6 @@ $REL_TPL->stderr ( $REL_LANG->say_by_key('error'), $REL_LANG->_('This user does 
 
 $user['custom_privileges'] = explode(',',$user['custom_privileges']);
 
-if (!pagercheck()) {
 	$cats = assoc_cats ();
 	$am_i_friend = ($id==$CURUSER['id']?true:@mysql_result($REL_DB->query("SELECT 1 FROM friends WHERE (userid={$CURUSER['id']} AND friendid=$id) OR (friendid={$CURUSER['id']} AND userid=$id) AND confirmed=1"),0));
 	$disallow_view = ($user['privacy']=='highest'&&!$am_i_friend);
@@ -76,8 +75,8 @@ if (!pagercheck()) {
 	foreach ($allowed_types as $type) {
 		switch ($type) {
 			case 'friends' : $addition = "(friendid={$id} OR userid={$id}) AND confirmed=1"; break;
-			case 'seeding' : $sql_query[] = "(SELECT SUM(1) FROM peers WHERE seeder=1 AND userid=$id) AS seeding"; $noq=true; break;
-			case 'leeching' : $sql_query[] = "(SELECT SUM(1) FROM peers WHERE seeder=0 AND userid=$id) AS leeching"; $noq=true; break;
+			case 'seeding' : $sql_query[] = "(SELECT SUM(1) FROM `xbt_files_users` WHERE `uid`=$id AND `active`=1 AND `left`=0) AS seeding"; $noq=true; break;
+			case 'leeching' : $sql_query[] = "(SELECT SUM(1) FROM `xbt_files_users` WHERE `uid`=$id AND `active`=1 AND `left`<>0) AS leeching"; $noq=true; break;
 			case 'downloaded' : $sql_query[] = "(SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE userid=$id AND torrents.owner<>$id) AS downloaded"; $noq=true; break;
 			case 'uploaded' : $sql_query[] = "(SELECT SUM(1) FROM torrents WHERE owner=$id) AS uploaded"; $noq=true; break;
 			case 'presents' : $sql_query[] = "(SELECT SUM(1) FROM presents WHERE userid=$id) AS presents"; $noq=true; break;
@@ -98,9 +97,9 @@ if (!pagercheck()) {
 	$social = mysql_fetch_assoc($socialsql);
 	foreach ($social as $type => $value)
 	{
-		if ($type=='presents') $soctable.= "{$REL_LANG->_("User presents")}: ".($value?"<a href=\"{$REL_SEO->make_link('userhistory','id',$id,'type','presents')}\">$value</a>":$REL_LANG->say_by_key('no')).'<br/>';
+		if ($type=='presents') $soctable.= "<a href=\"{$REL_SEO->make_link('userhistory','id',$id,'type','presents')}\">{$REL_LANG->_("User presents")}: ".($value?$value:$REL_LANG->_('No'))."</a><br/>";
 		else
-		$soctable .= "{$REL_LANG->say_by_key('social_'.$type)}: ".($value?"<a href=\"".$REL_SEO->make_link('userhistory','id',$id,'type',$type)."\">$value</a>":$REL_LANG->say_by_key('no')).'<br/>';
+		$soctable .= "<a href=\"".$REL_SEO->make_link('userhistory','id',$id,'type',$type)."\">{$REL_LANG->say_by_key('social_'.$type)}: ".($value?$value:$REL_LANG->_('No'))."</a><br/>";
 	}
 
 	// social activity end
@@ -300,7 +299,7 @@ if (!pagercheck()) {
 		print ('</td></tr></table>');
 	}
 
-}
+
 
 
 
@@ -320,11 +319,9 @@ if (! $count) {
 	print ( "</td></tr></table><br /></div>" );
 
 } else {
-	$limit = ajaxpager(25, $count, array('userdetails','id',$id,'username',translit($user['username'])), 'comments-table');
-	//var_dump($count);
-	$subres = $REL_DB->query ( "SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " . "$id AND c.type='user' GROUP BY (c.id) ORDER BY c.id ASC $limit" );
+	$subres = $REL_DB->query ( "SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, " . "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " . "$id AND c.type='user' GROUP BY (c.id) ORDER BY c.id ASC" );
 	$allrows = prepare_for_commenttable($subres, $user['username'],$REL_SEO->make_link('userdetails','id',$id,'username',translit($user['username'])));
-	if (!pagercheck()) {
+
 		print ( "<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
 		print ( "<tr><td class=\"colhead\" align=\"center\">" );
 		print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: {$REL_LANG->_('Comments list')}</div>" );
@@ -336,9 +333,7 @@ if (! $count) {
 		print ( "</td></tr>" );
 
 		print ( "</table></div>" );
-	} else { 	print ( "<tr><td>" );
-	commenttable ( $allrows);
-	print ( "</td></tr>" ); die(); }
+
 }
 $REL_TPL->assignByRef('to_id',$id);
 $REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'usercomments' ));

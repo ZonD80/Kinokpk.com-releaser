@@ -119,8 +119,8 @@ $image = sqlesc(htmlspecialchars($image));
 		print("<form method=post name=news action=\"".$REL_SEO->make_link('news','action','edit','newsid',$newsid)."\">\n");
 		print("<table border=1 cellspacing=0 cellpadding=5>\n");
 		print("<tr><td class=colhead>{$REL_LANG->_('News editing')}<input type=hidden name=returnto value=$returnto></td></tr>\n");
-		print("<tr><td>{$REL_LANG->_('Subject')}: <input type=text name=subject maxlength=70 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
-                print("<tr><td>{$REL_LANG->_('Picture')}: <input type=text name=image maxlength=90 size=50 value=\"" . makesafe($arr["image"]) . "\"/></td></tr>");
+		print("<tr><td>{$REL_LANG->_('Subject')}: <input type=text name=subject maxlength=255 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
+                print("<tr><td>{$REL_LANG->_('Picture')}: <input type=text name=image maxlength=255 size=50 value=\"" . makesafe($arr["image"]) . "\"/></td></tr>");
 		print("<tr><td style='padding: 0px'>");
 		print textbbcode("body",$arr["body"]);
 		//<textarea name=body cols=145 rows=5 style='border: 0px'>" . htmlspecialchars($arr["body"]) .
@@ -141,8 +141,8 @@ print("<p><font size=-3>($warning)</font></p>");
 print("<form method=post name=news action=\"".$REL_SEO->make_link('news','action','add')."\">\n");
 print("<table border=1 cellspacing=0 cellpadding=5>\n");
 print("<tr><td class=colhead>{$REL_LANG->_('Add news item')}</td></tr>\n");
-print("<tr><td>{$REL_LANG->_('Subject')}: <input type=text name=subject maxlength=40 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
-print("<tr><td>{$REL_LANG->_('Picture')}: <input type=text name=image maxlength=90 size=50 value=\"" . makesafe($arr["image"]) . "\"/></td></tr>");
+print("<tr><td>{$REL_LANG->_('Subject')}: <input type=text name=subject maxlength=255 size=50 value=\"" . makesafe($arr["subject"]) . "\"/></td></tr>");
+print("<tr><td>{$REL_LANG->_('Picture')}: <input type=text name=image maxlength=255 size=50 value=\"" . makesafe($arr["image"]) . "\"/></td></tr>");
 print("<tr><td style='padding: 0px'>");
 print textbbcode("body",$arr["body"]);
 //<textarea name=body cols=145 rows=5 style='border: 0px'>

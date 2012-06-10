@@ -16,11 +16,9 @@ loggedinorreturn();
 
 if ($CURUSER['ratingsum']>0) $znak='+';
 
-$query = $REL_DB->query("SELECT (SELECT SUM(1) FROM peers WHERE seeder=1 AND userid={$CURUSER['id']}) AS seeding, (SELECT SUM(1) FROM snatched LEFT JOIN torrents ON snatched.torrent=torrents.id WHERE torrents.free=0 AND NOT FIND_IN_SET(torrents.freefor,userid) AND userid={$CURUSER['id']} AND torrents.owner<>{$CURUSER['id']}) AS downloaded");
 
-list($seeding,$downloaded) = mysql_fetch_array($query);
-$seeding = (int)$seeding;
-$downloaded = (int)$downloaded;
+$seeding = $CURUSER['seeding'];
+$downloaded = $CURUSER['downloaded'];
 
 if (($CURUSER['ratingsum']>$REL_CRON['rating_max'])&&($downloaded<=($seeding+$CURUSER['discount']))) { $formula = $REL_LANG->_('Your rating is upper then %s, automatic rating increase disabled. You can increase your rating by active commenting, releasing and receiving ratings from another users',$REL_CRON['rating_max']); $nodetails=true; }
 elseif (!$downloaded && !$seeding) { $formula = $REL_LANG->say_by_key('no_formula'); $nodetails = true; }
@@ -39,20 +37,18 @@ else {
 
 
 if (isset($_GET['discount'])) {
-	$max_discount = ($downloaded-$CURUSER['discount']);
-	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+	$max_discount = ($CURUSER['ratingsum']>$CURUSER['downloaded']?($CURUSER['downloaded']-$CURUSER['ratingsum']):$CURUSER['ratingsum']);
+	if ($max_discount<=0) {
+        $REL_TPL->stderr($REL_LANG->_('Message'),$REL_LANG->_('You already reached discount limit. <a href="%s">Tell my why?</a>',$REL_SEO->make_link('aboutrating')),'success');
+    }
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$discount = (int)$_POST['discountamount'];
 
 		if (($discount>=$CURUSER['ratingsum']) || ($discount<=0)) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_rating'));
-		$devision = (($rateup>$REL_CRON['rating_discounttorrent'])?$rateup:$REL_CRON['rating_discounttorrent']);
 
-		$to_discount = round($discount/$devision);
-		if ($to_discount>$max_discount) {
-			safe_redirect($REL_SEO->make_link('myrating','discount',''),3);
-			$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('discount_limit'));
-		}
-		$to_ratingsum = $to_discount*$devision;
-		$REL_DB->query("UPDATE users SET discount=discount+$to_discount, ratingsum=ratingsum-$to_ratingsum WHERE id={$CURUSER['id']}");
+
+		$to_discount = round($discount/$REL_CRON['rating_discounttorrent']);
+		$REL_DB->query("UPDATE users SET discount=discount+$to_discount, ratingsum=ratingsum-$discount WHERE id={$CURUSER['id']}");
 		safe_redirect($REL_SEO->make_link('myrating'),1);
 		$REL_TPL->stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('rating_changed'),'success');
 
@@ -65,7 +61,7 @@ if (isset($_GET['discount'])) {
 			die();
 		}
 		print('<form action="'.$REL_SEO->make_link('myrating','discount','').'" method="POST"><div align="center" style="display:inline;">'.sprintf($REL_LANG->say_by_key('discount_link'),(($rateup>$REL_CRON['rating_discounttorrent'])?$rateup:$REL_CRON['rating_discounttorrent'])).'<br />
-   '.sprintf($REL_LANG->say_by_key('i_chage'),'<input type="text" name="discountamount" size="5">',$max_discount,$znak.$CURUSER['ratingsum']).'<br /><input type="submit" value="'.$REL_LANG->say_by_key('chage_rating').'"></div></form>');
+   '.sprintf($REL_LANG->say_by_key('i_change'),'<input type="text" name="discountamount" size="5">',$max_discount,$znak.$CURUSER['ratingsum']).'<br /><b>'.$REL_LANG->_('Your discount must be at least %s to increase rating now (%s currently seeding + %s discount = %s downloaded)',($CURUSER['downloaded']-$CURUSER['seeding']),$CURUSER['seeding'],($CURUSER['downloaded']-$CURUSER['seeding']),$CURUSER['downloaded']).'</b><br/><input type="submit" value="'.$REL_LANG->say_by_key('chage_rating').'"></div></form>');
 		$REL_TPL->stdfoot();
 		die();
 	}
@@ -78,8 +74,8 @@ tr($REL_LANG->say_by_key('rating_title'),"<h1>{$REL_LANG->say_by_key('rating_tit
 
 // if ratings enabled
 if ($REL_CRON['rating_enabled']) {
-
-	if (get_privilege('is_vip',false))
+    $classes = init_class_array();
+	if ($CURUSER['class']==$classes['vip'])
 	$goods = $REL_LANG->say_by_key('goods_vip');
 	elseif ((time()-$CURUSER['added'])<($REL_CRON['rating_freetime']*86400)) $goods = sprintf($REL_LANG->say_by_key('goods_new'),($REL_CRON['rating_freetime']-round((time()-$CURUSER['added'])/86400)));
 	else $goods = $REL_LANG->say_by_key('no_goods');

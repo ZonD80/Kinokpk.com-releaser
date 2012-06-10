@@ -14,7 +14,6 @@ INIT();
 
 $pid = (int) $_GET['id'];
 
-if (!pagercheck()) {
 
 	if (isset($_GET['deletevote']) && is_valid_id($_GET['vid']) && get_privilege('polls_operation',false)) {
 		$vid = (int)$_GET['vid'];
@@ -176,7 +175,7 @@ if (!pagercheck()) {
 
 
 
-}
+
 
 $subres = $REL_DB->query("SELECT SUM(1) FROM comments WHERE toid = ".$pid." AND type='poll'");
 $subrow = mysql_fetch_array($subres);
@@ -194,13 +193,11 @@ if (!$count) {
 
 }
 else {
-	
-	$limit = ajaxpager(25, $count, array('polloverview','id',$pid), 'comments-table');
 	$subres = $REL_DB->query("SELECT pc.type, pc.id, pc.ip, pc.ratingsum, pc.text, pc.user, pc.added, pc.editedby, pc.editedat, u.avatar, u.warned, ".
                   "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS pc LEFT JOIN users AS u ON pc.user = u.id LEFT JOIN sessions ON pc.user=sessions.uid LEFT JOIN users AS e ON pc.editedby = e.id WHERE pc.toid = " .
-                  "".$id." AND pc.type='poll' GROUP BY pc.id ORDER BY pc.id ASC $limit");
+                  "".$id." AND pc.type='poll' GROUP BY pc.id ORDER BY pc.id ASC");
 	$allrows = prepare_for_commenttable($subres,$pquestion,$REL_SEO->make_link('polloverview','id',$pid));
-	if (!pagercheck()) {
+
 		print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >");
 		print("<tr><td class=\"colhead\" align=\"center\" >");
 		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: {$REL_LANG->_('Comments list')}</div>");
@@ -211,12 +208,6 @@ else {
 		commenttable($allrows);
 		print("</td></tr>");
 		print("</table></div>");
-	} else {
-		print("<tr><td>");
-		commenttable($allrows);
-		print("</td></tr>");
-		die();
-	}
 }
 $REL_TPL->assignByRef('to_id',$pid);
 $REL_TPL->assignByRef('is_i_notified',is_i_notified ( $pid, 'pollcomments' ));

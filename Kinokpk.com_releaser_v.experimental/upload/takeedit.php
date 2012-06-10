@@ -43,7 +43,7 @@ if (isset($_GET['checkonly'])) {
 	else {
 		$REL_DB->query("UPDATE torrents SET moderatedby={$CURUSER['id']}, moderated=0 WHERE id=$id");
 		// send notifs
-		if (!$row['moderated']) {
+		if (!$row['moderated']&&$REL_CRON['rating_enabled']) {
 			$REL_DB->query("UPDATE users SET ratingsum = ratingsum + {$REL_CRON['rating_perrelease']} WHERE id={$row['owner']}");
 			$bfooter = <<<EOD
 {$REL_LANG->_('To view release, follow this link')}:
@@ -328,7 +328,8 @@ if ($_POST['nofile']) {
 
 	if ($wastor != 'nofile') {
 		$REL_DB->query("DELETE FROM files WHERE torrent = ".$id);
-		$REL_DB->query("DELETE FROM peers WHERE torrent = ".$id);
+		$REL_DB->query("DELETE FROM xbt_files_users WHERE fid = ".$id);
+        $REL_DB->query("DELETE FROM xbt_files WHERE fid = ".$id);
 		$REL_DB->query("DELETE FROM snatched WHERE torrent = ".$id);
 		$REL_DB->query("DELETE FROM trackers WHERE torrent = ".$id);
 		$updateset[] = "filename = 'nofile'";

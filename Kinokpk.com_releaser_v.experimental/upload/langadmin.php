@@ -122,7 +122,8 @@ elseif (isset($_GET['import'])) {
 	}
 }
 elseif (isset($_GET['editor'])) {
-	$search = htmlspecialchars(trim((string)$_GET['search']));
+	$searchkey = htmlspecialchars(trim((string)$_GET['searchkey']));
+    $searchvalue = htmlspecialchars(trim((string)$_GET['searchvalue']));
 	if ($_SERVER['REQUEST_METHOD']=='POST') {
 		if ($_GET['a']=='saveadd') {
 			$lang = array_map("strval",(array)$_POST['word']);
@@ -191,7 +192,7 @@ function ajaxdel(key,lang) {
 <table>
 	<tr>
 		<td><input type="hidden" name="editor" value="1" /> <?php print $REL_LANG->_("Search by key or value");?>
-		<input type="text" name="search" value="<?php print $search;?>" /></td>
+		<?php print $REL_LANG->_('Key');?>:<input type="text" name="searchkey" value="<?php print $searchkey;?>" />&nbsp;<?php print $REL_LANG->_('Value');?>:<input type="text" name="searchvalue" value="<?php print $searchvalue;?>" /></td>
 		<td><input type="submit"
 			value="<?php print $REL_LANG->_("Continue");?>" /></td>
 	</tr>
@@ -233,11 +234,17 @@ function ajaxdel(key,lang) {
 	</tr>
 	<?php
 	}
-	$count = get_row_count('languages',($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":''));
+    $query = array();
 
-	$limit = ajaxpager(25, $count, array('langadmin','editor','1','search',$search), 'wordstable');
+    if ($searchkey) $query[] = "lkey LIKE '%" . sqlwildcardesc($searchkey) . "%'";
+    if ($searchvalue) $query[] =  "lvalue LIKE '%" . sqlwildcardesc($searchvalue) . "%'";
 
-	$res = $REL_DB->query("SELECT * FROM languages".($search?" WHERE lkey LIKE '%" . sqlwildcardesc($search) . "%' OR lvalue LIKE '%" . sqlwildcardesc($search) . "%'":'')." ORDER BY lkey DESC $limit");
+    if ($query) $query = ' WHERE '.implode(' AND ',$query); else $query=NULL;
+	$count = get_row_count('languages',$query);
+
+	$limit = ajaxpager(25, $count, array('langadmin','editor','1','searchkey',$searchkey,'searchvalue',$searchvalue), 'wordstable');
+
+	$res = $REL_DB->query("SELECT * FROM languages$query ORDER BY lkey DESC $limit");
 
 	while ($row = mysql_fetch_assoc($res)) {
 		print "<tr id=\"{$row['lkey']}-{$row['ltranslate']}\"><td><input type=\"text\" name=\"key[{$row['lkey']}][{$row['ltranslate']}]\" value=\"{$row['lkey']}\" maxlength=\"255\"/></td>".

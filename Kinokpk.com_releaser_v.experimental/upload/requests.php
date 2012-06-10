@@ -211,7 +211,6 @@ $REL_TPL->stderr ($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid
 
 
 $s = $num["request"];
-if (!pagercheck()) {
 	$REL_TPL->stdhead($REL_LANG->_('Details of request "%s"',$s));
 
 	print("<table width=\"600\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
@@ -243,7 +242,7 @@ if (!pagercheck()) {
 	print("</table>");
 
 	print("<p><a name=\"startcomments\"></a></p>\n");
-}
+
 
 
 
@@ -259,12 +258,11 @@ if (!$count) {
 	print("</td></tr></table><br /></div>");
 
 } else {
-	$limit = ajaxpager(25, $count, array('requests','id',$id), 'comments-table');
 	$subres = $REL_DB->query("SELECT c.type, c.id, c.ip, c.text, c.ratingsum, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
 		"u.username, u.title, u.info, u.class, u.donor, u.ratingsum AS urating, u.enabled, s.time AS last_access, e.username AS editedbyname FROM comments c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .
-		"$id AND c.type='req' GROUP BY c.id ORDER BY c.id ASC $limit");
+		"$id AND c.type='req' GROUP BY c.id ORDER BY c.id DESC");
 	$allrows = prepare_for_commenttable($subres, $s,$REL_SEO->make_link('requests','id',$id));
-	if (!pagercheck()) {
+
 		print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=main cellSpacing=\"0\" cellPadding=\"5\" width=\"100%\" >");
 		print("<tr><td class=\"colhead\" align=\"center\" >");
 		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: {$REL_LANG->_('List of comments')}</div>");
@@ -277,12 +275,6 @@ if (!$count) {
 		print("</td></tr>");
 
 		print("</table></div>");
-	} else {
-		print("<tr><td>");
-		commenttable($allrows);
-		print("</td></tr>");
-		die();
-	}
 }
 $REL_TPL->assignByRef('to_id',$id);
 $REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'reqcomments' ));

@@ -41,12 +41,6 @@ bark($REL_LANG->say_by_key('incorrect'));
 if (!$row["enabled"])
 bark($REL_LANG->say_by_key('this_acc_disabled'));
 
-$peers = $REL_DB->query("SELECT SUM(1) FROM peers WHERE userid = $row[id]");
-$num = mysql_fetch_row($peers);
-$ip = getip();
-if ($num[0] > 0 && $row[ip] != $ip && $row[ip])
-bark($REL_LANG->say_by_key('this_acc_active'));
-
 logincookie($row["id"], $row["passhash"],$row['language']);
 header("Refresh: 0; url='{$REL_CONFIG['defaultbaseurl']}'");
 ?>

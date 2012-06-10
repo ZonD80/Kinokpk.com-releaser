@@ -113,7 +113,7 @@ function quote_comment(nickname) {
 	}
 	jQuery.scrollTo("#rel_wysiwyg");
 	}
-	
+
 }
 
 function delete_comment(id) {

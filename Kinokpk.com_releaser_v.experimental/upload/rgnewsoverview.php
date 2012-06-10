@@ -31,7 +31,6 @@ if (mysql_num_rows($sql) == 0) {
 
 $rgnews = mysql_fetch_assoc($sql);
 
-if (!pagercheck()) {
 	$relgroup = $REL_DB->query("SELECT id,name,owners,private FROM relgroups WHERE id={$rgnews['relgroup']}");
 	$relgroup = mysql_fetch_assoc($relgroup);
 
@@ -67,13 +66,14 @@ $added = mkprettytime($rgnews['added']) . " (" . (get_elapsed_time($rgnews["adde
 
 
 print("<div class='newsbody'><p>".format_comment($rgnews['body'])."</p><small>".$added."</small></div></div>");
-}
+
 
 
 $REL_TPL->assignByRef('to_id',$rgnewsid);
 $REL_TPL->assignByRef('is_i_notified',is_i_notified ( $rgnewsid, 'rgnewscomments' ));
 $REL_TPL->assign('textbbcode',textbbcode('text'));
 $REL_TPL->assignByRef('FORM_TYPE_LANG',$REL_LANG->_('Release group news'));
+
 $FORM_TYPE = 'rgnews';
 $REL_TPL->assignByRef('FORM_TYPE',$FORM_TYPE);
 $REL_TPL->display('commenttable_form.tpl');
@@ -98,9 +98,9 @@ else {
 
 	$subres = $REL_DB->query("SELECT nc.type, nc.id, nc.ip, nc.text, nc.ratingsum, nc.user, nc.added, nc.editedby, nc.editedat, u.avatar, u.warned, ".
                   "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS nc LEFT JOIN users AS u ON nc.user = u.id LEFT JOIN sessions ON nc.user=sessions.uid LEFT JOIN users AS e ON nc.editedby = e.id WHERE nc.toid = " .
-                  "".$rgnewsid." AND nc.type='rgnews' ORDER BY nc.id DESC $limit");
+                  "".$rgnewsid." AND nc.type='rgnews' ORDER BY nc.id ASC");
 	$allrows = prepare_for_commenttable($subres,$rgnews['subject'],$REL_SEO->make_link('rgnewsoverview','id',$rgnewsid));
-	if (!pagercheck()) {
+
 		print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >");
 		print("<tr><td class=\"colhead\" align=\"center\" >");
 		print("<div style=\"float: left; width: auto;\" align=\"left\"> :: Список комментариев</div>");
@@ -112,9 +112,6 @@ else {
 		print ( "</td></tr>" );
 
 		print ( "</table></div>" );
-	} else { 	print ( "<tr><td>" );
-	commenttable ( $allrows);
-	print ( "</td></tr>" ); die(); }
 }
 
 ?></div>

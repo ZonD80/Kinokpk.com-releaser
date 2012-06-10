@@ -24,7 +24,7 @@ if (isset($_GET['id'])) {
 	$sql = $REL_DB->query("SELECT * FROM news WHERE id = {$newsid} ORDER BY id DESC");
 	$news = mysql_fetch_assoc($sql);
 	if (!$news) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
-	if (!pagercheck()) {
+
 		$added = mkprettytime($news['added']) . " (" . (get_elapsed_time($news["added"],false)) . " {$REL_LANG->say_by_key('ago')})";
 		print("<h1>{$news['subject']}</h1>\n");
 		print("<table width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n" .
@@ -58,7 +58,7 @@ print("<tr><td style=\"vertical-align: top; text-align: left;\"><span class=\"fl
 	print("<tr align=\"right\"><td class=\"colhead\">{$REL_LANG->_('Added')}:&nbsp;{$added}</td></tr>\n");
 
 		print("</table><br />\n");
-	}
+
 		
 
 
@@ -80,15 +80,12 @@ print("<tr><td style=\"vertical-align: top; text-align: left;\"><span class=\"fl
 
 	}
 	else {
-		
-
-		$limit = ajaxpager(25, $count, array('newsoverview','id',$newsid), 'comments-table');
 
 		$subres = $REL_DB->query("SELECT nc.type, nc.id, nc.ip, nc.text, nc.ratingsum, nc.user, nc.added, nc.editedby, nc.editedat, u.avatar, u.warned, ".
                   "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, sessions.time AS last_access, e.username AS editedbyname FROM comments AS nc LEFT JOIN users AS u ON nc.user = u.id LEFT JOIN sessions ON nc.user=sessions.uid LEFT JOIN users AS e ON nc.editedby = e.id WHERE nc.toid = " .
-                  "".$newsid." AND nc.type='news' GROUP BY nc.id ORDER BY nc.id ASC $limit");
+                  "".$newsid." AND nc.type='news' GROUP BY nc.id ORDER BY nc.id ASC");
 		$allrows = prepare_for_commenttable($subres,$news['subject'],$REL_SEO->make_link('newsoverview','id',$newsid));
-		if (!pagercheck()) {
+
 			print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" style=\"float:left;\">");
 			print("<tr><td class=\"colhead\" align=\"center\" >");
 			print("<div style=\"float: left; width: auto;\" align=\"left\"> :: {$REL_LANG->_('Comments list')}</div>");
@@ -101,12 +98,6 @@ print("<tr><td style=\"vertical-align: top; text-align: left;\"><span class=\"fl
 			print("</td></tr>");
 
 			print("</table></div>");
-		} else {
-			print("<tr><td>");
-			commenttable($allrows);
-			print("</td></tr>");
-			die();
-		}
 	}
 	$REL_TPL->assignByRef('to_id',$newsid);
 	$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $newsid, 'newscomments' ));

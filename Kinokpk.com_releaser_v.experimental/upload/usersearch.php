@@ -617,7 +617,7 @@ $highlight = " bgcolor=#BBAF9B";
 		if ($active == "1")
 		{
 			$distinct = "DISTINCT ";
-			$join_is .= " LEFT JOIN peers AS p ON u.id = p.userid";
+			$join_is .= " LEFT JOIN xbt_files_users AS p ON u.id = p.uid";
 			$q .= ($q ? "&amp;" : "") . "ac=$active";
 		}
 

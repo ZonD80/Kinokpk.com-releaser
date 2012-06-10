@@ -100,8 +100,7 @@ else {
 
 	if(!$action) {
 	if (!$row['relgroup_allowed'] && $row['private'] && (!get_privilege('access_to_private_relgroups',false))) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_access_priv_rg'));
-		
-		if (!pagercheck()) {
+
 			$REL_TPL->stdhead(sprintf($REL_LANG->say_by_key('relgroup_title'),$row['name'],$row['spec']));
 
 			if ($row['owners']||$row['members']) {
@@ -264,7 +263,7 @@ else {
 	<?php
 	$REL_TPL->begin_frame();
 
-		}
+
 		
 
 		
@@ -282,12 +281,11 @@ else {
 
 		}
 		else {
-			$limit = ajaxpager(25, $count, array('relgroups','id',$id), 'comments-table');
 			$subres = $REL_DB->query("SELECT c.type, c.id, c.ip, c.ratingsum, c.text, c.user, c.added, c.editedby, c.editedat, u.avatar, u.warned, ".
 												  "u.username, u.title, u.info, u.class, u.donor, u.enabled, u.ratingsum AS urating, u.gender, s.time AS last_access, e.username AS editedbyname FROM comments AS c LEFT JOIN users AS u ON c.user = u.id LEFT JOIN users AS e ON c.editedby = e.id  LEFT JOIN sessions AS s ON s.uid=u.id WHERE c.toid = " .
-												  "$id AND c.type='rg' GROUP BY c.id ORDER BY c.id ASC $limit");
+												  "$id AND c.type='rg' GROUP BY c.id ORDER BY c.id ASC");
 			$allrows = prepare_for_commenttable($subres,$row['name'],$REL_SEO->make_link('relgroups','id',$id));
-			if (!pagercheck()) {
+
 				print("<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=\"rgcomm\" cellspacing=\"0\" cellPadding=\"5\">");
 				print("<tr>
 					<td class=\"colhead_rgcomm\" align=\"center\">");
@@ -300,12 +298,6 @@ else {
 				commenttable($allrows);
 				print("</td></tr>");
 				print("</table></div>");
-			} else {
-				print("<tr><td>");
-				commenttable($allrows);
-				print("</td></tr>");
-				die();
-			}
 		}
 		$REL_TPL->assignByRef('to_id',$id);
 		$REL_TPL->assignByRef('is_i_notified',is_i_notified ( $id, 'rgcomments' ));

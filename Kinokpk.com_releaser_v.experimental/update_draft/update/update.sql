@@ -552,3 +552,5 @@ DROP TABLE `forum_categories`, `forum_topics`;
 delete from comments where type='forum';
 
 ALTER TABLE  `trackers` CHANGE  `method`  `method` VARCHAR( 15 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT  'local';
+
+DROP TABLE  `peers`;

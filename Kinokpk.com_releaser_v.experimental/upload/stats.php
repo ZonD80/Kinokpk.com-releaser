@@ -38,9 +38,15 @@ $res = $REL_DB->query("SELECT SUM(1) FROM torrents");
 $n = mysql_fetch_row($res);
 $n_tor = $n[0];
 
-$res = $REL_DB->query("SELECT SUM(1) FROM peers");
+$res = $REL_DB->query("SELECT SUM(1) FROM xbt_files_users WHERE active=1");
 $n = mysql_fetch_row($res);
 $n_peers = $n[0];
+
+$classes = init_class_array();
+$level = get_class_priority($classes['uploader']);
+foreach ($classes as $cid=>$class) {
+    if (is_int($cid)&&$class['priority']&&$class['priority']>$level) $to_select[] = $cid;
+}
 
 $uporder = urlencode($_GET['uporder']);
 $catorder = urlencode($_GET["catorder"]);
@@ -54,14 +60,13 @@ $orderby = "n_p DESC, name";
 else
 $orderby = "name";
 
-$query = "SELECT u.id, u.username AS name, MAX(t.added) AS last, COUNT(DISTINCT t.id) AS n_t, COUNT(p.id) as n_p
-	FROM users as u LEFT JOIN torrents as t ON u.id = t.owner LEFT JOIN peers as p ON t.id = p.torrent WHERE u.class = 3
-	GROUP BY u.id UNION SELECT u.id, u.username AS name, MAX(t.added) AS last, COUNT(DISTINCT t.id) AS n_t, COUNT(p.id) as n_p
-	FROM users as u LEFT JOIN torrents as t ON u.id = t.owner LEFT JOIN peers as p ON t.id = p.torrent WHERE u.class > 3
+$query = "SELECT u.id, u.username AS name, MAX(t.added) AS last, COUNT(DISTINCT t.id) AS n_t, COUNT(p.fid) as n_p
+	FROM users as u LEFT JOIN torrents as t ON u.id = t.owner LEFT JOIN xbt_files_users as p ON t.id = p.fid WHERE u.class = {$classes['uploader']}
+	GROUP BY u.id UNION SELECT u.id, u.username AS name, MAX(t.added) AS last, COUNT(DISTINCT t.id) AS n_t, COUNT(p.fid) as n_p
+	FROM users as u LEFT JOIN torrents as t ON u.id = t.owner LEFT JOIN xbt_files_users as p ON t.id = p.fid WHERE u.class IN (".implode(',',$to_select).")
 	GROUP BY u.id ORDER BY $orderby";
 
 $res = $REL_DB->query($query);
-
 if (mysql_num_rows($res) == 0)
 $REL_TPL->stdmsg("Извините", "Нет заливающих.");
 else
@@ -87,7 +92,6 @@ else
 	print('</table>');
 	$REL_TPL->end_frame();
 }
-
 if ($n_tor == 0)
 $REL_TPL->stdmsg("Извините", "Данные по категориям отсутствуют!");
 else
@@ -101,9 +105,9 @@ else
 	else
 	$orderby = "c.name";
 	$tree = make_tree();
-	$res = $REL_DB->query("SELECT c.id as catid, MAX(t.added) AS last, COUNT(DISTINCT t.id) AS n_t, COUNT(p.id) AS n_p
-	FROM categories as c LEFT JOIN torrents as t ON t.category = c.id LEFT JOIN peers as p
-	ON t.id = p.torrent GROUP BY c.id ORDER BY $orderby");
+	$res = $REL_DB->query("SELECT c.id as catid, MAX(t.added) AS last, COUNT(DISTINCT t.id) AS n_t, COUNT(p.fid) AS n_p
+	FROM categories as c LEFT JOIN torrents as t ON t.category = c.id LEFT JOIN xbt_files_users as p
+	ON t.id = p.fid GROUP BY c.id ORDER BY $orderby");
 
 	$REL_TPL->begin_frame("Активность категорий", True);
 	print("<table width=\"100%\" border=\"1\">

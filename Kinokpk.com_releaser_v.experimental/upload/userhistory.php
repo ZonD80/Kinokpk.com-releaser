@@ -109,9 +109,11 @@ if (in_array($type,$allowed_types))
 	}
 	elseif ($type=='downloaded') {
 		$cats = assoc_cats ();
-		$r = $REL_DB->query ( "SELECT snatched.torrent AS id, snatched.completedat, torrents.name, torrents.seeders, torrents.leechers, torrents.category FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent WHERE snatched.userid = $id AND torrents.owner<>$id GROUP BY id ORDER BY id" );
+		$r = $REL_DB->query ( "SELECT snatched.torrent AS id, snatched.completedat, torrents.name, torrents.seeders, torrents.leechers, torrents.category FROM snatched LEFT JOIN torrents ON torrents.id = snatched.torrent WHERE snatched.userid = $id ORDER BY id" );
 		if (mysql_num_rows ( $r )) {
-			$completed = "<table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n" . "<tr><td class=\"colhead\">{$REL_LANG->_('Type')}</td><td class=\"colhead\">{$REL_LANG->_('Name')}</td><td class=\"colhead\">{$REL_LANG->_('Seeders')}</td><td class=\"colhead\">{$REL_LANG->_('Leechers')}</td><td class=\"colhead\">{$REL_LANG->_('Date')}</td></tr>\n";
+			$completed = "<table class=\"main\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n" .
+                "<tr><td colspan=\"5\" align=\"center\">{$REL_LANG->_('Viewing all releases (created by you, gifted to you, golden and downloaded by you)')}</td></tr>".
+                "<tr><td class=\"colhead\">{$REL_LANG->_('Type')}</td><td class=\"colhead\">{$REL_LANG->_('Name')}</td><td class=\"colhead\">{$REL_LANG->_('Seeders')}</td><td class=\"colhead\">{$REL_LANG->_('Leechers')}</td><td class=\"colhead\">{$REL_LANG->_('Date')}</td></tr>\n";
 			if ($id==$CURUSER['id']) $completed.= ('<tr><td align="center" colspan="5">'.$REL_LANG->_('You can download all previous releases in one ZIP-archive without rating decrease<br/><a href="%s">View downloaded releases</a> or <a href="%s">Download ZIP-archive with torrents</a>',$REL_SEO->make_link('userhistory','id',$id,'type','downloaded'),$REL_SEO->make_link('download','a','my')).'</td></tr>');
 			while ( $a = mysql_fetch_array ( $r ) ) {
 				$rescatids = explode ( ',', $a ['category'] );
@@ -128,7 +130,7 @@ if (in_array($type,$allowed_types))
 	}
 	elseif ($type=='leeching') {
 		$cats = assoc_cats ();
-		$res = $REL_DB->query ( "SELECT peers.torrent, added, torrents.name AS torrentname, size, category, torrents.seeders, torrents.leechers FROM peers LEFT JOIN torrents ON peers.torrent = torrents.id WHERE userid = $id AND seeder=0 GROUP BY peers.torrent" );
+		$res = $REL_DB->query ( "SELECT `xbt_files_users`.`fid` AS torrent, `added`, `torrents`.`name` AS torrentname, `size`, `category`, `torrents`.`seeders`, `torrents`.`leechers` FROM `xbt_files_users` LEFT JOIN `torrents` ON `xbt_files_users`.`fid` = `torrents`.`id` WHERE `uid` = $id AND `active`=1 AND `left`<>0" );
 		if (mysql_num_rows ( $res ) > 0)
 		$leeching = maketable ( $res );
 		if (!$leeching) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
@@ -136,7 +138,7 @@ if (in_array($type,$allowed_types))
 	}
 	elseif ($type=='seeding') {
 		$cats = assoc_cats ();
-		$res = $REL_DB->query ( "SELECT peers.torrent, added, torrents.name AS torrentname, size, category, torrents.seeders, torrents.leechers FROM peers LEFT JOIN torrents ON peers.torrent = torrents.id WHERE userid = $id AND seeder=1 GROUP BY peers.torrent" );
+		$res = $REL_DB->query ( "SELECT `xbt_files_users`.`fid` AS torrent, `added`, `torrents`.`name` AS torrentname, `size`, `category`, `torrents`.`seeders`, `torrents`.`leechers` FROM `xbt_files_users` LEFT JOIN `torrents` ON `xbt_files_users`.`fid` = `torrents`.`id` WHERE `uid` = $id AND `active`=1 AND `left`=0" );
 		if (mysql_num_rows ( $res ) > 0)
 		$seeding = maketable ( $res );
 		if (!$seeding) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
@@ -180,21 +182,19 @@ if (in_array($type,$allowed_types))
 	$count = $arr[0];
 	if (!$count) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('nothing_found'));
 
-	$limit = "LIMIT 50";
 
 	if ($type<>'friends'&&$type<>'presents'&&$type<>'nicknames') {
-		if (!pagercheck()) {
+
 			$REL_TPL->stdhead($REL_LANG->say_by_key('history_'.$type)." {$REL_LANG->_("From")} {$user['username']}");
 			if ($disallow_view&&get_privilege('view_private_user_profiles',false)) print"<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
-		}
+
 		$REL_TPL->begin_frame($REL_LANG->say_by_key('history_'.$type).sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 
 
-		$limit = ajaxpager(25, $count, array('userhistory','id',$id,'name',$user['username'],'type',$type), 'comments-table');
-		$query = "SELECT comments.id, comments.toid, comments.type, comments.ip, comments.ratingsum, comments.text, comments.user, comments.added, comments.editedby, comments.editedat, users.avatar, users.warned, users.username, users.title, users.class, users.donor, users.enabled, users.ratingsum AS urating, users.gender, users.last_access, e.username AS editedbyname, $name[$type] FROM comments LEFT JOIN users ON comments.user = users.id LEFT JOIN users AS e ON comments.editedby = e.id{$leftjoin[$type]} WHERE $where ORDER BY $order $limit";
+		$query = "SELECT comments.id, comments.toid, comments.type, comments.ip, comments.ratingsum, comments.text, comments.user, comments.added, comments.editedby, comments.editedat, users.avatar, users.warned, users.username, users.title, users.class, users.donor, users.enabled, users.ratingsum AS urating, users.gender, users.last_access, e.username AS editedbyname, $name[$type] FROM comments LEFT JOIN users ON comments.user = users.id LEFT JOIN users AS e ON comments.editedby = e.id{$leftjoin[$type]} WHERE $where ORDER BY comments.id ASC";
 		$res = $REL_DB->query($query);
 		$commentsarray = prepare_for_commenttable($res);
-		if (!pagercheck()) {
+
 			print ( "<div id=\"pager_scrollbox\"><table id=\"comments-table\" class=main cellspacing=\"0\" cellPadding=\"5\" width=\"100%\" >" );
 			print ( "<tr><td class=\"colhead\" align=\"center\" >" );
 			print ( "<div style=\"float: left; width: auto;\" align=\"left\"> :: {$REL_LANG->_('Comments')}</div>" );
@@ -204,12 +204,6 @@ if (in_array($type,$allowed_types))
 			commenttable($commentsarray);
 			print ( "</td></tr>" );
 			print ( "</table></div>" );
-		} else {
-			print ( "<tr><td>" );
-			commenttable($commentsarray);
-			print ( "</td></tr>" );
-			die();
-		}
 		$REL_TPL->end_frame();
 		$REL_TPL->stdfoot();
 
@@ -246,9 +240,10 @@ if (in_array($type,$allowed_types))
 
 		$REL_TPL->begin_frame($REL_LANG->say_by_key('history_friends').' '.$user['username'].sprintf($REL_LANG->say_by_key('to_history'),$id,$user['username']));
 
-		$res = $REL_DB->query("SELECT IF (friends.userid={$id},friends.friendid,friends.userid) AS friend, (SELECT 1 FROM friends WHERE (userid=friend AND friendid={$CURUSER['id']}) OR (friendid=friend AND userid={$CURUSER['id']})) AS myfriend, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON IF (friends.userid={$id},u.id=friendid,u.id=userid) LEFT JOIN countries AS c ON c.id = u.country WHERE $where ORDER BY friends.id DESC $limit");
+		//$res = $REL_DB->query("SELECT IF (friends.userid={$id},friends.friendid,friends.userid) AS friend, (SELECT 1 FROM friends WHERE (userid=friend AND friendid={$CURUSER['id']}) OR (friendid=friend AND userid={$CURUSER['id']})) AS myfriend, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON IF (friends.userid={$id},u.id=friendid,u.id=userid) LEFT JOIN countries AS c ON c.id = u.country WHERE $where ORDER BY friends.id DESC $limit");
+        $res = $REL_DB->query("(SELECT friends.friendid AS friend, (SELECT 1 FROM friends WHERE (userid=friend AND friendid={$CURUSER['id']}) OR (friendid=friend AND userid={$CURUSER['id']})) AS myfriend, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON u.id=friendid LEFT JOIN countries AS c ON c.id = u.country WHERE $where AND friends.userid={$id} ORDER BY friends.id) UNION (SELECT friends.userid AS friend, (SELECT 1 FROM friends WHERE (userid=friend AND friendid={$CURUSER['id']}) OR (friendid=friend AND userid={$CURUSER['id']})) AS myfriend, friends.id, u.username,u.class,u.country,u.ratingsum,u.added,u.last_access,u.gender,u.donor, u.warned, u.confirmed, u.enabled, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON u.id=userid LEFT JOIN countries AS c ON c.id = u.country WHERE $where AND friends.userid<>{$id} ORDER BY friends.id)");
 
-		print ('<div id="users-table">');
+        print ('<div id="users-table">');
 		print("<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n");
 		print("<tr><td class=\"colhead\" align=\"left\">{$REL_LANG->_('Username')}</td><td class=\"colhead\">{$REL_LANG->_('Registered at')}</td><td class=\"colhead\">{$REL_LANG->_('Last login')}</td><td class=\"colhead\">{$REL_LANG->_('Rating')}</td><td class=\"colhead\">{$REL_LANG->_('Gender')}</td><td class=\"colhead\" align=\"left\">{$REL_LANG->_('Class')}</td><td class=\"colhead\">{$REL_LANG->_('Country')}</td><td class=\"colhead\">{$REL_LANG->_('Add to friends')}</td></tr>\n");
 		while ($arr = mysql_fetch_assoc($res)) {
