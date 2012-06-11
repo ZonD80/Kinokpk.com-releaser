@@ -1780,7 +1780,7 @@ function deletetorrent($id,$reason='') {
 	$REL_DB->query("DELETE FROM xbt_files WHERE fid=$id");
 	$REL_DB->query("DELETE FROM xbt_files_users WHERE fid=$id");
 	//$REL_DB->query("DELETE FROM xbt_files WHERE fid=$id");
-	foreach(explode(".","snatched.peers.files.trackers") as $x)
+	foreach(explode(".","snatched.files.trackers") as $x)
 	$REL_DB->query("DELETE FROM $x WHERE torrent = $id");
 	@unlink("torrents/$id.torrent");
 	$images = glob(ROOT_PATH.'torrents/images/'.$id.'-*');
