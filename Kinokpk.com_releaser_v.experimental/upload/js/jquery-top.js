@@ -14,10 +14,11 @@
  * Date: Mon Jan 31 08:31:29 2011 -0500
  */
 $(document).ready(function () {
-         $(window).scroll(function () {
-           if (($(window).scrollTop()+1) ==
-($(document).height() - $(window).height())) {
-           do_pager();
-          };
-        });  
-     });
+    $(window).scroll(function () {
+        if (($(window).scrollTop() + 1) ==
+            ($(document).height() - $(window).height())) {
+            do_pager();
+        }
+        ;
+    });
+});

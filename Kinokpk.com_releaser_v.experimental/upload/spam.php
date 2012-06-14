@@ -18,105 +18,109 @@ httpauth();
 
 $count = get_row_count("messages");
 
-if (!$count){
-	$REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Nothing was found'));
+if (!$count) {
+    $REL_TPL->stderr($REL_LANG->_('Error'), $REL_LANG->_('Nothing was found'));
 }
 
 $limit = ajaxpager(50, $count, array('spam'), "messages");
 if (!pagercheck()) {
-$REL_TPL->stdhead($REL_LANG->_('Private messages viewer'));
+    $REL_TPL->stdhead($REL_LANG->_('Private messages viewer'));
 
-?>
+    ?>
 
 <form method="post" action="<?php print $REL_SEO->make_link('take-delmp');?>"
-	name="form1" id="message">
+      name="form1" id="message">
 
 <div id="pager_scrollbox"><table id="messages" border="1" cellspacing="1" cellpadding="1" width="100%">
 	<tr>
-		<td colspan="5" class=colhead align=center><?php print $REL_LANG->_('Private messages (%s total)',$count);?></td>
-	</tr>
-	<tr>
-		<td colspan="5">
-		<div style="float: right;"><input type="submit"
-			value="<?php print $REL_LANG->_('Delete selected');?>!" onClick="return confirm('<?php print $REL_LANG->_('Are you sure?');?>')"></div>
-		</td>
-	</tr>
-	<tr>
-		<td class=colhead align=center><?php print $REL_LANG->_('Sender/Receiver');?></td>
-		<td class=colhead align=center>ID</td>
-		<td class=colhead align=center><?php print $REL_LANG->_('Text');?></td>
-		<td class=colhead align=center><?php print $REL_LANG->_('Date');?></td>
-		<td class=colhead>
-		<center><INPUT type="checkbox" title="<?php print $REL_LANG->_('Select All');?>" value="<?php print $REL_LANG->_('Select All');?>"
-			id="toggle-all"></center>
-		</td>
-	</tr>
-	<?php
+        <td colspan="5" class=colhead
+            align=center><?php print $REL_LANG->_('Private messages (%s total)', $count);?></td>
+    </tr>
+    <tr>
+        <td colspan="5">
+            <div style="float: right;"><input type="submit"
+                                              value="<?php print $REL_LANG->_('Delete selected');?>!"
+                                              onClick="return confirm('<?php print $REL_LANG->_('Are you sure?');?>')">
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class=colhead align=center><?php print $REL_LANG->_('Sender/Receiver');?></td>
+        <td class=colhead align=center>ID</td>
+        <td class=colhead align=center><?php print $REL_LANG->_('Text');?></td>
+        <td class=colhead align=center><?php print $REL_LANG->_('Date');?></td>
+        <td class=colhead>
+            <center><INPUT type="checkbox" title="<?php print $REL_LANG->_('Select All');?>"
+                           value="<?php print $REL_LANG->_('Select All');?>"
+                           id="toggle-all"></center>
+        </td>
+    </tr>
+    <?php
 }
 
-	$res = $REL_DB->query("SELECT * FROM messages $where ORDER BY id DESC $limit");
-	while ($arr = mysql_fetch_assoc($res))
-	{
-		$res2 = $REL_DB->query("SELECT username, class, id, warned, donor, enabled FROM users WHERE id=".$arr["receiver"]);
-		$arr2 = mysql_fetch_assoc($res2);
+$res = $REL_DB->query("SELECT * FROM messages $where ORDER BY id DESC $limit");
+while ($arr = mysql_fetch_assoc($res)) {
+    $res2 = $REL_DB->query("SELECT username, class, id, warned, donor, enabled FROM users WHERE id=" . $arr["receiver"]);
+    $arr2 = mysql_fetch_assoc($res2);
 
-		if($arr["receiver"] == 0 or !$arr["receiver"]){
-			$receiver = "<strike><b>{$REL_LANG->_('Unknown')}</b></strike>";
-		} else {
-			$receiver = make_user_link($arr2);
-		}
+    if ($arr["receiver"] == 0 or !$arr["receiver"]) {
+        $receiver = "<strike><b>{$REL_LANG->_('Unknown')}</b></strike>";
+    } else {
+        $receiver = make_user_link($arr2);
+    }
 
-		$res3 = $REL_DB->query("SELECT username, class, id, warned, donor, enabled FROM users WHERE id=".$arr["sender"]);
-		$arr3 = mysql_fetch_assoc($res3);
+    $res3 = $REL_DB->query("SELECT username, class, id, warned, donor, enabled FROM users WHERE id=" . $arr["sender"]);
+    $arr3 = mysql_fetch_assoc($res3);
 
-		if($arr["sender"] == 0){
-			$sender = "<font color=red><b>{$REL_LANG->_('System')}</b></font>";
-		} else {
-			$sender = make_user_link($arr3);
-		}
-		$msg = format_comment($arr['msg']);
-		$added = mkprettytime($arr['added']);
+    if ($arr["sender"] == 0) {
+        $sender = "<font color=red><b>{$REL_LANG->_('System')}</b></font>";
+    } else {
+        $sender = make_user_link($arr3);
+    }
+    $msg = format_comment($arr['msg']);
+    $added = mkprettytime($arr['added']);
 
-		print("<tr><td align='left'>
-        <div style='padding-top:5px; padding-bottom:10px;'>{$REL_LANG->_('Sender')}:&nbsp;".$sender."</div>
-        <div style='padding-top:10px; padding-bottom:5px;'>{$REL_LANG->_('Receiver')}:&nbsp;".$receiver."</div>
-        </td><td align=center><a href=\"".$REL_SEO->make_link('message','action','viewmessage','id',$arr["id"])."\">".$arr["id"]."</a></td>
+    print("<tr><td align='left'>
+        <div style='padding-top:5px; padding-bottom:10px;'>{$REL_LANG->_('Sender')}:&nbsp;" . $sender . "</div>
+        <div style='padding-top:10px; padding-bottom:5px;'>{$REL_LANG->_('Receiver')}:&nbsp;" . $receiver . "</div>
+        </td><td align=center><a href=\"" . $REL_SEO->make_link('message', 'action', 'viewmessage', 'id', $arr["id"]) . "\">" . $arr["id"] . "</a></td>
         <td>$msg</td>
         <td align=center>$added</td>");
-		print("<TD align=center><INPUT type=\"checkbox\" name=\"delmp[]\" value=\"".$arr['id']."\" id=\"checkbox_tbl_".$arr['id']."\">
+    print("<TD align=center><INPUT type=\"checkbox\" name=\"delmp[]\" value=\"" . $arr['id'] . "\" id=\"checkbox_tbl_" . $arr['id'] . "\">
           </TD></tr>");
-	}
-	
-	?>
-		<tr>
-			<td class=colhead colspan="4"></td>
-			<td class=colhead>
-			<center><INPUT type="checkbox" title="<?php print $REL_LANG->_('Select All');?>"
-				value="<?php print $REL_LANG->_('Select All');?>" id="toggle-all"></center>
-			</td>
-		</tr>
+}
 
-		<?php
-		
-			
-		if ($where && $count){
-			?>
-		<tr>
-			<td colspan="5"><a href="<?php print$REL_SEO->make_link('spam');?>"><?php print $REL_LANG->_('Back')?></a></td>
-		</tr>
-		<?php }?>
+?>
+    <tr>
+        <td class=colhead colspan="4"></td>
+        <td class=colhead>
+            <center><INPUT type="checkbox" title="<?php print $REL_LANG->_('Select All');?>"
+                           value="<?php print $REL_LANG->_('Select All');?>" id="toggle-all"></center>
+        </td>
+    </tr>
 
-		<tr>
-			<td colspan="5">
-			<div style="float: right;"><input type="submit"
-				value="<?php print $REL_LANG->_('Delete selected');?>!" onClick="return confirm('<?php print $REL_LANG->_('Are you sure?');?>')">
-			</div>
-			</td>
-		</tr>
-<?php 			if (pagercheck()) die();?>
+<?php
+
+
+if ($where && $count) {
+    ?>
+    <tr>
+        <td colspan="5"><a href="<?php print$REL_SEO->make_link('spam');?>"><?php print $REL_LANG->_('Back')?></a></td>
+    </tr>
+    <?php } ?>
+
+    <tr>
+        <td colspan="5">
+            <div style="float: right;"><input type="submit"
+                                              value="<?php print $REL_LANG->_('Delete selected');?>!"
+                                              onClick="return confirm('<?php print $REL_LANG->_('Are you sure?');?>')">
+            </div>
+        </td>
+    </tr>
+<?php if (pagercheck()) die(); ?>
 </table></div>
 </form>
-<br />
+<br/>
 <?php
-		$REL_TPL->stdfoot();
-		?>
+$REL_TPL->stdfoot();
+?>

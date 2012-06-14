@@ -26,7 +26,7 @@ date_default_timezone_set('UTC');
  * Full path to releaser sources
  * @var string
  */
-define ('ROOT_PATH', str_replace("include","",dirname(__FILE__)));
+define ('ROOT_PATH', str_replace("include", "", dirname(__FILE__)));
 
 
 // Variables for Start Time
@@ -45,14 +45,13 @@ unset($db);
 
 /* @var object general cache object */
 require_once(ROOT_PATH . 'classes/cache/cache.class.php');
-$REL_CACHE=new Cache();
-if (REL_CACHEDRIVER=='native') {
-	require_once(ROOT_PATH .  'classes/cache/fileCacheDriver.class.php');
-	$REL_CACHE->addDriver(NULL, new FileCacheDriver());
-}
-elseif (REL_CACHEDRIVER=='memcached') {
-	require_once(ROOT_PATH .  'classes/cache/MemCacheDriver.class.php');
-	$REL_CACHE->addDriver(NULL, new MemCacheDriver());
+$REL_CACHE = new Cache();
+if (REL_CACHEDRIVER == 'native') {
+    require_once(ROOT_PATH . 'classes/cache/fileCacheDriver.class.php');
+    $REL_CACHE->addDriver(NULL, new FileCacheDriver());
+} elseif (REL_CACHEDRIVER == 'memcached') {
+    require_once(ROOT_PATH . 'classes/cache/MemCacheDriver.class.php');
+    $REL_CACHE->addDriver(NULL, new MemCacheDriver());
 }
 
 require_once(ROOT_PATH . 'include/functions.php');
@@ -61,7 +60,7 @@ require_once(ROOT_PATH . 'include/classes.php');
 // TinyMCE security
 require_once(ROOT_PATH . 'include/htmLawed.php');
 // Ban system
-require_once(ROOT_PATH.'classes/bans/ipcheck.class.php');
+require_once(ROOT_PATH . 'classes/bans/ipcheck.class.php');
 
 require_once(ROOT_PATH . 'include/blocks.php');
 

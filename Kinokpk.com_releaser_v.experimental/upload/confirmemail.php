@@ -25,30 +25,29 @@ require_once("include/bittorrent.php");
 INIT();
 
 if (!is_valid_id($_GET["id"]))
-$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
-$id = (int) $_GET["id"];
+    $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
+$id = (int)$_GET["id"];
 $email = urldecode($_GET['email']);
-
 
 
 $res = $REL_DB->query("SELECT editsecret FROM users WHERE id = $id");
 $row = mysql_fetch_array($res);
 
 if (!$row)
-$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_user_id'));
+    $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_user_id'));
 
 $sec = hash_pad($row["editsecret"]);
 if (preg_match('/^ *$/s', $sec))
-$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('error_calculating'));
+    $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('error_calculating'));
 if ($_GET['confirmcode'] != md5($sec . $email . $sec))
-$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('code_incorrect'));
+    $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('code_incorrect'));
 
 $REL_DB->query("UPDATE users SET editsecret='', email=" . sqlesc(strtolower($email)) . " WHERE id = $id AND editsecret = " . sqlesc($row["editsecret"]));
 
 if (!mysql_affected_rows())
-$REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('error_change_address'));
+    $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('error_change_address'));
 
-safe_redirect($REL_SEO->make_link('my','emailch',1),0);
+safe_redirect($REL_SEO->make_link('my', 'emailch', 1), 0);
 
 
 ?>

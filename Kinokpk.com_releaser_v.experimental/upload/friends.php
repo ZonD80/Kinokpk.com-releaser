@@ -16,130 +16,130 @@ loggedinorreturn();
 $action = (string)$_GET['action'];
 $q[] = 'friends';
 if ($action)
-$fid = (int) $_GET['id'];
-else $fid=$CURUSER['id'];
+    $fid = (int)$_GET['id'];
+else $fid = $CURUSER['id'];
 
 $curusername = make_user_link();
 
 
 if ($action == 'add') {
 
-	if ($CURUSER['id']==$fid) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('cant_add_myself'));
+    if ($CURUSER['id'] == $fid) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('cant_add_myself'));
 
-	$user = $REL_DB->query("SELECT id,username,class,donor,warned,enabled FROM users WHERE id=$fid");
-	$user = mysql_fetch_assoc($user);
-	if (!$user) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_user'));
+    $user = $REL_DB->query("SELECT id,username,class,donor,warned,enabled FROM users WHERE id=$fid");
+    $user = mysql_fetch_assoc($user);
+    if (!$user) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_user'));
 
-	$friend = $REL_DB->query("SELECT id FROM friends WHERE (userid=$fid AND friendid={$CURUSER['id']}) OR (friendid=$fid AND userid={$CURUSER['id']})");
-	$friend = mysql_fetch_assoc($friend);
-	if ($friend) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('already_in_private_group'));
+    $friend = $REL_DB->query("SELECT id FROM friends WHERE (userid=$fid AND friendid={$CURUSER['id']}) OR (friendid=$fid AND userid={$CURUSER['id']})");
+    $friend = mysql_fetch_assoc($friend);
+    if ($friend) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('already_in_private_group'));
 
-	$username = make_user_link($user);
+    $username = make_user_link($user);
 
-	$REL_DB->query("INSERT INTO friends (userid,friendid) VALUES ({$CURUSER['id']},$fid)");
-	$fiid=mysql_insert_id();
-	if (mysql_errno()==1062) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('already_in_private_group'));
-
-
-	write_sys_msg($fid,sprintf($REL_LANG->say_by_key_to($fid,'friend_notice'),$curusername,$fiid,$fiid),$REL_LANG->say_by_key_to($fid,'friend_notice_subject')." ({$CURUSER['username']})");
-	send_notifs('friends','',$fid);
-	$REL_TPL->stderr($REL_LANG->say_by_key('success'),sprintf($REL_LANG->say_by_key('user_notice_sent'),$username),'success');
+    $REL_DB->query("INSERT INTO friends (userid,friendid) VALUES ({$CURUSER['id']},$fid)");
+    $fiid = mysql_insert_id();
+    if (mysql_errno() == 1062) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('already_in_private_group'));
 
 
-}
-elseif ($action == 'deny'){
-	$frarq =$REL_DB->query("SELECT userid,friendid,confirmed FROM friends WHERE (friendid={$CURUSER['id']} OR userid={$CURUSER['id']}) AND id=$fid");
-	$frar = mysql_fetch_assoc($frarq);
-	if (!$frar) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('cannot_edit_friends'));
+    write_sys_msg($fid, sprintf($REL_LANG->say_by_key_to($fid, 'friend_notice'), $curusername, $fiid, $fiid), $REL_LANG->say_by_key_to($fid, 'friend_notice_subject') . " ({$CURUSER['username']})");
+    send_notifs('friends', '', $fid);
+    $REL_TPL->stderr($REL_LANG->say_by_key('success'), sprintf($REL_LANG->say_by_key('user_notice_sent'), $username), 'success');
 
-	$send_to = (($frar['userid']<>$CURUSER['id'])?$frar['userid']:$frar['friendid']);
-	write_sys_msg($send_to,sprintf($REL_LANG->say_by_key_to($send_to,'friend_deny'),$curusername),$REL_LANG->say_by_key_to($send_to,'friendship_cancelled')." ({$CURUSER['username']})");
 
-	$REL_DB->query("DELETE FROM friends WHERE id=$fid");
-	$REL_TPL->stderr($REL_LANG->say_by_key('success'),$REL_LANG->say_by_key('friend_deleted'),'success');
+} elseif ($action == 'deny') {
+    $frarq = $REL_DB->query("SELECT userid,friendid,confirmed FROM friends WHERE (friendid={$CURUSER['id']} OR userid={$CURUSER['id']}) AND id=$fid");
+    $frar = mysql_fetch_assoc($frarq);
+    if (!$frar) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('cannot_edit_friends'));
 
-}
-elseif ($action == 'confirm'){
-	$frarq =$REL_DB->query("SELECT friends.userid, friends.id, users.class, users.username FROM friends LEFT JOIN users ON users.id=friends.userid WHERE friendid={$CURUSER['id']} AND friends.id=$fid");
-	$frar = mysql_fetch_assoc($frarq);
-	if (!$frar) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('cannot_edit_friends'));
-	$username = '<a href="'.$REL_SEO->make_link('userdetails','id',$frar['userid'],'username',translit($frar['username'])).'">'.get_user_class_color($frar['class'],$frar['username']).'</a>';
-	$REL_DB->query("UPDATE friends SET confirmed=1 WHERE id=$fid");
+    $send_to = (($frar['userid'] <> $CURUSER['id']) ? $frar['userid'] : $frar['friendid']);
+    write_sys_msg($send_to, sprintf($REL_LANG->say_by_key_to($send_to, 'friend_deny'), $curusername), $REL_LANG->say_by_key_to($send_to, 'friendship_cancelled') . " ({$CURUSER['username']})");
 
-	$REL_TPL->stderr($REL_LANG->say_by_key('success'),sprintf($REL_LANG->say_by_key('friend_confirmed'),$username),'success');
+    $REL_DB->query("DELETE FROM friends WHERE id=$fid");
+    $REL_TPL->stderr($REL_LANG->say_by_key('success'), $REL_LANG->say_by_key('friend_deleted'), 'success');
 
 }
+elseif ($action == 'confirm') {
+    $frarq = $REL_DB->query("SELECT friends.userid, friends.id, users.class, users.username FROM friends LEFT JOIN users ON users.id=friends.userid WHERE friendid={$CURUSER['id']} AND friends.id=$fid");
+    $frar = mysql_fetch_assoc($frarq);
+    if (!$frar) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('cannot_edit_friends'));
+    $username = '<a href="' . $REL_SEO->make_link('userdetails', 'id', $frar['userid'], 'username', translit($frar['username'])) . '">' . get_user_class_color($frar['class'], $frar['username']) . '</a>';
+    $REL_DB->query("UPDATE friends SET confirmed=1 WHERE id=$fid");
 
-$page = (int) $_GET["page"];
+    $REL_TPL->stderr($REL_LANG->say_by_key('success'), sprintf($REL_LANG->say_by_key('friend_confirmed'), $username), 'success');
 
-$search = (string) $_GET['search'];
+}
+
+$page = (int)$_GET["page"];
+
+$search = (string)$_GET['search'];
 $search = htmlspecialchars(trim($search));
 
-$class = (int) $_GET['class'];
+$class = (int)$_GET['class'];
 if ($class == '-' || !is_valid_user_class($class))
-$class = '';
+    $class = '';
 
 if ($search != '' || $class) {
-	$querystr = " LEFT JOIN users ON friendid=users.id OR userid=users.id";
-	$query['u'] = "users.username LIKE '%" . sqlwildcardesc($search) . "%' AND users.confirmed=1";
-	if ($search)
-	$q[] = "search";
-	$q[] = $search;
+    $querystr = " LEFT JOIN users ON friendid=users.id OR userid=users.id";
+    $query['u'] = "users.username LIKE '%" . sqlwildcardesc($search) . "%' AND users.confirmed=1";
+    if ($search)
+        $q[] = "search";
+    $q[] = $search;
 }
 
 if (is_valid_user_class($class)) {
-	$query['c'] = "users.class = $class";
-	$q[] = 'class';
-	$q[] = $class;
+    $query['c'] = "users.class = $class";
+    $q[] = 'class';
+    $q[] = $class;
 }
 
-$state='a';
+$state = 'a';
 
 if (isset($_GET['pending'])) {
-	$state = 'p';
-	$query['p'] = 'friends.confirmed=0';
-	$q[] = 'pending';
-	$q[] = 1;
-}
-elseif (isset($_GET['online'])) {
-	$state = 'o';
-	$querystr = " LEFT JOIN users ON IF(userid={$CURUSER['id']},friendid=users.id,userid=users.id)";
-	$query['o'] = 'users.last_access>'.(time()-300);
-	$q[] = 'online';
-	$q[] = 1;
+    $state = 'p';
+    $query['p'] = 'friends.confirmed=0';
+    $q[] = 'pending';
+    $q[] = 1;
+} elseif (isset($_GET['online'])) {
+    $state = 'o';
+    $querystr = " LEFT JOIN users ON IF(userid={$CURUSER['id']},friendid=users.id,userid=users.id)";
+    $query['o'] = 'users.last_access>' . (time() - 300);
+    $q[] = 'online';
+    $q[] = 1;
 } else $query[] = 'friends.confirmed=1';
 
-$query_data = $querystr.' WHERE '.implode(' AND ',$query);
+$query_data = $querystr . ' WHERE ' . implode(' AND ', $query);
 
 $query['def'] = "(userid={$CURUSER['id']} OR friendid=$fid)";
 
-$querycount = $querystr.' WHERE '.implode(' AND ',$query);
-$query = $querycount." GROUP BY friends.id";
+$querycount = $querystr . ' WHERE ' . implode(' AND ', $query);
+$query = $querycount . " GROUP BY friends.id";
 $REL_TPL->stdhead($REL_LANG->say_by_key('users'));
-$res = $REL_DB->query("SELECT (SELECT SUM(1) FROM friends WHERE friends.confirmed=1 AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']})), (SELECT SUM(1) FROM friends LEFT JOIN users ON IF(userid={$CURUSER['id']},friendid=users.id,userid=users.id) WHERE users.last_access>".(time()-300)." AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']})), (SELECT SUM(1) FROM friends WHERE friends.confirmed=0 AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']}))");
-list ($countarr['a'],$countarr['o'],$countarr['p']) = mysql_fetch_array($res);
-$countarr = array_map("intval",$countarr);
+$res = $REL_DB->query("SELECT (SELECT SUM(1) FROM friends WHERE friends.confirmed=1 AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']})), (SELECT SUM(1) FROM friends LEFT JOIN users ON IF(userid={$CURUSER['id']},friendid=users.id,userid=users.id) WHERE users.last_access>" . (time() - 300) . " AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']})), (SELECT SUM(1) FROM friends WHERE friends.confirmed=0 AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']}))");
+list ($countarr['a'], $countarr['o'], $countarr['p']) = mysql_fetch_array($res);
+$countarr = array_map("intval", $countarr);
 $count = $countarr[$state];
 print("<h1>{$REL_LANG->say_by_key('friends')}</h1>\n");
 //var_dump($state);
 print("<div id=\"tabs\"><ul>
-<li nowrap=\"\" class=\"tab".($state=='a'?'1':'2')."\"><a href=\"".$REL_SEO->make_link('friends')."\"><span>{$REL_LANG->_("Friends")} ({$countarr['a']})</span></a></li>
-<li nowrap=\"\" class=\"tab".($state=='o'?'1':'2')."\"><a href=\"".$REL_SEO->make_link('friends','online','')."\"><span>{$REL_LANG->_("Online")} ({$countarr['o']})</span></a></li>
-<li nowrap=\"\" class=\"tab".($state=='p'?'1':'2')."\"><a href=\"".$REL_SEO->make_link('friends','pending','')."\"><span>{$REL_LANG->_("Pending")} ({$countarr['p']})</span></a></li>
+<li nowrap=\"\" class=\"tab" . ($state == 'a' ? '1' : '2') . "\"><a href=\"" . $REL_SEO->make_link('friends') . "\"><span>{$REL_LANG->_("Friends")} ({$countarr['a']})</span></a></li>
+<li nowrap=\"\" class=\"tab" . ($state == 'o' ? '1' : '2') . "\"><a href=\"" . $REL_SEO->make_link('friends', 'online', '') . "\"><span>{$REL_LANG->_("Online")} ({$countarr['o']})</span></a></li>
+<li nowrap=\"\" class=\"tab" . ($state == 'p' ? '1' : '2') . "\"><a href=\"" . $REL_SEO->make_link('friends', 'pending', '') . "\"><span>{$REL_LANG->_("Pending")} ({$countarr['p']})</span></a></li>
 </ul></div>\n");
 print("<div class=\"friends_search\" style=\"margin-top:55px;\">");
-print("<form method=\"get\" action=\"".$REL_SEO->make_link('friends')."\">\n");
-if ($state=='o') print '<input type="hidden" name="online" value="1">';
-if ($state=='p') print '<input type="hidden" name="pending" value="1">';
-print($REL_LANG->say_by_key('search')." <input type=\"text\" size=\"30\" name=\"search\" value=\"".$search."\">\n");
-print make_classes_select('class',$class);
+print("<form method=\"get\" action=\"" . $REL_SEO->make_link('friends') . "\">\n");
+if ($state == 'o') print '<input type="hidden" name="online" value="1">';
+if ($state == 'p') print '<input type="hidden" name="pending" value="1">';
+print($REL_LANG->say_by_key('search') . " <input type=\"text\" size=\"30\" name=\"search\" value=\"" . $search . "\">\n");
+print make_classes_select('class', $class);
 print("<input class=\"button\" type=\"submit\" value=\"{$REL_LANG->say_by_key('go')}\" style=\"margin-top: -2px;\">\n");
 print("</form>\n");
 print("</div>\n");
 
-if (!$count) { $REL_TPL->stdmsg($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('no_friends'),'error'); $REL_TPL->stdfoot(); die(); }
-
-
+if (!$count) {
+    $REL_TPL->stdmsg($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_friends'), 'error');
+    $REL_TPL->stdfoot();
+    die();
+}
 
 
 //$res = $REL_DB->query("SELECT IF (friends.userid={$CURUSER['id']},friends.friendid,friends.userid) AS friend, IF (friends.userid={$CURUSER['id']},0,1) AS init, friends.id, u.username,u.class,u.country,u.added,u.last_access,u.gender,u.donor, u.warned, u.enabled, u.avatar, u.ratingsum, c.name, c.flagpic FROM friends LEFT JOIN users AS u ON IF (friends.userid={$CURUSER['id']},u.id=friendid,u.id=userid) LEFT JOIN countries AS c ON c.id = u.country$query ORDER BY friends.id DESC");
@@ -149,51 +149,50 @@ print ('<div id="users-table">');
 print ("<br />");
 while ($arr = mysql_fetch_assoc($res)) {
 
-	if ($arr['country'] > 0) {
-	 $country = "&nbsp;<img style=\"border:none;\" src=\"pic/flag/$arr[flagpic]\" alt=\"$arr[name]\" title=\"$arr[name]\">\n";
-	}
-	else
-	$country = "";
+    if ($arr['country'] > 0) {
+        $country = "&nbsp;<img style=\"border:none;\" src=\"pic/flag/$arr[flagpic]\" alt=\"$arr[name]\" title=\"$arr[name]\">\n";
+    } else
+        $country = "";
 
-	if ($arr["gender"] == "1") $gender = "<img style=\"border:none;\" src=\"pic/male.gif\" alt=\"{$REL_LANG->_('Male')}\" title=\"{$REL_LANG->_('Male')}\" style=\"margin-left: 4pt\">";
-	elseif ($arr["gender"] == "2") $gender = "<img style=\"border:none;\" src=\"pic/female.gif\" alt=\"{$REL_LANG->_('Female')}\" title=\"{$REL_LANG->_('Female')}\" style=\"margin-left: 4pt\">";
-	else $gender = "<div align=\"center\"><b>?</b></div>";
+    if ($arr["gender"] == "1") $gender = "<img style=\"border:none;\" src=\"pic/male.gif\" alt=\"{$REL_LANG->_('Male')}\" title=\"{$REL_LANG->_('Male')}\" style=\"margin-left: 4pt\">";
+    elseif ($arr["gender"] == "2") $gender = "<img style=\"border:none;\" src=\"pic/female.gif\" alt=\"{$REL_LANG->_('Female')}\" title=\"{$REL_LANG->_('Female')}\" style=\"margin-left: 4pt\">";
+    else $gender = "<div align=\"center\"><b>?</b></div>";
 
-	print("<div id=\"relgroups\" class=\"relgroups_table\">
+    print("<div id=\"relgroups\" class=\"relgroups_table\">
 			<div id=\"relgroups_image\" class=\"relgroups_image\"><a href=\"{$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',$arr['username'])}\">");
-	if($arr["avatar"]){
-		print("<img id=\"photo\" style=\"border:none;\" title=".  $arr["username"]." border=\"0\" src=".$arr["avatar"].">");
-	}else{
-		print("<img id=\"photo\" style=\"border:none;\" title=".  $arr["username"]." border=\"0\" src=\"/pic/default_avatar.gif\">");
-	}
-	print("</a></div>
+    if ($arr["avatar"]) {
+        print("<img id=\"photo\" style=\"border:none;\" title=" . $arr["username"] . " border=\"0\" src=" . $arr["avatar"] . ">");
+    } else {
+        print("<img id=\"photo\" style=\"border:none;\" title=" . $arr["username"] . " border=\"0\" src=\"/pic/default_avatar.gif\">");
+    }
+    print("</a></div>
 			<div class=\"relgroups_name\">
 				<dl class=\"clearfix\" style=\"align:left;\">
-				<dt>{$REL_LANG->_('Username')}</dt><dd><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',translit($arr["username"]))."\"><b>".get_user_class_color($arr["class"], $arr["username"]).$gender.get_user_icons($arr).$country."</b></a></dd>
-				<dt>{$REL_LANG->_('Rating')}</dt><dd>".ratearea($arr['ratingsum'],$arr['friend'],'users', $CURUSER['id'])."</dd>
+				<dt>{$REL_LANG->_('Username')}</dt><dd><a href=\"" . $REL_SEO->make_link('userdetails', 'id', $arr['friend'], 'username', translit($arr["username"])) . "\"><b>" . get_user_class_color($arr["class"], $arr["username"]) . $gender . get_user_icons($arr) . $country . "</b></a></dd>
+				<dt>{$REL_LANG->_('Rating')}</dt><dd>" . ratearea($arr['ratingsum'], $arr['friend'], 'users', $CURUSER['id']) . "</dd>
 				<dt>{$REL_LANG->_('Class')}</dt><dd>" . get_user_class_name($arr["class"]) . "</dd>
-				<dt>{$REL_LANG->_('Last seen')}</dt><dd>".(time()-$arr['last_access']<300?$REL_LANG->_("Online"):mkprettytime($arr['last_access']))."</dd>
-				<dt>{$REL_LANG->_('Registered at')}</dt><dd>".mkprettytime($arr['added'])."</dd>
+				<dt>{$REL_LANG->_('Last seen')}</dt><dd>" . (time() - $arr['last_access'] < 300 ? $REL_LANG->_("Online") : mkprettytime($arr['last_access'])) . "</dd>
+				<dt>{$REL_LANG->_('Registered at')}</dt><dd>" . mkprettytime($arr['added']) . "</dd>
 				</dl>
 			 </div>
 			 <div id=\"input\"  class=\"relgroups_input\" >
 				<ul  class=\"relgroups_input\">
-					<li><a href=\"".$REL_SEO->make_link('userdetails','id',$arr['friend'],'username',translit($arr["username"]))."\">{$REL_LANG->_('View')}</a></li>
+					<li><a href=\"" . $REL_SEO->make_link('userdetails', 'id', $arr['friend'], 'username', translit($arr["username"])) . "\">{$REL_LANG->_('View')}</a></li>
 					");
-	if ($state<>'p')print ("<li><a href=\"".$REL_SEO->make_link('friends','action','deny','id',$arr['id'])."\">".$REL_LANG->say_by_key('delete_from_friends')."</a></li><li><a href=\"".$REL_SEO->make_link('present','id',$arr['friend'])."\"><span>{$REL_LANG->_('Give a gift')}</span><img src=\"pic/presents/present.gif\" title=\"{$REL_LANG->_('Give a gift')}\" style=\"margin-top: -6px; border:none; width:12px; height:12px;\" /> </a></li><li>");
-	elseif ($state=='p' && !$arr['init']) print('<li>'.$REL_LANG->say_by_key('friend_pending').'</li>');
-	else print ("<li><a href=\"".$REL_SEO->make_link('friends','action','confirm','id',$arr['id'])."\">".$REL_LANG->say_by_key('confirm')."</a></li>
-			<li><a href=\"".$REL_SEO->make_link('friends','action','deny','id',$arr['id'])."\">".$REL_LANG->say_by_key('delete_on_friends')."</a></li>
+    if ($state <> 'p') print ("<li><a href=\"" . $REL_SEO->make_link('friends', 'action', 'deny', 'id', $arr['id']) . "\">" . $REL_LANG->say_by_key('delete_from_friends') . "</a></li><li><a href=\"" . $REL_SEO->make_link('present', 'id', $arr['friend']) . "\"><span>{$REL_LANG->_('Give a gift')}</span><img src=\"pic/presents/present.gif\" title=\"{$REL_LANG->_('Give a gift')}\" style=\"margin-top: -6px; border:none; width:12px; height:12px;\" /> </a></li><li>");
+    elseif ($state == 'p' && !$arr['init']) print('<li>' . $REL_LANG->say_by_key('friend_pending') . '</li>');
+    else print ("<li><a href=\"" . $REL_SEO->make_link('friends', 'action', 'confirm', 'id', $arr['id']) . "\">" . $REL_LANG->say_by_key('confirm') . "</a></li>
+			<li><a href=\"" . $REL_SEO->make_link('friends', 'action', 'deny', 'id', $arr['id']) . "\">" . $REL_LANG->say_by_key('delete_on_friends') . "</a></li>
 		  ");
 
-	print("<li><a href=\"".$REL_SEO->make_link('message','action','sendmessage','receiver',$arr['friend'])."\">{$REL_LANG->_('PM')}</a></li>");
-	print ($arr['init']?"<li>{$REL_LANG->say_by_key('init')}</li>":'');
+    print("<li><a href=\"" . $REL_SEO->make_link('message', 'action', 'sendmessage', 'receiver', $arr['friend']) . "\">{$REL_LANG->_('PM')}</a></li>");
+    print ($arr['init'] ? "<li>{$REL_LANG->say_by_key('init')}</li>" : '');
 
-	print("<ul>
+    print("<ul>
 			</div>
 		</div>
 	</div>	");
-	//print ('</td></tr>');
+    //print ('</td></tr>');
 }
 
 print("</div>\n");

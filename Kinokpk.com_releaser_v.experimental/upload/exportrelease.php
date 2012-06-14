@@ -15,39 +15,38 @@ INIT();
 loggedinorreturn();
 
 
-
 if (!is_valid_id($_GET['id'])) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
-$id = (int) $_GET['id'];
+$id = (int)$_GET['id'];
 
 $res = $REL_DB->query("SELECT torrents.banned, torrents.name, torrents.descr, torrents.size, torrents.id, torrents.images, torrents.category FROM torrents WHERE torrents.id = $id");
 $row = mysql_fetch_array($res);
 
 if (!$row || $row["banned"])
-$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_torrent_with_such_id'));
+    $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_torrent_with_such_id'));
 
 
-if ($row['images']) $image = array_shift(explode(",",$row['images']));
+if ($row['images']) $image = array_shift(explode(",", $row['images']));
 
 $tree = make_tree();
 
-$cats = explode(',',$row['category']);
-$cat= array_shift($cats);
-$cat = get_cur_branch($tree,$cat);
-$childs = get_childs($tree,$cat['parent_id']);
+$cats = explode(',', $row['category']);
+$cat = array_shift($cats);
+$cat = get_cur_branch($tree, $cat);
+$childs = get_childs($tree, $cat['parent_id']);
 if ($childs) {
-	foreach($childs as $child)
-	if (($cat['id'] != $child['id']) && in_array($child['id'],$cats)) $chsel[]="<a href=\"".$REL_SEO->make_link('browse','cat',$child['id'])."\">".makesafe($child['name'])."</a>";
+    foreach ($childs as $child)
+        if (($cat['id'] != $child['id']) && in_array($child['id'], $cats)) $chsel[] = "<a href=\"" . $REL_SEO->make_link('browse', 'cat', $child['id']) . "\">" . makesafe($child['name']) . "</a>";
 }
-$catstr = get_cur_position_str($tree,$cat['id']).(is_array($chsel)?', '.implode(', ',$chsel):'');
+$catstr = get_cur_position_str($tree, $cat['id']) . (is_array($chsel) ? ', ' . implode(', ', $chsel) : '');
 
-$formvalue = "<div align=\"center\"><a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\"><img width=\"200px\" src=\"{$image}\"></a></div><br /><br /><b>{$REL_LANG->_('Full name')}:</b> ".$row['name']."<br /><b>{$REL_LANG->_('Type')}:</b> ".$catstr."<br />";
+$formvalue = "<div align=\"center\"><a href=\"" . $REL_SEO->make_link('details', 'id', $row['id'], 'name', translit($row['name'])) . "\"><img width=\"200px\" src=\"{$image}\"></a></div><br /><br /><b>{$REL_LANG->_('Full name')}:</b> " . $row['name'] . "<br /><b>{$REL_LANG->_('Type')}:</b> " . $catstr . "<br />";
 
-$formvalue .= format_comment($row['descr'],true);
+$formvalue .= format_comment($row['descr'], true);
 
-$formvalue .= "<b>{$REL_LANG->_('Size')}:</b> ".mksize($row['size'])."<br />";
+$formvalue .= "<b>{$REL_LANG->_('Size')}:</b> " . mksize($row['size']) . "<br />";
 
-$formvalue .= "<div align=\"center\">{$REL_LANG->_('Original release on')} <a href=\"".$REL_SEO->make_link('details','id',$row['id'],'name',translit($row['name']))."\">{$REL_CONFIG['sitename']}</a></b></div>";
+$formvalue .= "<div align=\"center\">{$REL_LANG->_('Original release on')} <a href=\"" . $REL_SEO->make_link('details', 'id', $row['id'], 'name', translit($row['name'])) . "\">{$REL_CONFIG['sitename']}</a></b></div>";
 
 $REL_TPL->stdhead($REL_LANG->say_by_key('exportrelease_mname'));
 
@@ -61,13 +60,13 @@ function SelectAll(){
 
 $REL_TPL->begin_main_frame();
 print("<div id=\"tabs\"><ul>
-	<li class=\"tab2\"><a href=\"".$REL_SEO->make_link('details','id',$id,'name',translit($row['name']))."\"><span>{$REL_LANG->_('Description')}</span></a></li>
-	<li nowrap=\"\" class=\"tab2\"><a href=\"".$REL_SEO->make_link('torrent_info','id',$id,'name',translit($row['name']))."\"><span>{$REL_LANG->say_by_key('torrent_info')}</span></a></li>
-	<li nowrap=\"\" class=\"tab1\"><a href=\"".$REL_SEO->make_link('exportrelease','id',$id,'name',translit($row['name']))."\"><span>{$REL_LANG->say_by_key('exportrelease_mname')}</span></a></li>
+	<li class=\"tab2\"><a href=\"" . $REL_SEO->make_link('details', 'id', $id, 'name', translit($row['name'])) . "\"><span>{$REL_LANG->_('Description')}</span></a></li>
+	<li nowrap=\"\" class=\"tab2\"><a href=\"" . $REL_SEO->make_link('torrent_info', 'id', $id, 'name', translit($row['name'])) . "\"><span>{$REL_LANG->say_by_key('torrent_info')}</span></a></li>
+	<li nowrap=\"\" class=\"tab1\"><a href=\"" . $REL_SEO->make_link('exportrelease', 'id', $id, 'name', translit($row['name'])) . "\"><span>{$REL_LANG->say_by_key('exportrelease_mname')}</span></a></li>
 	</ul></div>\n <br />");
 $REL_TPL->begin_frame($REL_LANG->say_by_key('exportrelease_notice'));
 
-print('<div align="center"><textarea name="exportform" rows="20" cols="100" id="exportform" wrap="soft" readonly>'.$formvalue.'</textarea><br />'.$REL_LANG->say_by_key('exportrelease_warning').'<br /><a href="javascript://" onClick="javascript:SelectAll();">'.$REL_LANG->say_by_key('select_all').'</a></div>');
+print('<div align="center"><textarea name="exportform" rows="20" cols="100" id="exportform" wrap="soft" readonly>' . $formvalue . '</textarea><br />' . $REL_LANG->say_by_key('exportrelease_warning') . '<br /><a href="javascript://" onClick="javascript:SelectAll();">' . $REL_LANG->say_by_key('select_all') . '</a></div>');
 
 $REL_TPL->end_frame();
 $REL_TPL->end_main_frame();

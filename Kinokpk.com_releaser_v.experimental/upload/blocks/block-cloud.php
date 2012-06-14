@@ -1,13 +1,13 @@
 <?php
 if (!defined('BLOCK_FILE')) {
-	safe_redirect($REL_SEO->make_link('index'));
-	exit;
+    safe_redirect($REL_SEO->make_link('index'));
+    exit;
 }
-global   $REL_LANG, $REL_SEO, $REL_DB;
+global $REL_LANG, $REL_SEO, $REL_DB;
 
 //$blocktitle = $REL_LANG->say_by_key('our_films');
 
-$content = cloud('cloud-small','','',300,300);
-$content .='<br/><div align="center">[<a href="'.$REL_SEO->make_link('alltags').'">'.$REL_LANG->say_by_key('large_tags').'</a>]</div>'
+$content = cloud('cloud-small', '', '', 300, 300);
+$content .= '<br/><div align="center">[<a href="' . $REL_SEO->make_link('alltags') . '">' . $REL_LANG->say_by_key('large_tags') . '</a>]</div>'
 
 ?>

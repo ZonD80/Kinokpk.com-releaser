@@ -10,15 +10,16 @@
 
 if (($_SERVER["REQUEST_METHOD"] == "GET") && @($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
 
-	@$hidebid = $_COOKIE ["hidebid"];
-	if (empty ( $_GET ["bid"] ))
-	die ( "<b><font color=\"red\" size=\"10\">Ты куда лезешь???</font></b>" );
-	$bid = "b" . intval ( str_replace ( "b", "", $_GET ["bid"] ) );
-	$bidpos = strrpos ( $hidebid, "$bid." );
-	if ($_GET["type"] == "hide" && ! $bidpos) {
-		@setcookie ( "hidebid", "$hidebid$bid." );
-	} elseif ($_GET["type"] == "show") {
-		@setcookie ( "hidebid", str_replace ( "$bid.", "", $hidebid ) );
-	}
+    @$hidebid = $_COOKIE ["hidebid"];
+    if (empty ($_GET ["bid"]))
+        die ("No block id defined");
+    $bid = "b" . intval(str_replace("b", "", (string)$_GET ["bid"]));
+    $bidpos = strrpos($hidebid, "$bid.");
+    $type = (string)$_GET["type"];
+    if ($type == "hide" && !$bidpos) {
+        @setcookie("hidebid", "$hidebid$bid.");
+    } elseif ($type == "show") {
+        @setcookie("hidebid", str_replace("$bid.", "", $hidebid));
+    }
 }
 ?>

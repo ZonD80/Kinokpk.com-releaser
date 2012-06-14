@@ -13,30 +13,31 @@ INIT();
 
 loggedinorreturn();
 
-function bark($msg, $error = true) {
-	global  $REL_LANG,$REL_TPL, $REL_DB;
-	$REL_TPL->stdhead(($error ? $REL_LANG->say_by_key('error') : $REL_LANG->say_by_key('torrent')." ".$REL_LANG->say_by_key('bookmarked')));
-	$REL_TPL->stdmsg(($error ? $REL_LANG->say_by_key('error') : $REL_LANG->say_by_key('success')), $msg, ($error ? 'error' : 'success'));
-	$REL_TPL->stdfoot();
-	exit;
+function bark($msg, $error = true)
+{
+    global $REL_LANG, $REL_TPL, $REL_DB;
+    $REL_TPL->stdhead(($error ? $REL_LANG->say_by_key('error') : $REL_LANG->say_by_key('torrent') . " " . $REL_LANG->say_by_key('bookmarked')));
+    $REL_TPL->stdmsg(($error ? $REL_LANG->say_by_key('error') : $REL_LANG->say_by_key('success')), $msg, ($error ? 'error' : 'success'));
+    $REL_TPL->stdfoot();
+    exit;
 }
 
-$id = (int) $_GET["torrent"];
+$id = (int)$_GET["torrent"];
 
 if (!isset($id))
-bark($REL_LANG->say_by_key('torrent_not_selected'));
+    bark($REL_LANG->say_by_key('torrent_not_selected'));
 
 $res = $REL_DB->query("SELECT name FROM torrents WHERE id = $id");
 $arr = mysql_fetch_array($res);
 
-if (!$arr) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+if (!$arr) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
 if ((get_row_count("bookmarks", "WHERE userid = $CURUSER[id] AND torrentid = $id")))
-bark($REL_LANG->say_by_key('torrent')." \"".$arr['name']."\"".$REL_LANG->say_by_key('already_bookmarked'));
+    bark($REL_LANG->say_by_key('torrent') . " \"" . $arr['name'] . "\"" . $REL_LANG->say_by_key('already_bookmarked'));
 
 $REL_DB->query("INSERT INTO bookmarks (userid, torrentid) VALUES ($CURUSER[id], $id)");
 
-safe_redirect($REL_SEO->make_link('browse'),3);
-bark($REL_LANG->say_by_key('torrent')." \"".$arr['name']."\"".$REL_LANG->say_by_key('bookmarked'),false);
+safe_redirect($REL_SEO->make_link('browse'), 3);
+bark($REL_LANG->say_by_key('torrent') . " \"" . $arr['name'] . "\"" . $REL_LANG->say_by_key('bookmarked'), false);
 
 ?>

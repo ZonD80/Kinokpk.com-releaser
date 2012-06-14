@@ -21,21 +21,20 @@ $result = array();
 $names = array();
 
 $tag = htmlspecialchars((string)$_POST['q']);
-$res = $REL_DB->query_return("SELECT tags FROM torrents WHERE tags LIKE '%".$REL_DB->sqlwildcardesc($tag)."%'");
-
+$res = $REL_DB->query_return("SELECT tags FROM torrents WHERE tags LIKE '%" . $REL_DB->sqlwildcardesc($tag) . "%'");
 
 
 if ($res) {
-	foreach ($res as $row) {
-		$tags = explode(',',$row['tags']);
-		foreach ($tags as $row) {
-		if (preg_match("#$tag#si",$row)&&!in_array($row,$names)) {
-			$result[]['name'] = $row;
-			$names[] = $row;
-		}
-		
-		}
-	}
+    foreach ($res as $row) {
+        $tags = explode(',', $row['tags']);
+        foreach ($tags as $row) {
+            if (preg_match("#$tag#si", $row) && !in_array($row, $names)) {
+                $result[]['name'] = $row;
+                $names[] = $row;
+            }
+
+        }
+    }
 }
 
 print json_encode($result);

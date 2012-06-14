@@ -1,6 +1,7 @@
-* html #facebox_overlay { /* ie6 hack */
-	position: absolute;
-	height: expression(document.body.scrollHeight >       document.body.offsetHeight
+* html #facebox_overlay {
+    /* ie6 hack */
+    position: absolute;
+    height: expression(document.body.scrollHeight >       document.body.offsetHeight
 		? 
 		  
 		  document.body.scrollHeight :       document.body.offsetHeight +     
@@ -8,7 +9,7 @@
 }
 
 * html li.mainitems {
-	max-width: 125px;
-	_width: expression(document.body.clientWidth >       125 ?       "10%" :      
+    max-width: 125px;
+    _width: expression(document.body.clientWidth >       125 ?       "10%" :
 		"125px");
 }

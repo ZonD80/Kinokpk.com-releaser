@@ -10,6 +10,6 @@
 require_once('include/bittorrent.php');
 INIT();
 $REL_TPL->stdhead($REL_LANG->_('Rating system manual'));
-$REL_TPL->output('index_'.getlang());
+$REL_TPL->output('index_' . getlang());
 $REL_TPL->stdfoot();
 ?>

@@ -17,32 +17,30 @@ loggedinorreturn();
 
 get_privilege('add_invites');
 
-if ($_SERVER["REQUEST_METHOD"] == "POST")
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-{
+    if ($_POST["username"] == "" || $_POST["invites"] == "" || $_POST["invites"] == "")
 
-	if ($_POST["username"] == "" || $_POST["invites"] == "" || $_POST["invites"] == "")
+        $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('missing_data'));
 
-	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('missing_data'));
+    $username = sqlesc((string)$_POST["username"]);
 
-	$username = sqlesc((string)$_POST["username"]);
-
-	$invites = sqlesc((string)$_POST["invites"]);
+    $invites = sqlesc((string)$_POST["invites"]);
 
 
-	$REL_DB->query("UPDATE users SET invites=$invites WHERE username=$username");
+    $REL_DB->query("UPDATE users SET invites=$invites WHERE username=$username");
 
-	$res = $REL_DB->query("SELECT id FROM users WHERE username=$username");
+    $res = $REL_DB->query("SELECT id FROM users WHERE username=$username");
 
-	$arr = mysql_fetch_row($res);
+    $arr = mysql_fetch_row($res);
 
-	if (!$arr)
+    if (!$arr)
 
-	$REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('un_upd_acc'));
+        $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('un_upd_acc'));
 
-	safe_redirect($REL_SEO->make_link('userdetails','id',$arr[0],'username',translit($username)));
+    safe_redirect($REL_SEO->make_link('userdetails', 'id', $arr[0], 'username', translit($username)));
 
-	die;
+    die;
 
 }
 
@@ -54,23 +52,23 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('upd_users_inv_amn'));
 
 <form method=post action="<?php print $REL_SEO->make_link('inviteadd'); ?>">
 
-<table border=1 cellspacing=0 cellpadding=5>
+    <table border=1 cellspacing=0 cellpadding=5>
 
-	<tr>
-		<td class=rowhead><?php print $REL_LANG->say_by_key('user_name'); ?></td>
-		<td><input type=text name=username size=40></td>
-	</tr>
+        <tr>
+            <td class=rowhead><?php print $REL_LANG->say_by_key('user_name'); ?></td>
+            <td><input type=text name=username size=40></td>
+        </tr>
 
-	<tr>
-		<td class=rowhead><?php print $REL_LANG->say_by_key('invites'); ?></td>
-		<td><input name=invites size=5></td>
-	</tr>
+        <tr>
+            <td class=rowhead><?php print $REL_LANG->say_by_key('invites'); ?></td>
+            <td><input name=invites size=5></td>
+        </tr>
 
-	<tr>
-		<td colspan=2 align=center><input type=submit value="Okay" class=btn></td>
-	</tr>
+        <tr>
+            <td colspan=2 align=center><input type=submit value="Okay" class=btn></td>
+        </tr>
 
-</table>
+    </table>
 
 </form>
 

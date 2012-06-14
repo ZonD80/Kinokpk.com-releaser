@@ -12,15 +12,16 @@ require_once("include/bittorrent.php");
 
 INIT();
 
-function bark($text = '') {
+function bark($text = '')
+{
     global $REL_LANG, $REL_TPL;
     if (!$text)
         $text = $REL_LANG->_("E-mail or password is invalid");
     $REL_TPL->stderr($REL_LANG->_("Login error"), $text);
 }
 
-$email = (string) $_POST['email'];
-$password = (string) $_POST['password'];
+$email = (string)$_POST['email'];
+$password = (string)$_POST['password'];
 
 if (!validemail($email) && !validusername($email))
     bark($REL_LANG->_("Invalid e-mail or username format"));
@@ -28,7 +29,6 @@ if (!validemail($email) && !validusername($email))
 //var_dump($password);
 $res = $REL_DB->query("SELECT * FROM users WHERE email = " . sqlesc($email) . " OR username = " . sqlesc($email));
 $row = @mysql_fetch_array($res);
-
 
 
 if (!$row) {
@@ -69,11 +69,11 @@ $CURUSER = $row;
 // IPB integration - login
 
 require_once(ROOT_PATH . 'include/functions_integration.php');
-ipb_login($CURUSER,$password);
+ipb_login($CURUSER, $password);
 
 // end	
 
-$returnto = strip_tags(trim((string) $_POST['returnto']));
+$returnto = strip_tags(trim((string)$_POST['returnto']));
 
 $REL_TPL->stdhead($REL_LANG->_("Successful login"));
 if ($returnto)

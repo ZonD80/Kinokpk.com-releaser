@@ -16,14 +16,14 @@ print('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://ww
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="Description" content="'.$REL_CONFIG['description'].'" />
-<meta name="Keywords" content="'.$REL_CONFIG['keywords'].'" />
-<title>'.$REL_CONFIG['sitename'].' - '.$REL_LANG->_('Going to external link').'</title>
+<meta name="Description" content="' . $REL_CONFIG['description'] . '" />
+<meta name="Keywords" content="' . $REL_CONFIG['keywords'] . '" />
+<title>' . $REL_CONFIG['sitename'] . ' - ' . $REL_LANG->_('Going to external link') . '</title>
 </head>
 <body  style="padding:20px 180px; font-size:12px; font-family:Tahoma; line-height:200%">
-<h2>'.$REL_CONFIG['sitename'].' - '.$REL_LANG->_('Going to external link').'</h2>');
-$REL_TPL->assign('url',$url);
-$REL_TPL->output('index_'.getlang());
+<h2>' . $REL_CONFIG['sitename'] . ' - ' . $REL_LANG->_('Going to external link') . '</h2>');
+$REL_TPL->assign('url', $url);
+$REL_TPL->output('index_' . getlang());
 print ('
 </body>
 </html>

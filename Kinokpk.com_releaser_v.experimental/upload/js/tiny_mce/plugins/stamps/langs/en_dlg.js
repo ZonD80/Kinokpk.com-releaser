@@ -1,3 +1,3 @@
-tinyMCE.addI18n('en.stamps_dlg',{
-title:"Insert stamp"
+tinyMCE.addI18n('en.stamps_dlg', {
+    title:"Insert stamp"
 });

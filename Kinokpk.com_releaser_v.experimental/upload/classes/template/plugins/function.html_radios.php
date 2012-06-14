@@ -1,14 +1,14 @@
 <?php
 /**
  * Smarty plugin
- * 
+ *
  * @package Smarty
  * @subpackage PluginsFunction
  */
 
 /**
  * Smarty {html_radios} function plugin
- * 
+ *
  * File:       function.html_radios.php<br>
  * Type:       function<br>
  * Name:       html_radios<br>
@@ -20,11 +20,11 @@
  * {html_radios values=$ids name='box' separator='<br>' output=$names}
  * {html_radios values=$ids checked=$checked separator='<br>' output=$names}
  * </pre>
- * 
+ *
  * @link http://smarty.php.net/manual/en/language.function.html.radios.php {html_radios}
  *      (Smarty online manual)
- * @author Christopher Kvarme <christopher.kvarme@flashjab.com> 
- * @author credits to Monte Ohrt <monte at ohrt dot com> 
+ * @author Christopher Kvarme <christopher.kvarme@flashjab.com>
+ * @author credits to Monte Ohrt <monte at ohrt dot com>
  * @version 1.0
  * @param array $params parameters
  * Input:<br>
@@ -36,7 +36,7 @@
  *            - output     (optional) - the output next to each radio button
  *            - assign     (optional) - assign the output as an array to this variable
  * @param object $template template object
- * @return string 
+ * @return string
  * @uses smarty_function_escape_special_chars()
  */
 function smarty_function_html_radios($params, $template)
@@ -53,7 +53,7 @@ function smarty_function_html_radios($params, $template)
     $output = null;
     $extra = '';
 
-    foreach($params as $_key => $_val) {
+    foreach ($params as $_key => $_val) {
         switch ($_key) {
             case 'name':
             case 'separator':
@@ -66,7 +66,7 @@ function smarty_function_html_radios($params, $template)
                     trigger_error('html_radios: the "' . $_key . '" attribute cannot be an array', E_USER_WARNING);
                 } else {
                     $selected = (string)$_val;
-                } 
+                }
                 break;
 
             case 'labels':
@@ -96,10 +96,10 @@ function smarty_function_html_radios($params, $template)
                     $extra .= ' ' . $_key . '="' . smarty_function_escape_special_chars($_val) . '"';
                 } else {
                     trigger_error("html_radios: extra attribute '$_key' cannot be an array", E_USER_NOTICE);
-                } 
+                }
                 break;
-        } 
-    } 
+        }
+    }
 
     if (!isset($options) && !isset($values))
         return '';
@@ -109,20 +109,20 @@ function smarty_function_html_radios($params, $template)
 
     if (isset($options)) {
         foreach ($options as $_key => $_val)
-        $_html_result[] = smarty_function_html_radios_output($name, $_key, $_val, $selected, $extra, $separator, $labels, $label_ids);
+            $_html_result[] = smarty_function_html_radios_output($name, $_key, $_val, $selected, $extra, $separator, $labels, $label_ids);
     } else {
         foreach ($values as $_i => $_key) {
             $_val = isset($output[$_i]) ? $output[$_i] : '';
             $_html_result[] = smarty_function_html_radios_output($name, $_key, $_val, $selected, $extra, $separator, $labels, $label_ids);
-        } 
-    } 
+        }
+    }
 
     if (!empty($params['assign'])) {
         $template->assign($params['assign'], $_html_result);
     } else {
         return implode("\n", $_html_result);
-    } 
-} 
+    }
+}
 
 function smarty_function_html_radios_output($name, $value, $output, $selected, $extra, $separator, $labels, $label_ids)
 {
@@ -133,22 +133,22 @@ function smarty_function_html_radios_output($name, $value, $output, $selected, $
             $_output .= '<label for="' . $_id . '">';
         } else {
             $_output .= '<label>';
-        } 
-    } 
+        }
+    }
     $_output .= '<input type="radio" name="'
-     . smarty_function_escape_special_chars($name) . '" value="'
-     . smarty_function_escape_special_chars($value) . '"';
+        . smarty_function_escape_special_chars($name) . '" value="'
+        . smarty_function_escape_special_chars($value) . '"';
 
     if ($labels && $label_ids) $_output .= ' id="' . $_id . '"';
 
     if ((string)$value == $selected) {
         $_output .= ' checked="checked"';
-    } 
+    }
     $_output .= $extra . ' />' . $output;
     if ($labels) $_output .= '</label>';
     $_output .= $separator;
 
     return $_output;
-} 
+}
 
 ?>

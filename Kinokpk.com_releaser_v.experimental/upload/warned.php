@@ -22,7 +22,7 @@ $REL_TPL->begin_frame($REL_LANG->_('Warned users list'), true);
 
 $res = $REL_DB->query("SELECT id,username,added,last_access,ratingsum,warneduntil,donor,enabled,warned,class FROM users WHERE warned=1 ORDER BY users.warneduntil");
 $num = mysql_num_rows($res);
-print("<table border=1 width='100%' ellspacing=0 cellpadding=2><form action=\"".$REL_SEO->make_link('nowarn')."\" method=post>\n");
+print("<table border=1 width='100%' ellspacing=0 cellpadding=2><form action=\"" . $REL_SEO->make_link('nowarn') . "\" method=post>\n");
 print("<tr align=center><td class=colhead width=90>{$REL_LANG->_('User')}</td>
 <td class=colhead width=70>{$REL_LANG->_('Registered at')}</td>
 <td class=colhead width=75>{$REL_LANG->_('Last visit')}</td>
@@ -31,24 +31,23 @@ print("<tr align=center><td class=colhead width=90>{$REL_LANG->_('User')}</td>
 <td class=colhead width=125>{$REL_LANG->_('Expiries on')}</td>
 <td class=colhead width=65>{$REL_LANG->_('Delete')}</td>
 <td class=colhead width=65>{$REL_LANG->_('Turn off')}</td></tr>\n");
-for ($i = 1; $i <= $num; $i++)
-{
-	$arr = mysql_fetch_assoc($res);
+for ($i = 1; $i <= $num; $i++) {
+    $arr = mysql_fetch_assoc($res);
 
-	$ratio = ratearea($arr['ratingsum'],$arr['id'],'users',$CURUSER['id']);
+    $ratio = ratearea($arr['ratingsum'], $arr['id'], 'users', $CURUSER['id']);
 
-	$added = mkprettytime($arr['added']);
-	$last_access = get_elapsed_time($arr['last_access'])." {$REL_LANG->say_by_key('ago')}";
-	$class=get_user_class_name($arr["class"]);
+    $added = mkprettytime($arr['added']);
+    $last_access = get_elapsed_time($arr['last_access']) . " {$REL_LANG->say_by_key('ago')}";
+    $class = get_user_class_name($arr["class"]);
 
-	print("<tr><td align=left>".make_user_link($arr)."</td>
+    print("<tr><td align=left>" . make_user_link($arr) . "</td>
 <td align=center>$added</td>
 <td align=center>$last_access</td>
 <td align=center>$class</td>
 <td align=center>$ratio</td>
-<td align=center>".($arr[warneduntil]?"{$REL_LANG->_('Expiries on')} ".get_elapsed_time($arr[warneduntil]):$REL_LANG->_('Never'))."</td>
+<td align=center>" . ($arr[warneduntil] ? "{$REL_LANG->_('Expiries on')} " . get_elapsed_time($arr[warneduntil]) : $REL_LANG->_('Never')) . "</td>
 <td bgcolor=\"#008000\" align=center><input type=\"checkbox\" name=\"usernw[]\" value=\"$arr[id]\"></td>
-<td bgcolor=\"#FF0000\" align=center><input type=\"checkbox\" name=\"desact[]\" value=\"$arr[id]\"".(!$arr['enabled']?' checked':'')."></td></tr>\n");
+<td bgcolor=\"#FF0000\" align=center><input type=\"checkbox\" name=\"desact[]\" value=\"$arr[id]\"" . (!$arr['enabled'] ? ' checked' : '') . "></td></tr>\n");
 }
 
 print("<tr><td colspan=10 align=right><input type=\"submit\" name=\"submit\" value=\"{$REL_LANG->_('Save')}\"></td></tr>\n");

@@ -12,16 +12,17 @@
  * http://creativecommons.org/licenses/by-sa/3.0/
  */
 
-if(!defined("IN_ANNOUNCE") && !defined("IN_TRACKER")) die("Direct access to this page not allowed");
+if (!defined("IN_ANNOUNCE") && !defined("IN_TRACKER")) die("Direct access to this page not allowed");
 
 /**
  * Converts String to Hex
  * @param string $string String to be converted
  * @return string Converted string
  */
-function hex($string){
-    $hex='';
-    for ($i=0; $i < strlen($string); $i++){
+function hex($string)
+{
+    $hex = '';
+    for ($i = 0; $i < strlen($string); $i++) {
         $hex .= dechex(ord($string[$i]));
     }
     return $hex;
@@ -34,9 +35,10 @@ function hex($string){
  * @param string|array $trackers Announce url or array of announce-urls of trackers
  * @return string
  */
-function make_magnet($info_hash,$filename,$trackers){
-    if (is_array($trackers)) $trackers = implode('&tr=',array_map('urlencode',$trackers)); else $trackers = urlencode($trackers);
-    return 'magnet:?xt=urn:btih:'.$info_hash.'&dn='.urlencode($filename).'&tr='.$trackers;
+function make_magnet($info_hash, $filename, $trackers)
+{
+    if (is_array($trackers)) $trackers = implode('&tr=', array_map('urlencode', $trackers)); else $trackers = urlencode($trackers);
+    return 'magnet:?xt=urn:btih:' . $info_hash . '&dn=' . urlencode($filename) . '&tr=' . $trackers;
 
 }
 
@@ -48,9 +50,10 @@ function make_magnet($info_hash,$filename,$trackers){
  * @param string|array $trackers Announce url or array of announce-urls of trackers
  * @return string
  */
-function make_dc_magnet($tiger_hash,$filename,$filesize,$hubs){
-    if (is_array($hubs)) $hubs = implode('&xs=',array_map('urlencode',$hubs)); else $hubs = urlencode($hubs);
-    return 'magnet:?xt=urn:tree:tiger:'.$tiger_hash.'&xl='.$filesize.'&dn='.urlencode($filename).'&xs='.$hubs;
+function make_dc_magnet($tiger_hash, $filename, $filesize, $hubs)
+{
+    if (is_array($hubs)) $hubs = implode('&xs=', array_map('urlencode', $hubs)); else $hubs = urlencode($hubs);
+    return 'magnet:?xt=urn:tree:tiger:' . $tiger_hash . '&xl=' . $filesize . '&dn=' . urlencode($filename) . '&xs=' . $hubs;
 
 }
 
@@ -61,14 +64,15 @@ function make_dc_magnet($tiger_hash,$filename,$filesize,$hubs){
  * @param string $table Table used to get stuff
  * @return array Array of retrackers or empty array if no retrackers present
  */
-function get_retrackers($all = false, $table = 'retrackers') {
-    global  $IPCHECK, $REL_DB;
+function get_retrackers($all = false, $table = 'retrackers')
+{
+    global $IPCHECK, $REL_DB;
     $ip = getip();
     $res = $REL_DB->query("SELECT announce_url, mask FROM $table ORDER BY sort ASC");
     while ($row = mysql_fetch_assoc($res)) {
-        $masks = explode(',',$row['mask']);
+        $masks = explode(',', $row['mask']);
         foreach ($masks as $mask)
-            $rtarray[] = array('announce_url'=>$row['announce_url'],'mask'=>$mask);
+            $rtarray[] = array('announce_url' => $row['announce_url'], 'mask' => $mask);
         if ($all) $return[] = $row['announce_url'];
     }
 
@@ -82,8 +86,7 @@ function get_retrackers($all = false, $table = 'retrackers') {
             $RTCHECK = new IPAddressSubnetSniffer(array($retracker['mask']));
 
             if ($RTCHECK->ip_is_allowed($ip)) $retrackers[] = $retracker['announce_url'];
-        }
-        else $retrackers[] = $retracker['announce_url'];
+        } else $retrackers[] = $retracker['announce_url'];
     }
 
     if ($retrackers) return $retrackers; else return array();
@@ -97,7 +100,8 @@ function get_retrackers($all = false, $table = 'retrackers') {
  * @return void|multiple Return value
  * @see bdec_dict()
  */
-function dict_get($d, $k, $t) {
+function dict_get($d, $k, $t)
+{
     if ($d["type"] != "dictionary")
         print("not a dictionary");
     $dd = $d["value"];
@@ -115,7 +119,8 @@ function dict_get($d, $k, $t) {
  * @param string $s Undocumented
  * @return Ambigous <multitype:, unknown> Undocumented
  */
-function dict_check($d, $s) {
+function dict_check($d, $s)
+{
     if ($d["type"] != "dictionary")
         print("not a dictionary");
     $a = explode(":", $s);
@@ -133,8 +138,7 @@ function dict_check($d, $s) {
             if ($dd[$k]["type"] != $t)
                 print("invalid entry in dictionary");
             $ret[] = $dd[$k]["value"];
-        }
-        else
+        } else
             $ret[] = $dd[$k];
     }
     return $ret;
@@ -149,7 +153,8 @@ function dict_check($d, $s) {
  * @see benc_list()
  * @see benc_dict()
  */
-function benc($obj) {
+function benc($obj)
+{
     if (!is_array($obj) || !isset($obj["type"]) || !isset($obj["value"]))
         return;
     $c = $obj["value"];
@@ -166,28 +171,34 @@ function benc($obj) {
             return;
     }
 }
+
 /**
  * Binary encodes a string
  * @param string $s String to be encoded
  * @return string Encoded string
  */
-function benc_str($s) {
+function benc_str($s)
+{
     return strlen($s) . ":$s";
 }
+
 /**
  * Binary encodes an integer
  * @param int $i Integer to be encoded
  * @return string Encoded Integer
  */
-function benc_int($i) {
+function benc_int($i)
+{
     return "i" . $i . "e";
 }
+
 /**
  * Binary encodes a list
  * @param array $a List to be encoded
  * @return string Encoded list
  */
-function benc_list($a) {
+function benc_list($a)
+{
     $s = "l";
     foreach ($a as $e) {
         $s .= benc($e);
@@ -202,7 +213,8 @@ function benc_list($a) {
  * @return string Encoded dictionary
  * @see benc() benc_str()
  */
-function benc_dict($d) {
+function benc_dict($d)
+{
     $s = "d";
     $keys = array_keys($d);
     sort($keys);
@@ -214,24 +226,28 @@ function benc_dict($d) {
     $s .= "e";
     return $s;
 }
+
 /**
  * Binary decodes a torrent file
  * @param string $f File path to be decoded
  * @return array Decoded file
  * @see bdec()
  */
-function bdec_file($f) {
+function bdec_file($f)
+{
     $f = file_get_contents($f);
     if (!$f)
         return;
     return bdec($f);
 }
+
 /**
  * Binary decodes a Value
  * @param string $s Value to be decoded
  * @return array Decoded value
  */
-function bdec($s) {
+function bdec($s)
+{
     if (preg_match('/^(\d+):/', $s, $m)) {
         $l = $m[1];
         $pl = strlen($l) + 1;
@@ -258,19 +274,21 @@ function bdec($s) {
             return;
     }
 }
+
 /**
  * Binary decodes a list
  * @param string $s List to be decoded
  * @return array Decoded list
  */
-function bdec_list($s) {
+function bdec_list($s)
+{
     if ($s[0] != "l")
         return;
     $sl = strlen($s);
     $i = 1;
     $v = array();
     $ss = "l";
-    for (;;) {
+    for (; ;) {
         if ($i >= $sl)
             return;
         if ($s[$i] == "e")
@@ -285,19 +303,21 @@ function bdec_list($s) {
     $ss .= "e";
     return array('type' => "list", 'value' => $v, 'strlen' => strlen($ss), 'string' => $ss);
 }
+
 /**
  * Binary decodes a dictionary
  * @param string $s Dictionary to be decoded
  * @return array Decoded dictionary
  */
-function bdec_dict($s) {
+function bdec_dict($s)
+{
     if ($s[0] != "d")
         return;
     $sl = strlen($s);
     $i = 1;
     $v = array();
     $ss = "d";
-    for (;;) {
+    for (; ;) {
         if ($i >= $sl)
             return;
         if ($s[$i] == "e")
@@ -326,8 +346,12 @@ function bdec_dict($s) {
  * @param array $dict Decoded torrent dictionary
  * @return array|boolean Array of urls on success, false on fail
  */
-function get_announce_urls($dict){
-    if ($dict['value']['announce'] && !$dict['value']['announce-list']) {$anarray[0] = $dict['value']['announce']['value']; return $anarray; }
+function get_announce_urls($dict)
+{
+    if ($dict['value']['announce'] && !$dict['value']['announce-list']) {
+        $anarray[0] = $dict['value']['announce']['value'];
+        return $anarray;
+    }
 
     if ($dict['value']['announce-list']) {
 
@@ -349,8 +373,9 @@ function get_announce_urls($dict){
  * @param array $anarray Array of announce urls. First element good to be a local announce-url
  * @return void Uses global $dict
  */
-function put_announce_urls($dict,$anarray){
-    global  $dict, $REL_DB;
+function put_announce_urls($dict, $anarray)
+{
+    global $dict, $REL_DB;
     $liststring = '';
     unset($dict['value']['announce']);
     unset($dict['value']['announce-list']);
@@ -359,14 +384,14 @@ function put_announce_urls($dict,$anarray){
 
     if (is_array($anarray))
         foreach ($anarray as $announce) {
-            $announces[] = array('type' => 'list', 'value' => array(bdec(benc_str($announce))), 'strlen' => strlen("l".$announce."e"), 'string' => "l".$announce."e");
-            $liststring .= "l".$announce."e";
+            $announces[] = array('type' => 'list', 'value' => array(bdec(benc_str($announce))), 'strlen' => strlen("l" . $announce . "e"), 'string' => "l" . $announce . "e");
+            $liststring .= "l" . $announce . "e";
         }
     $dict['value']['announce-list']['type'] = 'list';
     $dict['value']['announce-list']['value'] = $announces;
 
 
-    $dict['value']['announce-list']['string'] = "l".$liststring."e";
+    $dict['value']['announce-list']['string'] = "l" . $liststring . "e";
     $dict['value']['announce-list']['strlen'] = strlen($dict['value']['announce-list']['string']);
 
 }
@@ -376,12 +401,13 @@ function put_announce_urls($dict,$anarray){
  * @param string $urlInfo URL to be parsed
  * @return int Port
  */
-function getUrlPort($urlInfo) {
-    if( isset($urlInfo['port']) ) {
+function getUrlPort($urlInfo)
+{
+    if (isset($urlInfo['port'])) {
         $port = $urlInfo['port'];
     } else { // no port specified; get default port
         if (isset($urlInfo['scheme'])) {
-            switch($urlInfo['scheme']) {
+            switch ($urlInfo['scheme']) {
                 case 'http':
                     $port = 80; // default for http
                     break;
@@ -408,8 +434,9 @@ function getUrlPort($urlInfo) {
  * @param string $result Bencoded result to be parsed
  * @return string String to be used in remote tracker statistics
  */
-function check_fail($result) {
-    if ($result['value']['failure reason']['value']) return 'failed:'.$result['value']['failure reason']['value']; else return 'ok';
+function check_fail($result)
+{
+    if ($result['value']['failure reason']['value']) return 'failed:' . $result['value']['failure reason']['value']; else return 'ok';
 }
 
 /**
@@ -419,7 +446,8 @@ function check_fail($result) {
  * @param string $method Method of gathering amount of peers. May be scrape or announce. Default 'scrape'. If scrape fails, recursively switches to announce and executes again.
  * @return array Result array ('tracker','seeders','leechers','state');
  */
-function get_remote_peers($url, $info_hash, $method = 'scrape') {
+function get_remote_peers($url, $info_hash, $method = 'scrape')
+{
 
     if ($method == "announce") {
         $get_params = array(
@@ -434,7 +462,7 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
             "numwant" => 9999
         );
     } else {
-        $urlorig=$url;
+        $urlorig = $url;
         $url = str_replace('announce', 'scrape', $url);
         $get_params = array(
             "info_hash" => pack("H*", $info_hash)
@@ -459,7 +487,7 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
         $new_get_request_params[$key] = $value;
     }
 
-    if (!$new_get_request_params) $new_get_request_params=array();
+    if (!$new_get_request_params) $new_get_request_params = array();
     // Params gathering complete
 
     // Creating params
@@ -473,57 +501,65 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
     )
     );
 
-    $req_uri = $scheme.'://'.$http_host.':'.$http_port.$http_path.($http_params ? '?'.$http_params : '');
+    $req_uri = $scheme . '://' . $http_host . ':' . $http_port . $http_path . ($http_params ? '?' . $http_params : '');
 
-    if ($scheme=='udp'&&$method=='scrape') {
+    if ($scheme == 'udp' && $method == 'scrape') {
 
-        $transaction_id = mt_rand(0,65535);
-        $fp = @fsockopen($scheme.'://'.$http_host, $http_port, $errno, $errstr); //sockets only
-        if(!$fp) return array('tracker' => $http_host, 'state' => 'failed:timeout', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        $transaction_id = mt_rand(0, 65535);
+        $fp = @fsockopen($scheme . '://' . $http_host, $http_port, $errno, $errstr); //sockets only
+        if (!$fp) return array('tracker' => $http_host, 'state' => 'failed:timeout', 'method' => "$scheme:$method", 'remote_method' => 'socket');
         stream_set_timeout($fp, 3);
 
         $current_connid = "\x00\x00\x04\x17\x27\x10\x19\x80";
 
         //Connection request
         $packet = $current_connid . pack("N", 0) . pack("N", $transaction_id);
-        fwrite($fp,$packet);
+        fwrite($fp, $packet);
 
         //Connection response
         $ret = fread($fp, 16);
-        if(strlen($ret) < 1){ return get_remote_peers($urlorig, $info_hash, "announce"); }
-        if(strlen($ret) < 16){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
-        $retd = unpack("Naction/Ntransid",$ret);
-        if($retd['action'] != 0 || $retd['transid'] != $transaction_id){
+        if (strlen($ret) < 1) {
+            return get_remote_peers($urlorig, $info_hash, "announce");
+        }
+        if (strlen($ret) < 16) {
+            return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        }
+        $retd = unpack("Naction/Ntransid", $ret);
+        if ($retd['action'] != 0 || $retd['transid'] != $transaction_id) {
             return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => "$scheme:$method", 'remote_method' => 'socket');
         }
-        $current_connid = substr($ret,8,8);
+        $current_connid = substr($ret, 8, 8);
 
         //Scrape request
-        $packet = $current_connid . pack("N", 2) . pack("N", $transaction_id) . pack('H*',  $info_hash);
-        fwrite($fp,$packet);
+        $packet = $current_connid . pack("N", 2) . pack("N", $transaction_id) . pack('H*', $info_hash);
+        fwrite($fp, $packet);
         //Scrape response
-        $readlength = 20;//8 + (12);
+        $readlength = 20; //8 + (12);
         $ret = fread($fp, $readlength);
-        if(strlen($ret) < 1){ return get_remote_peers($urlorig, $info_hash, "announce"); }
-        if(strlen($ret) < 8){ array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
-        $retd = unpack("Naction/Ntransid",$ret);
+        if (strlen($ret) < 1) {
+            return get_remote_peers($urlorig, $info_hash, "announce");
+        }
+        if (strlen($ret) < 8) {
+            array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        }
+        $retd = unpack("Naction/Ntransid", $ret);
         // Todo check for error string if response = 3
-        if($retd['action'] != 2 || $retd['transid'] != $transaction_id){
+        if ($retd['action'] != 2 || $retd['transid'] != $transaction_id) {
             array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => "$scheme:$method", 'remote_method' => 'socket');
         }
-        if(strlen($ret) < $readlength){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
+        if (strlen($ret) < $readlength) {
+            return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        }
 
         $index = 8;
-        $retd = unpack("Nseeders/Ncompleted/Nleechers",substr($ret,$index,12));
+        $retd = unpack("Nseeders/Ncompleted/Nleechers", substr($ret, $index, 12));
 
-        return array('tracker' => $http_host, 'seeders' => $retd['seeders'], 'leechers' => $retd['leechers'], 'state'=> 'ok', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        return array('tracker' => $http_host, 'seeders' => $retd['seeders'], 'leechers' => $retd['leechers'], 'state' => 'ok', 'method' => "$scheme:$method", 'remote_method' => 'socket');
 
-    }
-
-    elseif ($scheme=='udp'&&$method=='announce') {
-        $transaction_id = mt_rand(0,65535);
-        $fp = @fsockopen($scheme.'://'.$http_host, $http_port, $errno, $errstr); //sockets only
-        if(!$fp) return array('tracker' => $http_host, 'state' => 'failed:timeout', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+    } elseif ($scheme == 'udp' && $method == 'announce') {
+        $transaction_id = mt_rand(0, 65535);
+        $fp = @fsockopen($scheme . '://' . $http_host, $http_port, $errno, $errstr); //sockets only
+        if (!$fp) return array('tracker' => $http_host, 'state' => 'failed:timeout', 'method' => "$scheme:$method", 'remote_method' => 'socket');
         stream_set_timeout($fp, 3);
 
         $current_connid = "\x00\x00\x04\x17\x27\x10\x19\x80";
@@ -531,46 +567,54 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
         //Connection request
         $packet = $current_connid . pack("N", 0) . pack("N", $transaction_id);
         //var_dump($packet);
-        fwrite($fp,$packet);
+        fwrite($fp, $packet);
 
         //Connection response
         $ret = fread($fp, 16);
 
-        if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
-        if(strlen($ret) < 16){ return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
-        $retd = unpack("Naction/Ntransid",$ret);
-        if($retd['action'] != 0 || $retd['transid'] != $transaction_id){
+        if (strlen($ret) < 1) {
+            return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        }
+        if (strlen($ret) < 16) {
+            return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        }
+        $retd = unpack("Naction/Ntransid", $ret);
+        if ($retd['action'] != 0 || $retd['transid'] != $transaction_id) {
             return array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => "$scheme:$method", 'remote_method' => 'socket');
         }
-        $current_connid = substr($ret,8,8);
+        $current_connid = substr($ret, 8, 8);
         //Announce request
 
         $downloaded = "\x30\x30\x30\x30\x30\x30\x30\x30";
         $left = $downloaded;
         $uploaded = $downloaded;
-        $packet = $current_connid . pack("N", 1) . pack("N", $transaction_id) . pack('H*',$info_hash). pack('H*','ee3eb1acec1dc7adc73eda16d05a495bea1ddab1').$downloaded.$left.$uploaded.pack("N", 2).pack("N", ip2long($_SERVER['SERVER_ADDR'])).pack("N", 69).pack("N", 500).pack("N", rand(0,65535));
+        $packet = $current_connid . pack("N", 1) . pack("N", $transaction_id) . pack('H*', $info_hash) . pack('H*', 'ee3eb1acec1dc7adc73eda16d05a495bea1ddab1') . $downloaded . $left . $uploaded . pack("N", 2) . pack("N", ip2long($_SERVER['SERVER_ADDR'])) . pack("N", 69) . pack("N", 500) . pack("N", rand(0, 65535));
 
-        fwrite($fp,$packet);
+        fwrite($fp, $packet);
 
         //Announce response
-        $readlength = 20;//8 + (12);
+        $readlength = 20; //8 + (12);
         $ret = fread($fp, $readlength);
 
-        if(strlen($ret) < 1){ return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
-        if(strlen($ret) < $readlength){ array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket'); }
-        $retd = unpack("Naction/Ntransid",$ret);
+        if (strlen($ret) < 1) {
+            return array('tracker' => $http_host, 'state' => 'failed:no_udp_data', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        }
+        if (strlen($ret) < $readlength) {
+            array('tracker' => $http_host, 'state' => 'failed:invalid_udp_packet', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        }
+        $retd = unpack("Naction/Ntransid", $ret);
         // Todo check for error string if response = 3
-        if($retd['action'] != 2 || $retd['transid'] != $transaction_id){
+        if ($retd['action'] != 2 || $retd['transid'] != $transaction_id) {
             array('tracker' => $http_host, 'state' => 'failed:invalid_udp_response', 'method' => "$scheme:$method", 'remote_method' => 'socket');
         }
 
         $index = 8;
-        $retd = unpack("Nleechers/Nseeders",substr($ret,$index,8));
+        $retd = unpack("Nleechers/Nseeders", substr($ret, $index, 8));
 
-        return array('tracker' => $http_host, 'seeders' => $retd['seeders'], 'leechers' => $retd['leechers'], 'state'=> 'ok', 'method' => "$scheme:$method", 'remote_method' => 'socket');
+        return array('tracker' => $http_host, 'seeders' => $retd['seeders'], 'leechers' => $retd['leechers'], 'state' => 'ok', 'method' => "$scheme:$method", 'remote_method' => 'socket');
 
     }
-    elseif ( function_exists('curl_init') ) {
+    elseif (function_exists('curl_init')) {
         if ($ch = @curl_init()) {
             @curl_setopt($ch, CURLOPT_URL, $req_uri);
             @curl_setopt($ch, CURLOPT_PORT, $http_port);
@@ -585,9 +629,9 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
             @curl_close($ch);
         }
         $remote_method = 'curl';
-    } 	elseif ( function_exists('fsockopen') ){
+    } elseif (function_exists('fsockopen')) {
         if ($fp = fsockopen($http_host, preg_replace("#[\D]#i", "", $http_port), $errno, $errstr, 3)) {
-            $h  = "GET ".$http_path.($http_params ? '?'.$http_params : '')." HTTP/1.0\r\n";
+            $h = "GET " . $http_path . ($http_params ? '?' . $http_params : '') . " HTTP/1.0\r\n";
             $h .= "Host: {$http_host}\r\n";
             $h .= "Connection: close\r\n";
             $h .= "User-Agent: uTorrent/1820\r\n\r\n";
@@ -604,14 +648,13 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
         }
         $remote_method = 'socket';
     }
-    elseif ( function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1 ) {
+    elseif (function_exists('file_get_contents') && ini_get('allow_url_fopen') == 1) {
         $context = @stream_context_create($opts);
-        $result = @file_get_contents($req_uri , false, $context);
+        $result = @file_get_contents($req_uri, false, $context);
         $remote_method = 'file';
     }
-    if (!$result)
-    {
-        if ($method=='scrape')
+    if (!$result) {
+        if ($method == 'scrape')
             return get_remote_peers($urlorig, $info_hash, "announce"); else
             return array('tracker' => $http_host, 'state' => 'failed:no_benc_result_or_timeout', 'method' => "$scheme:$method", 'remote_method' => $remote_method);
 
@@ -619,10 +662,10 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
 
 
     //var_dump($method);
-    $resulttemp=$result;
+    $resulttemp = $result;
     $result = @bdec($result);
 
-    if (!is_array($result)) return array('tracker' => $http_host, 'state' => 'failed:unable_to_bdec:'.$resulttemp, 'method' => "$scheme:$method", 'remote_method' => $remote_method);
+    if (!is_array($result)) return array('tracker' => $http_host, 'state' => 'failed:unable_to_bdec:' . $resulttemp, 'method' => "$scheme:$method", 'remote_method' => $remote_method);
     unset($resulttemp);
     //    print('<pre>'); var_dump($result);
     if ($method == 'scrape') {
@@ -633,8 +676,8 @@ function get_remote_peers($url, $info_hash, $method = 'scrape') {
         } else return get_remote_peers($urlorig, $info_hash, "announce");
     }
 
-    if($method == 'announce') {
-        return array('tracker' => $http_host, 'seeders' => (is_array($result['value']['peers']['value'])?count($result['value']['peers']['value']):(strlen($result['value']['peers']['value'])/6)), 'leechers' => 0, 'state'=> check_fail($result), 'method' => "$scheme:$method", 'remote_method' => $remote_method);
+    if ($method == 'announce') {
+        return array('tracker' => $http_host, 'seeders' => (is_array($result['value']['peers']['value']) ? count($result['value']['peers']['value']) : (strlen($result['value']['peers']['value']) / 6)), 'leechers' => 0, 'state' => check_fail($result), 'method' => "$scheme:$method", 'remote_method' => $remote_method);
     }
 
 }

@@ -62,7 +62,7 @@
     <div class="tmenur">
       <ul class="topmenu" id="topmenu">
         <li><a href="{$REL_CONFIG.defaultbaseurl}/">{$REL_LANG->_('Main')}</a></li>
-        <li><a rel="tmlnk3" href="{$REL_SEO->make_link('browse')}">{$REL_LANG->_('Releasers')}</a></li>
+        <li><a rel="tmlnk3" href="{$REL_SEO->make_link('browse')}">{$REL_LANG->_('Releases')}</a></li>
         <li><a rel="tmlnk4" href="#">Меню</a></li>
         {if $CURUSER}
         <li><a rel="tmlnk5"  href="{$REL_SEO->make_link('mynotifs')}">{$REL_LANG->_("Notifications")}{if $REL_NOTIFS.total} ({$REL_NOTIFS.total}){/if}</a></li> 

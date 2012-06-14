@@ -12,43 +12,42 @@
 require "include/bittorrent.php";
 INIT();
 
-if ((@strpos($_SERVER['HTTP_REFERER'],"edit.php") === false) || !is_numeric($_GET['id'])) die ($REL_LANG->say_by_key('wrong_id'));
+if ((@strpos($_SERVER['HTTP_REFERER'], "edit.php") === false) || !is_numeric($_GET['id'])) die ($REL_LANG->say_by_key('wrong_id'));
 $id = $_GET['id'];
-$curowner = $REL_DB->query("SELECT owner FROM torrents WHERE id = ".$id);
-$curowner = mysql_result($curowner,0);
+$curowner = $REL_DB->query("SELECT owner FROM torrents WHERE id = " . $id);
+$curowner = mysql_result($curowner, 0);
 
 headers(REL_AJAX);
 
 if ($curowner != 0) {
-	$REL_DB->query("UPDATE torrents SET owner=0, orig_owner = ".$curowner." WHERE id = ".$id);
+    $REL_DB->query("UPDATE torrents SET owner=0, orig_owner = " . $curowner . " WHERE id = " . $id);
 
-	$REL_CACHE->clearGroupCache('block-indextorrents');
-	print('<html>
+    $REL_CACHE->clearGroupCache('block-indextorrents');
+    print('<html>
 <head>
-<title>'.$REL_LANG->say_by_key('anonymous_release').'</title>
+<title>' . $REL_LANG->say_by_key('anonymous_release') . '</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <body>
-'.$REL_LANG->say_by_key('release_anonymous').'<br />
-[<a href="javascript:self.close()">'.$REL_LANG->say_by_key('close_window').'</a>]
+' . $REL_LANG->say_by_key('release_anonymous') . '<br />
+[<a href="javascript:self.close()">' . $REL_LANG->say_by_key('close_window') . '</a>]
 </body>
 </html>');
-}
-elseif ($curowner == 0) {
-	$origowner = $REL_DB->query("SELECT torrents.orig_owner AS id, users.username  FROM torrents LEFT JOIN users ON torrents.orig_owner = users.id WHERE torrents.id =".$id);
-	$origowner = mysql_fetch_array($origowner);
-	$REL_DB->query("UPDATE torrents SET owner = ".$origowner['id'].", orig_owner = 0 WHERE id = ".$id);
+} elseif ($curowner == 0) {
+    $origowner = $REL_DB->query("SELECT torrents.orig_owner AS id, users.username  FROM torrents LEFT JOIN users ON torrents.orig_owner = users.id WHERE torrents.id =" . $id);
+    $origowner = mysql_fetch_array($origowner);
+    $REL_DB->query("UPDATE torrents SET owner = " . $origowner['id'] . ", orig_owner = 0 WHERE id = " . $id);
 
 
-	$REL_CACHE->clearGroupCache('block-indextorrents');
-	print('<html>
+    $REL_CACHE->clearGroupCache('block-indextorrents');
+    print('<html>
 <head>
-<title>'.$REL_LANG->say_by_key('make_anonymous').'</title>
+<title>' . $REL_LANG->say_by_key('make_anonymous') . '</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <body>
-'.$REL_LANG->say_by_key('owner_release').' '.$origowner['username'].' '.$REL_LANG->say_by_key('restored').'<br />
-[<a href="javascript:self.close()">'.$REL_LANG->say_by_key('close_window').'</a>]
+' . $REL_LANG->say_by_key('owner_release') . ' ' . $origowner['username'] . ' ' . $REL_LANG->say_by_key('restored') . '<br />
+[<a href="javascript:self.close()">' . $REL_LANG->say_by_key('close_window') . '</a>]
 </body>
 </html>');
 }

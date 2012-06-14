@@ -26,15 +26,14 @@ require "include/bittorrent.php";
 INIT();
 
 
-
 //loggedinorreturn();
 
 $REL_TPL->stdhead($REL_LANG->_('Copyrights'));
 
 $REL_TPL->begin_main_frame();
 $REL_TPL->begin_frame($REL_LANG->_('Copyrights'));
-print(nl2br('Kinokpk.com releaser '.RELVERSION.'
-    Copyright (C) 2008-'.date('Y').'  ZonD80, Germani
+print(nl2br('Kinokpk.com releaser ' . RELVERSION . '
+    Copyright (C) 2008-' . date('Y') . '  ZonD80, Germani
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

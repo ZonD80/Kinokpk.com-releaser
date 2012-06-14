@@ -18,18 +18,18 @@ get_privilege('spamadmin');
 
 httpauth();
 
-if(is_array($_POST["delmp"])) {
-	foreach ($_POST['delmp'] as $delid)
-	if (!is_valid_id($delid)) $REL_TPL->stderr($REL_LANG->say_by_key('error'),$REL_LANG->say_by_key('invalid_id'));
+if (is_array($_POST["delmp"])) {
+    foreach ($_POST['delmp'] as $delid)
+        if (!is_valid_id($delid)) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
 
-	$do = "DELETE FROM messages WHERE id IN (".implode(", ", $_POST[delmp]).")";
-	$res=$REL_DB->query($do);
-	safe_redirect($REL_SEO->make_link('spam'));
+    $do = "DELETE FROM messages WHERE id IN (" . implode(", ", $_POST[delmp]) . ")";
+    $res = $REL_DB->query($do);
+    safe_redirect($REL_SEO->make_link('spam'));
 } else {
-	$REL_TPL->stdhead($REL_LANG->say_by_key('error'));
-	print("<div class='error'><b>".$REL_LANG->say_by_key('not_chosen_message')."</b></div>");
-	print("<center><INPUT TYPE='button' VALUE='".$REL_LANG->say_by_key('back')."' onClick=\"history.go(-1)\"></center>");
-	$REL_TPL->stdfoot();
-	die;
+    $REL_TPL->stdhead($REL_LANG->say_by_key('error'));
+    print("<div class='error'><b>" . $REL_LANG->say_by_key('not_chosen_message') . "</b></div>");
+    print("<center><INPUT TYPE='button' VALUE='" . $REL_LANG->say_by_key('back') . "' onClick=\"history.go(-1)\"></center>");
+    $REL_TPL->stdfoot();
+    die;
 }
 ?>

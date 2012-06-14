@@ -10,11 +10,11 @@
 require_once('include/bittorrent.php');
 INIT(true);
 $lang = trim((string)$_GET['l']);
-$lang = substr($lang,0,2);
+$lang = substr($lang, 0, 2);
 setcookie("lang", $lang, 0x7fffffff);
 if (isset($_GET['returnto']))
-safe_redirect(strip_tags($_GET["returnto"]));
+    safe_redirect(strip_tags($_GET["returnto"]));
 else
-safe_redirect($REL_SEO->make_link('index'));
+    safe_redirect($REL_SEO->make_link('index'));
 
 ?>
