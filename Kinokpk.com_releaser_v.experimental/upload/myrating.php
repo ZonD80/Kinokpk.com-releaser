@@ -48,7 +48,7 @@ else {
 
 
 if (isset($_GET['discount'])) {
-    $max_discount = ($CURUSER['ratingsum'] > $CURUSER['downloaded'] ? ($CURUSER['downloaded'] - $CURUSER['ratingsum']) : $CURUSER['ratingsum']);
+    $max_discount = ($CURUSER['downloaded']-$CURUSER['discount']);
     if ($max_discount <= 0) {
         $REL_TPL->stderr($REL_LANG->_('Message'), $REL_LANG->_('You already reached discount limit. <a href="%s">Tell my why?</a>', $REL_SEO->make_link('aboutrating')), 'success');
     }
