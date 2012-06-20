@@ -20,7 +20,7 @@ $type = (string)$_GET['type'];
 
 
 $allowed_types = array('torrents', 'users', 'rel', 'poll', 'news', 'user', 'req', 'relgroups', 'rg');
-$comment_types = array('poll', 'news', 'users', 'req', 'rel', 'rg');
+$comment_types = array('poll', 'news', 'user', 'req', 'rel', 'rg');
 
 /**
  * Checks that user cannot change himself ratings
@@ -38,7 +38,7 @@ function check_myself($id, $type)
     if ($check) return false; else return true;
 }
 
-if ($_GET['act'] == 'up') $act = '+1'; else $act = '-1';
+if ((string)$_GET['act'] == 'up') $act = '+1'; else $act = '-1';
 
 if (!in_array($type, $allowed_types)) $invalid = true;
 
