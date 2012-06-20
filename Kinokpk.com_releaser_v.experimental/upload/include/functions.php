@@ -1075,6 +1075,9 @@ function userlogin()
     }
     if (!$REL_CONFIG['ss_uri']) $REL_CONFIG['ss_uri'] = $row['uri'];
 
+    $REL_LANG = new REL_LANG($REL_CONFIG);
+    make_zodiac_records($REL_LANG);
+
     $updateset = array();
 
     $peersstat = $REL_DB->query_row("SELECT (SELECT COUNT(`snatched`.`id`) FROM `snatched` LEFT JOIN `torrents` ON `snatched`.`torrent`=`torrents`.`id` WHERE `userid`={$row['id']} AND `torrents`.`owner`<>{$row['id']} AND `torrents`.`free`=0 AND NOT FIND_IN_SET({$row['id']},`torrents`.`freefor`)) AS `downloaded`, (SELECT SUM(1) FROM `xbt_files_users` WHERE `uid`={$row['id']} AND `active`=1 AND `left`=0) AS seeding, (SELECT SUM(1) FROM `xbt_files_users` WHERE `uid`={$row['id']} AND `active`=1 AND `left`<>0) AS leeching");
@@ -1102,9 +1105,21 @@ function userlogin()
             $updateset[] = 'enabled = 0';
             $updateset[] = "dis_reason = " . $REL_DB->sqlesc($REL_LANG->_to($row['id'], 'Your rating was too low'));
         }
+        elseif ($row['ratingsum']>$REL_CRON['promote_rating']&&$row['class']!=$classes['rating']&&get_class_priority($row['class'])<get_class_priority($classes['staffbegin'])) {
+            $updateset[] = "class = {$classes['rating']}";
+            $row['class'] = $classes['rating'];
+            write_sys_msg($row['id'],$REL_LANG->_('You have been promoted to %s class, because your rating is above %s',$classes[$classes['rating']]['name'],$REL_CRON['promote_rating']),$REL_LANG->_('Congratulations'));
+        }
+    }
+
+    if ($row['num_warned']>4) {
+        $updateset[] = "enabled = 0";
+        $updateset[] = "dis_reason = ".$REL_DB->sqlesc($REL_LANG->_('Disabled by system (5 warnings)'));
+        $updateset[] = "modcomment = ".$REL_DB->sqlesc($row['modcomment']."\n{$REL_LANG->_to(0,'Disabled by system (5 warnings)')}");
+        write_log($REL_LANG->_to(0,'User %s disabled by system (5 warnings)',make_user_link($row)),'tracker');
     }
     if ($ip != $row['ip'])
-        $updateset[] = 'ip = ' . sqlesc($ip);
+        $updateset[] = 'ip = ' . $REL_DB->sqlesc($ip);
     $updateset[] = 'last_access = ' . time();
 
     if (count($updateset))
@@ -1127,8 +1142,6 @@ function userlogin()
      * @see $REL_TPL->stdhead()
      */
     $GLOBALS["CURUSER"] = $row;
-    $REL_LANG = new REL_LANG($REL_CONFIG);
-    make_zodiac_records($REL_LANG);
 
     user_session();
 

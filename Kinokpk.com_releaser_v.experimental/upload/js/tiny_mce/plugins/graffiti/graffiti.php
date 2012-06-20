@@ -1,5 +1,5 @@
 <?php
-$path = str_replace("js/tiny_mce/plugins/graffiti", '', dirname(__FILE__));
+$path = str_replace("js".DIRECTORY_SEPARATOR."tiny_mce".DIRECTORY_SEPARATOR."plugins".DIRECTORY_SEPARATOR."graffiti", '', dirname(__FILE__));
 require_once ($path . "include/bittorrent.php");
 INIT();
 if (!$CURUSER) die('Only users enabled');

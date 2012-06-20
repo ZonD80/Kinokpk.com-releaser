@@ -4,8 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <?php
-    define('DS', DIRECTORY_SEPARATOR);
-    $path = str_replace("js" . DS . "tiny_mce" . DS . "plugins" . DS . "kinopoisk", '', dirname(__FILE__));
+    $path = str_replace("js".DIRECTORY_SEPARATOR."tiny_mce".DIRECTORY_SEPARATOR."plugins".DIRECTORY_SEPARATOR."kinopoisk", '', dirname(__FILE__));
     require_once ($path . "include/bittorrent.php");
     INIT();
     ?>

@@ -115,44 +115,23 @@ if (mysql_num_rows($res) > 0) {
     }
 }
 //disabled 5 times warned users
-/*$res = $REL_DB->query("SELECT id, username, modcomment FROM users WHERE num_warned > 4 AND enabled = 1 ");
- $num = mysql_num_rows($res);
- while ($arr = mysql_fetch_assoc($res)) {
- $modcom = sqlesc(date("Y-m-d") . " - Отключен системой (5 и более предупреждений) " . "\n". $arr[modcomment]);
- $REL_DB->query("UPDATE users SET enabled = 0, dis_reason = 'Отключен системой (5 и более предупреждений)' WHERE id = $arr[id]");
- $REL_DB->query("UPDATE users SET modcomment = $modcom WHERE id = $arr[id]");
- write_log("Пользователь $arr[username] был отключен системой (5 и более предупреждений)","tracker");
- }
- */
 
 /*
  * rating system? it moved to userlogin(), counting individually for each user
  * @see userlogin();
  */
 
-//remove expired warnings
+/*//remove expired warnings
 $now = time();
 $modcomment = sqlesc(date("Y-m-d") . " - Предупреждение снято системой по таймауту.\n");
 $msg = sqlesc("Ваше предупреждение снято по таймауту. Постарайтесь больше не получать предупреждений и следовать правилам.\n");
 $REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster) SELECT 0, id, $now, $msg, 0 FROM users WHERE warned=1 AND warneduntil < " . time() . " AND warneduntil <> 0");
 $REL_DB->query("UPDATE users SET warned=0, warneduntil = 0, modcomment = CONCAT($modcomment, modcomment) WHERE warned=1 AND warneduntil < " . time() . " AND warneduntil <> 0");
 
-// promote power users
-/* MODIFY TO CLASS SYSTEM & XBT
- if ($REL_CRON['rating_enabled']) {
- $msg = sqlesc("Наши поздравления, вы были авто-повышены до ранга <b>Опытный пользовать</b>.");
- $subject = sqlesc("Вы были повышены");
- $modcomment = sqlesc(date("Y-m-d") . " - Повышен до уровня \"".$REL_LANG->say_by_key("class_power_user")."\" системой.\n");
- $REL_DB->query("UPDATE users SET class = ".UC_POWER_USER.", modcomment = CONCAT($modcomment, modcomment) WHERE class = ".UC_USER." AND ratingsum>={$REL_CRON['promote_rating']}");
- $REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, id, $now, $msg, 0, $subject FROM users WHERE class = ".UC_USER." AND ratingsum>={$REL_CRON['promote_rating']}");
-
- // demote power users
- $msg = sqlesc("Вы были авто-понижены с ранга <b>Опытный пользователь</b> до ранга <b>Пользователь</b> потому-что ваш рейтинг упал ниже <b>+{$REL_CRON['promote_rating']}</b>.");
- $subject = sqlesc("Вы были понижены");
- $modcomment = sqlesc(date("Y-m-d") . " - Понижен до уровня \"".$REL_LANG->say_by_key("class_user")."\" системой.\n");
- $REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, id, $now, $msg, 0, $subject FROM users WHERE class = 1 AND ratingsum<{$REL_CRON['promote_rating']}");
- $REL_DB->query("UPDATE users SET class = ".UC_USER.", modcomment = CONCAT($modcomment, modcomment) WHERE class = ".UC_POWER_USER." AND ratingsum<{$REL_CRON['promote_rating']}");
- }
+/*
+ * promotion to power users is in userlogin() also
+ * @see userlogin();
+ */
  // delete old torrents MODIFY TO XBT!
  /*if ($REL_CRON['use_ttl']) {
  $dt = time() - ($REL_CRON['ttl_days'] * 86400);

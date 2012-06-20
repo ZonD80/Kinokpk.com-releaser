@@ -131,7 +131,7 @@ if ((get_privilege('is_moderator', false)) && $_GET['act']) {
 
     if (!pagercheck()) {
         print("<div id=\"pager_scrollbox\"><table id=\"userst\"  cellspacing=\"0\" cellpadding=\"5\" border=\"1\" style=\"width: 100%;\">\n");
-        print("<tr><td class=\"colhead\" align=\"left\">{$REL_LANG->_('Username')}</td><td class=\"colhead\">{$REL_LANG->_('Registered ast')}</td><td class=\"colhead\">{$REL_LANG->_('Last seen')}</td><td class=\"colhead\">{$REL_LANG->_('Rating')}</td><td class=\"colhead\">{$REL_LANG->_('Gender')}</td><td class=\"colhead\" align=\"left\">{$REL_LANG->_('Class')}</td><td class=\"colhead\">{$REL_LANG->_('Country')}</td></tr>\n");
+        print("<tr><td class=\"colhead\" align=\"left\">{$REL_LANG->_('Username')}</td><td class=\"colhead\">{$REL_LANG->_('Registered at')}</td><td class=\"colhead\">{$REL_LANG->_('Last seen')}</td><td class=\"colhead\">{$REL_LANG->_('Rating')}</td><td class=\"colhead\">{$REL_LANG->_('Gender')}</td><td class=\"colhead\" align=\"left\">{$REL_LANG->_('Class')}</td><td class=\"colhead\">{$REL_LANG->_('Country')}</td></tr>\n");
     }
     while ($arr = mysql_fetch_assoc($res)) {
         if ($arr['country'] > 0) {
