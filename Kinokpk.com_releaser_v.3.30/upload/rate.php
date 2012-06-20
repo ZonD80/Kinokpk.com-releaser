@@ -35,7 +35,7 @@ function check_myself($id,$type) {
 	elseif ($type=='relgroups') $check = @mysql_result(sql_query("SELECT 1 FROM relgroups WHERE FIND_IN_SET({$CURUSER['id']},owners) OR FIND_IN_SET({$CURUSER['id']},members)"));
 	if ($check) return false; else return true;
 }
-if ($_GET['act']=='up') $act='+1'; else $act='-1';
+if ((string)$_GET['act']=='up') $act='+1'; else $act='-1';
 
 if (!in_array($type,$allowed_types)) $invalid=true;
 
