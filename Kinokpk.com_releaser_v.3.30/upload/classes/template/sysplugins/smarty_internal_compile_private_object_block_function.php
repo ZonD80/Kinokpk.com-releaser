@@ -1,4 +1,6 @@
 <?php
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty Internal Plugin Compile Object Block Function
  *
@@ -8,53 +10,81 @@
  * @subpackage Compiler
  * @author Uwe Tews
  */
+
 /**
  * Smarty Internal Plugin Compile Object Block Function Class
+ *
+ * @package Smarty
+ * @subpackage Compiler
  */
 class Smarty_Internal_Compile_Private_Object_Block_Function extends Smarty_Internal_CompileBase {
-	/**
-	 * Compiles code for the execution of block plugin
-	 *
-	 * @param array $args array with attributes from parser
-	 * @param string $tag name of block function
-	 * @param string $methode name of methode to call
-	 * @param object $compiler compiler object
-	 * @return string compiled code
-	 */
-	public function compile($args, $compiler, $tag, $methode)
-	{
-		$this->compiler = $compiler;
-		if (strlen($tag) < 5 || substr($tag, -5) != 'close') {
-			// opening tag of block plugin
-			$this->required_attributes = array();
-			$this->optional_attributes = array('_any');
-			// check and get attributes
-			$_attr = $this->_get_attributes($args);
-			// convert attributes into parameter array string
-			$_paramsArray = array();
-			foreach ($_attr as $_key => $_value) {
-				if (is_int($_key)) {
-					$_paramsArray[] = "$_key=>$_value";
-				} else {
-					$_paramsArray[] = "'$_key'=>$_value";
-				}
-			}
-			$_params = 'array(' . implode(",", $_paramsArray) . ')';
 
-			$this->_open_tag($tag . '->' . $methode, $_params);
-			// compile code
-			$output = "<?php \$_smarty_tpl->smarty->_tag_stack[] = array('{$tag}->{$methode}', {$_params}); \$_block_repeat=true; \$_smarty_tpl->smarty->registered_objects['{$tag}'][0]->{$methode}({$_params}, null, \$_smarty_tpl->smarty, \$_block_repeat, \$_smarty_tpl);while (\$_block_repeat) { ob_start();?>";
-		} else {
-			$base_tag = substr($tag, 0, -5);
-			// closing tag of block plugin
-			$_params = $this->_close_tag($base_tag . '->' . $methode);
-			// This tag does create output
-			$this->compiler->has_output = true;
-			// compile code
-			$output = "<?php \$_block_content = ob_get_contents(); ob_end_clean(); \$_block_repeat=false; echo \$_smarty_tpl->smarty->registered_objects['{$base_tag}'][0]->{$methode}({$_params}, \$_block_content, \$_smarty_tpl->smarty, \$_block_repeat, \$_smarty_tpl); } array_pop(\$_smarty_tpl->smarty->_tag_stack);?>";
-		}
-		return $output."\n";
-	}
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
+    public $optional_attributes = array('_any');
+
+    /**
+     * Compiles code for the execution of block plugin
+     *
+     * @param array  $args      array with attributes from parser
+     * @param object $compiler  compiler object
+     * @param array  $parameter array with compilation parameter
+     * @param string $tag       name of block object
+     * @param string $method    name of method to call
+     * @return string compiled code
+     */
+    public function compile($args, $compiler, $parameter, $tag, $method)
+    {
+        if (!isset($tag[5]) || substr($tag, -5) != 'close') {
+            // opening tag of block plugin
+            // check and get attributes
+            $_attr = $this->getAttributes($compiler, $args);
+            if ($_attr['nocache'] === true) {
+                $compiler->tag_nocache = true;
+            }
+            unset($_attr['nocache']);
+            // convert attributes into parameter array string
+            $_paramsArray = array();
+            foreach ($_attr as $_key => $_value) {
+                if (is_int($_key)) {
+                    $_paramsArray[] = "$_key=>$_value";
+                } else {
+                    $_paramsArray[] = "'$_key'=>$_value";
+                }
+            }
+            $_params = 'array(' . implode(",", $_paramsArray) . ')';
+
+            $this->openTag($compiler, $tag . '->' . $method, array($_params, $compiler->nocache));
+            // maybe nocache because of nocache variables or nocache plugin
+            $compiler->nocache = $compiler->nocache | $compiler->tag_nocache;
+            // compile code
+            $output = "<?php \$_smarty_tpl->smarty->_tag_stack[] = array('{$tag}->{$method}', {$_params}); \$_block_repeat=true; echo \$_smarty_tpl->smarty->registered_objects['{$tag}'][0]->{$method}({$_params}, null, \$_smarty_tpl, \$_block_repeat);while (\$_block_repeat) { ob_start();?>";
+        } else {
+            $base_tag = substr($tag, 0, -5);
+            // must endblock be nocache?
+            if ($compiler->nocache) {
+                $compiler->tag_nocache = true;
+            }
+            // closing tag of block plugin, restore nocache
+            list($_params, $compiler->nocache) = $this->closeTag($compiler, $base_tag . '->' . $method);
+            // This tag does create output
+            $compiler->has_output = true;
+            // compile code
+            if (!isset($parameter['modifier_list'])) {
+                $mod_pre = $mod_post = '';
+            } else {
+                $mod_pre = ' ob_start(); ';
+                $mod_post = 'echo ' . $compiler->compileTag('private_modifier', array(), array('modifierlist' => $parameter['modifier_list'], 'value' => 'ob_get_clean()')) . ';';
+            }
+            $output = "<?php \$_block_content = ob_get_contents(); ob_end_clean(); \$_block_repeat=false;" . $mod_pre . " echo \$_smarty_tpl->smarty->registered_objects['{$base_tag}'][0]->{$method}({$_params}, \$_block_content, \$_smarty_tpl, \$_block_repeat); " . $mod_post . "  } array_pop(\$_smarty_tpl->smarty->_tag_stack);?>";
+        }
+        return $output . "\n";
+    }
+
 }
 
 ?>

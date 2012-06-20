@@ -1,4 +1,14 @@
 <?php
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
+/**
+ * Smarty Internal Plugin Resource Registered
+ *
+ * @package Smarty
+ * @subpackage TemplateResources
+ * @author Uwe Tews
+ * @author Rodney Rehm
+ */
 
 /**
  * Smarty Internal Plugin Resource Registered
@@ -7,131 +17,81 @@
  *
  * @package Smarty
  * @subpackage TemplateResources
- * @author Uwe Tews
+ * @deprecated
  */
-/**
- * Smarty Internal Plugin Resource Registered
- */
+class Smarty_Internal_Resource_Registered extends Smarty_Resource {
 
-class Smarty_Internal_Resource_Registered {
-	public function __construct($smarty)
-	{
-		$this->smarty = $smarty;
-	}
-	// classes used for compiling Smarty templates from file resource
-	public $compiler_class = 'Smarty_Internal_SmartyTemplateCompiler';
-	public $template_lexer_class = 'Smarty_Internal_Templatelexer';
-	public $template_parser_class = 'Smarty_Internal_Templateparser';
-	// properties
-	public $usesCompiler = true;
-	public $isEvaluated = false;
+    /**
+     * populate Source Object with meta data from Resource
+     *
+     * @param Smarty_Template_Source   $source    source object
+     * @param Smarty_Internal_Template $_template template object
+     * @return void
+     */
+    public function populate(Smarty_Template_Source $source, Smarty_Internal_Template $_template=null)
+    {
+        $source->filepath = $source->type . ':' . $source->name;
+        $source->uid = sha1($source->filepath);
+        if ($source->smarty->compile_check) {
+            $source->timestamp = $this->getTemplateTimestamp($source);
+            $source->exists = !!$source->timestamp;
+        }
+    }
 
-	/**
-	 * Return flag if template source is existing
-	 *
-	 * @return boolean true
-	 */
-	public function isExisting($_template)
-	{
-		if (is_integer($_template->getTemplateTimestamp())) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	/**
-	 * Get filepath to template source
-	 *
-	 * @param object $_template template object
-	 * @return string return 'string' as template source is not a file
-	 */
-	public function getTemplateFilepath($_template)
-	{
-		// no filepath for strings
-		// return "string" for compiler error messages
-		$_filepath = $_template->resource_type .':'.$_template->resource_name;
-		$_template->templateUid = sha1($_filepath);
-		return $_filepath;
-	}
+    /**
+     * populate Source Object with timestamp and exists from Resource
+     *
+     * @param Smarty_Template_Source $source source object
+     * @return void
+     */
+    public function populateTimestamp(Smarty_Template_Source $source)
+    {
+        $source->timestamp = $this->getTemplateTimestamp($source);
+        $source->exists = !!$source->timestamp;
+    }
 
-	/**
-	 * Get timestamp to template source
-	 *
-	 * @param object $_template template object
-	 * @return boolean false as string resources have no timestamp
-	 */
-	public function getTemplateTimestamp($_template)
-	{
-		// return timestamp
-		$time_stamp = false;
-		call_user_func_array($this->smarty->_plugins['resource'][$_template->resource_type][0][1],
-		array($_template->resource_name, &$time_stamp, $this->smarty));
-		return is_numeric($time_stamp) ? (int)$time_stamp : $time_stamp;
-	}
-	/**
-	 * Get timestamp to template source by type and name
-	 *
-	 * @param object $_template template object
-	 * @return boolean false as string resources have no timestamp
-	 */
-	public function getTemplateTimestampTypeName($_resource_type, $_resource_name)
-	{
-		// return timestamp
-		$time_stamp = false;
-		call_user_func_array($this->smarty->_plugins['resource'][$_resource_type][0][1],
-		array($_resource_name, &$time_stamp, $this->smarty));
-		return is_numeric($time_stamp) ? (int)$time_stamp : $time_stamp;
-	}
+    /**
+     * Get timestamp (epoch) the template source was modified
+     *
+     * @param Smarty_Template_Source $source source object
+     * @return integer|boolean timestamp (epoch) the template was modified, false if resources has no timestamp
+     */
+    public function getTemplateTimestamp(Smarty_Template_Source $source)
+    {
+        // return timestamp
+        $time_stamp = false;
+        call_user_func_array($source->smarty->registered_resources[$source->type][0][1], array($source->name, &$time_stamp, $source->smarty));
+        return is_numeric($time_stamp) ? (int) $time_stamp : $time_stamp;
+    }
 
-	/**
-	 * Retuen template source from resource name
-	 *
-	 * @param object $_template template object
-	 * @return string content of template source
-	 */
-	public function getTemplateSource($_template)
-	{
-		// return template string
-		return call_user_func_array($this->smarty->_plugins['resource'][$_template->resource_type][0][0],
-		array($_template->resource_name, &$_template->template_source, $this->smarty));
-	}
+    /**
+     * Load template's source by invoking the registered callback into current template object
+     *
+     * @param Smarty_Template_Source $source source object
+     * @return string template source
+     * @throws SmartyException if source cannot be loaded
+     */
+    public function getContent(Smarty_Template_Source $source)
+    {
+        // return template string
+        $t = call_user_func_array($source->smarty->registered_resources[$source->type][0][0], array($source->name, &$source->content, $source->smarty));
+        if (is_bool($t) && !$t) {
+            throw new SmartyException("Unable to read template {$source->type} '{$source->name}'");
+        }
+        return $source->content;
+    }
 
-	/**
-	 * Get filepath to compiled template
-	 *
-	 * @param object $_template template object
-	 * @return boolean return false as compiled template is not stored
-	 */
-	public function getCompiledFilepath($_template)
-	{
-		$_compile_id =  isset($_template->compile_id) ? preg_replace('![^\w\|]+!','_',$_template->compile_id) : null;
-		// calculate Uid if not already done
-		if ($_template->templateUid == '') {
-			$_template->getTemplateFilepath();
-		}
-		$_filepath = $_template->templateUid;
-		// if use_sub_dirs, break file into directories
-		if ($_template->smarty->use_sub_dirs) {
-			$_filepath = substr($_filepath, 0, 2) . DS
-			. substr($_filepath, 2, 2) . DS
-			. substr($_filepath, 4, 2) . DS
-			. $_filepath;
-		}
-		$_compile_dir_sep = $_template->smarty->use_sub_dirs ? DS : '^';
-		if (isset($_compile_id)) {
-			$_filepath = $_compile_id . $_compile_dir_sep . $_filepath;
-		}
-		if ($_template->caching) {
-			$_cache = '.cache';
-		} else {
-			$_cache = '';
-		}
-		$_compile_dir = $_template->smarty->compile_dir;
-		if (strpos('/\\', substr($_compile_dir, -1)) === false) {
-			$_compile_dir .= DS;
-		}
-		return $_compile_dir . $_filepath . '.' . $_template->resource_type . '.' . basename($_template->resource_name) . $_cache . '.php';
-	}
+    /**
+     * Determine basename for compiled filename
+     *
+     * @param Smarty_Template_Source $source source object
+     * @return string resource's basename
+     */
+    protected function getBasename(Smarty_Template_Source $source)
+    {
+        return basename($source->name);
+    }
+
 }
 
 ?>

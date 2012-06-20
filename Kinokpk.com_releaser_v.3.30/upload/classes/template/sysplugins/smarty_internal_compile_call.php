@@ -1,5 +1,6 @@
 <?php
-
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty Internal Plugin Compile Function_Call
  *
@@ -9,85 +10,123 @@
  * @subpackage Compiler
  * @author Uwe Tews
  */
+
 /**
  * Smarty Internal Plugin Compile Function_Call Class
+ *
+ * @package Smarty
+ * @subpackage Compiler
  */
 class Smarty_Internal_Compile_Call extends Smarty_Internal_CompileBase {
-	/**
-	 * Compiles the calls of user defined tags defined by {function}
-	 *
-	 * @param array $args array with attributes from parser
-	 * @param object $compiler compiler object
-	 * @return string compiled code
-	 */
-	public function compile($args, $compiler)
-	{
-		$this->compiler = $compiler;
-		$this->smarty = $compiler->smarty;
-		$this->required_attributes = array('name');
-		$this->optional_attributes = array('_any');
-		// check and get attributes
-		$_attr = $this->_get_attributes($args);
-		// save posible attributes
-		if (isset($_attr['assign'])) {
-			// output will be stored in a smarty variable instead of beind displayed
-			$_assign = $_attr['assign'];
-		}
-		$_name = trim($_attr['name'], "'\"");
-		unset($_attr['name'], $_attr['assign']);
-		// set flag (compiled code of {function} must be included in cache file
-		if ($compiler->nocache || $compiler->tag_nocache) {
-			$_nocache = 'true';
-		} else {
-			$_nocache = 'false';
-		}
-		$_paramsArray = array();
-		foreach ($_attr as $_key => $_value) {
-			if (is_int($_key)) {
-				$_paramsArray[] = "$_key=>$_value";
-			} else {
-				$_paramsArray[] = "'$_key'=>$_value";
-			}
-		}
-		if (isset($compiler->template->properties['function'][$_name]['parameter'])) {
-			foreach ($compiler->template->properties['function'][$_name]['parameter'] as $_key => $_value) {
-				if (!isset($_attr[$_key])) {
-					if (is_int($_key)) {
-						$_paramsArray[] = "$_key=>$_value";
-					} else {
-						$_paramsArray[] = "'$_key'=>$_value";
-					}
-				}
-			}
-		} elseif (isset($this->smarty->template_functions[$_name]['parameter'])) {
-			foreach ($this->smarty->template_functions[$_name]['parameter'] as $_key => $_value) {
-				if (!isset($_attr[$_key])) {
-					if (is_int($_key)) {
-						$_paramsArray[] = "$_key=>$_value";
-					} else {
-						$_paramsArray[] = "'$_key'=>$_value";
-					}
-				}
-			}
-		}
-		$_params = 'array(' . implode(",", $_paramsArray) . ')';
-		$_hash = str_replace('-','_',$compiler->template->properties['nocache_hash']);
-		// was there an assign attribute
-		if (isset($_assign)) {
-			if ($compiler->template->caching) {
-				$_output = "\$_smarty_tpl->assign({$_assign},Smarty_Internal_Function_Call_Handler::call ('{$_name}',\$_smarty_tpl,{$_params},'{$_hash}',{$_nocache}));?>\n";
-			} else {
-				$_output = "\$_smarty_tpl->assign({$_assign},smarty_template_function_{$_name}(\$_smarty_tpl,{$_params}));?>\n";
-			}
-		} else {
-			if ($compiler->template->caching) {
-				$_output = "<?php Smarty_Internal_Function_Call_Handler::call ('{$_name}',\$_smarty_tpl,{$_params},'{$_hash}',{$_nocache});?>\n";
-			} else {
-				$_output = "<?php smarty_template_function_{$_name}(\$_smarty_tpl,{$_params});?>\n";
-			}
-		}
-		return $_output;
-	}
+
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
+    public $required_attributes = array('name');
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
+    public $shorttag_order = array('name');
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
+    public $optional_attributes = array('_any');
+
+    /**
+     * Compiles the calls of user defined tags defined by {function}
+     *
+     * @param array  $args      array with attributes from parser
+     * @param object $compiler  compiler object
+     * @param array  $parameter array with compilation parameter
+     * @return string compiled code
+     */
+    public function compile($args, $compiler)
+    {
+        // check and get attributes
+        $_attr = $this->getAttributes($compiler, $args);
+        // save possible attributes
+        if (isset($_attr['assign'])) {
+            // output will be stored in a smarty variable instead of beind displayed
+            $_assign = $_attr['assign'];
+        }
+        $_name = $_attr['name'];
+        if ($compiler->compiles_template_function) {
+            $compiler->called_functions[] = trim($_name, "'\"");
+        }
+        unset($_attr['name'], $_attr['assign'], $_attr['nocache']);
+        // set flag (compiled code of {function} must be included in cache file
+        if ($compiler->nocache || $compiler->tag_nocache) {
+            $_nocache = 'true';
+        } else {
+            $_nocache = 'false';
+        }
+        $_paramsArray = array();
+        foreach ($_attr as $_key => $_value) {
+            if (is_int($_key)) {
+                $_paramsArray[] = "$_key=>$_value";
+            } else {
+                $_paramsArray[] = "'$_key'=>$_value";
+            }
+        }
+        if (isset($compiler->template->properties['function'][$_name]['parameter'])) {
+            foreach ($compiler->template->properties['function'][$_name]['parameter'] as $_key => $_value) {
+                if (!isset($_attr[$_key])) {
+                    if (is_int($_key)) {
+                        $_paramsArray[] = "$_key=>$_value";
+                    } else {
+                        $_paramsArray[] = "'$_key'=>$_value";
+                    }
+                }
+            }
+        } elseif (isset($compiler->smarty->template_functions[$_name]['parameter'])) {
+            foreach ($compiler->smarty->template_functions[$_name]['parameter'] as $_key => $_value) {
+                if (!isset($_attr[$_key])) {
+                    if (is_int($_key)) {
+                        $_paramsArray[] = "$_key=>$_value";
+                    } else {
+                        $_paramsArray[] = "'$_key'=>$_value";
+                    }
+                }
+            }
+        }
+        //varibale name?
+        if (!(strpos($_name, '$') === false)) {
+            $call_cache = $_name;
+            $call_function = '$tmp = "smarty_template_function_".' . $_name . '; $tmp';
+        } else {
+            $_name = trim($_name, "'\"");
+            $call_cache = "'{$_name}'";
+            $call_function = 'smarty_template_function_' . $_name;
+        }
+
+        $_params = 'array(' . implode(",", $_paramsArray) . ')';
+        $_hash = str_replace('-', '_', $compiler->template->properties['nocache_hash']);
+        // was there an assign attribute
+        if (isset($_assign)) {
+            if ($compiler->template->caching) {
+                $_output = "<?php ob_start(); Smarty_Internal_Function_Call_Handler::call ({$call_cache},\$_smarty_tpl,{$_params},'{$_hash}',{$_nocache}); \$_smarty_tpl->assign({$_assign}, ob_get_clean());?>\n";
+            } else {
+                $_output = "<?php ob_start(); {$call_function}(\$_smarty_tpl,{$_params}); \$_smarty_tpl->assign({$_assign}, ob_get_clean());?>\n";
+            }
+        } else {
+            if ($compiler->template->caching) {
+                $_output = "<?php Smarty_Internal_Function_Call_Handler::call ({$call_cache},\$_smarty_tpl,{$_params},'{$_hash}',{$_nocache});?>\n";
+            } else {
+                $_output = "<?php {$call_function}(\$_smarty_tpl,{$_params});?>\n";
+            }
+        }
+        return $_output;
+    }
+
 }
 
 ?>

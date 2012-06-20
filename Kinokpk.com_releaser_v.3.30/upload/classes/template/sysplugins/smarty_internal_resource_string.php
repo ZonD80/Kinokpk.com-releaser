@@ -1,90 +1,98 @@
 <?php
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
+/**
+ * Smarty Internal Plugin Resource String
+ *
+ * @package Smarty
+ * @subpackage TemplateResources
+ * @author Uwe Tews
+ * @author Rodney Rehm
+ */
 
 /**
  * Smarty Internal Plugin Resource String
  *
  * Implements the strings as resource for Smarty template
  *
+ * {@internal unlike eval-resources the compiled state of string-resources is saved for subsequent access}}
+ *
  * @package Smarty
  * @subpackage TemplateResources
- * @author Uwe Tews
  */
-/**
- * Smarty Internal Plugin Resource String
- */
+class Smarty_Internal_Resource_String extends Smarty_Resource {
 
-class Smarty_Internal_Resource_String {
-	public function __construct($smarty)
-	{
-		$this->smarty = $smarty;
-	}
-	// classes used for compiling Smarty templates from file resource
-	public $compiler_class = 'Smarty_Internal_SmartyTemplateCompiler';
-	public $template_lexer_class = 'Smarty_Internal_Templatelexer';
-	public $template_parser_class = 'Smarty_Internal_Templateparser';
-	// properties
-	public $usesCompiler = true;
-	public $isEvaluated = true;
+    /**
+     * populate Source Object with meta data from Resource
+     *
+     * @param Smarty_Template_Source   $source    source object
+     * @param Smarty_Internal_Template $_template template object
+     * @return void
+     */
+    public function populate(Smarty_Template_Source $source, Smarty_Internal_Template $_template=null)
+    {
+        $source->uid = $source->filepath = sha1($source->name);
+        $source->timestamp = 0;
+        $source->exists = true;
+    }
 
-	/**
-	 * Return flag if template source is existing
-	 *
-	 * @return boolean true
-	 */
-	public function isExisting($template)
-	{
-		return true;
-	}
+    /**
+     * Load template's source from $resource_name into current template object
+     *
+     * @uses decode() to decode base64 and urlencoded template_resources
+     * @param Smarty_Template_Source $source source object
+     * @return string template source
+     */
+    public function getContent(Smarty_Template_Source $source)
+    {
+        return $this->decode($source->name);
+    }
+    
+    /**
+     * decode base64 and urlencode
+     *
+     * @param string $string template_resource to decode
+     * @return string decoded template_resource
+     */
+    protected function decode($string)
+    {
+        // decode if specified
+        if (($pos = strpos($string, ':')) !== false) {
+            if (!strncmp($string, 'base64', 6)) {
+                return base64_decode(substr($string, 7));
+            } elseif (!strncmp($string, 'urlencode', 9)) {
+                return urldecode(substr($string, 10));
+            }
+        }
+        
+        return $string;
+    }
+    
+    /**
+     * modify resource_name according to resource handlers specifications
+     *
+     * @param Smarty $smarty        Smarty instance
+     * @param string $resource_name resource_name to make unique
+     * @return string unique resource name
+     */
+    protected function buildUniqueResourceName(Smarty $smarty, $resource_name)
+    {
+        return get_class($this) . '#' .$this->decode($resource_name);
+    }
 
-	/**
-	 * Get filepath to template source
-	 *
-	 * @param object $_template template object
-	 * @return string return 'string' as template source is not a file
-	 */
-	public function getTemplateFilepath($_template)
-	{
-		// no filepath for strings
-		// return "string" for compiler error messages
-		return 'string';
-	}
+    /**
+     * Determine basename for compiled filename
+     *
+     * Always returns an empty string.
+     *
+     * @param Smarty_Template_Source $source source object
+     * @return string resource's basename
+     */
+    protected function getBasename(Smarty_Template_Source $source)
+    {
+        return '';
+    }
 
-	/**
-	 * Get timestamp to template source
-	 *
-	 * @param object $_template template object
-	 * @return boolean false as string resources have no timestamp
-	 */
-	public function getTemplateTimestamp($_template)
-	{
-		// strings must always be compiled and have no timestamp
-		return false;
-	}
-
-	/**
-	 * Retuen template source from resource name
-	 *
-	 * @param object $_template template object
-	 * @return string content of template source
-	 */
-	public function getTemplateSource($_template)
-	{
-		// return template string
-		$_template->template_source = $_template->resource_name;
-		return true;
-	}
-
-	/**
-	 * Get filepath to compiled template
-	 *
-	 * @param object $_template template object
-	 * @return boolean return false as compiled template is not stored
-	 */
-	public function getCompiledFilepath($_template)
-	{
-		// no filepath for strings
-		return false;
-	}
 }
 
 ?>

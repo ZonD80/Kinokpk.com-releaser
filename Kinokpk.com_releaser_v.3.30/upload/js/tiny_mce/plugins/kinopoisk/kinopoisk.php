@@ -21,14 +21,14 @@ dbconn();
 		</div>
 
 		<?php
-		//die('Парсер временно отключен');
+		//die('пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ');
 		function search($source,$text)
 		{
 			$result = false;
 			$source = strip_tags($source,'<a>');
 			$source = str_replace("\n",'',$source);
 			//die($source);
-			//<a href="/level/1/film/507/sr/1/">Терминатор</a>, 1984     The Terminator,
+			//<a href="/level/1/film/507/sr/1/">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a>, 1984     The Terminator,
 			$searchfilms = "#<a href=\"\/level\/1\/film\/([0-9]+)\/sr\/1\/\">(.*?)<\/a>#si";
 
 			preg_match_all ($searchfilms, $source, $matches);
@@ -50,7 +50,7 @@ dbconn();
 		{
 			$html = iconv('windows-1251','utf-8',$html);
 			//var_dump(htmlspecialchars($html));
-			//Назва фильма на рус.
+			//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ.
 			if ($option=='rusname') {
 				preg_match('#<h1 style="margin: 0; padding: 0" class="moviename-big" itemprop="name">(.*)</h1>#',$html, $name);
 				//var_dump($name);
@@ -59,20 +59,20 @@ dbconn();
 			}
 
 			elseif ($option=='origname') {
-				//Назва фильма на ориг.
+				//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ.
 				preg_match('#<span style="color: \#666; font-size: 13px" itemprop="alternativeHeadline">(.*)</span>#',$html, $name_orig);
 				return $name_orig[1];
 			}
 
 			elseif ($option=='year') {
-				//год
+				//пїЅпїЅпїЅ
 				preg_match('#<a href="/level/10/m_act%5Byear%5D/([\d]+)/".*?>([\d]+)</a>#si',$html, $year);
 				return $year[1];
 			}
 
 			elseif ($option=='genre') {
-				//Жанр
-				preg_match('#жанр</td><td itemprop="genre">(.*)</td>#iU',$html, $genre);
+				//пїЅпїЅпїЅпїЅ
+				preg_match('#пїЅпїЅпїЅпїЅ</td><td itemprop="genre">(.*)</td>#iU',$html, $genre);
 				$genre = preg_replace('/<a.*>/iU','', $genre[1]);
 				$genre = preg_replace('/<\/a>/iU','', $genre);
 				$genre = str_replace(", ...", "", $genre);
@@ -80,21 +80,21 @@ dbconn();
 			}
 
 			elseif ($option=='director') {
-				//Режиссер
-				preg_match('#режиссер</td><td itemprop="director">(.*)</td></tr>#iU',$html, $director);
+				//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+				preg_match('#пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</td><td itemprop="director">(.*)</td></tr>#iU',$html, $director);
 				$director = preg_replace('/<a.*>/iU','', $director[1]);
 				$director = preg_replace('/<\/a>/iU','', $director);
 				return $director;
 			}
 
 			elseif ($option=='actors') {
-				//В ролях
+				//пїЅ пїЅпїЅпїЅпїЅпїЅ
 				preg_match('#class="actor_list" style="background: none">(.*?)</td>#s',$html,$actors);
 				$actors = trim($actors[1]);
 				$actors = str_replace("\n",', ',$actors);
 				//$actors = trim($actors);
 				$actors = strip_tags($actors);
-				$actors = str_replace('В главных ролях:','',$actors);
+				$actors = str_replace('пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ:','',$actors);
 				$actors = preg_replace('#,    \.\.\.(.*)#s','',$actors);
 				//$actors = str_replace('  ','',$actors);
 				//$actors = substr($actors, 0, );
@@ -102,7 +102,7 @@ dbconn();
 			}
 
 			elseif ($option=='descr') {
-				//О фильме
+				//пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 				preg_match('#<div class="brand_words" itemprop="description">(.*)</div>#',$html, $description);
 				$description = str_replace("&nbsp;"," ",$description[1]);
 				$description = str_replace("&#133;","",$description);
@@ -111,20 +111,20 @@ dbconn();
 			}
 
 			elseif ($option=='imdb') {
-				//Рейтинг IMDb
+				//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ IMDb
 				preg_match('#IMDb: (.*)</div>#',$html, $imdb);
 				return $imdb[1];
 			}
 
 			elseif ($option=='country') {
-				//Страна
+				//пїЅпїЅпїЅпїЅпїЅпїЅ
 				preg_match_all('/<a href="\/level\/10\/m_act%5Bcountry%5D\/[\d]+\/" >(.*?)<\/a>/',$html, $country);
 				$country = implode(', ',$country[1]);
 				return $country;
 			}
 
 			elseif ($option=='time') {
-				//Продолжительность
+				//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 				preg_match('#<td class="time" id="runtime">(.*)</td>#',$html, $time);
 				return $time[1];
 			}
@@ -137,21 +137,21 @@ dbconn();
 		}
 		if (!$CURUSER) die('Only users enabled');
 
-		if (!isset($_GET['id']) && !isset($_GET['filmname'])) print('<table><tr><td>Введите название фильма:</td><td><form method="get"><input type="text" name="filmname">
-				<input type="submit" value="Продолжить" />
+		if (!isset($_GET['id']) && !isset($_GET['filmname'])) print('<table><tr><td>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ:</td><td><form method="get"><input type="text" name="filmname">
+				<input type="submit" value="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ" />
 				</form></td></tr></table>');
 
 		require_once(ROOT_PATH."classes/parser/Snoopy.class.php");
 		$page = new Snoopy;
 
 		if (isset($_GET['filmname'])) {
-			$film = RawUrlEncode($_GET['filmname']);
-			$filmsafe = htmlspecialchars($_GET['filmname']);
+			$film = RawUrlEncode((string)$_GET['filmname']);
+			$filmsafe = htmlspecialchars((string)$_GET['filmname']);
 			$page->fetch("http://www.kinopoisk.ru/index.php?kp_query={$film}");
 			$source = $page->results;
 			if (!$source) die('Nothing found!');
 
-			print("<table><tr><td align=\"center\">Найденные по запросу \"$filmsafe\" фильмы</td></tr>");
+			print("<table><tr><td align=\"center\">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ \"$filmsafe\" пїЅпїЅпїЅпїЅпїЅпїЅ</td></tr>");
 
 			$searched = search($source,$film);
 			if (!$searched) die('Nothing found!');
@@ -183,40 +183,40 @@ dbconn();
 			$descr = (get_content($source, 'descr'));
 			$genre = (get_content($source,'genre'));
 			$actors = get_content($source, 'actors');
-			$kinopoiskrating = "<a href=\"http://www.kinopoisk.ru/level/1/film/$id/\"><img style=\"border: none;\" src=\"http://www.kinopoisk.ru/rating/$id.gif\" title=\"Рейтинг кинопоиска\"/></a>";
+			$kinopoiskrating = "<a href=\"http://www.kinopoisk.ru/level/1/film/$id/\"><img style=\"border: none;\" src=\"http://www.kinopoisk.ru/rating/$id.gif\" title=\"пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\"/></a>";
 
 			switch ($mpaarating){
-				case "G": $mpaarating = "<img src=\"pic/mpaa/G.gif\" title=\"G - Нет возрастных ограничений\"/> G - Нет возрастных ограничений"; break;
-				case "PG": $mpaarating ="<img src=\"pic/mpaa/PG.gif\" title=\"PG - Рекомендуется присутствие родителей\"/> PG - Рекомендуется присутствие родителей"; break;
-				case "PG-13": $mpaarating = "<img src=\"pic/mpaa/PG-13.gif\" title=\"PG-13 - Детям до 13 лет просмотр не желателен\"/> PG-13 - Детям до 13 лет просмотр не желателен"; break;
-				case "R": $mpaarating = "<img src=\"pic/mpaa/R.gif\" title=\"R - Лицам до 17 лет обязательно присутствие взрослого\"/> R - Лицам до 17 лет обязательно присутствие взрослого"; break;
-				case "NC-17": $mpaarating = "<img src=\"pic/mpaa/NC-17.gif\" title=\"NC-17 - Лицам до 17 лет просмотр запрещен\"/> NC-17 - Лицам до 17 лет просмотр запрещен"; break;
+				case "G": $mpaarating = "<img src=\"pic/mpaa/G.gif\" title=\"G - пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\"/> G - пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"; break;
+				case "PG": $mpaarating ="<img src=\"pic/mpaa/PG.gif\" title=\"PG - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\"/> PG - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"; break;
+				case "PG-13": $mpaarating = "<img src=\"pic/mpaa/PG-13.gif\" title=\"PG-13 - пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 13 пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\"/> PG-13 - пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 13 пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"; break;
+				case "R": $mpaarating = "<img src=\"pic/mpaa/R.gif\" title=\"R - пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 17 пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\"/> R - пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 17 пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"; break;
+				case "NC-17": $mpaarating = "<img src=\"pic/mpaa/NC-17.gif\" title=\"NC-17 - пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 17 пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\"/> NC-17 - пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 17 пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"; break;
 			}
 
 			print ('<script type="text/javascript" language="javascript">
 					function fillform(){
 					//window.opener.document.forms["upload"].elements["name"].value = "'.$rusname.'/ '.$origname.'";
 
-					var content = \'<i>Информация о фильме:</i><br/><b>Жанр:</b> '.$genre.'<br/><br/><b>Оригинальное название:</b> '.$origname.'<br/><b>Год выхода:</b> '.$year.'<br/><b>Режиссер:</b> '.$director.'<br/><b>В ролях:</b> '.$actors.'<br/><b>Выпущено:</b> '.$country.'<br/><b>Продолжительность:</b> '.$time.'<br/><b>Рейтинг IMDB:</b> '.$imdbrating.'<br/><b>Рейтинг кинопоиска:</b> '.$kinopoiskrating.'<br/><b>Рейтинг MPAA:</b> '.$mpaarating.'<br/><b>О фильме:</b><br/>'.$descr.'\';
+					var content = \'<i>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ:</i><br/><b>пїЅпїЅпїЅпїЅ:</b> '.$genre.'<br/><br/><b>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</b> '.$origname.'<br/><b>пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ:</b> '.$year.'<br/><b>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</b> '.$director.'<br/><b>пїЅ пїЅпїЅпїЅпїЅпїЅ:</b> '.$actors.'<br/><b>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</b> '.$country.'<br/><b>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</b> '.$time.'<br/><b>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ IMDB:</b> '.$imdbrating.'<br/><b>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</b> '.$kinopoiskrating.'<br/><b>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ MPAA:</b> '.$mpaarating.'<br/><b>пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ:</b><br/>'.$descr.'\';
 
 					KinopoiskDialog.insert(content);
 		}
 					</script>');
 			print ("<table width=\"100%\" border=\"1\"><tr>
-					<td>Жанр:</td><td>$genre</td></tr>
-					<td>Русское название:</td><td>$rusname</td></tr>
-					<tr><td>Оригинальное название:</td><td>$origname</td></tr>
-					<tr><td>В ролях:</td><td>$actors</td></tr>
-					<tr><td>Страна производства:</td><td>$country</td></tr>
-					<tr><td>Год выхода:</td><td>$year</td></tr>
-					<tr><td>Режиссер:</td><td>$director</td></tr>
-					<tr><td>Рейтинг MPAA:</td><td>".(($mpaapic)?"<img src=\"pic/mpaa/$mpaapic.gif\"/>":"")."</td></tr>
-					<tr><td>Рейтинг IMDB:</td><td>$imdbrating</td></tr>
-					<tr><td>Рейтинг Кинопоиска</td><td>$kinopoiskrating</td></tr>
-					<tr><td>Продолжительность:</td><td>$time</td></tr>
-					<tr><td>Описание:</td><td>$descr</td></tr>");
-			print ('<tr><td align="center">Эта информация верна?</td>
-					<td align="center">[<a href="javascript:fillform();">Да, заполнить форму</a>]<br/>[<a href="js/tiny_mce/plugins/kinopoisk/kinopoisk.php">Повторить поиск</a>]<br/>[<a href="javascript:window.close()">Закрыть окно</a>]</td></tr>
+					<td>пїЅпїЅпїЅпїЅ:</td><td>$genre</td></tr>
+					<td>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</td><td>$rusname</td></tr>
+					<tr><td>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</td><td>$origname</td></tr>
+					<tr><td>пїЅ пїЅпїЅпїЅпїЅпїЅ:</td><td>$actors</td></tr>
+					<tr><td>пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</td><td>$country</td></tr>
+					<tr><td>пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ:</td><td>$year</td></tr>
+					<tr><td>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</td><td>$director</td></tr>
+					<tr><td>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ MPAA:</td><td>".(($mpaapic)?"<img src=\"pic/mpaa/$mpaapic.gif\"/>":"")."</td></tr>
+					<tr><td>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ IMDB:</td><td>$imdbrating</td></tr>
+					<tr><td>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</td><td>$kinopoiskrating</td></tr>
+					<tr><td>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</td><td>$time</td></tr>
+					<tr><td>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:</td><td>$descr</td></tr>");
+			print ('<tr><td align="center">пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ?</td>
+					<td align="center">[<a href="javascript:fillform();">пїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ</a>]<br/>[<a href="js/tiny_mce/plugins/kinopoisk/kinopoisk.php">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ</a>]<br/>[<a href="javascript:window.close()">пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ</a>]</td></tr>
 					</table>');
 		}
 		?>
