@@ -1,4 +1,6 @@
 <?php
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty plugin
  *
@@ -12,9 +14,23 @@
  * Type:     function<br>
  * Name:     mailto<br>
  * Date:     May 21, 2002
- * Purpose:  automate mailto address link creation, and optionally
- *            encode them.<br>
- *
+ * Purpose:  automate mailto address link creation, and optionally encode them.<br>
+ * Params:
+ * <pre>
+ * - address    - (required) - e-mail address
+ * - text       - (optional) - text to display, default is address
+ * - encode     - (optional) - can be one of:
+ *                             * none : no encoding (default)
+ *                             * javascript : encode with javascript
+ *                             * javascript_charcode : encode with javascript charcode
+ *                             * hex : encode with hexidecimal (no javascript)
+ * - cc         - (optional) - address(es) to carbon copy
+ * - bcc        - (optional) - address(es) to blind carbon copy
+ * - subject    - (optional) - e-mail subject
+ * - newsgroups - (optional) - newsgroup(s) to post to
+ * - followupto - (optional) - address(es) to follow up to
+ * - extra      - (optional) - extra tags for the href link
+ * </pre>
  * Examples:
  * <pre>
  * {mailto address="me@domain.com"}
@@ -25,35 +41,22 @@
  * {mailto address="me@domain.com" extra='class="mailto"'}
  * </pre>
  *
- * @link http://smarty.php.net/manual/en/language.function.mailto.php {mailto}
+ * @link http://www.smarty.net/manual/en/language.function.mailto.php {mailto}
  *          (Smarty online manual)
  * @version 1.2
  * @author Monte Ohrt <monte at ohrt dot com>
  * @author credits to Jason Sweat (added cc, bcc and subject functionality)
- * @param array $params parameters
- * Input:<br>
- *          - address = e-mail address
- *          - text = (optional) text to display, default is address
- *          - encode = (optional) can be one of:
- *                 * none : no encoding (default)
- *                 * javascript : encode with javascript
- *                 * javascript_charcode : encode with javascript charcode
- *                 * hex : encode with hexidecimal (no javascript)
- *          - cc = (optional) address(es) to carbon copy
- *          - bcc = (optional) address(es) to blind carbon copy
- *          - subject = (optional) e-mail subject
- *          - newsgroups = (optional) newsgroup(s) to post to
- *          - followupto = (optional) address(es) to follow up to
- *          - extra = (optional) extra tags for the href link
- * @param object $template template object
+ * @param array                    $params   parameters
+ * @param Smarty_Internal_Template $template template object
  * @return string
  */
 function smarty_function_mailto($params, $template)
 {
+    static $_allowed_encoding = array('javascript' => true, 'javascript_charcode' => true, 'hex' => true, 'none' => true);
     $extra = '';
 
     if (empty($params['address'])) {
-        trigger_error("mailto: missing 'address' parameter", E_USER_WARNING);
+        trigger_error("mailto: missing 'address' parameter",E_USER_WARNING);
         return;
     } else {
         $address = $params['address'];
@@ -87,24 +90,21 @@ function smarty_function_mailto($params, $template)
         }
     }
 
-    $mail_parm_vals = '';
-    for ($i = 0; $i < count($mail_parms); $i++) {
-        $mail_parm_vals .= (0 == $i) ? '?' : '&';
-        $mail_parm_vals .= $mail_parms[$i];
+    if ($mail_parms) {
+        $address .= '?' . join('&', $mail_parms);
     }
-    $address .= $mail_parm_vals;
-
+    
     $encode = (empty($params['encode'])) ? 'none' : $params['encode'];
-    if (!in_array($encode, array('javascript', 'javascript_charcode', 'hex', 'none'))) {
-        trigger_error("mailto: 'encode' parameter must be none, javascript or hex", E_USER_WARNING);
+    if (!isset($_allowed_encoding[$encode])) {
+        trigger_error("mailto: 'encode' parameter must be none, javascript, javascript_charcode or hex", E_USER_WARNING);
         return;
     }
-
+    // FIXME: (rodneyrehm) document.write() excues me what? 1998 has passed!
     if ($encode == 'javascript') {
         $string = 'document.write(\'<a href="mailto:' . $address . '" ' . $extra . '>' . $text . '</a>\');';
 
         $js_encode = '';
-        for ($x = 0; $x < strlen($string); $x++) {
+        for ($x = 0, $_length = strlen($string); $x < $_length; $x++) {
             $js_encode .= '%' . bin2hex($string[$x]);
         }
 
@@ -112,36 +112,34 @@ function smarty_function_mailto($params, $template)
     } elseif ($encode == 'javascript_charcode') {
         $string = '<a href="mailto:' . $address . '" ' . $extra . '>' . $text . '</a>';
 
-        for ($x = 0, $y = strlen($string); $x < $y; $x++) {
+        for($x = 0, $y = strlen($string); $x < $y; $x++) {
             $ord[] = ord($string[$x]);
         }
 
-        $_ret = "<script type=\"text/javascript\" language=\"javascript\">\n";
-        $_ret .= "<!--\n";
-        $_ret .= "{document.write(String.fromCharCode(";
-        $_ret .= implode(',', $ord);
-        $_ret .= "))";
-        $_ret .= "}\n";
-        $_ret .= "//-->\n";
-        $_ret .= "</script>\n";
+        $_ret = "<script type=\"text/javascript\" language=\"javascript\">\n"
+            . "{document.write(String.fromCharCode("
+            . implode(',', $ord)
+            . "))"
+            . "}\n"
+            . "</script>\n";
 
         return $_ret;
     } elseif ($encode == 'hex') {
         preg_match('!^(.*)(\?.*)$!', $address, $match);
         if (!empty($match[2])) {
-            trigger_error("mailto: hex encoding does not work with extra attributes. Try javascript.", E_USER_WARNING);
+            trigger_error("mailto: hex encoding does not work with extra attributes. Try javascript.",E_USER_WARNING);
             return;
         }
         $address_encode = '';
-        for ($x = 0; $x < strlen($address); $x++) {
-            if (preg_match('!\w!', $address[$x])) {
+        for ($x = 0, $_length = strlen($address); $x < $_length; $x++) {
+            if (preg_match('!\w!' . Smarty::$_UTF8_MODIFIER, $address[$x])) {
                 $address_encode .= '%' . bin2hex($address[$x]);
             } else {
                 $address_encode .= $address[$x];
             }
         }
         $text_encode = '';
-        for ($x = 0; $x < strlen($text); $x++) {
+        for ($x = 0, $_length = strlen($text); $x < $_length; $x++) {
             $text_encode .= '&#x' . bin2hex($text[$x]) . ';';
         }
 

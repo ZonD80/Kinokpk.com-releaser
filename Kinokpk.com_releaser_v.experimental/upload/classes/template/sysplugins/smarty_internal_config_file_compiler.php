@@ -1,5 +1,6 @@
 <?php
-
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty Internal Plugin Config File Compiler
  *
@@ -13,36 +14,73 @@
 
 /**
  * Main config file compiler class
+ *
+ * @package Smarty
+ * @subpackage Config
  */
-class Smarty_Internal_Config_File_Compiler
-{
+class Smarty_Internal_Config_File_Compiler {
+
+    /**
+     * Lexer object
+     *
+     * @var object
+     */
+    public $lex;
+
+    /**
+     * Parser object
+     *
+     * @var object
+     */
+    public $parser;
+
+    /**
+     * Smarty object
+     *
+     * @var Smarty object
+     */
+    public $smarty;
+
+    /**
+     * Smarty object
+     *
+     * @var Smarty_Internal_Config object
+     */
+    public $config;
+
+    /**
+     * Compiled config data sections and variables
+     *
+     * @var array
+     */
+    public $config_data = array();
+
     /**
      * Initialize compiler
+     *
+     * @param Smarty $smarty base instance
      */
     public function __construct($smarty)
     {
         $this->smarty = $smarty;
-        // get required plugins
-        $this->smarty->loadPlugin('Smarty_Internal_Configfilelexer');
-        $this->smarty->loadPlugin('Smarty_Internal_Configfileparser');
         $this->config_data['sections'] = array();
         $this->config_data['vars'] = array();
     }
 
     /**
-     * Methode to compile a Smarty template
+     * Method to compile a Smarty template.
      *
-     * @param  $template template object to compile
+     * @param  Smarty_Internal_Config $config config object
      * @return bool true if compiling succeeded, false if it failed
      */
-    public function compileSource($config)
+    public function compileSource(Smarty_Internal_Config $config)
     {
         /* here is where the compiling takes place. Smarty
-       tags in the templates are replaces with PHP code,
-       then written to compiled files. */
+          tags in the templates are replaces with PHP code,
+          then written to compiled files. */
         $this->config = $config;
         // get config file source
-        $_content = $config->getConfigSource() . "\n";
+        $_content = $config->source->content . "\n";
         // on empty template just return
         if ($_content == '') {
             return true;
@@ -50,10 +88,10 @@ class Smarty_Internal_Config_File_Compiler
         // init the lexer/parser to compile the config file
         $lex = new Smarty_Internal_Configfilelexer($_content, $this->smarty);
         $parser = new Smarty_Internal_Configfileparser($lex, $this);
-        if (isset($this->smarty->_parserdebug)) $parser->PrintTrace();
+        if ($this->smarty->_parserdebug) $parser->PrintTrace();
         // get tokens from lexer and parse them
         while ($lex->yylex()) {
-            if (isset($this->smarty->_parserdebug)) echo "<br>Parsing  {$parser->yyTokenName[$lex->token]} Token {$lex->value} Line {$lex->line} \n";
+            if ($this->smarty->_parserdebug) echo "<br>Parsing  {$parser->yyTokenName[$lex->token]} Token {$lex->value} Line {$lex->line} \n";
             $parser->doParse($lex->token, $lex->value);
         }
         // finish parsing process
@@ -69,8 +107,7 @@ class Smarty_Internal_Config_File_Compiler
      *
      * If parameter $args contains a string this is used as error message
      *
-     * @todo output exact position of parse error in source line
-     * @param  $args string individual error message or null
+     * @param string $args individual error message or null
      */
     public function trigger_config_file_error($args = null)
     {
@@ -82,7 +119,7 @@ class Smarty_Internal_Config_File_Compiler
             // $line--;
         }
         $match = preg_split("/\n/", $this->lex->data);
-        $error_text = "Syntax error in config file '{$this->config->getConfigFilepath()}' on line {$line} '{$match[$line-1]}' ";
+        $error_text = "Syntax error in config file '{$this->config->source->filepath}' on line {$line} '{$match[$line-1]}' ";
         if (isset($args)) {
             // individual error message
             $error_text .= $args;
@@ -103,6 +140,7 @@ class Smarty_Internal_Config_File_Compiler
         }
         throw new SmartyCompilerException($error_text);
     }
+
 }
 
 ?>

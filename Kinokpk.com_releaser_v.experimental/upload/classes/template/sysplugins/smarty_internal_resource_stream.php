@@ -1,5 +1,6 @@
 <?php
-
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty Internal Plugin Resource Stream
  *
@@ -8,96 +9,69 @@
  * @package Smarty
  * @subpackage TemplateResources
  * @author Uwe Tews
+ * @author Rodney Rehm
  */
 
 /**
  * Smarty Internal Plugin Resource Stream
+ *
+ * Implements the streams as resource for Smarty template
+ *
+ * @link http://php.net/streams
+ * @package Smarty
+ * @subpackage TemplateResources
  */
-class Smarty_Internal_Resource_Stream
-{
-    public function __construct($smarty)
-    {
-        $this->smarty = $smarty;
-    }
-
-    // classes used for compiling Smarty templates from file resource
-    public $compiler_class = 'Smarty_Internal_SmartyTemplateCompiler';
-    public $template_lexer_class = 'Smarty_Internal_Templatelexer';
-    public $template_parser_class = 'Smarty_Internal_Templateparser';
-    // properties
-    public $usesCompiler = true;
-    public $isEvaluated = true;
+class Smarty_Internal_Resource_Stream extends Smarty_Resource_Recompiled {
 
     /**
-     * Return flag if template source is existing
+     * populate Source Object with meta data from Resource
      *
-     * @return boolean true
+     * @param Smarty_Template_Source   $source    source object
+     * @param Smarty_Internal_Template $_template template object
+     * @return void
      */
-    public function isExisting($template)
+    public function populate(Smarty_Template_Source $source, Smarty_Internal_Template $_template=null)
     {
-        if ($template->getTemplateSource() == '') {
-            return false;
-        } else {
-            return true;
-        }
+        $source->filepath = str_replace(':', '://', $source->resource);
+        $source->uid = false;
+        $source->content = $this->getContent($source);
+        $source->timestamp = false;
+        $source->exists = !!$source->content;
     }
 
     /**
-     * Get filepath to template source
+     * Load template's source from stream into current template object
      *
-     * @param object $_template template object
-     * @return string return 'string' as template source is not a file
+     * @param Smarty_Template_Source $source source object
+     * @return string template source
+     * @throws SmartyException if source cannot be loaded
      */
-    public function getTemplateFilepath($_template)
+    public function getContent(Smarty_Template_Source $source)
     {
-        // no filepath for strings
-        // return resource name for compiler error messages
-        return str_replace(':', '://', $_template->template_resource);
-    }
-
-    /**
-     * Get timestamp to template source
-     *
-     * @param object $_template template object
-     * @return boolean false as string resources have no timestamp
-     */
-    public function getTemplateTimestamp($_template)
-    {
-        // strings must always be compiled and have no timestamp
-        return false;
-    }
-
-    /**
-     * Retuen template source from resource name
-     *
-     * @param object $_template template object
-     * @return string content of template source
-     */
-    public function getTemplateSource($_template)
-    {
-        // return template string
-        $_template->template_source = '';
-        if ($fp = fopen(str_replace(':', '://', $_template->template_resource), 'r+')) {
+        $t = '';
+        // the availability of the stream has already been checked in Smarty_Resource::fetch()
+        $fp = fopen($source->filepath, 'r+');
+        if ($fp) {
             while (!feof($fp) && ($current_line = fgets($fp)) !== false) {
-                $_template->template_source .= $current_line;
+                $t .= $current_line;
             }
             fclose($fp);
-            return true;
+            return $t;
         } else {
             return false;
         }
     }
-
+    
     /**
-     * Get filepath to compiled template
+     * modify resource_name according to resource handlers specifications
      *
-     * @param object $_template template object
-     * @return boolean return false as compiled template is not stored
+     * @param Smarty $smarty        Smarty instance
+     * @param string $resource_name resource_name to make unique
+     * @return string unique resource name
      */
-    public function getCompiledFilepath($_template)
+    protected function buildUniqueResourceName(Smarty $smarty, $resource_name)
     {
-        // no filepath for strings
-        return false;
+        return get_class($this) . '#' . $resource_name;
     }
 }
 

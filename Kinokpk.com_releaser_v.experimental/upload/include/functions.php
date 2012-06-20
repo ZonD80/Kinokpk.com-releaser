@@ -1059,6 +1059,15 @@ function userlogin()
         die($REL_LANG->say_by_key('disabled') . $row['dis_reason'] . (($row['dis_reason'] == 'Your rating was too low.') ? $REL_LANG->say_by_key('disabled_rating') : '') . $REL_LANG->say_by_key('contact_admin'));
 
     }
+
+    if (!$row['uri']) {
+
+        $stylesheet = $REL_DB->query_row("SELECT id FROM stylesheets WHERE uri=".$REL_DB->sqlesc($REL_CONFIG['default_theme']));
+        $REL_DB->query("UPDATE users SET stylesheet={$stylesheet['id']} WHERE id={$row['id']}");
+        $row['stylesheet'] = $stylesheet['id'];
+        $row['uri'] = $REL_CONFIG['default_theme'];
+
+    }
     if ($row['language'] <> $REL_CONFIG['lang']) {
         $REL_DB->query("UPDATE users SET language=" . sqlesc($REL_CONFIG['lang']) . " WHERE id={$row['id']}");
         $row['language'] = $REL_CONFIG['lang'];

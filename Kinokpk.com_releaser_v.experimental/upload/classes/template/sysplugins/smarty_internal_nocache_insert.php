@@ -1,5 +1,6 @@
 <?php
-
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty Internal Plugin Nocache Insert
  *
@@ -12,20 +13,23 @@
 
 /**
  * Smarty Internal Plugin Compile Insert Class
+ *
+ * @package Smarty
+ * @subpackage Compiler
  */
-class Smarty_Internal_Nocache_Insert
-{
+class Smarty_Internal_Nocache_Insert {
+
     /**
      * Compiles code for the {insert} tag into cache file
      *
-     * @param string $_function insert function name
-     * @param array $_attr array with paramter
-     * @param object $template template object
-     * @param string $_script script name to load or 'null'
-     * @param string $_assign soptinal variable name
+     * @param string                   $_function insert function name
+     * @param array                    $_attr     array with parameter
+     * @param Smarty_Internal_Template $_template template object
+     * @param string                   $_script   script name to load or 'null'
+     * @param string                   $_assign   optional variable name
      * @return string compiled code
      */
-    static function compile($_function, $_attr, $_template, $_script, $_assign = null)
+    public static function compile($_function, $_attr, $_template, $_script, $_assign = null)
     {
         $_output = '<?php ';
         if ($_script != 'null') {
@@ -45,6 +49,7 @@ class Smarty_Internal_Nocache_Insert
         }
         return "/*%%SmartyNocache:{$_tpl->properties['nocache_hash']}%%*/" . $_output . "/*/%%SmartyNocache:{$_tpl->properties['nocache_hash']}%%*/";
     }
+
 }
 
 ?>

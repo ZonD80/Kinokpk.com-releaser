@@ -1,5 +1,6 @@
 <?php
-
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty Internal Plugin Compile Config Load
  *
@@ -12,29 +13,49 @@
 
 /**
  * Smarty Internal Plugin Compile Config Load Class
+ *
+ * @package Smarty
+ * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Config_Load extends Smarty_Internal_CompileBase
-{
-    // attribute definitions
+class Smarty_Internal_Compile_Config_Load extends Smarty_Internal_CompileBase {
+
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
     public $required_attributes = array('file');
-    public $shorttag_order = array('file', 'section');
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
+    public $shorttag_order = array('file','section');
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
     public $optional_attributes = array('section', 'scope');
 
     /**
      * Compiles code for the {config_load} tag
      *
-     * @param array $args array with attributes from parser
+     * @param array  $args     array with attributes from parser
      * @param object $compiler compiler object
      * @return string compiled code
      */
     public function compile($args, $compiler)
     {
-        $this->compiler = $compiler;
+        static $_is_legal_scope = array('local' => true,'parent' => true,'root' => true,'global' => true);
         // check and get attributes
-        $_attr = $this->_get_attributes($args);
+        $_attr = $this->getAttributes($compiler, $args);
 
         if ($_attr['nocache'] === true) {
-            $this->compiler->trigger_template_error('nocache option not allowed', $this->compiler->lex->taglineno);
+            $compiler->trigger_template_error('nocache option not allowed', $compiler->lex->taglineno);
         }
 
 
@@ -49,17 +70,18 @@ class Smarty_Internal_Compile_Config_Load extends Smarty_Internal_CompileBase
         // scope setup
         if (isset($_attr['scope'])) {
             $_attr['scope'] = trim($_attr['scope'], "'\"");
-            if (in_array($_attr['scope'], array('local', 'parent', 'root', 'global'))) {
+            if (isset($_is_legal_scope[$_attr['scope']])) {
                 $scope = $_attr['scope'];
-            } else {
-                $this->compiler->trigger_template_error('illegal value for "scope" attribute', $this->compiler->lex->taglineno);
-            }
+           } else {
+                $compiler->trigger_template_error('illegal value for "scope" attribute', $compiler->lex->taglineno);
+           }
         }
         // create config object
         $_output = "<?php  \$_config = new Smarty_Internal_Config($conf_file, \$_smarty_tpl->smarty, \$_smarty_tpl);";
         $_output .= "\$_config->loadConfigVars($section, '$scope'); ?>";
         return $_output;
     }
+
 }
 
 ?>

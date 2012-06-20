@@ -1,4 +1,6 @@
 <?php
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty plugin
  *
@@ -12,7 +14,8 @@
  * Type:     modifier<br>
  * Name:     count_paragraphs<br>
  * Purpose:  count the number of paragraphs in a text
- * @link http://smarty.php.net/manual/en/language.modifier.count.paragraphs.php
+ *
+ * @link http://www.smarty.net/manual/en/language.modifier.count.paragraphs.php
  *          count_paragraphs (Smarty online manual)
  * @author Uwe Tews
  * @param array $params parameters

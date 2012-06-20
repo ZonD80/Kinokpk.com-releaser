@@ -1,4 +1,7 @@
-<?php
+<?php if (!defined('IN_TRACKER'))
+          die ('Direct access to this file not allowed');
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Class for Kinokpk.com releaser template operations. Extends smarty
  * @license GNU GPLv3 http://opensource.org/licenses/gpl-3.0.html
@@ -33,7 +36,6 @@ class REL_TPL extends Smarty
         $this->cache_dir = $cachedir;
         //$this->security = true;
         $this->php_handling = SMARTY_PHP_REMOVE;
-        $this->security_settings->PHP_TAGS = false;
         $this->config['stdhead'] = 'stdhead.tpl';
         $this->config['stdfoot'] = 'stdfoot.tpl';
         $this->config['stdhead_ajax'] = 'stdhead_ajax.tpl';

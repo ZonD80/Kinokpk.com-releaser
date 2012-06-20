@@ -1,4 +1,6 @@
 <?php
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty Internal Plugin Compile Section
  *
@@ -11,36 +13,55 @@
 
 /**
  * Smarty Internal Plugin Compile Section Class
+ * 
+ * @package Smarty
+ * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Section extends Smarty_Internal_CompileBase
-{
-    // attribute definitions
+class Smarty_Internal_Compile_Section extends Smarty_Internal_CompileBase {
+
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
     public $required_attributes = array('name', 'loop');
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
     public $shorttag_order = array('name', 'loop');
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
     public $optional_attributes = array('start', 'step', 'max', 'show');
 
     /**
      * Compiles code for the {section} tag
      *
-     * @param array $args array with attributes from parser
+     * @param array  $args     array with attributes from parser
      * @param object $compiler compiler object
      * @return string compiled code
      */
     public function compile($args, $compiler)
     {
-        $this->compiler = $compiler;
         // check and get attributes
-        $_attr = $this->_get_attributes($args);
+        $_attr = $this->getAttributes($compiler, $args);
 
-        $this->_open_tag('section', array('section', $this->compiler->nocache));
+        $this->openTag($compiler, 'section', array('section', $compiler->nocache));
         // maybe nocache because of nocache variables
-        $this->compiler->nocache = $this->compiler->nocache | $this->compiler->tag_nocache;
+        $compiler->nocache = $compiler->nocache | $compiler->tag_nocache;
 
         $output = "<?php ";
 
         $section_name = $_attr['name'];
 
-        $output .= "unset(\$_smarty_tpl->tpl_vars['smarty']->value['section'][$section_name]);\n";
+        $output .= "if (isset(\$_smarty_tpl->tpl_vars['smarty']->value['section'][$section_name])) unset(\$_smarty_tpl->tpl_vars['smarty']->value['section'][$section_name]);\n";
         $section_props = "\$_smarty_tpl->tpl_vars['smarty']->value['section'][$section_name]";
 
         foreach ($_attr as $attr_name => $attr_value) {
@@ -114,63 +135,71 @@ class Smarty_Internal_Compile_Section extends Smarty_Internal_CompileBase
         $output .= "?>";
         return $output;
     }
+
 }
 
 /**
  * Smarty Internal Plugin Compile Sectionelse Class
+ * 
+ * @package Smarty
+ * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Sectionelse extends Smarty_Internal_CompileBase
-{
+class Smarty_Internal_Compile_Sectionelse extends Smarty_Internal_CompileBase {
+
     /**
      * Compiles code for the {sectionelse} tag
      *
-     * @param array $args array with attributes from parser
+     * @param array  $args     array with attributes from parser
      * @param object $compiler compiler object
      * @return string compiled code
      */
     public function compile($args, $compiler)
     {
-        $this->compiler = $compiler;
         // check and get attributes
-        $_attr = $this->_get_attributes($args);
+        $_attr = $this->getAttributes($compiler, $args);
 
-        list($_open_tag, $nocache) = $this->_close_tag(array('section'));
-        $this->_open_tag('sectionelse', array('sectionelse', $nocache));
+        list($openTag, $nocache) = $this->closeTag($compiler, array('section'));
+        $this->openTag($compiler, 'sectionelse', array('sectionelse', $nocache));
 
         return "<?php endfor; else: ?>";
     }
+
 }
 
 /**
  * Smarty Internal Plugin Compile Sectionclose Class
+ * 
+ * @package Smarty
+ * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Sectionclose extends Smarty_Internal_CompileBase
-{
+class Smarty_Internal_Compile_Sectionclose extends Smarty_Internal_CompileBase {
+
     /**
      * Compiles code for the {/section} tag
      *
-     * @param array $args array with attributes from parser
+     * @param array  $args     array with attributes from parser
      * @param object $compiler compiler object
      * @return string compiled code
      */
     public function compile($args, $compiler)
     {
-        $this->compiler = $compiler;
         // check and get attributes
-        $_attr = $this->_get_attributes($args);
+        $_attr = $this->getAttributes($compiler, $args);
 
         // must endblock be nocache?
-        if ($this->compiler->nocache) {
-            $this->compiler->tag_nocache = true;
+        if ($compiler->nocache) {
+            $compiler->tag_nocache = true;
         }
 
-        list($_open_tag, $this->compiler->nocache) = $this->_close_tag(array('section', 'sectionelse'));
+        list($openTag, $compiler->nocache) = $this->closeTag($compiler, array('section', 'sectionelse'));
 
-        if ($_open_tag == 'sectionelse')
+        if ($openTag == 'sectionelse') {
             return "<?php endif; ?>";
-        else
+        } else {
             return "<?php endfor; endif; ?>";
+        }
     }
+
 }
 
 ?>

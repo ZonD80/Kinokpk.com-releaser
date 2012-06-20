@@ -1,4 +1,6 @@
 <?php
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty plugin
  * @package Smarty
@@ -7,26 +9,27 @@
 
 /**
  * Smarty replace modifier plugin
- *
+ * 
  * Type:     modifier<br>
  * Name:     replace<br>
  * Purpose:  simple search/replace
- *
+ * 
  * @link http://smarty.php.net/manual/en/language.modifier.replace.php replace (Smarty online manual)
- * @author Monte Ohrt <monte at ohrt dot com>
- * @author Uwe Tews
- * @param string $
- * @param string $
- * @param string $
- * @return string
+ * @author Monte Ohrt <monte at ohrt dot com> 
+ * @author Uwe Tews 
+ * @param string $string  input string
+ * @param string $search  text to search for
+ * @param string $replace replacement text
+ * @return string 
  */
 function smarty_modifier_replace($string, $search, $replace)
 {
-    if (function_exists('mb_split')) {
+    if (Smarty::$_MBSTRING) {
         require_once(SMARTY_PLUGINS_DIR . 'shared.mb_str_replace.php');
         return smarty_mb_str_replace($search, $replace, $string);
     }
+    
     return str_replace($search, $replace, $string);
-}
+} 
 
 ?>

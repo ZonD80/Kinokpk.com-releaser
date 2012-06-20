@@ -143,8 +143,8 @@ require_once(ROOT_PATH . "classes/parser/Snoopy.class.php");
 $page = new Snoopy;
 
 if (isset($_GET['filmname'])) {
-    $film = RawUrlEncode($_GET['filmname']);
-    $filmsafe = htmlspecialchars($_GET['filmname']);
+    $film = RawUrlEncode((string)$_GET['filmname']);
+    $filmsafe = htmlspecialchars((string)$_GET['filmname']);
     $page->fetch("http://www.kinopoisk.ru/index.php?kp_query={$film}");
     $source = $page->results;
     if (!$source) die('Nothing found!');

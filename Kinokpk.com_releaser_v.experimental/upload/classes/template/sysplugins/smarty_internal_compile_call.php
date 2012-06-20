@@ -1,5 +1,6 @@
 <?php
-
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty Internal Plugin Compile Function_Call
  *
@@ -12,34 +13,55 @@
 
 /**
  * Smarty Internal Plugin Compile Function_Call Class
+ *
+ * @package Smarty
+ * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Call extends Smarty_Internal_CompileBase
-{
-    // attribute definitions
+class Smarty_Internal_Compile_Call extends Smarty_Internal_CompileBase {
+
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
     public $required_attributes = array('name');
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
     public $shorttag_order = array('name');
+    /**
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
     public $optional_attributes = array('_any');
 
     /**
      * Compiles the calls of user defined tags defined by {function}
      *
-     * @param array $args array with attributes from parser
-     * @param object $compiler compiler object
-     * @param array $parameter array with compilation parameter
+     * @param array  $args      array with attributes from parser
+     * @param object $compiler  compiler object
+     * @param array  $parameter array with compilation parameter
      * @return string compiled code
      */
     public function compile($args, $compiler)
     {
-        $this->compiler = $compiler;
-        $this->smarty = $compiler->smarty;
         // check and get attributes
-        $_attr = $this->_get_attributes($args);
+        $_attr = $this->getAttributes($compiler, $args);
         // save possible attributes
         if (isset($_attr['assign'])) {
             // output will be stored in a smarty variable instead of beind displayed
             $_assign = $_attr['assign'];
         }
         $_name = $_attr['name'];
+        if ($compiler->compiles_template_function) {
+            $compiler->called_functions[] = trim($_name, "'\"");
+        }
         unset($_attr['name'], $_attr['assign'], $_attr['nocache']);
         // set flag (compiled code of {function} must be included in cache file
         if ($compiler->nocache || $compiler->tag_nocache) {
@@ -65,8 +87,8 @@ class Smarty_Internal_Compile_Call extends Smarty_Internal_CompileBase
                     }
                 }
             }
-        } elseif (isset($this->smarty->template_functions[$_name]['parameter'])) {
-            foreach ($this->smarty->template_functions[$_name]['parameter'] as $_key => $_value) {
+        } elseif (isset($compiler->smarty->template_functions[$_name]['parameter'])) {
+            foreach ($compiler->smarty->template_functions[$_name]['parameter'] as $_key => $_value) {
                 if (!isset($_attr[$_key])) {
                     if (is_int($_key)) {
                         $_paramsArray[] = "$_key=>$_value";
@@ -104,6 +126,7 @@ class Smarty_Internal_Compile_Call extends Smarty_Internal_CompileBase
         }
         return $_output;
     }
+
 }
 
 ?>

@@ -1,4 +1,6 @@
 <?php
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty Internal Plugin Compile Special Smarty Variable
  *
@@ -11,19 +13,22 @@
 
 /**
  * Smarty Internal Plugin Compile special Smarty Variable Class
+ *
+ * @package Smarty
+ * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Private_Special_Variable extends Smarty_Internal_CompileBase
-{
+class Smarty_Internal_Compile_Private_Special_Variable extends Smarty_Internal_CompileBase {
+
     /**
      * Compiles code for the speical $smarty variables
      *
-     * @param array $args array with attributes from parser
+     * @param array  $args     array with attributes from parser
      * @param object $compiler compiler object
      * @return string compiled code
      */
     public function compile($args, $compiler, $parameter)
     {
-        $_index = preg_split("/\]\[/", substr($parameter, 1, strlen($parameter) - 2));
+        $_index = preg_split("/\]\[/",substr($parameter, 1, strlen($parameter)-2));
         $compiled_ref = ' ';
         $variable = trim($_index[0], "'");
         switch ($variable) {
@@ -53,14 +58,17 @@ class Smarty_Internal_Compile_Private_Special_Variable extends Smarty_Internal_C
                     $compiler->trigger_template_error("(secure mode) super globals not permitted");
                     break;
                 }
-                $compiled_ref = '$_' . strtoupper($variable);
+                $compiled_ref = '$_'.strtoupper($variable);
                 break;
 
             case 'template':
-                return 'basename($_smarty_tpl->getTemplateFilepath())';
+                return 'basename($_smarty_tpl->source->filepath)';
+
+            case 'template_object':
+                return '$_smarty_tpl';
 
             case 'current_dir':
-                return 'dirname($_smarty_tpl->getTemplateFilepath())';
+                return 'dirname($_smarty_tpl->source->filepath)';
 
             case 'version':
                 $_version = Smarty::SMARTY_VERSION;
@@ -95,6 +103,7 @@ class Smarty_Internal_Compile_Private_Special_Variable extends Smarty_Internal_C
         }
         return $compiled_ref;
     }
+
 }
 
 ?>

@@ -1,4 +1,6 @@
 <?php
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty Internal Plugin Templateparser Parsetrees
  *
@@ -10,70 +12,135 @@
  * @author Uwe Tews
  */
 
-abstract class _smarty_parsetree
-{
+/**
+ * @package Smarty
+ * @subpackage Compiler
+ * @ignore
+ */
+abstract class _smarty_parsetree {
+
+    /**
+     * Parser object
+     * @var object
+     */
+    public $parser;
+    /**
+     * Buffer content
+     * @var mixed
+     */
+    public $data;
+
+    /**
+     * Return buffer
+     *
+     * @return string  buffer content
+     */
     abstract public function to_smarty_php();
+
 }
 
 /**
  * A complete smarty tag.
+ *
+ * @package Smarty
+ * @subpackage Compiler
+ * @ignore
  */
-class _smarty_tag extends _smarty_parsetree
-{
-    public $parser;
-    public $data;
+class _smarty_tag extends _smarty_parsetree {
+
+    /**
+     * Saved block nesting level
+     * @var int
+     */
     public $saved_block_nesting;
 
-    function __construct($parser, $data)
+    /**
+     * Create parse tree buffer for Smarty tag
+     *
+     * @param object $parser    parser object
+     * @param string $data      content
+     */
+    public function __construct($parser, $data)
     {
         $this->parser = $parser;
         $this->data = $data;
         $this->saved_block_nesting = $parser->block_nesting_level;
     }
 
+    /**
+     * Return buffer content
+     *
+     * @return string  content
+     */
     public function to_smarty_php()
     {
         return $this->data;
     }
 
+    /**
+     * Return complied code that loads the evaluated outout of buffer content into a temporary variable
+     *
+     * @return string template code
+     */
     public function assign_to_var()
     {
         $var = sprintf('$_tmp%d', ++$this->parser->prefix_number);
-        $this->parser->compiler->prefix_code[] = sprintf('<?php ob_start();?>%s<?php %s=ob_get_clean();?>',
-            $this->data, $var);
+        $this->parser->compiler->prefix_code[] = sprintf('<?php ob_start();?>%s<?php %s=ob_get_clean();?>', $this->data, $var);
         return $var;
     }
+
 }
 
 /**
  * Code fragment inside a tag.
+ *
+ * @package Smarty
+ * @subpackage Compiler
+ * @ignore
  */
-class _smarty_code extends _smarty_parsetree
-{
-    public $parser;
-    public $data;
+class _smarty_code extends _smarty_parsetree {
 
-    function __construct($parser, $data)
+
+    /**
+     * Create parse tree buffer for code fragment
+     *
+     * @param object $parser    parser object
+     * @param string $data      content
+     */
+    public function __construct($parser, $data)
     {
         $this->parser = $parser;
         $this->data = $data;
     }
 
+    /**
+     * Return buffer content in parentheses
+     *
+     * @return string  content
+     */
     public function to_smarty_php()
     {
         return sprintf("(%s)", $this->data);
     }
+
 }
 
 /**
  * Double quoted string inside a tag.
+ *
+ * @package Smarty
+ * @subpackage Compiler
+ * @ignore
  */
-class _smarty_doublequoted extends _smarty_parsetree
-{
-    public $parser;
-    public $subtrees = Array();
+class _smarty_doublequoted extends _smarty_parsetree {
 
-    function __construct($parser, _smarty_parsetree $subtree)
+    /**
+     * Create parse tree buffer for double quoted string subtrees
+     *
+     * @param object $parser    parser object
+     * @param _smarty_parsetree $subtree    parsetree buffer
+     */
+    public function __construct($parser, _smarty_parsetree $subtree)
     {
         $this->parser = $parser;
         $this->subtrees[] = $subtree;
@@ -82,7 +149,12 @@ class _smarty_doublequoted extends _smarty_parsetree
         }
     }
 
-    function append_subtree(_smarty_parsetree $subtree)
+    /**
+     * Append buffer to subtree
+     *
+     * @param _smarty_parsetree $subtree  parsetree buffer
+     */
+    public function append_subtree(_smarty_parsetree $subtree)
     {
         $last_subtree = count($this->subtrees) - 1;
         if ($last_subtree >= 0 && $this->subtrees[$last_subtree] instanceof _smarty_tag && $this->subtrees[$last_subtree]->saved_block_nesting < $this->parser->block_nesting_level) {
@@ -101,6 +173,11 @@ class _smarty_doublequoted extends _smarty_parsetree
         }
     }
 
+    /**
+     * Merge subtree buffer content together
+     *
+     * @return string  compiled template code
+     */
     public function to_smarty_php()
     {
         $code = '';
@@ -122,44 +199,84 @@ class _smarty_doublequoted extends _smarty_parsetree
         }
         return $code;
     }
+
 }
 
 /**
  * Raw chars as part of a double quoted string.
+ *
+ * @package Smarty
+ * @subpackage Compiler
+ * @ignore
  */
-class _smarty_dq_content extends _smarty_parsetree
-{
-    public $data;
+class _smarty_dq_content extends _smarty_parsetree {
 
-    function __construct($parser, $data)
+
+    /**
+     * Create parse tree buffer with string content
+     *
+     * @param object $parser  parser object
+     * @param string $data    string section
+     */
+    public function __construct($parser, $data)
     {
         $this->parser = $parser;
         $this->data = $data;
     }
 
+    /**
+     * Return content as double quoted string
+     *
+     * @return string doubled quoted string
+     */
     public function to_smarty_php()
     {
         return '"' . $this->data . '"';
     }
+
 }
 
 /**
  * Template element
+ *
+ * @package Smarty
+ * @subpackage Compiler
+ * @ignore
  */
-class _smarty_template_buffer extends _smarty_parsetree
-{
+class _smarty_template_buffer extends _smarty_parsetree {
+
+    /**
+     * Array of template elements
+     *
+     * @var array
+     */
     public $subtrees = Array();
 
-    function __construct($parser)
+    /**
+     * Create root of parse tree for template elements
+     *
+     * @param object $parser    parse object
+     */
+    public function __construct($parser)
     {
         $this->parser = $parser;
     }
 
-    function append_subtree(_smarty_parsetree $subtree)
+    /**
+     * Append buffer to subtree
+     *
+     * @param _smarty_parsetree $subtree
+     */
+    public function append_subtree(_smarty_parsetree $subtree)
     {
         $this->subtrees[] = $subtree;
     }
 
+    /**
+     * Sanitize and merge subtree buffers together
+     *
+     * @return string template code content
+     */
     public function to_smarty_php()
     {
         $code = '';
@@ -207,44 +324,74 @@ class _smarty_template_buffer extends _smarty_parsetree
         }
         return $code;
     }
+
 }
 
 /**
  * template text
+ *
+ * @package Smarty
+ * @subpackage Compiler
+ * @ignore
  */
-class _smarty_text extends _smarty_parsetree
-{
-    public $data;
+class _smarty_text extends _smarty_parsetree {
 
-    function __construct($parser, $data)
+
+    /**
+     * Create template text buffer
+     *
+     * @param object $parser    parser object
+     * @param string $data      text
+     */
+    public function __construct($parser, $data)
     {
         $this->parser = $parser;
         $this->data = $data;
     }
 
+    /**
+     * Return buffer content
+     *
+     * @return strint text
+     */
     public function to_smarty_php()
     {
         return $this->data;
     }
+
 }
 
 /**
  * template linebreaks
+ *
+ * @package Smarty
+ * @subpackage Compiler
+ * @ignore
  */
-class _smarty_linebreak extends _smarty_parsetree
-{
-    public $data;
+class _smarty_linebreak extends _smarty_parsetree {
 
-    function __construct($parser, $data)
+    /**
+     * Create buffer with linebreak content
+     *
+     * @param object $parser    parser object
+     * @param string  $data     linebreak string
+     */
+    public function __construct($parser, $data)
     {
         $this->parser = $parser;
         $this->data = $data;
     }
 
+    /**
+     * Return linebrak
+     *
+     * @return string linebreak
+     */
     public function to_smarty_php()
     {
         return $this->data;
     }
+
 }
 
 ?>

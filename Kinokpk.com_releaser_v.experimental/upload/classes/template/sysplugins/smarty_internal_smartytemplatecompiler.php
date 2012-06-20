@@ -1,5 +1,6 @@
 <?php
-
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty Internal Plugin Smarty Template Compiler Base
  *
@@ -10,18 +11,67 @@
  * @author Uwe Tews
  */
 
-require_once("smarty_internal_parsetree.php");
+/**
+ * @ignore
+ */
+include ("smarty_internal_parsetree.php");
 
 /**
  * Class SmartyTemplateCompiler
+ *
+ * @package Smarty
+ * @subpackage Compiler
  */
-class Smarty_Internal_SmartyTemplateCompiler extends Smarty_Internal_TemplateCompilerBase
-{
-    // array of vars which can be compiled in local scope
+class Smarty_Internal_SmartyTemplateCompiler extends Smarty_Internal_TemplateCompilerBase {
+
+    /**
+     * Lexer class name
+     *
+     * @var string
+     */
+    public $lexer_class;
+
+    /**
+     * Parser class name
+     *
+     * @var string
+     */
+    public $parser_class;
+
+    /**
+     * Lexer object
+     *
+     * @var object
+     */
+    public $lex;
+
+    /**
+     * Parser object
+     *
+     * @var object
+     */
+    public $parser;
+
+    /**
+     * Smarty object
+     *
+     * @var object
+     */
+    public $smarty;
+
+    /**
+     * array of vars which can be compiled in local scope
+     *
+     * @var array
+     */
     public $local_var = array();
 
     /**
      * Initialize compiler
+     *
+     * @param string $lexer_class  class name
+     * @param string $parser_class class name
+     * @param Smarty $smarty       global instance
      */
     public function __construct($lexer_class, $parser_class, $smarty)
     {
@@ -35,21 +85,25 @@ class Smarty_Internal_SmartyTemplateCompiler extends Smarty_Internal_TemplateCom
     /**
      * Methode to compile a Smarty template
      *
-     * @param  $_content template source
+     * @param  mixed $_content template source
      * @return bool true if compiling succeeded, false if it failed
      */
     protected function doCompile($_content)
     {
         /* here is where the compiling takes place. Smarty
-       tags in the templates are replaces with PHP code,
-       then written to compiled files. */
+          tags in the templates are replaces with PHP code,
+          then written to compiled files. */
         // init the lexer/parser to compile the template
         $this->lex = new $this->lexer_class($_content, $this);
         $this->parser = new $this->parser_class($this->lex, $this);
-        if (isset($this->smarty->_parserdebug)) $this->parser->PrintTrace();
+        if ($this->smarty->_parserdebug)
+            $this->parser->PrintTrace();
         // get tokens from lexer and parse them
         while ($this->lex->yylex() && !$this->abort_and_recompile) {
-            if (isset($this->smarty->_parserdebug)) echo "<pre>Line {$this->lex->line} Parsing  {$this->parser->yyTokenName[$this->lex->token]} Token " . htmlentities($this->lex->value) . "</pre>";
+            if ($this->smarty->_parserdebug) {
+                echo "<pre>Line {$this->lex->line} Parsing  {$this->parser->yyTokenName[$this->lex->token]} Token " .
+                    htmlentities($this->lex->value) . "</pre>";
+            }
             $this->parser->doParse($this->lex->token, $this->lex->value);
         }
 
@@ -62,13 +116,14 @@ class Smarty_Internal_SmartyTemplateCompiler extends Smarty_Internal_TemplateCom
         // check for unclosed tags
         if (count($this->_tag_stack) > 0) {
             // get stacked info
-            list($_open_tag, $_data) = array_pop($this->_tag_stack);
-            $this->trigger_template_error("unclosed {" . $_open_tag . "} tag");
+            list($openTag, $_data) = array_pop($this->_tag_stack);
+            $this->trigger_template_error("unclosed {" . $openTag . "} tag");
         }
         // return compiled code
         // return str_replace(array("? >\n<?php","? ><?php"), array('',''), $this->parser->retvalue);
         return $this->parser->retvalue;
     }
+
 }
 
 ?>

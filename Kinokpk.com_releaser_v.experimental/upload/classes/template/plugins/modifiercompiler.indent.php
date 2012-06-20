@@ -1,4 +1,6 @@
 <?php
+if (!defined('IN_TRACKER'))
+    die ('Direct access to this file not allowed');
 /**
  * Smarty plugin
  * @package Smarty
@@ -11,8 +13,8 @@
  * Type:     modifier<br>
  * Name:     indent<br>
  * Purpose:  indent lines of text
- * @link http://smarty.php.net/manual/en/language.modifier.indent.php
- *          indent (Smarty online manual)
+ *
+ * @link http://www.smarty.net/manual/en/language.modifier.indent.php indent (Smarty online manual)
  * @author Uwe Tews
  * @param array $params parameters
  * @return string with compiled code
