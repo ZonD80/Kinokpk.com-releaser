@@ -79,6 +79,7 @@ class REL_LANG
     {
         $return = '';
         if (!$language) $language = $this->language;
+        if (!$this->lang[$language]) $this->load($language);
         if (!array_key_exists($value, $this->lang[$language])) $return .= ($this->DEBUG ? "*NO_KEY:{$language}* " : '');
         if (!$this->lang[$language][$value]) {
             $return .= ($this->DEBUG ? "*NO_VALUE:$value* " : '');
@@ -103,6 +104,7 @@ class REL_LANG
             $language = @mysql_result($REL_DB->query("SELECT language FROM users WHERE id={$id}"), 0);
             if (!$language) $language = $this->language;
         }
+        if (!$this->lang[$language]) $this->load($language);
         if (!array_key_exists($value, $this->lang[$language])) $return .= ($this->DEBUG ? "*NO_KEY:{$language}* " : '');
         if (!$this->lang[$language][$value]) {
             $return .= ($this->DEBUG ? "*NO_VALUE:$value* " : '');
