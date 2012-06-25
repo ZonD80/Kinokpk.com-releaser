@@ -15,7 +15,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage Compiler
  */
-abstract class Smarty_Internal_CompileBase {
+abstract class Smarty_Internal_CompileBase
+{
 
     /**
      * Array of names of required attribute required by tag
@@ -155,7 +156,7 @@ abstract class Smarty_Internal_CompileBase {
             // get stacked info
             list($_openTag, $_data) = array_pop($compiler->_tag_stack);
             // open tag must match with the expected ones
-            if (in_array($_openTag, (array) $expectedTag)) {
+            if (in_array($_openTag, (array)$expectedTag)) {
                 if (is_null($_data)) {
                     // return opening tag
                     return $_openTag;

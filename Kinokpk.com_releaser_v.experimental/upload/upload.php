@@ -41,7 +41,7 @@ preventDuplicates: true
 });
 function checkname() {
         pcre = /(.*?) \([0-9-]+\) \[(.*?)\]/g;
-        ERRORTEXT = "'.$REL_LANG->_("Release name does not corresponding to rule, please change it and try again:").'" + "\n\n" + $("#namematch").text();
+        ERRORTEXT = "' . $REL_LANG->_("Release name does not corresponding to rule, please change it and try again:") . '" + "\n\n" + $("#namematch").text();
         if (!pcre.test($("#name").val())) {
             alert(ERRORTEXT);
             $("#name").focus();
@@ -54,7 +54,7 @@ $REL_TPL->stdhead($REL_LANG->say_by_key('upload_torrent'), '', '', '<script src=
 $tree = make_tree();
 
 if (mb_strlen($CURUSER['passkey']) != 32) {
-    $CURUSER['passkey'] = md5($CURUSER['username'] . time() . $CURUSER['passhash']);
+    $CURUSER['passkey'] = md5($CURUSER['username'] . TIME . $CURUSER['passhash']);
     $REL_DB->query("UPDATE xbt_users SET torrent_pass=" . sqlesc($CURUSER[passkey]) . " WHERE uid=" . sqlesc($CURUSER[id]));
 }
 

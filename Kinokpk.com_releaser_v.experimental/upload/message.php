@@ -90,9 +90,9 @@ if ($action == "viewmailbox") {
     </TR>
     <?php
     $secs_system = $REL_CRON['pm_delete_sys_days'] * 86400;
-    $dt_system = time() - $secs_system;
+    $dt_system = TIME - $secs_system;
     $secs_all = $REL_CRON['pm_delete_user_days'] * 86400;
-    $dt_all = time() - $secs_all;
+    $dt_all = TIME - $secs_all;
 
     if ($mailbox != PM_SENTBOX) {
         $res = $REL_DB->query("SELECT m.*, u.username AS sender_username, friends.id AS fid, friends.confirmed AS fconf FROM messages AS m LEFT JOIN users AS u ON m.sender = u.id LEFT JOIN friends ON (friends.userid=m.sender AND friends.friendid={$CURUSER['id']}) OR (friends.friendid=m.sender AND friends.userid={$CURUSER['id']}) WHERE receiver=" . sqlesc($CURUSER ['id']) . " AND location=" . sqlesc($mailbox) . " AND IF(m.archived_receiver=1, 1=1, IF(m.sender=0,m.added>$dt_system,m.added>$dt_all)) ORDER BY id DESC");
@@ -158,7 +158,7 @@ if ($action == "viewmailbox") {
             else
                 $pm_del = $REL_CRON ['pm_delete_user_days'];
 
-            echo ("<TD>" . (($row ['archived']) ? "N/A" : ($pm_del - round((time() - $row ['added']) / 86400)) . " {$REL_LANG->_('day(s)')}</TD>\n"));
+            echo ("<TD>" . (($row ['archived']) ? "N/A" : ($pm_del - round((TIME - $row ['added']) / 86400)) . " {$REL_LANG->_('day(s)')}</TD>\n"));
             echo ("<TD><INPUT type=\"checkbox\" name=\"messages[]\" title=\"" . $REL_LANG->say_by_key('mark') . "\" value=\"" . $row ['id'] . "\" id=\"checkbox_tbl_" . $row ['id'] . "\"></TD>\n</TR>\n");
         }
     }
@@ -415,7 +415,7 @@ elseif ($action == 'takemessage') {
         $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Please fill message subject'));
 
     // ANTISPAM SYSTEM BEGIN
-    $last_pmres = $REL_DB->query("SELECT " . time() . "-added AS seconds, msg,id FROM messages WHERE sender=" . $CURUSER ['id'] . " OR poster=" . $CURUSER ['id'] . " ORDER BY added DESC LIMIT 4");
+    $last_pmres = $REL_DB->query("SELECT " . TIME . "-added AS seconds, msg,id FROM messages WHERE sender=" . $CURUSER ['id'] . " OR poster=" . $CURUSER ['id'] . " ORDER BY added DESC LIMIT 4");
     while ($last_pmresrow = mysql_fetch_array($last_pmres)) {
         $last_pmrow [] = $last_pmresrow;
         $msgids [] = $last_pmresrow ['id'];
@@ -436,8 +436,8 @@ elseif ($action == 'takemessage') {
             $modcomment = mysql_result($modcomment, 0);
             if (strpos($modcomment, "Maybe spammer") === false) {
                 $reason = sqlesc($REL_LANG->_('User %s can be spammer because his last 5 comments are the same', make_user_link()) . " " . $msgview);
-                $REL_DB->query("INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time() . ")");
-                $modcomment .= "\n" . time() . " - Maybe spammer";
+                $REL_DB->query("INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . TIME . ")");
+                $modcomment .= "\n" . TIME . " - Maybe spammer";
                 $REL_DB->query("UPDATE users SET modcomment = " . sqlesc($modcomment) . " WHERE id =" . $CURUSER ['id']);
                 $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('We have anti-spam system. Last 5 messages from you are the same. Please, write something else:) <b><u>ATTENTION! IF YOU TRY TO SEND THE SAME COMMENT AGAIN, YOU WILL BE AUTOMATICALLY BANNED BY SYSTEM!!!</u></b>') . " <a href=\"javascript: history.go(-1)\">{$REL_LANG->_('Go back')}</a>");
 
@@ -445,7 +445,7 @@ elseif ($action == 'takemessage') {
                 $REL_DB->query("UPDATE users SET enabled=0, dis_reason='Spam' WHERE id=" . $CURUSER ['id']);
 
                 $reason = sqlesc($REL_LANG->_('User %s banned by system due spam. His IP address is %', make_user_link(), $CURUSER['ip']));
-                $REL_DB->query("INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time() . ")");
+                $REL_DB->query("INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . TIME . ")");
                 $REL_TPL->stderr($REL_LANG->_('Congratulations'), $REL_LANG->_('You are automatically banned due to spam in comments. You can report this issue to <a href="%s">Administrators</a>', $REL_SEO->make_link('contact')));
             }
         }
@@ -483,7 +483,7 @@ elseif ($action == 'takemessage') {
             $REL_TPL->stderr($REL_LANG->_('Message denied'), $REL_LANG->_('This user does not accept private messages'));
     }
     $REL_DB->query("INSERT INTO messages (poster, sender, receiver, added, msg, subject, saved, location, archived) VALUES(" . $CURUSER ["id"] . ", " . $CURUSER ["id"] . ",
-	$receiver, '" . time() . "', " . sqlesc(($msg)) . ", " . sqlesc($subject) . ", " . sqlesc($save) . ",  1, " . sqlesc($archive) . ")");
+	$receiver, '" . TIME . "', " . sqlesc(($msg)) . ", " . sqlesc($subject) . ", " . sqlesc($save) . ",  1, " . sqlesc($archive) . ")");
     $sended_id = mysql_insert_id();
 
 
@@ -608,7 +608,7 @@ elseif ($action == 'takemass_pm') {
     $from_is = mysql_real_escape_string(unesc((string)$_POST ['pmees']));
     // Change
     $subject = trim((string)$_POST ['subject']);
-    $query = "INSERT INTO messages (sender, receiver, added, msg, subject, location, poster) " . "SELECT $sender_id, u.id, " . time() . ", " . sqlesc($msg) . ", " . sqlesc($subject) . ", 1, $sender_id " . $from_is;
+    $query = "INSERT INTO messages (sender, receiver, added, msg, subject, location, poster) " . "SELECT $sender_id, u.id, " . TIME . ", " . sqlesc($msg) . ", " . sqlesc($subject) . ", 1, $sender_id " . $from_is;
     // End of Change
     $REL_DB->query($query);
     $n = mysql_affected_rows();
@@ -891,7 +891,7 @@ elseif ($action == "forward") {
         if ($pms >= $REL_CONFIG ['pm_max'])
             $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('User mailbox is full. You can not send message.'));
 
-        $REL_DB->query("INSERT INTO messages (poster, sender, receiver, added, subject, msg, location, saved) VALUES(" . $CURUSER ["id"] . ", " . $CURUSER ["id"] . ", $to, '" . time() . "', " . sqlesc($subject) . "," . sqlesc(($body)) . ", " . sqlesc(PM_INBOX) . ", " . sqlesc($save) . ")");
+        $REL_DB->query("INSERT INTO messages (poster, sender, receiver, added, subject, msg, location, saved) VALUES(" . $CURUSER ["id"] . ", " . $CURUSER ["id"] . ", $to, '" . TIME . "', " . sqlesc($subject) . "," . sqlesc(($body)) . ", " . sqlesc(PM_INBOX) . ", " . sqlesc($save) . ")");
         stdmsg($REL_LANG->_('Successful'), $REL_LANG->_('Private message sent'));
     }
 }

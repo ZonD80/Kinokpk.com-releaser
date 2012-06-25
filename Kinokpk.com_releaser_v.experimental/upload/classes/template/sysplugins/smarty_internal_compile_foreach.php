@@ -17,7 +17,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Foreach extends Smarty_Internal_CompileBase {
+class Smarty_Internal_Compile_Foreach extends Smarty_Internal_CompileBase
+{
     /**
      * Attribute definition: Overwrites base class.
      *
@@ -38,7 +39,7 @@ class Smarty_Internal_Compile_Foreach extends Smarty_Internal_CompileBase {
      * @var array
      * @see Smarty_Internal_CompileBase
      */
-    public $shorttag_order = array('from','item','key','name');
+    public $shorttag_order = array('from', 'item', 'key', 'name');
 
     /**
      * Compiles code for the {foreach} tag
@@ -175,7 +176,8 @@ class Smarty_Internal_Compile_Foreach extends Smarty_Internal_CompileBase {
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Foreachelse extends Smarty_Internal_CompileBase {
+class Smarty_Internal_Compile_Foreachelse extends Smarty_Internal_CompileBase
+{
 
     /**
      * Compiles code for the {foreachelse} tag
@@ -204,7 +206,8 @@ class Smarty_Internal_Compile_Foreachelse extends Smarty_Internal_CompileBase {
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Foreachclose extends Smarty_Internal_CompileBase {
+class Smarty_Internal_Compile_Foreachclose extends Smarty_Internal_CompileBase
+{
 
     /**
      * Compiles code for the {/foreach} tag

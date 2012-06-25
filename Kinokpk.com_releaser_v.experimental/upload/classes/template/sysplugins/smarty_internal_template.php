@@ -21,7 +21,8 @@ if (!defined('IN_TRACKER'))
  * @property Smarty_Template_Compiled $compiled
  * @property Smarty_Template_Cached   $cached
  */
-class Smarty_Internal_Template extends Smarty_Internal_TemplateBase {
+class Smarty_Internal_Template extends Smarty_Internal_TemplateBase
+{
 
     /**
      * cache_id
@@ -153,7 +154,7 @@ class Smarty_Internal_Template extends Smarty_Internal_TemplateBase {
         }
         if ($this->mustCompile === null) {
             $this->mustCompile = (!$this->source->uncompiled && ($this->smarty->force_compile || $this->source->recompiled || $this->compiled->timestamp === false ||
-                    ($this->smarty->compile_check && $this->compiled->timestamp < $this->source->timestamp)));
+                ($this->smarty->compile_check && $this->compiled->timestamp < $this->source->timestamp)));
         }
         return $this->mustCompile;
     }
@@ -304,9 +305,9 @@ class Smarty_Internal_Template extends Smarty_Internal_TemplateBase {
     public function setupInlineSubTemplate($template, $cache_id, $compile_id, $caching, $cache_lifetime, $data, $parent_scope, $hash)
     {
         $tpl = new $this->smarty->template_class($template, $this->smarty, $this, $cache_id, $compile_id, $caching, $cache_lifetime);
-        $tpl->properties['nocache_hash']  = $hash;
+        $tpl->properties['nocache_hash'] = $hash;
         // get variables from calling scope
-        if ($parent_scope == Smarty::SCOPE_LOCAL ) {
+        if ($parent_scope == Smarty::SCOPE_LOCAL) {
             $tpl->tpl_vars = $this->tpl_vars;
             $tpl->tpl_vars['smarty'] = clone $this->tpl_vars['smarty'];
         } elseif ($parent_scope == Smarty::SCOPE_PARENT) {
@@ -384,7 +385,7 @@ class Smarty_Internal_Template extends Smarty_Internal_TemplateBase {
                         }
                     }
                 }
-                 foreach ($this->smarty->template_functions as $name => $function_data) {
+                foreach ($this->smarty->template_functions as $name => $function_data) {
                     if (isset($function_data['called_nocache'])) {
                         unset($function_data['called_nocache'], $function_data['called_functions'], $this->smarty->template_functions[$name]['called_nocache']);
                         $this->properties['function'][$name] = $function_data;
@@ -577,18 +578,18 @@ class Smarty_Internal_Template extends Smarty_Internal_TemplateBase {
     }
 
     /**
-    * Empty cache for this template
-    *
-    * @param integer $exp_time      expiration time
-    * @return integer number of cache files deleted
-    */
-    public function clearCache($exp_time=null)
+     * Empty cache for this template
+     *
+     * @param integer $exp_time      expiration time
+     * @return integer number of cache files deleted
+     */
+    public function clearCache($exp_time = null)
     {
         Smarty_CacheResource::invalidLoadedCache($this->smarty);
         return $this->cached->handler->clear($this->smarty, $this->template_name, $this->cache_id, $this->compile_id, $exp_time);
     }
 
-     /**
+    /**
      * set Smarty property in template context
      *
      * @param string $property_name property name

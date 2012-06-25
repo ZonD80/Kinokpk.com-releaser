@@ -74,7 +74,7 @@ if ($username && ($username <> $CURUSER['username'])) {
     $username = sqlesc($username);
     $updateset[] = "username = " . $username;
 
-    $REL_DB->query("INSERT INTO nickhistory (userid,nick,date) VALUES ({$CURUSER['id']},$username," . time() . ")");
+    $REL_DB->query("INSERT INTO nickhistory (userid,nick,date) VALUES ({$CURUSER['id']},$username," . TIME . ")");
 }
 $acceptpms = (string)$_POST["acceptpms"];
 $deletepms = ($_POST["deletepms"] ? 1 : 0);

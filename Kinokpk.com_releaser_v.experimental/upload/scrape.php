@@ -46,7 +46,7 @@ while ($row = mysql_fetch_assoc($res)) {
     $okay = true;
 }
 
-if ($id) $REL_DB->query("UPDATE trackers SET seeders={$seeders}, leechers=$leechers, lastchecked=" . time() . ", state='ok_local' WHERE torrent={$id} AND tracker='localhost'") or sqlerr(__FILE__, __LINE__);
+if ($id) $REL_DB->query("UPDATE trackers SET seeders={$seeders}, leechers=$leechers, lastchecked=" . TIME . ", state='ok_local' WHERE torrent={$id} AND tracker='localhost'") or sqlerr(__FILE__, __LINE__);
 
 $r .= "ee";
 

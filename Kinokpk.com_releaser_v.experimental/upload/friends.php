@@ -102,7 +102,7 @@ if (isset($_GET['pending'])) {
 } elseif (isset($_GET['online'])) {
     $state = 'o';
     $querystr = " LEFT JOIN users ON IF(userid={$CURUSER['id']},friendid=users.id,userid=users.id)";
-    $query['o'] = 'users.last_access>' . (time() - 300);
+    $query['o'] = 'users.last_access>' . (TIME - 300);
     $q[] = 'online';
     $q[] = 1;
 } else $query[] = 'friends.confirmed=1';
@@ -114,7 +114,7 @@ $query['def'] = "(userid={$CURUSER['id']} OR friendid=$fid)";
 $querycount = $querystr . ' WHERE ' . implode(' AND ', $query);
 $query = $querycount . " GROUP BY friends.id";
 $REL_TPL->stdhead($REL_LANG->say_by_key('users'));
-$res = $REL_DB->query("SELECT (SELECT SUM(1) FROM friends WHERE friends.confirmed=1 AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']})), (SELECT SUM(1) FROM friends LEFT JOIN users ON IF(userid={$CURUSER['id']},friendid=users.id,userid=users.id) WHERE users.last_access>" . (time() - 300) . " AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']})), (SELECT SUM(1) FROM friends WHERE friends.confirmed=0 AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']}))");
+$res = $REL_DB->query("SELECT (SELECT SUM(1) FROM friends WHERE friends.confirmed=1 AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']})), (SELECT SUM(1) FROM friends LEFT JOIN users ON IF(userid={$CURUSER['id']},friendid=users.id,userid=users.id) WHERE users.last_access>" . (TIME - 300) . " AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']})), (SELECT SUM(1) FROM friends WHERE friends.confirmed=0 AND (userid={$CURUSER['id']} OR friendid={$CURUSER['id']}))");
 list ($countarr['a'], $countarr['o'], $countarr['p']) = mysql_fetch_array($res);
 $countarr = array_map("intval", $countarr);
 $count = $countarr[$state];
@@ -171,7 +171,7 @@ while ($arr = mysql_fetch_assoc($res)) {
 				<dt>{$REL_LANG->_('Username')}</dt><dd><a href=\"" . $REL_SEO->make_link('userdetails', 'id', $arr['friend'], 'username', translit($arr["username"])) . "\"><b>" . get_user_class_color($arr["class"], $arr["username"]) . $gender . get_user_icons($arr) . $country . "</b></a></dd>
 				<dt>{$REL_LANG->_('Rating')}</dt><dd>" . ratearea($arr['ratingsum'], $arr['friend'], 'users', $CURUSER['id']) . "</dd>
 				<dt>{$REL_LANG->_('Class')}</dt><dd>" . get_user_class_name($arr["class"]) . "</dd>
-				<dt>{$REL_LANG->_('Last seen')}</dt><dd>" . (time() - $arr['last_access'] < 300 ? $REL_LANG->_("Online") : mkprettytime($arr['last_access'])) . "</dd>
+				<dt>{$REL_LANG->_('Last seen')}</dt><dd>" . (TIME - $arr['last_access'] < 300 ? $REL_LANG->_("Online") : mkprettytime($arr['last_access'])) . "</dd>
 				<dt>{$REL_LANG->_('Registered at')}</dt><dd>" . mkprettytime($arr['added']) . "</dd>
 				</dl>
 			 </div>

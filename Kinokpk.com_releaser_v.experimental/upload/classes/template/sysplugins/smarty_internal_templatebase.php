@@ -17,7 +17,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage Template
  */
-abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
+abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data
+{
 
     /**
      * fetches a rendered Smarty template
@@ -45,8 +46,8 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
         }
         // create template object if necessary
         $_template = ($template instanceof $this->template_class)
-        ? $template
-        : $this->smarty->createTemplate($template, $cache_id, $compile_id, $parent, false);
+            ? $template
+            : $this->smarty->createTemplate($template, $cache_id, $compile_id, $parent, false);
         // if called by Smarty object make sure we use current caching status
         if ($this instanceof Smarty) {
             $_template->caching = $this->caching;
@@ -175,7 +176,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
                         if (empty($_template->properties['unifunc']) || !is_callable($_template->properties['unifunc'])) {
                             throw new SmartyException("Invalid compiled template for '{$_template->template_resource}'");
                         }
-                        array_unshift($_template->_capture_stack,array());
+                        array_unshift($_template->_capture_stack, array());
                         //
                         // render compiled template
                         //
@@ -276,7 +277,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
             }
             try {
                 ob_start();
-                array_unshift($_template->_capture_stack,array());
+                array_unshift($_template->_capture_stack, array());
                 //
                 // render cached template
                 //
@@ -308,33 +309,37 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
                 $_last_modified_date = @substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 0, strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], 'GMT') + 3);
                 if ($_isCached && $_template->cached->timestamp <= strtotime($_last_modified_date)) {
                     switch (PHP_SAPI) {
-                        case 'cgi':         // php-cgi < 5.3
-                        case 'cgi-fcgi':    // php-cgi >= 5.3
-                        case 'fpm-fcgi':    // php-fpm >= 5.3.3
-                        header('Status: 304 Not Modified');
-                        break;
+                        case 'cgi': // php-cgi < 5.3
+                        case 'cgi-fcgi': // php-cgi >= 5.3
+                        case 'fpm-fcgi': // php-fpm >= 5.3.3
+                            header('Status: 304 Not Modified');
+                            break;
 
                         case 'cli':
-                        if (/* ^phpunit */!empty($_SERVER['SMARTY_PHPUNIT_DISABLE_HEADERS'])/* phpunit$ */) {
-                            $_SERVER['SMARTY_PHPUNIT_HEADERS'][] = '304 Not Modified';
-                        }
-                        break;
+                            if ( /* ^phpunit */
+                                !empty($_SERVER['SMARTY_PHPUNIT_DISABLE_HEADERS']) /* phpunit$ */
+                            ) {
+                                $_SERVER['SMARTY_PHPUNIT_HEADERS'][] = '304 Not Modified';
+                            }
+                            break;
 
                         default:
-                        header($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified');
-                        break;
+                            header($_SERVER['SERVER_PROTOCOL'] . ' 304 Not Modified');
+                            break;
                     }
                 } else {
                     switch (PHP_SAPI) {
                         case 'cli':
-                        if (/* ^phpunit */!empty($_SERVER['SMARTY_PHPUNIT_DISABLE_HEADERS'])/* phpunit$ */) {
-                            $_SERVER['SMARTY_PHPUNIT_HEADERS'][] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $_template->cached->timestamp) . ' GMT';
-                        }
-                        break;
+                            if ( /* ^phpunit */
+                                !empty($_SERVER['SMARTY_PHPUNIT_DISABLE_HEADERS']) /* phpunit$ */
+                            ) {
+                                $_SERVER['SMARTY_PHPUNIT_HEADERS'][] = 'Last-Modified: ' . gmdate('D, d M Y H:i:s', $_template->cached->timestamp) . ' GMT';
+                            }
+                            break;
 
                         default:
-                        header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $_template->cached->timestamp) . ' GMT');
-                        break;
+                            header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $_template->cached->timestamp) . ' GMT');
+                            break;
                     }
                     echo $_output;
                 }
@@ -348,14 +353,14 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
             if ($merge_tpl_vars) {
                 // restore local variables
                 $_template->tpl_vars = $save_tpl_vars;
-                $_template->config_vars =  $save_config_vars;
+                $_template->config_vars = $save_config_vars;
             }
             return;
         } else {
             if ($merge_tpl_vars) {
                 // restore local variables
                 $_template->tpl_vars = $save_tpl_vars;
-                $_template->config_vars =  $save_config_vars;
+                $_template->config_vars = $save_config_vars;
             }
             // return fetched content
             return $_output;
@@ -429,7 +434,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
         } elseif (!is_callable($callback)) {
             throw new SmartyException("Plugin \"{$tag}\" not callable");
         } else {
-            $this->smarty->registered_plugins[$type][$tag] = array($callback, (bool) $cacheable, (array) $cache_attr);
+            $this->smarty->registered_plugins[$type][$tag] = array($callback, (bool)$cacheable, (array)$cache_attr);
         }
 
         return $this;
@@ -523,7 +528,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
     {
         // test if allowed methodes callable
         if (!empty($allowed)) {
-            foreach ((array) $allowed as $method) {
+            foreach ((array)$allowed as $method) {
                 if (!is_callable(array($object_impl, $method))) {
                     throw new SmartyException("Undefined method '$method' in registered object");
                 }
@@ -531,7 +536,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
         }
         // test if block methodes callable
         if (!empty($block_methods)) {
-            foreach ((array) $block_methods as $method) {
+            foreach ((array)$block_methods as $method) {
                 if (!is_callable(array($object_impl, $method))) {
                     throw new SmartyException("Undefined method '$method' in registered object");
                 }
@@ -539,7 +544,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
         }
         // register the object
         $this->smarty->registered_objects[$object_name] =
-        array($object_impl, (array) $allowed, (boolean) $smarty_args, (array) $block_methods);
+            array($object_impl, (array)$allowed, (boolean)$smarty_args, (array)$block_methods);
         return $this;
     }
 
@@ -689,7 +694,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
     {
         if (is_array($function_name)) {
             $_class_name = (is_object($function_name[0]) ?
-            get_class($function_name[0]) : $function_name[0]);
+                get_class($function_name[0]) : $function_name[0]);
             return $_class_name . '_' . $function_name[1];
         } else {
             return $function_name;
@@ -742,7 +747,8 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
      * @param string $match match string
      * @return string replacemant
      */
-    private function replaceCamelcase($match) {
+    private function replaceCamelcase($match)
+    {
         return "_" . strtolower($match[1]);
     }
 
@@ -772,7 +778,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
                 // lcfirst() not available < PHP 5.3.0, so improvise
                 $property_name = strtolower(substr($name, 3, 1)) . substr($name, 4);
                 // convert camel case to underscored name
-                $property_name = preg_replace_callback('/([A-Z])/', array($this,'replaceCamelcase'), $property_name);
+                $property_name = preg_replace_callback('/([A-Z])/', array($this, 'replaceCamelcase'), $property_name);
                 $_resolved_property_name[$name] = $property_name;
             }
             if (isset($_resolved_property_source[$property_name])) {
@@ -788,14 +794,14 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
             }
             if ($_is_this) {
                 if ($first3 == 'get')
-                return $this->$property_name;
+                    return $this->$property_name;
                 else
-                return $this->$property_name = $args[0];
+                    return $this->$property_name = $args[0];
             } else if ($_is_this === false) {
                 if ($first3 == 'get')
-                return $this->smarty->$property_name;
+                    return $this->smarty->$property_name;
                 else
-                return $this->smarty->$property_name = $args[0];
+                    return $this->smarty->$property_name = $args[0];
             } else {
                 throw new SmartyException("property '$property_name' does not exist.");
                 return false;

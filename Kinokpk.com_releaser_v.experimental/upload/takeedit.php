@@ -86,7 +86,7 @@ EOD;
                 $reason[$tracker] = makesafe($peers['state']);
                 if ($peers['state'] == 'ok') {
                     $REL_DB->query("INSERT INTO trackers (tracker,torrent) VALUES (" . sqlesc(strip_tags($tracker)) . ",$id)"); //;
-                    $REL_DB->query("UPDATE LOW_PRIORITY trackers SET seeders=" . (int)$peers['seeders'] . ", leechers=" . (int)$peers['leechers'] . ", lastchecked=" . time() . ", state=" . sqlesc($peers['state']) . ", method='{$peers['method']}', remote_method='{$peers['remote_method']}', state=" . sqlesc($peers['state']) . " WHERE torrent=$id AND tracker=" . sqlesc($tracker));
+                    $REL_DB->query("UPDATE LOW_PRIORITY trackers SET seeders=" . (int)$peers['seeders'] . ", leechers=" . (int)$peers['leechers'] . ", lastchecked=" . TIME . ", state=" . sqlesc($peers['state']) . ", method='{$peers['method']}', remote_method='{$peers['remote_method']}', state=" . sqlesc($peers['state']) . " WHERE torrent=$id AND tracker=" . sqlesc($tracker));
                     $state[$tracker] = 'added';
                 } else $state[$tracker] = 'failed';
             }
@@ -317,7 +317,7 @@ if ($update_torrent) {
 $updateset[] = "name = " . sqlesc($name);
 
 $modcomm = (string)$_POST['modcomm'];
-if ($row['modcomm'] != $modcomm) $updateset[] = "modcomm = " . sqlesc($REL_LANG->_to(0, 'Last edit by %s at %s', $CURUSER['username'], mkprettytime(time())) . "\n" . htmlspecialchars($modcomm));
+if ($row['modcomm'] != $modcomm) $updateset[] = "modcomm = " . sqlesc($REL_LANG->_to(0, 'Last edit by %s at %s', $CURUSER['username'], mkprettytime(TIME)) . "\n" . htmlspecialchars($modcomm));
 
 $catsstr = implode(',', $_POST['type']);
 
@@ -395,7 +395,7 @@ $updateset[] = 'descr = ' . sqlesc($descr);
 /// get kinopoisk.ru trailer!
 
 
-if ($_POST['upd']) $updateset[] = "added = '" . time() . "'";
+if ($_POST['upd']) $updateset[] = "added = '" . TIME . "'";
 
 $REL_DB->query("UPDATE torrents SET " . join(",", $updateset) . " WHERE id = $id");
 if (mysql_errno() == 1062) $REL_TPL->stderr($REL_LANG->say_by_key('error'), 'Torrent already uploaded!');

@@ -15,7 +15,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage PluginsInternal
  */
-class Smarty_Internal_Get_Include_Path {
+class Smarty_Internal_Get_Include_Path
+{
 
     /**
      * Return full file path from PHP include_path
@@ -26,7 +27,7 @@ class Smarty_Internal_Get_Include_Path {
     public static function getIncludePath($filepath)
     {
         static $_include_path = null;
-        
+
         if (function_exists('stream_resolve_include_path')) {
             // available since PHP 5.3.2
             return stream_resolve_include_path($filepath);

@@ -17,7 +17,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_While extends Smarty_Internal_CompileBase {
+class Smarty_Internal_Compile_While extends Smarty_Internal_CompileBase
+{
 
     /**
      * Compiles code for the {while} tag
@@ -33,7 +34,7 @@ class Smarty_Internal_Compile_While extends Smarty_Internal_CompileBase {
         $_attr = $this->getAttributes($compiler, $args);
         $this->openTag($compiler, 'while', $compiler->nocache);
 
-        if (!array_key_exists("if condition",$parameter)) {
+        if (!array_key_exists("if condition", $parameter)) {
             $compiler->trigger_template_error("missing while condition", $compiler->lex->taglineno);
         }
 
@@ -72,7 +73,8 @@ class Smarty_Internal_Compile_While extends Smarty_Internal_CompileBase {
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Whileclose extends Smarty_Internal_CompileBase {
+class Smarty_Internal_Compile_Whileclose extends Smarty_Internal_CompileBase
+{
 
     /**
      * Compiles code for the {/while} tag

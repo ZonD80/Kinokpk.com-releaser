@@ -57,7 +57,7 @@ $seeder = ($left == 0) ? 1 : 0;
 
 checkclient($peer_id);
 
-define('TIME', time());
+define('TIME', TIME);
 
 INIT();
 

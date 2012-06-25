@@ -437,8 +437,8 @@ if (!$id) {
                     . "<br/><div align=\"center\"><form action=\"" . $REL_SEO->make_link('relgroups', 'id', $id, 'action', 'invite', 'ok', '') . "\" method=\"POST\"><input type=\"submit\" value=\"{$REL_LANG->say_by_key('continue')}\"></form></div>", 'success');
             } else {
                 if ($CURUSER['discount'] < $row['amount']) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_discount_invite'));
-                $code = md5(microtime() + rand(0, 100));
-                $REL_DB->query("INSERT INTO rg_invites (inviter,rgid,invite,time_invited) VALUES ({$CURUSER['id']},$id,'$code'," . time() . ")");
+                $code = md5(microTIME + rand(0, 100));
+                $REL_DB->query("INSERT INTO rg_invites (inviter,rgid,invite,time_invited) VALUES ({$CURUSER['id']},$id,'$code'," . TIME . ")");
                 $REL_DB->query("UPDATE users SET discount=discount-{$row['amount']} WHERE id = {$CURUSER['id']}");
                 safe_redirect($REL_SEO->make_link('relgroups', 'id', $id, 'action', 'invite'), 1);
                 $REL_TPL->stderr($REL_LANG->say_by_key('success'), sprintf($REL_LANG->say_by_key('inivite_code_created'), $code, $row['name']), 'success');

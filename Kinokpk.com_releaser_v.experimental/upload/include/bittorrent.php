@@ -13,6 +13,7 @@
  * @var boolean
  */
 define('IN_TRACKER', true);
+define('TIME', time());
 
 // SET PHP ENVIRONMENT
 @error_reporting(E_ALL & ~E_NOTICE);

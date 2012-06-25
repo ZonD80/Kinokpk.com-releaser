@@ -12,13 +12,13 @@
 
 if (!defined('IN_TRACKER') && !defined('IN_ANNOUNCE')) die("Direct access to this page not allowed");
 
-$db['host'] = '';
-$db['user'] = '';
-$db['pass'] = '';
-$db['db'] = '';
+$db['host'] = '127.0.0.1';
+$db['user'] = 'snt_t';
+$db['pass'] = 'SDJWij2jhfs';
+$db['db'] = 'snt_tracker';
 $db['charset'] = 'utf8';
 
-define("COOKIE_SECRET", '');
+define("COOKIE_SECRET", 'ji583fd');
 
 /**
  * Set cache driver, available "native" and "memcached" now

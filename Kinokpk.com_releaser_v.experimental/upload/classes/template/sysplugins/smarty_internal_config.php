@@ -21,7 +21,8 @@ if (!defined('IN_TRACKER'))
  * @property Smarty_Config_Compiled $compiled
  * @ignore
  */
-class Smarty_Internal_Config {
+class Smarty_Internal_Config
+{
 
     /**
      * Samrty instance
@@ -92,8 +93,8 @@ class Smarty_Internal_Config {
     public function getCompiledFilepath()
     {
         return $this->compiled_filepath === null ?
-                ($this->compiled_filepath = $this->buildCompiledFilepath()) :
-                $this->compiled_filepath;
+            ($this->compiled_filepath = $this->buildCompiledFilepath()) :
+            $this->compiled_filepath;
     }
 
     /**
@@ -104,15 +105,15 @@ class Smarty_Internal_Config {
     public function buildCompiledFilepath()
     {
         $_compile_id = isset($this->smarty->compile_id) ? preg_replace('![^\w\|]+!', '_', $this->smarty->compile_id) : null;
-        $_flag = (int) $this->smarty->config_read_hidden + (int) $this->smarty->config_booleanize * 2
-                + (int) $this->smarty->config_overwrite * 4;
+        $_flag = (int)$this->smarty->config_read_hidden + (int)$this->smarty->config_booleanize * 2
+            + (int)$this->smarty->config_overwrite * 4;
         $_filepath = sha1($this->source->name . $_flag);
         // if use_sub_dirs, break file into directories
         if ($this->smarty->use_sub_dirs) {
             $_filepath = substr($_filepath, 0, 2) . DS
-                    . substr($_filepath, 2, 2) . DS
-                    . substr($_filepath, 4, 2) . DS
-                    . $_filepath;
+                . substr($_filepath, 2, 2) . DS
+                . substr($_filepath, 4, 2) . DS
+                . $_filepath;
         }
         $_compile_dir_sep = $this->smarty->use_sub_dirs ? DS : '^';
         if (isset($_compile_id)) {
@@ -144,7 +145,7 @@ class Smarty_Internal_Config {
     public function mustCompile()
     {
         return $this->mustCompile === null ?
-            $this->mustCompile = ($this->smarty->force_compile || $this->getCompiledTimestamp () === false || $this->smarty->compile_check && $this->getCompiledTimestamp () < $this->source->timestamp):
+            $this->mustCompile = ($this->smarty->force_compile || $this->getCompiledTimestamp() === false || $this->smarty->compile_check && $this->getCompiledTimestamp() < $this->source->timestamp) :
             $this->mustCompile;
     }
 
@@ -237,19 +238,19 @@ class Smarty_Internal_Config {
             if ($this->smarty->config_overwrite || !isset($scope_ptr->config_vars[$variable])) {
                 $scope_ptr->config_vars[$variable] = $value;
             } else {
-                $scope_ptr->config_vars[$variable] = array_merge((array) $scope_ptr->config_vars[$variable], (array) $value);
+                $scope_ptr->config_vars[$variable] = array_merge((array)$scope_ptr->config_vars[$variable], (array)$value);
             }
         }
         // scan sections
         if (!empty($sections)) {
-            $sections = array_flip((array) $sections);
+            $sections = array_flip((array)$sections);
             foreach ($_config_vars['sections'] as $this_section => $dummy) {
                 if (isset($sections[$this_section])) {
                     foreach ($_config_vars['sections'][$this_section]['vars'] as $variable => $value) {
                         if ($this->smarty->config_overwrite || !isset($scope_ptr->config_vars[$variable])) {
                             $scope_ptr->config_vars[$variable] = $value;
                         } else {
-                            $scope_ptr->config_vars[$variable] = array_merge((array) $scope_ptr->config_vars[$variable], (array) $value);
+                            $scope_ptr->config_vars[$variable] = array_merge((array)$scope_ptr->config_vars[$variable], (array)$value);
                         }
                     }
                 }

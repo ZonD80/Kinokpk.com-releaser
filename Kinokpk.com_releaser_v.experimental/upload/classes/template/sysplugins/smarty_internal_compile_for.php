@@ -17,7 +17,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_For extends Smarty_Internal_CompileBase {
+class Smarty_Internal_Compile_For extends Smarty_Internal_CompileBase
+{
 
     /**
      * Compiles code for the {for} tag
@@ -92,7 +93,8 @@ class Smarty_Internal_Compile_For extends Smarty_Internal_CompileBase {
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Forelse extends Smarty_Internal_CompileBase {
+class Smarty_Internal_Compile_Forelse extends Smarty_Internal_CompileBase
+{
 
     /**
      * Compiles code for the {forelse} tag
@@ -105,7 +107,7 @@ class Smarty_Internal_Compile_Forelse extends Smarty_Internal_CompileBase {
     public function compile($args, $compiler, $parameter)
     {
         // check and get attributes
-        $_attr  = $this->getAttributes($compiler, $args);
+        $_attr = $this->getAttributes($compiler, $args);
 
         list($openTag, $nocache) = $this->closeTag($compiler, array('for'));
         $this->openTag($compiler, 'forelse', array('forelse', $nocache));
@@ -120,7 +122,8 @@ class Smarty_Internal_Compile_Forelse extends Smarty_Internal_CompileBase {
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Forclose extends Smarty_Internal_CompileBase {
+class Smarty_Internal_Compile_Forclose extends Smarty_Internal_CompileBase
+{
 
     /**
      * Compiles code for the {/for} tag

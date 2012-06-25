@@ -17,7 +17,8 @@ define ("ROOT_PATH", dirname(__FILE__) . '/');
 require_once(ROOT_PATH . 'include/secrets.php');
 require_once(ROOT_PATH . 'include/classes.php');
 require_once(ROOT_PATH . 'include/functions.php');
-$time = time();
+define('TIME', time());
+$time = TIME;
 
 // connection closed
 /* @var database object */
@@ -59,16 +60,16 @@ while ($cronres = mysql_fetch_assoc($cronrow)) $REL_CRON[$cronres['cron_name']] 
 
 if ($REL_CRON['in_cleanup']) die('Cleanup already running');
 
-$REL_DB->query("UPDATE cron SET cron_value=" . time() . " WHERE cron_name='last_cleanup'");
+$REL_DB->query("UPDATE cron SET cron_value=" . TIME . " WHERE cron_name='last_cleanup'");
 
 $REL_DB->query("UPDATE cron SET cron_value=1 WHERE cron_name='in_cleanup'");
 
 if ($REL_CRON['remote_trackers_delete']) $REL_DB->query("DELETE FROM trackers WHERE num_failed > {$REL_CRON['remote_trackers_delete']}");
 
 $torrents = array();
-$res = $REL_DB->query('SELECT fid,seeders,leechers FROM xbt_files');
+$res = $REL_DB->query('SELECT fid,seeders,leechers,mtime FROM xbt_files');
 while ($row = mysql_fetch_assoc($res)) {
-    $torrents["seeders = {$row['seeders']}, leechers={$row['leechers']}, lastchecked={$time}"][] = $row['fid'];
+    $torrents["seeders = {$row['seeders']}, leechers={$row['leechers']}, lastchecked={$row['mtime']}"][] = $row['fid'];
 }
 
 if ($torrents) {
@@ -96,16 +97,16 @@ if ($torrents) {
 
 // delete old system and user messages
 $secs_system = $REL_CRON['pm_delete_sys_days'] * 86400;
-$dt_system = time() - $secs_system;
+$dt_system = TIME - $secs_system;
 $REL_DB->query("DELETE FROM messages WHERE sender = 0 AND archived = 0 AND archived_receiver = 0 AND unread = 0 AND added < $dt_system");
 
 $secs_all = $REL_CRON['pm_delete_user_days'] * 86400;
-$dt_all = time() - $secs_all;
+$dt_all = TIME - $secs_all;
 $REL_DB->query("DELETE FROM messages WHERE unread = 0 AND archived = 0 AND archived_receiver = 0 AND added < $dt_all");
 
 
 // delete unconfirmed users if timeout.
-$deadtime = time() - ($REL_CRON['signup_timeout'] * 86400);
+$deadtime = TIME - ($REL_CRON['signup_timeout'] * 86400);
 $res = $REL_DB->query("SELECT id FROM users WHERE confirmed=0 AND last_access < $deadtime");
 if (mysql_num_rows($res) > 0) {
     while ($arr = mysql_fetch_array($res)) {
@@ -121,32 +122,28 @@ if (mysql_num_rows($res) > 0) {
  * @see userlogin();
  */
 
-/*//remove expired warnings
-$now = time();
-$modcomment = sqlesc(date("Y-m-d") . " - Предупреждение снято системой по таймауту.\n");
-$msg = sqlesc("Ваше предупреждение снято по таймауту. Постарайтесь больше не получать предупреждений и следовать правилам.\n");
-$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster) SELECT 0, id, $now, $msg, 0 FROM users WHERE warned=1 AND warneduntil < " . time() . " AND warneduntil <> 0");
-$REL_DB->query("UPDATE users SET warned=0, warneduntil = 0, modcomment = CONCAT($modcomment, modcomment) WHERE warned=1 AND warneduntil < " . time() . " AND warneduntil <> 0");
+/*
+ * need to remove user warnings?
+ * @see user_session();
+ */
 
 /*
  * promotion to power users is in userlogin() also
  * @see userlogin();
  */
- // delete old torrents MODIFY TO XBT!
- /*if ($REL_CRON['use_ttl']) {
- $dt = time() - ($REL_CRON['ttl_days'] * 86400);
- $res = $REL_DB->query("SELECT id, name FROM torrents WHERE last_action < $dt");
- while ($arr = mysql_fetch_assoc($res))
- {
- deletetorrent($arr['id']);
- write_log("Торрент $arr[id] ($arr[name]) был удален системой (старше чем {$REL_CRON['ttl_days']} дней)","torrent");
- }
- }
- */
+
+if ($REL_CRON['use_ttl']) {
+    $dt = TIME - ($REL_CRON['ttl_days'] * 86400);
+    $res = $REL_DB->query("SELECT id, name FROM torrents WHERE last_action < $dt");
+    while ($arr = mysql_fetch_assoc($res)) {
+        deletetorrent($arr['id']);
+        write_log($REL_LANG->_to(0, "Release #%s (%s) was deleted by system (no seeders in %s days)", $arr['id'], $arr['name'], $REL_CRON['ttl_days'], "torrent"));
+    }
+}
 // session update moved to include/functions.php
 if ($REL_CRON['delete_votes']) {
     $secs = $REL_CRON['delete_votes'] * 60;
-    $dt = time() - $secs;
+    $dt = TIME - $secs;
     $REL_DB->query("DELETE FROM ratings WHERE added < $dt");
 }
 //$REL_CONFIG['defaultbaseurl'] = mysql_result($REL_DB->query("SELECT cache_value FROM cache_stats WHERE cache_name='defaultbaseurl'"),0);

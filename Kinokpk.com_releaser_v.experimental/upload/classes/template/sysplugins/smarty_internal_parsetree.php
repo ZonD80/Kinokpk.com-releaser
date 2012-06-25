@@ -17,7 +17,8 @@ if (!defined('IN_TRACKER'))
  * @subpackage Compiler
  * @ignore
  */
-abstract class _smarty_parsetree {
+abstract class _smarty_parsetree
+{
 
     /**
      * Parser object
@@ -46,7 +47,8 @@ abstract class _smarty_parsetree {
  * @subpackage Compiler
  * @ignore
  */
-class _smarty_tag extends _smarty_parsetree {
+class _smarty_tag extends _smarty_parsetree
+{
 
     /**
      * Saved block nesting level
@@ -98,7 +100,8 @@ class _smarty_tag extends _smarty_parsetree {
  * @subpackage Compiler
  * @ignore
  */
-class _smarty_code extends _smarty_parsetree {
+class _smarty_code extends _smarty_parsetree
+{
 
 
     /**
@@ -132,7 +135,8 @@ class _smarty_code extends _smarty_parsetree {
  * @subpackage Compiler
  * @ignore
  */
-class _smarty_doublequoted extends _smarty_parsetree {
+class _smarty_doublequoted extends _smarty_parsetree
+{
 
     /**
      * Create parse tree buffer for double quoted string subtrees
@@ -209,7 +213,8 @@ class _smarty_doublequoted extends _smarty_parsetree {
  * @subpackage Compiler
  * @ignore
  */
-class _smarty_dq_content extends _smarty_parsetree {
+class _smarty_dq_content extends _smarty_parsetree
+{
 
 
     /**
@@ -243,7 +248,8 @@ class _smarty_dq_content extends _smarty_parsetree {
  * @subpackage Compiler
  * @ignore
  */
-class _smarty_template_buffer extends _smarty_parsetree {
+class _smarty_template_buffer extends _smarty_parsetree
+{
 
     /**
      * Array of template elements
@@ -334,7 +340,8 @@ class _smarty_template_buffer extends _smarty_parsetree {
  * @subpackage Compiler
  * @ignore
  */
-class _smarty_text extends _smarty_parsetree {
+class _smarty_text extends _smarty_parsetree
+{
 
 
     /**
@@ -368,7 +375,8 @@ class _smarty_text extends _smarty_parsetree {
  * @subpackage Compiler
  * @ignore
  */
-class _smarty_linebreak extends _smarty_parsetree {
+class _smarty_linebreak extends _smarty_parsetree
+{
 
     /**
      * Create buffer with linebreak content

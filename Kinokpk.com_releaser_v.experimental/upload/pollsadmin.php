@@ -23,7 +23,7 @@ if (!isset($_GET['action'])) {
     $pollsrow = $REL_DB->query("SELECT * FROM polls ORDER BY id DESC");
     while ($poll = mysql_fetch_array($pollsrow)) {
 
-        print('<tr><td><a href="' . $REL_SEO->make_link('polloverview', 'id', $poll['id']) . '">' . $poll['question'] . '</a></td><td>' . mkprettytime($poll['start']) . '</td><td>' . (!is_null($poll['exp']) ? (($poll['exp'] < time()) ? mkprettytime($poll['exp']) . " (закрыт)" : mkprettytime($poll['exp'])) : "Бесконечен") . "</td><td><a href=\"" . $REL_SEO->make_link('pollsadmin', 'action', 'edit', 'id', $poll['id']) . "\">E</a> / <a onClick=\"return confirm('Вы уверены?')\" href=\"" . $REL_SEO->make_link('pollsadmin', 'action', 'delete', 'id', $poll['id']) . "\">D</a></td></tr>");
+        print('<tr><td><a href="' . $REL_SEO->make_link('polloverview', 'id', $poll['id']) . '">' . $poll['question'] . '</a></td><td>' . mkprettytime($poll['start']) . '</td><td>' . (!is_null($poll['exp']) ? (($poll['exp'] < TIME) ? mkprettytime($poll['exp']) . " (закрыт)" : mkprettytime($poll['exp'])) : "Бесконечен") . "</td><td><a href=\"" . $REL_SEO->make_link('pollsadmin', 'action', 'edit', 'id', $poll['id']) . "\">E</a> / <a onClick=\"return confirm('Вы уверены?')\" href=\"" . $REL_SEO->make_link('pollsadmin', 'action', 'delete', 'id', $poll['id']) . "\">D</a></td></tr>");
     }
     print("</table>");
 
@@ -66,7 +66,7 @@ elseif (($_GET['action'] == 'saveadd') && ($_SERVER['REQUEST_METHOD'] == 'POST')
 
     if (!is_numeric($_POST['exp'])) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('invalid_id'));
     if ($_POST['exp'] != 0)
-        $exp = time() + 86400 * intval($_POST['exp']);
+        $exp = TIME + 86400 * intval($_POST['exp']);
     else $exp = 'NULL';
     if ($_POST['public']) $public = 1; else $public = 0;
 
@@ -74,7 +74,7 @@ elseif (($_GET['action'] == 'saveadd') && ($_SERVER['REQUEST_METHOD'] == 'POST')
     $question = htmlspecialchars(trim($_POST['question']));
 
 
-    $REL_DB->query("INSERT INTO polls (question,start,exp,public) VALUES (" . sqlesc($question) . "," . time() . "," . $exp . ",'" . $public . "')");
+    $REL_DB->query("INSERT INTO polls (question,start,exp,public) VALUES (" . sqlesc($question) . "," . TIME . "," . $exp . ",'" . $public . "')");
     $pollid = mysql_insert_id();
 
     if (!$pollid) die('MySQL error');
@@ -112,7 +112,7 @@ elseif ($_GET['action'] == 'edit') {
     $pollrow = $REL_DB->query("SELECT id,question,exp,public FROM polls WHERE id=$id");
     $pollres = mysql_fetch_array($pollrow);
 
-    print('<table width="100%" border="1"><form action="' . $REL_SEO->make_link('pollsadmin', 'action', 'saveedit', 'id', $id) . '" method="post"><tr><td>Вопрос:</td><td><input type="text" name="question" value="' . $pollres['question'] . '"></td><tr><td>Истекает через:</td><td><input type="text" name="exp" value="' . (!is_null($pollres['exp']) ? round(($pollres['exp'] - time()) / 86400) : "0") . '" size="2"> дней 0 - бесконечно</td>');
+    print('<table width="100%" border="1"><form action="' . $REL_SEO->make_link('pollsadmin', 'action', 'saveedit', 'id', $id) . '" method="post"><tr><td>Вопрос:</td><td><input type="text" name="question" value="' . $pollres['question'] . '"></td><tr><td>Истекает через:</td><td><input type="text" name="exp" value="' . (!is_null($pollres['exp']) ? round(($pollres['exp'] - TIME) / 86400) : "0") . '" size="2"> дней 0 - бесконечно</td>');
 
     print('<tr><td>Публичный?</td><td><input type="checkbox" name="public" value="1" ' . (($pollres['public']) ? "checked" : "") . "></td></tr>");
     $srow = $REL_DB->query("SELECT id,value FROM polls_structure WHERE pollid=$id");
@@ -132,7 +132,7 @@ elseif (($_GET['action'] == 'saveedit') && ($_SERVER['REQUEST_METHOD'] == 'POST'
     $id = $_GET['id'];
 
     if ($_POST['exp'] != 0)
-        $exp = time() + 86400 * intval($_POST['exp']);
+        $exp = TIME + 86400 * intval($_POST['exp']);
     else $exp = 'NULL';
 
     if ($_POST['public']) $public = 1; else $public = 0;

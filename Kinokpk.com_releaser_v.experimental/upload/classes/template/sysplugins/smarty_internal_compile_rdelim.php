@@ -16,7 +16,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Rdelim extends Smarty_Internal_CompileBase {
+class Smarty_Internal_Compile_Rdelim extends Smarty_Internal_CompileBase
+{
 
     /**
      * Compiles code for the {rdelim} tag

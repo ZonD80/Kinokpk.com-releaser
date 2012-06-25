@@ -24,7 +24,7 @@ function maketable($res)
         foreach ($rescatids as $rescatid)
             $arr ['cat_names'] [] = "<a href=\"" . $REL_SEO->make_link('browse', 'cat', $rescatid) . "\">" . $cats [$rescatid] . "</a>";
 
-        $ttl = ($REL_CONFIG ['ttl_days'] * 24) - floor((time() - $arr ["added"]) / 3600);
+        $ttl = ($REL_CONFIG ['ttl_days'] * 24) - floor((TIME - $arr ["added"]) / 3600);
         if ($ttl == 1)
             $ttl .= "&nbsp;{$REL_LANG->_('hour')}";
         else
@@ -89,7 +89,7 @@ if (in_array($type, $allowed_types)) {
         if (mysql_num_rows($r)) {
             $torrents = "<table class=main border=1 cellspacing=0 cellpadding=5>\n" . "<tr><td class=colhead>" . $REL_LANG->say_by_key('type') . "</td><td class=colhead>" . $REL_LANG->say_by_key('name') . "</td>" . ($REL_CONFIG ['use_ttl'] ? "<td class=colhead align=center>" . $REL_LANG->say_by_key('ttl') . "</td>" : "") . "<td class=colhead>" . $REL_LANG->say_by_key('tracker_seeders') . "</td><td class=colhead>" . $REL_LANG->say_by_key('tracker_leechers') . "</td></tr>\n";
             while ($a = mysql_fetch_assoc($r)) {
-                $ttl = ($REL_CONFIG ['ttl_days'] * 24) - floor((time() - $a ["added"]) / 3600);
+                $ttl = ($REL_CONFIG ['ttl_days'] * 24) - floor((TIME - $a ["added"]) / 3600);
                 if ($ttl == 1)
                     $ttl .= "&nbsp;{$REL_LANG->_('hour')}";
                 else

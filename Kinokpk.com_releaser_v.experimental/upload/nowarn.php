@@ -29,7 +29,7 @@ if (isset($_POST["nowarned"]) && ($_POST["nowarned"] == "nowarned")) {
 
         if (!empty($_POST["usernw"]) && is_array($_POST['usernw'])) {
             $msg = sqlesc($REL_LANG->say_by_key('you_warning_removed') . $CURUSER['username'] . ".");
-            $added = sqlesc(time());
+            $added = sqlesc(TIME);
             $userid = implode(", ", array_map('sqlesc', $_POST['usernw']));
             //$REL_DB->query("INSERT INTO messages (sender, receiver, msg, added) VALUES (0, $userid, $msg, $added)");
 

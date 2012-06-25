@@ -167,7 +167,7 @@ list($year1, $month1, $day1) = explode('-', $birthday);
 if ($CURUSER[birthday] == "0000-00-00") {
     $year .= "<select name=year><option value=\"0000\">" . $REL_LANG->say_by_key('my_year') . "</option>\n";
     $i = "1920";
-    while ($i <= (date('Y', time()) - 13)) {
+    while ($i <= (date('Y', TIME) - 13)) {
         $year .= "<option value=" . $i . ">" . $i . "</option>\n";
         $i++;
     }
@@ -261,7 +261,7 @@ print("<div><div align=\"left\" colspan=\"2\" style=\"padding-left: 250px;\"><b>
 div($REL_LANG->_('Change passkey'), "<input type=checkbox class=\"styled\" name=resetpasskey value=1 /> ({$REL_LANG->_('You must redownload all releases after this operation. You can download ZIP archive with all your .torrent files <a href="%s">here</a>',$REL_SEO->make_link('download','a','my'))})", 1, 'my_title', 'my_name');
 
 if (mb_strlen($CURUSER['passkey']) != 32) {
-    $CURUSER['passkey'] = md5($CURUSER['username'] . time() . $CURUSER['passhash']);
+    $CURUSER['passkey'] = md5($CURUSER['username'] . TIME . $CURUSER['passhash']);
     $REL_DB->query("UPDATE xbt_users SET torrent_pass=" . sqlesc($CURUSER[passkey]) . " WHERE uid=" . sqlesc($CURUSER[id]));
 }
 div($REL_LANG->_('My passkey'), "<b>$CURUSER[passkey]</b>", 1, 'my_title', 'my_name');

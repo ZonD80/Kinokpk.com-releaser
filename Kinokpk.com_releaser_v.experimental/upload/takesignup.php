@@ -12,7 +12,7 @@ require_once("include/bittorrent.php");
 
 INIT();
 
-$time = time();
+$time = TIME;
 
 if ($REL_CONFIG['use_captcha']) {
 
@@ -107,7 +107,7 @@ if (isset($_COOKIE["uid"]) && is_numeric($_COOKIE["uid"]) && $users) {
     $c = $REL_DB->query("SELECT enabled FROM users WHERE id = $cid ORDER BY id DESC LIMIT 1");
     $co = @mysql_fetch_row($c);
     if (!$co[0]) {
-        $REL_DB->query("UPDATE users SET ip = '$ip', last_access = " . time() . " WHERE id = $cid");
+        $REL_DB->query("UPDATE users SET ip = '$ip', last_access = " . TIME . " WHERE id = $cid");
         bark($REL_LANG->_('Sorry, but looks like you already registered long time ago. Please <a href="javascript:history.go(-1);">try again</a>.'));
     } else
         bark($REL_LANG->_('Sorry, but looks like you already registered long time ago. Please <a href="javascript:history.go(-1);">try again</a>.'));
@@ -125,8 +125,8 @@ else
 
 $classes = init_class_array();
 
-$stylesheet = $REL_DB->query_row("SELECT id FROM stylesheets WHERE uri=".$REL_DB->sqlesc($REL_CONFIG['default_theme']));
-if (!$stylesheet) $REL_TPL->stderr($REL_LANG->_('Error'),$REL_LANG->_('Invalid default stylesheet defined'));
+$stylesheet = $REL_DB->query_row("SELECT id FROM stylesheets WHERE uri=" . $REL_DB->sqlesc($REL_CONFIG['default_theme']));
+if (!$stylesheet) $REL_TPL->stderr($REL_LANG->_('Error'), $REL_LANG->_('Invalid default stylesheet defined'));
 $ret = $REL_DB->query("INSERT INTO users (username, passhash, secret, stylesheet, editsecret, notifs, emailnotifs, email, confirmed, class, added, last_login, last_access, language, timezone, invitedby, invitedroot,custom_privileges) VALUES (" .
     implode(",", array_map("sqlesc", array($wantusername, $wantpasshash, $secret, $stylesheet['id'], $editsecret, $REL_CONFIG['default_notifs'], $REL_CONFIG['default_emailnotifs'], strtolower($email), $status))) .
     ", " . (!$users ? $classes['sysop'] : $classes['reg']) . "," . $time . "," . $time . "," . $time . ", '" . getlang() . "', {$REL_CONFIG['register_timezone']} , " . (int)$inviter . ", " . (int)$invitedroot . ",'" . (!$users ? 'all' : '') . "')");
@@ -141,7 +141,7 @@ if (!$ret) {
 $id = mysql_insert_id();
 
 $CURUSER = get_user($id);
-$CURUSER['custom_privileges'] = explode(',',$CURUSER['custom_privileges']);
+$CURUSER['custom_privileges'] = explode(',', $CURUSER['custom_privileges']);
 
 $REL_DB->query("INSERT INTO xbt_users (uid) VALUES ($id)");
 

@@ -57,7 +57,7 @@ function show_blocks($position)
             continue;
         if ($block['view'] && !in_array(get_user_class(), explode(',', $block['view'])))
             continue;
-        if ($block['expire'] && time() > $block['expire']) continue;
+        if ($block['expire'] && TIME > $block['expire']) continue;
         if ($block ["which"]) {
             $which = explode(",", $block ["which"]);
             $module_name = str_replace(".php", "", basename($_SERVER ["PHP_SELF"]));

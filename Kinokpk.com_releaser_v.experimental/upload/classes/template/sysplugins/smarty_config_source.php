@@ -21,7 +21,8 @@ if (!defined('IN_TRACKER'))
  * @property int    $timestamp
  * @property bool   $exists
  */
-class Smarty_Config_Source extends Smarty_Template_Source {
+class Smarty_Config_Source extends Smarty_Template_Source
+{
 
     /**
      * create Config Object container

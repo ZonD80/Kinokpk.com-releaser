@@ -22,15 +22,16 @@ define("NO_WYSIWYG", true);
 
 function prepare_data($arr)
 {
+    global $REL_DB;
     $stripped = array('title', 'blockfile', 'which', 'custom_tpl');
     $intval = array('weight');
-    foreach ($stripped as $k) $arr[$k] = sqlesc(trim(htmlspecialchars((string)$arr[$k])));
+    foreach ($stripped as $k) $arr[$k] = $REL_DB->sqlesc(trim(htmlspecialchars((string)$arr[$k])));
     $arr['expire'] = (int)strtotime((string)$arr['expire']);
-    $arr['content'] = sqlesc((string)$arr['content']);
+    $arr['content'] = $REL_DB->sqlesc((string)$arr['content']);
     foreach ($intval as $k) $arr[$k] = (int)$arr[$k];
-    $arr['view'] = sqlesc(implode(',', (array)$arr['view']));
+    $arr['view'] = $REL_DB->sqlesc(implode(',', (array)$arr['view']));
     $arr['active'] = ($arr['active'] ? 1 : 0);
-    $arr['bposition'] = sqlesc(substr((string)$arr['bposition'], 0, 1));
+    $arr['bposition'] = $REL_DB->sqlesc(substr((string)$arr['bposition'], 0, 1));
     return $arr;
 }
 

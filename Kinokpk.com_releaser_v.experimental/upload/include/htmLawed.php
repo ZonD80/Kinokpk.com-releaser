@@ -125,7 +125,7 @@ function htmLawed($t, $C = 1, $S = array())
         $t = $C['hook']($t, $C, $S);
     }
     if ($C['show_setting'] && preg_match('`^[a-z][a-z0-9_]*$`i', $C['show_setting'])) {
-        $GLOBALS[$C['show_setting']] = array('config' => $C, 'spec' => $S, 'time' => microtime());
+        $GLOBALS[$C['show_setting']] = array('config' => $C, 'spec' => $S, 'time' => microTIME);
     }
 // main
     $t = preg_replace_callback('`<(?:(?:\s|$)|(?:[^>]*(?:>|$)))|>`m', 'hl_tag', $t);

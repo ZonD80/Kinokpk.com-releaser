@@ -22,7 +22,8 @@ include ("smarty_internal_parsetree.php");
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_SmartyTemplateCompiler extends Smarty_Internal_TemplateCompilerBase {
+class Smarty_Internal_SmartyTemplateCompiler extends Smarty_Internal_TemplateCompilerBase
+{
 
     /**
      * Lexer class name

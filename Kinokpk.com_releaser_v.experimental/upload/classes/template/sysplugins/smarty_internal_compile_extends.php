@@ -3,51 +3,52 @@ if (!defined('IN_TRACKER'))
     die ('Direct access to this file not allowed');
 
 /**
-* Smarty Internal Plugin Compile extend
-*
-* Compiles the {extends} tag
-*
-* @package Smarty
-* @subpackage Compiler
-* @author Uwe Tews
-*/
+ * Smarty Internal Plugin Compile extend
+ *
+ * Compiles the {extends} tag
+ *
+ * @package Smarty
+ * @subpackage Compiler
+ * @author Uwe Tews
+ */
 
 /**
-* Smarty Internal Plugin Compile extend Class
-*
-* @package Smarty
-* @subpackage Compiler
-*/
-class Smarty_Internal_Compile_Extends extends Smarty_Internal_CompileBase {
+ * Smarty Internal Plugin Compile extend Class
+ *
+ * @package Smarty
+ * @subpackage Compiler
+ */
+class Smarty_Internal_Compile_Extends extends Smarty_Internal_CompileBase
+{
 
     /**
-    * Attribute definition: Overwrites base class.
-    *
-    * @var array
-    * @see Smarty_Internal_CompileBase
-    */
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
     public $required_attributes = array('file');
     /**
-    * Attribute definition: Overwrites base class.
-    *
-    * @var array
-    * @see Smarty_Internal_CompileBase
-    */
+     * Attribute definition: Overwrites base class.
+     *
+     * @var array
+     * @see Smarty_Internal_CompileBase
+     */
     public $shorttag_order = array('file');
     /**
-    * mbstring.overload flag
-    *
-    * @var int
-    */
+     * mbstring.overload flag
+     *
+     * @var int
+     */
     public $mbstring_overload = 0;
 
     /**
-    * Compiles code for the {extends} tag
-    *
-    * @param array  $args     array with attributes from parser
-    * @param object $compiler compiler object
-    * @return string compiled code
-    */
+     * Compiles code for the {extends} tag
+     *
+     * @param array  $args     array with attributes from parser
+     * @param object $compiler compiler object
+     * @return string compiled code
+     */
     public function compile($args, $compiler)
     {
         static $_is_stringy = array('string' => true, 'eval' => true);
@@ -81,22 +82,23 @@ class Smarty_Internal_Compile_Extends extends Smarty_Internal_CompileBase {
         $compiler->template->properties['file_dependency'][$template_sha1] = array($_template->source->filepath, $_template->source->timestamp, $_template->source->type);
         $_content = ($this->mbstring_overload ? mb_substr($compiler->template->source->content, $compiler->lex->counter - 1, 20000000, 'latin1') : substr($compiler->template->source->content, $compiler->lex->counter - 1));
         if (preg_match_all("!({$this->_ldl}block\s(.+?){$this->_rdl})!", $_content, $s) !=
-        preg_match_all("!({$this->_ldl}/block{$this->_rdl})!", $_content, $c)) {
+            preg_match_all("!({$this->_ldl}/block{$this->_rdl})!", $_content, $c)
+        ) {
             $compiler->trigger_template_error('unmatched {block} {/block} pairs');
         }
         preg_match_all("!{$this->_ldl}block\s(.+?){$this->_rdl}|{$this->_ldl}/block{$this->_rdl}|{$this->_ldl}\*([\S\s]*?)\*{$this->_rdl}!", $_content, $_result, PREG_OFFSET_CAPTURE);
         $_result_count = count($_result[0]);
         $_start = 0;
-        while ($_start+1 < $_result_count) {
+        while ($_start + 1 < $_result_count) {
             $_end = 0;
             $_level = 1;
-            if (($this->mbstring_overload ? mb_substr($_result[0][$_start][0],0,mb_strlen($compiler->smarty->left_delimiter,'latin1')+1, 'latin1') : substr($_result[0][$_start][0],0,strlen($compiler->smarty->left_delimiter)+1)) == $compiler->smarty->left_delimiter.'*') {
+            if (($this->mbstring_overload ? mb_substr($_result[0][$_start][0], 0, mb_strlen($compiler->smarty->left_delimiter, 'latin1') + 1, 'latin1') : substr($_result[0][$_start][0], 0, strlen($compiler->smarty->left_delimiter) + 1)) == $compiler->smarty->left_delimiter . '*') {
                 $_start++;
                 continue;
             }
             while ($_level != 0) {
                 $_end++;
-                if (($this->mbstring_overload ? mb_substr($_result[0][$_start + $_end][0],0,mb_strlen($compiler->smarty->left_delimiter,'latin1')+1, 'latin1') : substr($_result[0][$_start + $_end][0],0,strlen($compiler->smarty->left_delimiter)+1)) == $compiler->smarty->left_delimiter.'*') {
+                if (($this->mbstring_overload ? mb_substr($_result[0][$_start + $_end][0], 0, mb_strlen($compiler->smarty->left_delimiter, 'latin1') + 1, 'latin1') : substr($_result[0][$_start + $_end][0], 0, strlen($compiler->smarty->left_delimiter) + 1)) == $compiler->smarty->left_delimiter . '*') {
                     continue;
                 }
                 if (!strpos($_result[0][$_start + $_end][0], '/')) {
@@ -106,7 +108,7 @@ class Smarty_Internal_Compile_Extends extends Smarty_Internal_CompileBase {
                 }
             }
             $_block_content = str_replace($compiler->smarty->left_delimiter . '$smarty.block.parent' . $compiler->smarty->right_delimiter, '%%%%SMARTY_PARENT%%%%',
-            ($this->mbstring_overload ? mb_substr($_content, $_result[0][$_start][1] + mb_strlen($_result[0][$_start][0], 'latin1'), $_result[0][$_start + $_end][1] - $_result[0][$_start][1] - + mb_strlen($_result[0][$_start][0], 'latin1'), 'latin1') : substr($_content, $_result[0][$_start][1] + strlen($_result[0][$_start][0]), $_result[0][$_start + $_end][1] - $_result[0][$_start][1] - + strlen($_result[0][$_start][0]))));
+                ($this->mbstring_overload ? mb_substr($_content, $_result[0][$_start][1] + mb_strlen($_result[0][$_start][0], 'latin1'), $_result[0][$_start + $_end][1] - $_result[0][$_start][1] - +mb_strlen($_result[0][$_start][0], 'latin1'), 'latin1') : substr($_content, $_result[0][$_start][1] + strlen($_result[0][$_start][0]), $_result[0][$_start + $_end][1] - $_result[0][$_start][1] - +strlen($_result[0][$_start][0]))));
             Smarty_Internal_Compile_Block::saveBlockData($_block_content, $_result[0][$_start][0], $compiler->template, $filepath);
             $_start = $_start + $_end + 1;
         }

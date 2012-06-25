@@ -146,8 +146,8 @@ elseif ($user ["gender"] == "3")
 
 ///////////////// BIRTHDAY MOD /////////////////////
 if ($user [birthday] != "0000-00-00") {
-    //$current = date("Y-m-d", time());
-    $current = date("Y-m-d", time() + $CURUSER ['tzoffset'] * 60);
+    //$current = date("Y-m-d", TIME);
+    $current = date("Y-m-d", TIME + $CURUSER ['tzoffset'] * 60);
     list ($year2, $month2, $day2) = explode('-', $current);
     $birthday = $user ["birthday"];
     $birthday = date("Y-m-d", strtotime($birthday));

@@ -130,7 +130,7 @@ elseif ($a == 'saveadd') {
     $array = process_values();
     $array = array_map("sqlesc", $array);
 
-    $REL_DB->query("INSERT INTO relgroups (" . implode(',', $fields) . ",added) VALUES (" . implode(',', $array) . "," . time() . ")"); //;
+    $REL_DB->query("INSERT INTO relgroups (" . implode(',', $fields) . ",added) VALUES (" . implode(',', $array) . "," . TIME . ")"); //;
     if (mysql_errno()) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('group_error') . $REL_LANG->say_by_key('to_rgadmin'));
     else {
         $id = mysql_insert_id();

@@ -16,7 +16,7 @@ $REL_TPL->stdhead($REL_LANG->_('Site staff'));
 $REL_TPL->begin_main_frame();
 
 // Get current datetime
-$dt = time() - 300;
+$dt = TIME - 300;
 $classes = init_class_array();
 $level = get_class_priority($classes['staffbegin']);
 foreach ($classes as $cid => $class) {

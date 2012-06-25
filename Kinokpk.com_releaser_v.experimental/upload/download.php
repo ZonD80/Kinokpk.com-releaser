@@ -25,12 +25,12 @@ if ($action == 'my') {
 
     require_once(ROOT_PATH . "classes/zip/Zip.php");
     if (mb_strlen($CURUSER['passkey']) != 32) {
-        $CURUSER['passkey'] = md5($CURUSER['username'] . time() . $CURUSER['passhash']);
+        $CURUSER['passkey'] = md5($CURUSER['username'] . TIME . $CURUSER['passhash']);
         $REL_DB->query("UPDATE xbt_users SET torrent_pass=" . sqlesc($CURUSER[passkey]) . " WHERE uid=" . sqlesc($CURUSER[id]));
     }
     $fileTime = date("D, d M Y H:i:s T");
     $zip = new Zip();
-    $zip->setComment($REL_LANG->_("Your downloaded torrents on %s", mkprettytime(time())));
+    $zip->setComment($REL_LANG->_("Your downloaded torrents on %s", mkprettytime(TIME)));
     $retrackers = get_retrackers();
 
     $xbt_config_sql = $REL_DB->query("SELECT name,value FROM xbt_config WHERE name IN ('listen_ipa','listen_port','auto_register')");
@@ -104,7 +104,7 @@ $already_downloaded = @mysql_result($REL_DB->query("SELECT 1 FROM snatched WHERE
 
 $classes = init_class_array();
 
-$rating_enabled = (($REL_CRON['rating_enabled'] && ((time() - $CURUSER['added']) > ($REL_CRON['rating_freetime'] * 86400)) && ($row['userid'] <> $CURUSER['id']) && ($CURUSER['class'] != $classes['vip']) && !$userfree && !$row['free'] && !$already_downloaded) ? true : false);
+$rating_enabled = (($REL_CRON['rating_enabled'] && ((TIME - $CURUSER['added']) > ($REL_CRON['rating_freetime'] * 86400)) && ($row['userid'] <> $CURUSER['id']) && ($CURUSER['class'] != $classes['vip']) && !$userfree && !$row['free'] && !$already_downloaded) ? true : false);
 
 
 if ($rating_enabled && ($CURUSER['ratingsum'] < $REL_CRON['rating_downlimit'])) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('rating_low'));
@@ -134,7 +134,7 @@ if (!$magnet && !$dc_magnet) {
 $REL_DB->query("UPDATE torrents SET hits = hits + 1 WHERE id = " . sqlesc($id));
 if ($rating_enabled) $REL_DB->query("UPDATE users SET ratingsum = ratingsum-{$REL_CRON['rating_perdownload']} WHERE id={$CURUSER['id']}");
 
-$REL_DB->query("INSERT INTO snatched (userid,torrent,completedat) VALUES ({$CURUSER['id']},$id," . time() . ")");
+$REL_DB->query("INSERT INTO snatched (userid,torrent,completedat) VALUES ({$CURUSER['id']},$id," . TIME . ")");
 
 if ($dc_magnet) {
     if (!$row['tiger_hash']) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('no_tiger'));
@@ -146,7 +146,7 @@ if ($dc_magnet) {
 }
 
 if (mb_strlen($CURUSER['passkey']) != 32) {
-    $CURUSER['passkey'] = md5($CURUSER['username'] . time() . $CURUSER['passhash']);
+    $CURUSER['passkey'] = md5($CURUSER['username'] . TIME . $CURUSER['passhash']);
     $REL_DB->query("UPDATE xbt_users SET torrent_pass=" . sqlesc($CURUSER[passkey]) . " WHERE uid=" . sqlesc($CURUSER[id]));
 }
 

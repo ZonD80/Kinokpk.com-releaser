@@ -15,7 +15,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage PluginsInternal
  */
-class Smarty_Internal_Function_Call_Handler {
+class Smarty_Internal_Function_Call_Handler
+{
 
     /**
      * This function handles calls to template functions defined by {function}
@@ -41,7 +42,7 @@ class Smarty_Internal_Function_Call_Handler {
     foreach (\$params as \$key => \$value) {\$_smarty_tpl->tpl_vars[\$key] = new Smarty_variable(\$value);}?>";
             if ($_nocache) {
                 $_code .= preg_replace(array("!<\?php echo \\'/\*%%SmartyNocache:{$_template->smarty->template_functions[$_name]['nocache_hash']}%%\*/|/\*/%%SmartyNocache:{$_template->smarty->template_functions[$_name]['nocache_hash']}%%\*/\\';\?>!",
-                        "!\\\'!"), array('', "'"), $_template->smarty->template_functions[$_name]['compiled']);
+                    "!\\\'!"), array('', "'"), $_template->smarty->template_functions[$_name]['compiled']);
                 $_template->smarty->template_functions[$_name]['called_nocache'] = true;
             } else {
                 $_code .= preg_replace("/{$_template->smarty->template_functions[$_name]['nocache_hash']}/", $_template->properties['nocache_hash'], $_template->smarty->template_functions[$_name]['compiled']);

@@ -19,7 +19,8 @@ if (!defined('IN_TRACKER'))
  * @subpackage TemplateResources
  * @deprecated
  */
-class Smarty_Internal_Resource_Registered extends Smarty_Resource {
+class Smarty_Internal_Resource_Registered extends Smarty_Resource
+{
 
     /**
      * populate Source Object with meta data from Resource
@@ -28,7 +29,7 @@ class Smarty_Internal_Resource_Registered extends Smarty_Resource {
      * @param Smarty_Internal_Template $_template template object
      * @return void
      */
-    public function populate(Smarty_Template_Source $source, Smarty_Internal_Template $_template=null)
+    public function populate(Smarty_Template_Source $source, Smarty_Internal_Template $_template = null)
     {
         $source->filepath = $source->type . ':' . $source->name;
         $source->uid = sha1($source->filepath);
@@ -61,7 +62,7 @@ class Smarty_Internal_Resource_Registered extends Smarty_Resource {
         // return timestamp
         $time_stamp = false;
         call_user_func_array($source->smarty->registered_resources[$source->type][0][1], array($source->name, &$time_stamp, $source->smarty));
-        return is_numeric($time_stamp) ? (int) $time_stamp : $time_stamp;
+        return is_numeric($time_stamp) ? (int)$time_stamp : $time_stamp;
     }
 
     /**

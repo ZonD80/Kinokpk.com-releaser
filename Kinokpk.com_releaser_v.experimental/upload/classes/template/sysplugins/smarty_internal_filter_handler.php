@@ -17,7 +17,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage PluginsInternal
  */
-class Smarty_Internal_Filter_Handler {
+class Smarty_Internal_Filter_Handler
+{
 
     /**
      * Run filters over content

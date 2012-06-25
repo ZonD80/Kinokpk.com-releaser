@@ -17,7 +17,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Append extends Smarty_Internal_Compile_Assign {
+class Smarty_Internal_Compile_Append extends Smarty_Internal_Compile_Assign
+{
 
     /**
      * Compiles code for the {append} tag

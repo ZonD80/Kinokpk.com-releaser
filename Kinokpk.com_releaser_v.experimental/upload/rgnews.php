@@ -61,7 +61,7 @@ if ($action == 'delete') {
 
     $added = $_POST["added"];
     if (!$added)
-        $added = sqlesc(time());
+        $added = sqlesc(TIME);
 
     $REL_DB->query("INSERT INTO rgnews (relgroup, added, body, subject) VALUES (" .
         $id . ", $added, " . sqlesc($body) . ", " . sqlesc($subject) . ")");
@@ -98,7 +98,7 @@ elseif ($action == 'edit') {
 
         $subject = sqlesc($subject);
 
-        $editedat = time();
+        $editedat = TIME;
 
         $REL_DB->query("UPDATE rgnews SET body=$body, subject=$subject WHERE id=$rgnewsid");
 

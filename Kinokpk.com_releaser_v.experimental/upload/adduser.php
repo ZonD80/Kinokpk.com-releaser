@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $passhash = sqlesc(md5($secret . $password . $secret));
     $secret = sqlesc($secret);
     $classes = init_class_array();
-    $REL_DB->query("INSERT INTO users (class, added, last_access, secret, username, passhash, notifs, emailnotifs, confirmed, email) VALUES({$classes['reg']}," . time() . ", " . time() . ", $secret, " . sqlesc($username) . ", $passhash, '{$REL_CONFIG['default_notifs']}', '{$REL_CONFIG['default_emailnotifs']}', 1, $email)");
+    $REL_DB->query("INSERT INTO users (class, added, last_access, secret, username, passhash, notifs, emailnotifs, confirmed, email) VALUES({$classes['reg']}," . TIME . ", " . TIME . ", $secret, " . sqlesc($username) . ", $passhash, '{$REL_CONFIG['default_notifs']}', '{$REL_CONFIG['default_emailnotifs']}', 1, $email)");
     if (mysql_errno() == 1062)
         $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('unable_to_create_account'));
     $id = mysql_insert_id();

@@ -50,7 +50,7 @@ if (!$myself) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by
 $voted = @mysql_result($REL_DB->query("SELECT id FROM ratings WHERE userid={$CURUSER['id']} AND rid=$rid AND type='$type'"), 0);
 
 if (!$voted) {
-    $REL_DB->query("INSERT INTO ratings (rid,userid,type,added) VALUES ($rid,{$CURUSER['id']},'$type'," . time() . ")");
+    $REL_DB->query("INSERT INTO ratings (rid,userid,type,added) VALUES ($rid,{$CURUSER['id']},'$type'," . TIME . ")");
     $REL_DB->query("UPDATE " . (in_array($type, $comment_types) ? "comments" : $type) . " SET ratingsum=ratingsum$act WHERE id=$rid");
     if (in_array($type, $comment_types))
         $REL_DB->query("UPDATE users SET ratingsum=ratingsum$act WHERE id=(SELECT user FROM comments WHERE id=$rid)");

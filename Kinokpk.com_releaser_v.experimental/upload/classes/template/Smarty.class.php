@@ -94,19 +94,20 @@ if (SMARTY_SPL_AUTOLOAD && set_include_path(get_include_path() . PATH_SEPARATOR 
 /**
  * Load always needed external class files
  */
-include_once SMARTY_SYSPLUGINS_DIR.'smarty_internal_data.php';
-include_once SMARTY_SYSPLUGINS_DIR.'smarty_internal_templatebase.php';
-include_once SMARTY_SYSPLUGINS_DIR.'smarty_internal_template.php';
-include_once SMARTY_SYSPLUGINS_DIR.'smarty_resource.php';
-include_once SMARTY_SYSPLUGINS_DIR.'smarty_internal_resource_file.php';
-include_once SMARTY_SYSPLUGINS_DIR.'smarty_cacheresource.php';
-include_once SMARTY_SYSPLUGINS_DIR.'smarty_internal_cacheresource_file.php';
+include_once SMARTY_SYSPLUGINS_DIR . 'smarty_internal_data.php';
+include_once SMARTY_SYSPLUGINS_DIR . 'smarty_internal_templatebase.php';
+include_once SMARTY_SYSPLUGINS_DIR . 'smarty_internal_template.php';
+include_once SMARTY_SYSPLUGINS_DIR . 'smarty_resource.php';
+include_once SMARTY_SYSPLUGINS_DIR . 'smarty_internal_resource_file.php';
+include_once SMARTY_SYSPLUGINS_DIR . 'smarty_cacheresource.php';
+include_once SMARTY_SYSPLUGINS_DIR . 'smarty_internal_cacheresource_file.php';
 
 /**
  * This is the main Smarty class
  * @package Smarty
  */
-class Smarty extends Smarty_Internal_TemplateBase {
+class Smarty extends Smarty_Internal_TemplateBase
+{
 
     /**#@+
      * constant definitions
@@ -191,12 +192,12 @@ class Smarty extends Smarty_Internal_TemplateBase {
      * Flag denoting if PCRE should run in UTF-8 mode
      */
     public static $_UTF8_MODIFIER = 'u';
-    
+
     /**
      * Flag denoting if operating system is windows
      */
     public static $_IS_WINDOWS = false;
-    
+
     /**#@+
      * variables
      */
@@ -603,6 +604,7 @@ class Smarty extends Smarty_Internal_TemplateBase {
      * @var array
      */
     public $merged_templates_func = array();
+
     /**#@-*/
 
     /**
@@ -660,17 +662,17 @@ class Smarty extends Smarty_Internal_TemplateBase {
     public function __get($name)
     {
         $allowed = array(
-        'template_dir' => 'getTemplateDir',
-        'config_dir' => 'getConfigDir',
-        'plugins_dir' => 'getPluginsDir',
-        'compile_dir' => 'getCompileDir',
-        'cache_dir' => 'getCacheDir',
+            'template_dir' => 'getTemplateDir',
+            'config_dir' => 'getConfigDir',
+            'plugins_dir' => 'getPluginsDir',
+            'compile_dir' => 'getCompileDir',
+            'cache_dir' => 'getCacheDir',
         );
 
         if (isset($allowed[$name])) {
             return $this->{$allowed[$name]}();
         } else {
-            trigger_error('Undefined property: '. get_class($this) .'::$'. $name, E_USER_NOTICE);
+            trigger_error('Undefined property: ' . get_class($this) . '::$' . $name, E_USER_NOTICE);
         }
     }
 
@@ -686,11 +688,11 @@ class Smarty extends Smarty_Internal_TemplateBase {
     public function __set($name, $value)
     {
         $allowed = array(
-        'template_dir' => 'setTemplateDir',
-        'config_dir' => 'setConfigDir',
-        'plugins_dir' => 'setPluginsDir',
-        'compile_dir' => 'setCompileDir',
-        'cache_dir' => 'setCacheDir',
+            'template_dir' => 'setTemplateDir',
+            'config_dir' => 'setConfigDir',
+            'plugins_dir' => 'setPluginsDir',
+            'compile_dir' => 'setCompileDir',
+            'cache_dir' => 'setCacheDir',
         );
 
         if (isset($allowed[$name])) {
@@ -823,7 +825,7 @@ class Smarty extends Smarty_Internal_TemplateBase {
     public function setTemplateDir($template_dir)
     {
         $this->template_dir = array();
-        foreach ((array) $template_dir as $k => $v) {
+        foreach ((array)$template_dir as $k => $v) {
             $this->template_dir[$k] = rtrim($v, '/\\') . DS;
         }
 
@@ -839,10 +841,10 @@ class Smarty extends Smarty_Internal_TemplateBase {
      * @return Smarty current Smarty instance for chaining
      * @throws SmartyException when the given template directory is not valid
      */
-    public function addTemplateDir($template_dir, $key=null)
+    public function addTemplateDir($template_dir, $key = null)
     {
         // make sure we're dealing with an array
-        $this->template_dir = (array) $this->template_dir;
+        $this->template_dir = (array)$this->template_dir;
 
         if (is_array($template_dir)) {
             foreach ($template_dir as $k => $v) {
@@ -871,7 +873,7 @@ class Smarty extends Smarty_Internal_TemplateBase {
      * @param mixed index of directory to get, null to get all
      * @return array|string list of template directories, or directory of $index
      */
-    public function getTemplateDir($index=null)
+    public function getTemplateDir($index = null)
     {
         if ($index !== null) {
             return isset($this->template_dir[$index]) ? $this->template_dir[$index] : null;
@@ -889,7 +891,7 @@ class Smarty extends Smarty_Internal_TemplateBase {
     public function setConfigDir($config_dir)
     {
         $this->config_dir = array();
-        foreach ((array) $config_dir as $k => $v) {
+        foreach ((array)$config_dir as $k => $v) {
             $this->config_dir[$k] = rtrim($v, '/\\') . DS;
         }
 
@@ -904,10 +906,10 @@ class Smarty extends Smarty_Internal_TemplateBase {
      * @param string key of the array element to assign the config dir to
      * @return Smarty current Smarty instance for chaining
      */
-    public function addConfigDir($config_dir, $key=null)
+    public function addConfigDir($config_dir, $key = null)
     {
         // make sure we're dealing with an array
-        $this->config_dir = (array) $this->config_dir;
+        $this->config_dir = (array)$this->config_dir;
 
         if (is_array($config_dir)) {
             foreach ($config_dir as $k => $v) {
@@ -919,7 +921,7 @@ class Smarty extends Smarty_Internal_TemplateBase {
                     $this->config_dir[$k] = rtrim($v, '/\\') . DS;
                 }
             }
-        } elseif( $key !== null ) {
+        } elseif ($key !== null) {
             // override directory at specified index
             $this->config_dir[$key] = rtrim($config_dir, '/\\') . DS;
         } else {
@@ -937,7 +939,7 @@ class Smarty extends Smarty_Internal_TemplateBase {
      * @param mixed index of directory to get, null to get all
      * @return array|string configuration directory
      */
-    public function getConfigDir($index=null)
+    public function getConfigDir($index = null)
     {
         if ($index !== null) {
             return isset($this->config_dir[$index]) ? $this->config_dir[$index] : null;
@@ -972,7 +974,7 @@ class Smarty extends Smarty_Internal_TemplateBase {
     public function addPluginsDir($plugins_dir)
     {
         // make sure we're dealing with an array
-        $this->plugins_dir = (array) $this->plugins_dir;
+        $this->plugins_dir = (array)$this->plugins_dir;
 
         if (is_array($plugins_dir)) {
             foreach ($plugins_dir as $k => $v) {
@@ -1061,7 +1063,7 @@ class Smarty extends Smarty_Internal_TemplateBase {
      */
     public function setDefaultModifiers($modifiers)
     {
-        $this->default_modifiers = (array) $modifiers;
+        $this->default_modifiers = (array)$modifiers;
         return $this;
     }
 
@@ -1100,12 +1102,12 @@ class Smarty extends Smarty_Internal_TemplateBase {
      * @param string $type "pre", "output", … specify the filter type to set. Defaults to none treating $filters' keys as the appropriate types
      * @return Smarty current Smarty instance for chaining
      */
-    public function setAutoloadFilters($filters, $type=null)
+    public function setAutoloadFilters($filters, $type = null)
     {
         if ($type !== null) {
-            $this->autoload_filters[$type] = (array) $filters;
+            $this->autoload_filters[$type] = (array)$filters;
         } else {
-            $this->autoload_filters = (array) $filters;
+            $this->autoload_filters = (array)$filters;
         }
 
         return $this;
@@ -1118,20 +1120,20 @@ class Smarty extends Smarty_Internal_TemplateBase {
      * @param string $type "pre", "output", … specify the filter type to set. Defaults to none treating $filters' keys as the appropriate types
      * @return Smarty current Smarty instance for chaining
      */
-    public function addAutoloadFilters($filters, $type=null)
+    public function addAutoloadFilters($filters, $type = null)
     {
         if ($type !== null) {
             if (!empty($this->autoload_filters[$type])) {
-                $this->autoload_filters[$type] = array_merge($this->autoload_filters[$type], (array) $filters);
+                $this->autoload_filters[$type] = array_merge($this->autoload_filters[$type], (array)$filters);
             } else {
-                $this->autoload_filters[$type] = (array) $filters;
+                $this->autoload_filters[$type] = (array)$filters;
             }
         } else {
-            foreach ((array) $filters as $key => $value) {
+            foreach ((array)$filters as $key => $value) {
                 if (!empty($this->autoload_filters[$key])) {
-                    $this->autoload_filters[$key] = array_merge($this->autoload_filters[$key], (array) $value);
+                    $this->autoload_filters[$key] = array_merge($this->autoload_filters[$key], (array)$value);
                 } else {
-                    $this->autoload_filters[$key] = (array) $value;
+                    $this->autoload_filters[$key] = (array)$value;
                 }
             }
         }
@@ -1145,7 +1147,7 @@ class Smarty extends Smarty_Internal_TemplateBase {
      * @param string $type type of filter to get autoloads for. Defaults to all autoload filters
      * @return array array( 'type1' => array( 'filter1', 'filter2', … ) ) or array( 'filter1', 'filter2', …) if $type was specified
      */
-    public function getAutoloadFilters($type=null)
+    public function getAutoloadFilters($type = null)
     {
         if ($type !== null) {
             return isset($this->autoload_filters[$type]) ? $this->autoload_filters[$type] : array();
@@ -1283,11 +1285,11 @@ class Smarty extends Smarty_Internal_TemplateBase {
         }
         // plugin filename is expected to be: [type].[name].php
         $_plugin_filename = "{$_name_parts[1]}.{$_name_parts[2]}.php";
-        
+
         $_stream_resolve_include_path = function_exists('stream_resolve_include_path');
 
         // loop through plugin dirs and find the plugin
-        foreach($this->getPluginsDir() as $_plugin_dir) {
+        foreach ($this->getPluginsDir() as $_plugin_dir) {
             $names = array(
                 $_plugin_dir . $_plugin_filename,
                 $_plugin_dir . strtolower($_plugin_filename),
@@ -1304,7 +1306,7 @@ class Smarty extends Smarty_Internal_TemplateBase {
                     } else {
                         $file = Smarty_Internal_Get_Include_Path::getIncludePath($file);
                     }
-                    
+
                     if ($file !== false) {
                         require_once($file);
                         return $file;
@@ -1375,7 +1377,7 @@ class Smarty extends Smarty_Internal_TemplateBase {
      * @param array $errors Array to write errors into, rather than outputting them
      * @return boolean true if setup is fine, false if something is wrong
      */
-    public function testInstall(&$errors=null)
+    public function testInstall(&$errors = null)
     {
         return Smarty_Internal_Utility::testInstall($this, $errors);
     }
@@ -1482,14 +1484,16 @@ if (Smarty::$_CHARSET !== 'UTF-8') {
  * Smarty exception class
  * @package Smarty
  */
-class SmartyException extends Exception {
+class SmartyException extends Exception
+{
 }
 
 /**
  * Smarty compiler exception class
  * @package Smarty
  */
-class SmartyCompilerException extends SmartyException  {
+class SmartyCompilerException extends SmartyException
+{
 }
 
 /**

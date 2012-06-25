@@ -35,7 +35,7 @@ if (isset($_GET['vote']) && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
 
     $pexprow = $REL_DB->query("SELECT exp FROM polls WHERE id=$pid");
     list($pexp) = mysql_fetch_array($pexprow);
-    if (!is_null($pexp) && ($pexp < time())) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Poll expired. You can not vote'));
+    if (!is_null($pexp) && ($pexp < TIME)) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('Poll expired. You can not vote'));
 
 
     $votedrow = $REL_DB->query("SELECT sid FROM polls_votes WHERE user=" . $CURUSER['id'] . " AND pid=$pid");
@@ -98,7 +98,7 @@ reset($sids);
 $REL_TPL->stdhead($REL_LANG->_('Poll details'));
 print '<div border="1" id="polls" style="width: 937px;">
 		<ul class="polls_title">
-			<li style="margin:0px;"><h1 style="margin:0px; text-align: center;">' . $REL_LANG->_('Poll') . ' № ' . $id . '	</h1><h4 style="margin-bottom: 10px;text-align:center;">' . $REL_LANG->_('Added') . ': ' . mkprettytime($pstart) . (!is_null($pexp) ? (($pexp > time()) ? ", {$REL_LANG->_('expires on')}: " . mkprettytime($pexp) : ", <font color=\"red\">{$REL_LANG->_('expired')}</font>: " . mkprettytime($pexp)) : '') . '</h4></li>
+			<li style="margin:0px;"><h1 style="margin:0px; text-align: center;">' . $REL_LANG->_('Poll') . ' № ' . $id . '	</h1><h4 style="margin-bottom: 10px;text-align:center;">' . $REL_LANG->_('Added') . ': ' . mkprettytime($pstart) . (!is_null($pexp) ? (($pexp > TIME) ? ", {$REL_LANG->_('expires on')}: " . mkprettytime($pexp) : ", <font color=\"red\">{$REL_LANG->_('expired')}</font>: " . mkprettytime($pexp)) : '') . '</h4></li>
 		</ul>
 		<ul class="polls_title_q">
 			<li align="center" class="colheadli" colspan="2"><h3 style="margin-top: 7px;margin-bottom:0;">' . $pquestion . '</h3>' . ((get_privilege('polls_operation', false)) ? " <span style=\"margin-left: 335px;\">[<a href=\"" . $REL_SEO->make_link('pollsadmin', 'action', 'add') . "\">{$REL_LANG->_('Create new')}</a>] [<a href=\"" . $REL_SEO->make_link('pollsadmin', 'action', 'edit', 'id', $id) . "\">{$REL_LANG->_('Edit')}</a>] [<a onClick=\"return confirm('{$REL_LANG->_('Are you sure?')}')\" href=\"" . $REL_SEO->make_link('pollsadmin', 'action', 'delete', 'id', $id) . "\">{$REL_LANG->_('Delete')}</a>]" : "<span>") . '</li>
@@ -155,16 +155,16 @@ foreach ($sidcount as $sidkey => $vsid) {
     // print("<ul><li class=\"polls_l_div\">");
     if ($vsid == $voted)
         print("<ul><dt class=\"polls_right\"><b>" . $sidvals[$sidkey] . " - {$REL_LANG->_('your vote')}</b>");
-    elseif (((!is_null($pexp) && ($pexp > time())) || is_null($pexp)) && !$voted) print "<form name=\"voteform\" method=\"post\" action=\"" . $REL_SEO->make_link('polloverview', 'vote', '', 'id', $id) . "\"><ul><dt class=\"polls_right\">
+    elseif (((!is_null($pexp) && ($pexp > TIME)) || is_null($pexp)) && !$voted) print "<form name=\"voteform\" method=\"post\" action=\"" . $REL_SEO->make_link('polloverview', 'vote', '', 'id', $id) . "\"><ul><dt class=\"polls_right\">
   <input type=\"radio\" name=\"vote\" value=\"$vsid\">
   <input type=\"hidden\" name=\"type\" value=\"$ptype\">" . $sidvals[$sidkey];
 
     else print"<ul><dt class=\"polls_right\">" . $sidvals[$sidkey];
     print"</dt><dt class=\"polls_left\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_left.gif\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar.gif\" height=\"12\" width=\"" . round($percentpervote * $votecount[$vsid]) . "%\"><img src=\"./themes/{$REL_CONFIG['ss_uri']}/images/bar_right.gif\">&nbsp;&nbsp;$percent%, {$REL_LANG->_('amount of votes')}:  " . $votecount[$vsid] . "<br />" . ((!$usercode[$vsid]) ? $REL_LANG->_('Poll is private or nobody voted yet') : $spbegin . $usercode[$vsid] . $spend) . "</dt></ul>";
 }
-if (((!is_null($pexp) && ($pexp > time())) || is_null($pexp)) && !$voted) $novote = true;
+if (((!is_null($pexp) && ($pexp > TIME)) || is_null($pexp)) && !$voted) $novote = true;
 if ($novote) print"<ul><li><input type=\"submit\" class=\"button\" value=\"{$REL_LANG->_('Vote for this variant')}!\" style=\"margin-top: 2px;\"/></li>";
-elseif (!is_null($pexp) && ($pexp < time())) print'<ul><li><span style="color:red;">' . $REL_LANG->_('Poll closed') . '</span></li>';
+elseif (!is_null($pexp) && ($pexp < TIME)) print'<ul><li><span style="color:red;">' . $REL_LANG->_('Poll closed') . '</span></li>';
 elseif ($voted) print'<ul><li><span style="color: red; float: left; padding-right: 5px;">' . $REL_LANG->_('You already voted here') . '</span></li>';
 print'<li align="center">' . $REL_LANG->_('Total votest') . ': ' . $tvotes . ', ' . $REL_LANG->_('Comments') . ': ' . $comments . ' [<a href="' . $REL_SEO->make_link('polloverview', 'id', $id) . '"><b>' . $REL_LANG->_('Details') . '</b></a>] [<a href="' . $REL_SEO->make_link('polloverview', 'id', $id) . '#comments"><b>' . $REL_LANG->_('Add new comment') . '</b></a>] [<a href="' . $REL_SEO->make_link('pollsarchive') . '"><b>' . $REL_LANG->_('Polls archive') . '</b></a>]</li></ul>' . ($novote ? '</form>' : '');
 

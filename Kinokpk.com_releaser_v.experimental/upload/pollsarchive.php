@@ -67,7 +67,7 @@ while (list($id) = mysql_fetch_array($pollsrow)) {
     sort($sids);
     reset($sids);
 
-    print('<tr><td><table width="100%" border="1"><tr><td>Опрос № ' . $id . '</td><td>Открыт: ' . mkprettytime($pstart) . (!is_null($pexp) ? (($pexp > time()) ? ", заканчивается: " . mkprettytime($pexp) : ", <font color=\"red\">закончен</font>: " . mkprettytime($pexp)) : '') . '</td></tr><tr><td align="center" class="colhead" colspan="2">' . $pquestion . '</b>' . ((get_privilege('polls_operation', false)) ? " [<a href=\"" . $REL_SEO->make_link('pollsadmin', 'action', 'edit', 'id', $id) . "\">Редактировать</a>][<a onClick=\"return confirm('Вы уверены?')\" href=\"" . $REL_SEO->make_link('pollsadmin', 'action', 'delete', 'id', $id) . "\">Удалить</a>]" : "") . '</td></tr>');
+    print('<tr><td><table width="100%" border="1"><tr><td>Опрос № ' . $id . '</td><td>Открыт: ' . mkprettytime($pstart) . (!is_null($pexp) ? (($pexp > TIME) ? ", заканчивается: " . mkprettytime($pexp) : ", <font color=\"red\">закончен</font>: " . mkprettytime($pexp)) : '') . '</td></tr><tr><td align="center" class="colhead" colspan="2">' . $pquestion . '</b>' . ((get_privilege('polls_operation', false)) ? " [<a href=\"" . $REL_SEO->make_link('pollsadmin', 'action', 'edit', 'id', $id) . "\">Редактировать</a>][<a onClick=\"return confirm('Вы уверены?')\" href=\"" . $REL_SEO->make_link('pollsadmin', 'action', 'delete', 'id', $id) . "\">Удалить</a>]" : "") . '</td></tr>');
 
     foreach ($sids as $sid)
         $votesres[$sid] = array();

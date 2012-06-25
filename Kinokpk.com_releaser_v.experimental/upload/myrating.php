@@ -48,7 +48,7 @@ else {
 
 
 if (isset($_GET['discount'])) {
-    $max_discount = ($CURUSER['downloaded']-$CURUSER['discount']);
+    $max_discount = ($CURUSER['downloaded'] - $CURUSER['discount']);
     if ($max_discount <= 0) {
         $REL_TPL->stderr($REL_LANG->_('Message'), $REL_LANG->_('You already reached discount limit. <a href="%s">Tell my why?</a>', $REL_SEO->make_link('aboutrating')), 'success');
     }
@@ -88,7 +88,7 @@ if ($REL_CRON['rating_enabled']) {
     $classes = init_class_array();
     if ($CURUSER['class'] == $classes['vip'])
         $goods = $REL_LANG->say_by_key('goods_vip');
-    elseif ((time() - $CURUSER['added']) < ($REL_CRON['rating_freetime'] * 86400)) $goods = sprintf($REL_LANG->say_by_key('goods_new'), ($REL_CRON['rating_freetime'] - round((time() - $CURUSER['added']) / 86400)));
+    elseif ((TIME - $CURUSER['added']) < ($REL_CRON['rating_freetime'] * 86400)) $goods = sprintf($REL_LANG->say_by_key('goods_new'), ($REL_CRON['rating_freetime'] - round((TIME - $CURUSER['added']) / 86400)));
     else $goods = $REL_LANG->say_by_key('no_goods');
 
     tr($REL_LANG->say_by_key('my_goods'), $goods, 1);

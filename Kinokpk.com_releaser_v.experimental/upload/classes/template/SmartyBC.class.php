@@ -41,7 +41,8 @@ require(dirname(__FILE__) . '/Smarty.class.php');
  *
  * @package Smarty
  */
-class SmartyBC extends Smarty {
+class SmartyBC extends Smarty
+{
 
     /**
      * Smarty 2 BC
@@ -54,7 +55,7 @@ class SmartyBC extends Smarty {
      *
      * @param array $options options to set during initialization, e.g. array( 'forceCompile' => false )
      */
-    public function __construct(array $options=array())
+    public function __construct(array $options = array())
     {
         parent::__construct($options);
         // register {php} tag
@@ -102,7 +103,7 @@ class SmartyBC extends Smarty {
      * @param bool   $cacheable
      * @param mixed  $cache_attrs
      */
-    public function register_function($function, $function_impl, $cacheable=true, $cache_attrs=null)
+    public function register_function($function, $function_impl, $cacheable = true, $cache_attrs = null)
     {
         $this->registerPlugin('function', $function, $function_impl, $cacheable, $cache_attrs);
     }
@@ -151,7 +152,7 @@ class SmartyBC extends Smarty {
      * @param bool   $cacheable
      * @param mixed  $cache_attrs
      */
-    public function register_block($block, $block_impl, $cacheable=true, $cache_attrs=null)
+    public function register_block($block, $block_impl, $cacheable = true, $cache_attrs = null)
     {
         $this->registerPlugin('block', $block, $block_impl, $cacheable, $cache_attrs);
     }
@@ -173,7 +174,7 @@ class SmartyBC extends Smarty {
      * @param string $function_impl name of PHP function to register
      * @param bool   $cacheable
      */
-    public function register_compiler_function($function, $function_impl, $cacheable=true)
+    public function register_compiler_function($function, $function_impl, $cacheable = true)
     {
         $this->registerPlugin('compiler', $function, $function_impl, $cacheable);
     }
@@ -382,7 +383,7 @@ class SmartyBC extends Smarty {
      * @param string $name
      * @return array
      */
-    public function get_template_vars($name=null)
+    public function get_template_vars($name = null)
     {
         return $this->getTemplateVars($name);
     }
@@ -393,7 +394,7 @@ class SmartyBC extends Smarty {
      * @param string $name
      * @return array
      */
-    public function get_config_vars($name=null)
+    public function get_config_vars($name = null)
     {
         return $this->getConfigVars($name);
     }

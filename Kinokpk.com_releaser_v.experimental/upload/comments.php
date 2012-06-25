@@ -38,7 +38,7 @@ if ($action == "add") {
         if (!$text)
             $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('comment_cant_be_empty'));
         // ANTISPAM AND ANTIFLOOD SYSTEM
-        $last_pmres = $REL_DB->query("SELECT " . time() . "-added AS seconds, text AS msg, id, toid FROM comments WHERE user=" . $CURUSER['id'] . " ORDER BY added DESC LIMIT 4");
+        $last_pmres = $REL_DB->query("SELECT " . TIME . "-added AS seconds, text AS msg, id, toid FROM comments WHERE user=" . $CURUSER['id'] . " ORDER BY added DESC LIMIT 4");
         while ($last_pmresrow = mysql_fetch_array($last_pmres)) {
             $last_pmrow[] = $last_pmresrow;
             $msgids[] = $last_pmresrow['id'];
@@ -60,15 +60,15 @@ if ($action == "add") {
                 $modcomment = mysql_result($modcomment, 0);
                 if (strpos($modcomment, "Maybe spammer in comments") === false) {
                     $reason = sqlesc($REL_LANG->_('User %s can be spammer because his last 5 comments are the same', make_user_link()) . " " . $msgview);
-                    $REL_DB->query("INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time() . ")");
-                    $modcomment .= "\n" . time() . " - Maybe spammer in comments";
+                    $REL_DB->query("INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . TIME . ")");
+                    $modcomment .= "\n" . TIME . " - Maybe spammer in comments";
                     $REL_DB->query("UPDATE users SET modcomment = " . sqlesc($modcomment) . " WHERE id =" . $CURUSER['id']);
 
                 } else {
                     $REL_DB->query("UPDATE users SET enabled=0, dis_reason='Spam in comments' WHERE id=" . $CURUSER['id']);
 
                     $reason = sqlesc($REL_LANG->_('User %s banned by system due spam. His IP address is %', make_user_link(), $CURUSER['ip']));
-                    $REL_DB->query("INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . time() . ")");
+                    $REL_DB->query("INSERT INTO reports (reportid,userid,type,motive,added) VALUES ({$CURUSER['id']},0,'users',$reason," . TIME . ")");
 
                     $REL_TPL->stderr($REL_LANG->_('Congratulations'), $REL_LANG->_('You are automatically banned due to spam in comments. You can report this issue to <a href="%s">Administrators</a>', $REL_SEO->make_link('contact')));
                 }
@@ -79,7 +79,7 @@ if ($action == "add") {
 
         // ANITSPAM SYSTEM END
         $REL_DB->query("INSERT INTO comments (user, toid, added, text, ip, type) VALUES (" .
-            $CURUSER["id"] . ",$to_id, '" . time() . "', " . sqlesc($text) .
+            $CURUSER["id"] . ",$to_id, '" . TIME . "', " . sqlesc($text) .
             "," . sqlesc(getip()) . ", '$type')");
 
         $newid = mysql_insert_id();
@@ -174,7 +174,7 @@ elseif ($action == "edit") {
 
         $text = sqlesc(($text));
 
-        $editedat = sqlesc(time());
+        $editedat = sqlesc(TIME);
 
         $REL_DB->query("UPDATE comments SET text=$text, editedat=$editedat, editedby=$CURUSER[id] WHERE id=$commentid");
         if (!REL_AJAX)

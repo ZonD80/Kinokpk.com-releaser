@@ -17,7 +17,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Continue extends Smarty_Internal_CompileBase {
+class Smarty_Internal_Compile_Continue extends Smarty_Internal_CompileBase
+{
 
     /**
      * Attribute definition: Overwrites base class.

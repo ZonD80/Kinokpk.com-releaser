@@ -40,7 +40,7 @@ if (!$check)
 
 $reason = sqlesc($motive);
 
-$REL_DB->query("INSERT INTO reports (reportid,userid,type,motive,added) VALUES ($id,{$CURUSER['id']},'$type',$reason," . time() . ")");
+$REL_DB->query("INSERT INTO reports (reportid,userid,type,motive,added) VALUES ($id,{$CURUSER['id']},'$type',$reason," . TIME . ")");
 $_SESSION['already_reported'][$type][$id] = $motive;
 if (mysql_errno() == 1062)
     $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('already_report'));

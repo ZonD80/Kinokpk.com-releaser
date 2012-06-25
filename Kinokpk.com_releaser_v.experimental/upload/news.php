@@ -50,7 +50,7 @@ if ($action == 'delete') {
     if (!$body)
         $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_('No text defined'));
 
-    $added = time();
+    $added = TIME;
 
     $REL_DB->query("INSERT INTO news (userid, added, body, image, subject) VALUES (" .
         $CURUSER['id'] . ", $added, " . sqlesc($body) . ", " . sqlesc($image) . ", " . sqlesc($subject) . ")");
@@ -86,7 +86,7 @@ elseif ($action == 'edit') {
         $image = sqlesc(htmlspecialchars($image));
         $subject = sqlesc($subject);
 
-        $editedat = sqlesc(time());
+        $editedat = sqlesc(TIME);
 
         $REL_DB->query("UPDATE news SET body=$body, image=$image, subject=$subject WHERE id=$newsid");
 

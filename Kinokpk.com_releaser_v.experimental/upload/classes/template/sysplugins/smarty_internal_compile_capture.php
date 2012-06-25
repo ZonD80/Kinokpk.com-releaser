@@ -17,7 +17,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_Capture extends Smarty_Internal_CompileBase {
+class Smarty_Internal_Compile_Capture extends Smarty_Internal_CompileBase
+{
 
     /**
      * Attribute definition: Overwrites base class.
@@ -66,7 +67,8 @@ class Smarty_Internal_Compile_Capture extends Smarty_Internal_CompileBase {
  * @package Smarty
  * @subpackage Compiler
  */
-class Smarty_Internal_Compile_CaptureClose extends Smarty_Internal_CompileBase {
+class Smarty_Internal_Compile_CaptureClose extends Smarty_Internal_CompileBase
+{
 
     /**
      * Compiles code for the {/capture} tag

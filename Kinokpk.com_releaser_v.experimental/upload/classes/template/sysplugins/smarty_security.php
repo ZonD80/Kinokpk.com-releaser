@@ -8,20 +8,21 @@ if (!defined('IN_TRACKER'))
  * @subpackage Security
  * @author Uwe Tews
  */
- 
+
 /*
- * FIXME: Smarty_Security API
- *      - getter and setter instead of public properties would allow cultivating an internal cache properly
- *      - current implementation of isTrustedResourceDir() assumes that Smarty::$template_dir and Smarty::$config_dir are immutable
- *        the cache is killed every time either of the variables change. That means that two distinct Smarty objects with differing
- *        $template_dir or $config_dir should NOT share the same Smarty_Security instance, 
- *        as this would lead to (severe) performance penalty! how should this be handled? 
- */
+* FIXME: Smarty_Security API
+*      - getter and setter instead of public properties would allow cultivating an internal cache properly
+*      - current implementation of isTrustedResourceDir() assumes that Smarty::$template_dir and Smarty::$config_dir are immutable
+*        the cache is killed every time either of the variables change. That means that two distinct Smarty objects with differing
+*        $template_dir or $config_dir should NOT share the same Smarty_Security instance,
+*        as this would lead to (severe) performance penalty! how should this be handled?
+*/
 
 /**
  * This class does contain the security settings
  */
-class Smarty_Security {
+class Smarty_Security
+{
 
     /**
      * This determines how Smarty handles "<?php ... ?>" tags in templates.
@@ -166,8 +167,8 @@ class Smarty_Security {
      * @var array
      */
     protected $_trusted_dir = null;
-    
-    
+
+
     /**
      * @param Smarty $smarty
      */
@@ -175,7 +176,7 @@ class Smarty_Security {
     {
         $this->smarty = $smarty;
     }
-    
+
     /**
      * Check if PHP function is trusted.
      *
@@ -242,7 +243,8 @@ class Smarty_Security {
     {
         // check for internal always required tags
         if (in_array($tag_name, array('assign', 'call', 'private_filter', 'private_block_plugin', 'private_function_plugin', 'private_object_block_function',
-                    'private_object_function', 'private_registered_function', 'private_registered_block', 'private_special_variable', 'private_print_expression', 'private_modifier'))) {
+            'private_object_function', 'private_registered_function', 'private_registered_block', 'private_special_variable', 'private_print_expression', 'private_modifier'))
+        ) {
             return true;
         }
         // check security settings
@@ -323,8 +325,8 @@ class Smarty_Security {
 
         // check if index is outdated
         if ((!$this->_template_dir || $this->_template_dir !== $_template_dir)
-                || (!$this->_config_dir || $this->_config_dir !== $_config_dir)
-                || (!empty($this->secure_dir) && (!$this->_secure_dir || $this->_secure_dir !== $this->secure_dir))
+            || (!$this->_config_dir || $this->_config_dir !== $_config_dir)
+            || (!empty($this->secure_dir) && (!$this->_secure_dir || $this->_secure_dir !== $this->secure_dir))
         ) {
             $this->_resource_dir = array();
             $_template = true;
@@ -353,7 +355,7 @@ class Smarty_Security {
         // rebuild secure dir index
         if ($_secure) {
             $this->_secure_dir = $this->secure_dir;
-            foreach ((array) $this->secure_dir as $directory) {
+            foreach ((array)$this->secure_dir as $directory) {
                 $directory = realpath($directory);
                 $this->_resource_dir[$directory] = true;
             }
@@ -382,14 +384,14 @@ class Smarty_Security {
         // give up
         throw new SmartyException("directory '{$_filepath}' not allowed by security setting");
     }
-    
+
     /**
      * Check if URI (e.g. {fetch} or {html_image}) is trusted
      *
      * To simplify things, isTrustedUri() resolves all input to "{$PROTOCOL}://{$HOSTNAME}".
      * So "http://username:password@hello.world.example.org:8080/some-path?some=query-string"
      * is reduced to "http://hello.world.example.org" prior to applying the patters from {@link $trusted_uri}.
-     * @param string $uri 
+     * @param string $uri
      * @return boolean true if URI is trusted
      * @throws SmartyException if URI is not trusted
      * @uses $trusted_uri for list of patterns to match against $uri
@@ -405,10 +407,10 @@ class Smarty_Security {
                 }
             }
         }
-        
+
         throw new SmartyException("URI '{$uri}' not allowed by security setting");
     }
-    
+
     /**
      * Check if directory of file resource is trusted.
      *
@@ -427,7 +429,7 @@ class Smarty_Security {
             $this->_php_resource_dir = array();
 
             $this->_trusted_dir = $this->trusted_dir;
-            foreach ((array) $this->trusted_dir as $directory) {
+            foreach ((array)$this->trusted_dir as $directory) {
                 $directory = realpath($directory);
                 $this->_php_resource_dir[$directory] = true;
             }

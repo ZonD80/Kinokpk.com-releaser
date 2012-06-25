@@ -392,7 +392,7 @@ function write_sys_msg($receiver, $msg, $subject)
 function write_msg($sender, $receiver, $msg, $subject)
 {
     global $REL_DB;
-    $REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, subject) VALUES($sender, $receiver, '" . time() . "', " . $REL_DB->sqlesc($msg) . ", " . $REL_DB->sqlesc($subject) . ")"); //;
+    $REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, subject) VALUES($sender, $receiver, '" . TIME . "', " . $REL_DB->sqlesc($msg) . ", " . $REL_DB->sqlesc($subject) . ")"); //;
     return;
 }
 
@@ -814,7 +814,7 @@ function write_log($text, $type = "tracker")
     //
     $type = sqlesc($type);
     $text = sqlesc($text);
-    $added = time();
+    $added = TIME;
     $REL_DB->query("INSERT INTO sitelog (added, userid, txt, type) VALUES($added, $id, $text, $type)");
     return;
 }
@@ -844,7 +844,7 @@ function check_banned_emails($email)
  */
 function get_elapsed_time($U, $showseconds = true)
 {
-    $N = time();
+    $N = TIME;
     if ($N >= $U)
         $diff = $N - $U;
     else
@@ -1062,7 +1062,7 @@ function userlogin()
 
     if (!$row['uri']) {
 
-        $stylesheet = $REL_DB->query_row("SELECT id FROM stylesheets WHERE uri=".$REL_DB->sqlesc($REL_CONFIG['default_theme']));
+        $stylesheet = $REL_DB->query_row("SELECT id FROM stylesheets WHERE uri=" . $REL_DB->sqlesc($REL_CONFIG['default_theme']));
         $REL_DB->query("UPDATE users SET stylesheet={$stylesheet['id']} WHERE id={$row['id']}");
         $row['stylesheet'] = $stylesheet['id'];
         $row['uri'] = $REL_CONFIG['default_theme'];
@@ -1097,7 +1097,7 @@ function userlogin()
     if ($REL_CRON['rating_enabled'] && $row['downloaded']) {
         $classes = init_class_array();
 
-        if (($row['seeding'] || $row['leeching']) && ($row['last_checked'] < (time() - $REL_CRON['rating_checktime'] * 60)) && $row['class'] != $classes['vip'] && $row['added'] < (time() - $REL_CRON['rating_freetime'] * 86400)) {
+        if (($row['seeding'] || $row['leeching']) && ($row['last_checked'] < (TIME - $REL_CRON['rating_checktime'] * 60)) && $row['class'] != $classes['vip'] && $row['added'] < (TIME - $REL_CRON['rating_freetime'] * 86400)) {
             if ($row['downloaded'] > ($row['seeding'] + $row['discount'])) $rateup = -$REL_CRON['rating_perleech'];
             else {
                 $upcount = @round(($row['seeding'] + $row['discount']) / $row['downloaded']);
@@ -1107,29 +1107,28 @@ function userlogin()
 
 
             $updateset[] = "ratingsum = CASE WHEN ((ratingsum+$rateup>{$REL_CRON['rating_max']}) AND $rateup>0 AND ratingsum<{$REL_CRON['rating_max']}) THEN {$REL_CRON['rating_max']} WHEN ($rateup>0 AND ratingsum>{$REL_CRON['rating_max']}) THEN ratingsum ELSE ratingsum+$rateup END";
-            $updateset[] = "last_checked = " . time();
+            $updateset[] = "last_checked = " . TIME;
         }
 
         if ($row['ratingsum'] < $REL_CRON['rating_dislimit']) {
             $updateset[] = 'enabled = 0';
             $updateset[] = "dis_reason = " . $REL_DB->sqlesc($REL_LANG->_to($row['id'], 'Your rating was too low'));
-        }
-        elseif ($row['ratingsum']>$REL_CRON['promote_rating']&&$row['class']!=$classes['rating']&&get_class_priority($row['class'])<get_class_priority($classes['staffbegin'])) {
+        } elseif ($row['ratingsum'] > $REL_CRON['promote_rating'] && $row['class'] != $classes['rating'] && get_class_priority($row['class']) < get_class_priority($classes['staffbegin'])) {
             $updateset[] = "class = {$classes['rating']}";
             $row['class'] = $classes['rating'];
-            write_sys_msg($row['id'],$REL_LANG->_('You have been promoted to %s class, because your rating is above %s',$classes[$classes['rating']]['name'],$REL_CRON['promote_rating']),$REL_LANG->_('Congratulations'));
+            write_sys_msg($row['id'], $REL_LANG->_('You have been promoted to %s class, because your rating is above %s', $classes[$classes['rating']]['name'], $REL_CRON['promote_rating']), $REL_LANG->_('Congratulations'));
         }
     }
 
-    if ($row['num_warned']>4) {
+    if ($row['num_warned'] > 4) {
         $updateset[] = "enabled = 0";
-        $updateset[] = "dis_reason = ".$REL_DB->sqlesc($REL_LANG->_('Disabled by system (5 warnings)'));
-        $updateset[] = "modcomment = ".$REL_DB->sqlesc($row['modcomment']."\n{$REL_LANG->_to(0,'Disabled by system (5 warnings)')}");
-        write_log($REL_LANG->_to(0,'User %s disabled by system (5 warnings)',make_user_link($row)),'tracker');
+        $updateset[] = "dis_reason = " . $REL_DB->sqlesc($REL_LANG->_('Disabled by system (5 warnings)'));
+        $updateset[] = "modcomment = " . $REL_DB->sqlesc($row['modcomment'] . "\n{$REL_LANG->_to(0,'Disabled by system (5 warnings)')}");
+        write_log($REL_LANG->_to(0, 'User %s disabled by system (5 warnings)', make_user_link($row)), 'tracker');
     }
     if ($ip != $row['ip'])
         $updateset[] = 'ip = ' . $REL_DB->sqlesc($ip);
-    $updateset[] = 'last_access = ' . time();
+    $updateset[] = 'last_access = ' . TIME;
 
     if (count($updateset))
         $REL_DB->query("UPDATE LOW_PRIORITY users SET " . implode(", ", $updateset) . " WHERE id=" . $row["id"]);
@@ -1216,7 +1215,7 @@ function get_server_load()
  */
 function user_session()
 {
-    global $CURUSER, $REL_CONFIG, $REL_CRON, $REL_DB;
+    global $CURUSER, $REL_CONFIG, $REL_CRON, $REL_DB, $REL_LANG;
 
     $ip = getip();
     $url = htmlspecialchars($_SERVER['REQUEST_URI']);
@@ -1231,7 +1230,7 @@ function user_session()
         $class = $CURUSER['class'];
     }
 
-    $past = time() - 300;
+    $past = TIME - 300;
     $sid = session_id();
     //	$where = array();
     $updateset = array();
@@ -1242,7 +1241,7 @@ function user_session()
 		 else
 		 $where[] = "ip = ".sqlesc($ip);*/
         //$REL_DB->query("DELETE FROM sessions WHERE ".implode(" AND ", $where));
-        $ctime = time();
+        $ctime = TIME;
         $agent = htmlspecialchars($_SERVER["HTTP_USER_AGENT"]);
         $updateset[] = "sid = " . sqlesc($sid);
         $uid = (int)$uid;
@@ -1268,9 +1267,15 @@ function user_session()
         $allowed_types = array_merge(array('unread', 'inbox', 'outbox'), array_intersect($allowed_types, $CURUSER['notifs']));
 
         $secs_system = $REL_CRON['pm_delete_sys_days'] * 86400;
-        $dt_system = time() - $secs_system;
+        $dt_system = TIME - $secs_system;
         $secs_all = $REL_CRON['pm_delete_user_days'] * 86400;
-        $dt_all = time() - $secs_all;
+        $dt_all = TIME - $secs_all;
+
+        if ($CURUSER['warned'] && $CURUSER['warneduntil'] && $CURUSER['warneduntil'] < TIME) {
+            $modcomment = $REL_DB->sqlesc(date("Y-m-d") . " - {$REL_LANG->_to(0,'Warning removed due to timeout')}.\n");
+            write_sys_msg($CURUSER['id'], $REL_LANG->_('Your warning was removed by system due to timeout'), $REL_LANG->_('Warning removed'));
+            $REL_DB->query("UPDATE users SET warned=0, warneduntil = 0, modcomment = CONCAT($modcomment, modcomment) WHERE id={$CURUSER['id']}");
+        }
 
         foreach ($allowed_types as $type) {
             if ($type == 'torrents') {
@@ -1664,7 +1669,7 @@ function run_cronjobs()
 {
     global $REL_CRON, $REL_SEO, $REL_DB;
     if ($REL_CRON['cron_is_native']) {
-        $time = time();
+        $time = TIME;
         if (((($time - $REL_CRON['last_cleanup']) > $REL_CRON['autoclean_interval']) && !$REL_CRON['in_cleanup'])) print '<img width="0px" height="0px" alt="" title="" src="' . $REL_SEO->make_link('cleanup') . '"/>';
         if (!$REL_CRON['remotecheck_disabled'] && (($time - $REL_CRON['last_remotecheck']) > $REL_CRON['remotecheck_interval'])) print '<img width="0px" height="0px" alt="" title="" src="' . $REL_SEO->make_link('remote_check') . '"/>';
     }
@@ -1713,7 +1718,7 @@ function close_sessions()
 {
     global $REL_DB;
     $secs = 1 * 3600;
-    $time = time();
+    $time = TIME;
     $dt = $time - $secs;
     $updates = $REL_DB->query("SELECT uid, time FROM sessions WHERE uid<>-1 AND time < $dt");
     while ($upd = mysql_fetch_assoc($updates)) {
@@ -1764,7 +1769,7 @@ function generate_ratio_popup_warning($blockmode = false)
     if (!$REL_CRON['rating_enabled']) return;
     if ($_COOKIE['denynotifs'] && !$blockmode) return;
 
-    if ($CURUSER['seeding'] && ($CURUSER['added'] < (time() - $REL_CRON['rating_freetime'] * 86400)) && ($CURUSER['class'] != $classes['vip']) && $CURUSER['downloaded'] && (($CURUSER['seeding'] + $CURUSER['discount']) < $CURUSER['downloaded'])) {
+    if ($CURUSER['seeding'] && ($CURUSER['added'] < (TIME - $REL_CRON['rating_freetime'] * 86400)) && ($CURUSER['class'] != $classes['vip']) && $CURUSER['downloaded'] && (($CURUSER['seeding'] + $CURUSER['discount']) < $CURUSER['downloaded'])) {
 
         $znak = (($CURUSER['ratingsum'] > 0) ? '+' : '');
 
@@ -1809,7 +1814,7 @@ function logincookie($id, $passhash, $language, $updatedb = true, $expires = 0x7
     setcookie("lang", $language, $expires);
 
     if ($updatedb)
-        $REL_DB->query("UPDATE users SET last_access = " . time() . " WHERE id = $id");
+        $REL_DB->query("UPDATE users SET last_access = " . TIME . " WHERE id = $id");
     return;
 }
 
@@ -1919,7 +1924,7 @@ function prepare_for_commenttable($subres, $subject = '', $link = '')
 
     while ($row = mysql_fetch_array($subres)) {
         $visited_type = $row['type'] . 'comments';
-        if ($row['last_access'] > (time() - 300)) $row['userstate'] = 'online'; else $row['userstate'] = 'offline';
+        if ($row['last_access'] > (TIME - 300)) $row['userstate'] = 'online'; else $row['userstate'] = 'offline';
         if ($subject) $row['subject'] = $subject;
         if (mb_strlen($row['subject']) > 70) $row['subject'] = mb_substr($row['subject'], 0, 67) . '...';
         if ($row['user']) {
@@ -2136,7 +2141,7 @@ function prepare_for_torrenttable($res)
 
 
         if (!$resvalue['sticky']) {
-            $timestr = time() + $CURUSER['timezone'] * 3600;
+            $timestr = TIME + $CURUSER['timezone'] * 3600;
             if ($resvalue['added'] > (strtotime('today 00:00:00', $timestr)) && !$td_used) {
                 $resvalue['label'] = $REL_LANG->_("Today");
                 $td_used = true;
@@ -2160,7 +2165,7 @@ function prepare_for_torrenttable($res)
         }
         $resvalue['free'] = ($resvalue['free'] ? $resvalue['free'] : in_array($CURUSER['id'], explode(',', $resvalue['freefor'])));
         //		print("<td align=center><nobr>" . str_replace(" ", "<br />", $resvalue["added"]) . "</nobr></td>\n");
-        $ttl = ($REL_CONFIG['ttl_days'] * 24) - floor((time() - ($resvalue["last_action"])) / 3600);
+        $ttl = ($REL_CONFIG['ttl_days'] * 24) - floor((TIME - ($resvalue["last_action"])) / 3600);
         if ($ttl == 1) $ttl .= " {$REL_LANG->_("hour")}"; else $ttl .= " {$REL_LANG->_("hours")}";
         $resvalue['ttl'] = $ttl;
         $resvalue['size'] = str_replace(" ", "", mksize($resvalue["size"]));
@@ -2339,7 +2344,7 @@ function send_comment_notifs($id, $page, $type)
         $emails = sqlesc($emails);
         $subject = sqlesc($REL_LANG->say_by_key_to($id, 'new_comment'));
         $msg = sqlesc(sprintf($REL_LANG->say_by_key_to($id, 'comment_notice_' . $type), $page));
-        //$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]");
+        //$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".TIME.", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]");
         $REL_DB->query("INSERT INTO cron_emails (emails, subject, body) VALUES ($emails, $subject, $msg)");
     }
 }
@@ -2362,7 +2367,7 @@ function send_notifs($type, $text = '', $id = 0)
             $emails = sqlesc($emails);
             $subject = sqlesc($REL_LANG->say_by_key('new_' . $type, $language));
             $msg = sqlesc($REL_LANG->say_by_key('notice_' . $type, $language) . $text . "<hr/ ><a href=\"" . $REL_SEO->make_link('index') . "\">{$REL_CONFIG['sitename']}</a><br /><br /><div align=\"right\">{$REL_LANG->_lang($language,'You can always configure your notifications in <a href="%s">notification settings</a> of your account.',$REL_SEO->make_link("mynotifs","settings",'1'))}</div>");
-            //	$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".time().", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]");
+            //	$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, poster, subject) SELECT 0, userid, ".TIME.", $msg, 0, $subject FROM notifs WHERE checkid = $id AND type='$type' AND userid != $CURUSER[id]");
             $REL_DB->query("INSERT INTO cron_emails (emails, subject, body) VALUES ($emails,$subject, $msg)");
         }
     }
@@ -2761,7 +2766,7 @@ function generate_lang_js()
  * Outputs beta warning. Default false.
  * @var boolean
  */
-define ("BETA", true);
+define ("BETA", false);
 /**
  * Beta warning as it is
  * @var string
@@ -2771,5 +2776,5 @@ define ("BETA_NOTICE", "\n<br />This isn't complete release of source!");
  * Kinokpk.com releaser's version
  * @var string
  */
-define("RELVERSION", "4.00 alpha 2");
+define("RELVERSION", "3.39");
 ?>

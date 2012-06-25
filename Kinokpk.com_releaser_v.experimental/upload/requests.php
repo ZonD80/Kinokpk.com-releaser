@@ -35,7 +35,7 @@ if ($action == 'new') {
         $request = $REL_DB->sqlesc($request);
         $descr = $REL_DB->sqlesc($descr);
         $cat = $REL_DB->sqlesc($cat);
-        $REL_DB->query("INSERT INTO requests (hits,userid, cat, request, descr, added) VALUES(1,$CURUSER[id], $cat, $request, $descr, '" . time() . "')");
+        $REL_DB->query("INSERT INTO requests (hits,userid, cat, request, descr, added) VALUES(1,$CURUSER[id], $cat, $request, $descr, '" . TIME . "')");
         $id = mysql_insert_id();
 
 

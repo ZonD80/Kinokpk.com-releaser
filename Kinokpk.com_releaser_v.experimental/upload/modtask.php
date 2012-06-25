@@ -55,7 +55,7 @@ elseif ($action == "edituser") {
         $username = sqlesc($username);
         $updateset[] = "username = " . $username;
 
-        $REL_DB->query("INSERT INTO nickhistory (userid,nick,date) VALUES ({$userid},$username," . time() . ")");
+        $REL_DB->query("INSERT INTO nickhistory (userid,nick,date) VALUES ({$userid},$username," . TIME . ")");
     }
     if ($email != $user["email"]) {
         if (!validemail($email))
@@ -136,7 +136,7 @@ elseif ($action == "edituser") {
     if ($curclass != $class) {
         // Notify user
         $msg = sqlesc($REL_LANG->_to($userid, 'Your class was setted to "%s" by %s', get_user_class_name($class), make_user_link()));
-        $added = sqlesc(time());
+        $added = sqlesc(TIME);
         $subject = sqlesc($REL_LANG->_to($userid, 'Notification about class changing'));
         $REL_DB->query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES(0, $userid, $msg, $added, $subject)");
         $updateset[] = "class = $class";
@@ -152,7 +152,7 @@ elseif ($action == "edituser") {
             $modcomment = date("Y-m-d") . $REL_LANG->_to(0, 'Warning has been disabled by %s', $CURUSER['username']) . ".\n" . $user["modcomment"];
             $msg = sqlesc($REL_LANG->_to($userid, 'Your warning has been disabled by %s', make_user_link()));
         }
-        $added = sqlesc(time());
+        $added = sqlesc(TIME);
         $REL_DB->query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES (0, $userid, $msg, $added, $subject)");
     } elseif ($warnlength) {
         if (mb_strlen($warnpm) == 0)
@@ -163,14 +163,14 @@ elseif ($action == "edituser") {
             $updateset[] = "warneduntil = 0";
             $updateset[] = "num_warned = $num_warned";
         } else {
-            $warneduntil = (time() + $warnlength * 604800);
+            $warneduntil = (TIME + $warnlength * 604800);
             $dur = $warnlength . ' ' . ($warnlength > 1 ? $REL_LANG->_('weeks') : $REL_LANG->_('week'));
             $modcomment = date("Y-m-d") . $REL_LANG->_to(0, 'Warned by %s for %s with the following reason: "%s"', $CURUSER['username'], $dur, $warnpm) . "\n" . $user["modcomment"];
             $msg = sqlesc($REL_LANG->_to($userid, 'You got warned by %s for %s with the following reason: "%s"', make_user_link(), $dur, $warnpm));
             $updateset[] = "warneduntil = $warneduntil";
             $updateset[] = "num_warned = $num_warned";
         }
-        $added = sqlesc(time());
+        $added = sqlesc(TIME);
         $subject = sqlesc($REL_LANG->_to($userid, 'You have got a warning!'));
         $REL_DB->query("INSERT INTO messages (sender, receiver, msg, added, subject) VALUES (0, $userid, $msg, $added, $subject)");
         $updateset[] = "warned = 1";
@@ -198,7 +198,7 @@ elseif ($action == "edituser") {
     $updateset[] = "title = " . sqlesc($title);
     $updateset[] = "modcomment = " . sqlesc($modcomment);
     if ($_POST['resetkey']) {
-        $passkey = md5($CURUSER['username'] . time() . $CURUSER['passhash']);
+        $passkey = md5($CURUSER['username'] . TIME . $CURUSER['passhash']);
         $REL_DB->query("UPDATE xbt_users SET torrent_pass='' WHERE uid=" . sqlesc($CURUSER[id]));
     }
     $REL_DB->query("UPDATE users SET " . implode(", ", $updateset) . " $birthday WHERE id = $userid");

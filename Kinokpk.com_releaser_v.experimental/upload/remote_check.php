@@ -16,8 +16,8 @@ date_default_timezone_set('UTC');
 
 define ("IN_ANNOUNCE", true);
 define ("ROOT_PATH", dirname(__FILE__) . '/');
-
-$time = time();
+define('TIME', time());
+$time = TIME;
 
 require_once(ROOT_PATH . 'include/secrets.php');
 // connection closed
@@ -39,7 +39,7 @@ function write_log($text, $type = "tracker")
 {
     $type = mysql_real_escape_string($type);
     $text = mysql_real_escape_string($text);
-    $added = time();
+    $added = TIME;
     $REL_DB->query("INSERT INTO sitelog (added, txt, type) VALUES($added, '$text', '$type')");
     return;
 }
@@ -81,7 +81,7 @@ if ($id) {
 
     while (list($infohash, $url) = mysql_fetch_array($anarray)) {
         $peers = get_remote_peers($url, $infohash);
-        $REL_DB->query("UPDATE LOW_PRIORITY trackers SET seeders=" . (int)$peers['seeders'] . ", leechers=" . (int)$peers['leechers'] . ", check_start=" . time() . ", lastchecked=" . time() . ", method='{$peers['method']}', remote_method='{$peers['remote_method']}', state=" . $REL_DB->sqlesc($peers['state']) . " WHERE torrent=$id AND tracker=" . $REL_DB->sqlesc($url));
+        $REL_DB->query("UPDATE LOW_PRIORITY trackers SET seeders=" . (int)$peers['seeders'] . ", leechers=" . (int)$peers['leechers'] . ", check_start=" . TIME . ", lastchecked=" . TIME . ", method='{$peers['method']}', remote_method='{$peers['remote_method']}', state=" . $REL_DB->sqlesc($peers['state']) . " WHERE torrent=$id AND tracker=" . $REL_DB->sqlesc($url));
     }
     die(base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="));
 }

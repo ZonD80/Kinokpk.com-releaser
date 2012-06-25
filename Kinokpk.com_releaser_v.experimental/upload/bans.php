@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mask = sqlesc(htmlspecialchars($mask));
     $descr = sqlesc(htmlspecialchars($descr));
     $userid = $CURUSER['id'];
-    $added = time();
+    $added = TIME;
     $REL_DB->query("INSERT INTO bans (mask,descr,user,added) VALUES($mask,$descr,$userid,$added)");
     write_log($REL_LANG->_('Mask %s was banned by %s', $mask, make_user_link()), "bans");
 

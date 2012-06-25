@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] != "POST")
 get_privilege('mass_pm');
 
 $sender_id = ($_POST['sender'] == 'system' ? 0 : $CURUSER['id']);
-$dt = sqlesc(time());
+$dt = sqlesc(TIME);
 $msg = $_POST['msg'];
 if (!$msg)
     $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->say_by_key('enter_message'));
@@ -35,12 +35,12 @@ if (!is_array($_POST['classes']))
 /*$query = $REL_DB->query("SELECT id FROM users WHERE class IN (".implode(", ", array_map("sqlesc", $clases)).")");
 
 while ($dat=mysql_fetch_assoc($query)) {
-$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, subject) VALUES ($sender_id, $dat[id], '" . time() . "', " . sqlesc($msg) .", " . sqlesc($subject) .")");
+$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, subject) VALUES ($sender_id, $dat[id], '" . TIME . "', " . sqlesc($msg) .", " . sqlesc($subject) .")");
 }*/
 
 write_log($REL_LANG->say_by_key('mass_mailing') . " $CURUSER[username]", "tracker");
 
-$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, subject) SELECT $sender_id, id, " . time() . ", " . sqlesc($msg) . ", " . sqlesc($subject) . " FROM users WHERE class IN (" . implode(", ", array_map("intval", $_POST['classes'])) . ")");
+$REL_DB->query("INSERT INTO messages (sender, receiver, added, msg, subject) SELECT $sender_id, id, " . TIME . ", " . sqlesc($msg) . ", " . sqlesc($subject) . " FROM users WHERE class IN (" . implode(", ", array_map("intval", $_POST['classes'])) . ")");
 $counter = mysql_affected_rows();
 
 safe_redirect($REL_SEO->make_link('staffmess'), 1);

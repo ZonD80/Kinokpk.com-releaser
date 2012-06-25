@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $comment = trim($_POST["comment"]);
     if (!$email || !$comment)
         $REL_TPL->stderr($REL_LANG->_("Error"), $REL_LANG->_("Missing form data"));
-    $REL_DB->query("INSERT INTO bannedemails (added, addedby, comment, email) VALUES(" . sqlesc(time()) . ", $CURUSER[id], " . sqlesc($comment) . ", " . sqlesc($email) . ")");
+    $REL_DB->query("INSERT INTO bannedemails (added, addedby, comment, email) VALUES(" . sqlesc(TIME) . ", $CURUSER[id], " . sqlesc($comment) . ", " . sqlesc($email) . ")");
     if (mysql_errno() == 1062) $REL_TPL->stderr($REL_LANG->say_by_key('error'), $REL_LANG->_("This email was already banned"));
     safe_redirect(makesafe($_SERVER[REQUEST_URI]));
     die;

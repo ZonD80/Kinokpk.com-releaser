@@ -15,7 +15,8 @@ if (!defined('IN_TRACKER'))
  * @subpackage Cacher
  * @author Rodney Rehm
  */
-abstract class Smarty_CacheResource_Custom extends Smarty_CacheResource {
+abstract class Smarty_CacheResource_Custom extends Smarty_CacheResource
+{
 
     /**
      * fetch cached content and its modification time from data source
@@ -114,7 +115,7 @@ abstract class Smarty_CacheResource_Custom extends Smarty_CacheResource {
      * @param Smarty_Template_Cached $cached cached object
      * @return booelan true or false if the cached content does not exist
      */
-    public function process(Smarty_Internal_Template $_template, Smarty_Template_Cached $cached=null)
+    public function process(Smarty_Internal_Template $_template, Smarty_Template_Cached $cached = null)
     {
         if (!$cached) {
             $cached = $_template->cached;
@@ -165,7 +166,7 @@ abstract class Smarty_CacheResource_Custom extends Smarty_CacheResource {
      * @param integer $exp_time expiration time (number of seconds, not timestamp)
      * @return integer number of cache files deleted
      */
-    public function clearAll(Smarty $smarty, $exp_time=null)
+    public function clearAll(Smarty $smarty, $exp_time = null)
     {
         $this->cache = array();
         return $this->delete(null, null, null, $exp_time);
@@ -236,4 +237,5 @@ abstract class Smarty_CacheResource_Custom extends Smarty_CacheResource {
         $this->delete($name, null, null, null);
     }
 }
+
 ?>

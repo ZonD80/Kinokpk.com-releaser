@@ -33,7 +33,7 @@ function write_log($text, $type = "tracker")
 {
     $type = sqlesc($type);
     $text = sqlesc($text);
-    $added = time();
+    $added = TIME;
     mysql_query("INSERT INTO sitelog (added, txt, type) VALUES($added, $text, $type)") or sqlerr(__FILE__, __LINE__);
     return;
 }

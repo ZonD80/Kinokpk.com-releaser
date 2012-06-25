@@ -17,7 +17,8 @@ if (!defined('IN_TRACKER'))
  * @package Smarty
  * @subpackage TemplateResources
  */
-abstract class Smarty_Resource_Uncompiled extends Smarty_Resource {
+abstract class Smarty_Resource_Uncompiled extends Smarty_Resource
+{
 
     /**
      * Render and output the template (without using the compiler)

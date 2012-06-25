@@ -15,7 +15,7 @@ loggedinorreturn();
 $REL_TPL->stdhead($REL_LANG->_('Users location'));
 
 $secs = 1 * 300;
-$dt = time() - $secs;
+$dt = TIME - $secs;
 
 
 $res = $REL_DB->query("SELECT SUM(1) FROM sessions $searchs WHERE time > $dt");

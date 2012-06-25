@@ -67,7 +67,7 @@ if ($CURUSER) {
         if (strlen($text) > $line) die("Слишком длинный текст");
         if ($text != "") {
 
-            $REL_DB->query("INSERT INTO shoutbox (id,userid, date, text, orig_text) VALUES ('id'," . $CURUSER["id"] . ", " . time() . ", " . sqlesc($text) . ", " . sqlesc($text) . ")") or sqlerr(__FILE__, __LINE__);
+            $REL_DB->query("INSERT INTO shoutbox (id,userid, date, text, orig_text) VALUES ('id'," . $CURUSER["id"] . ", " . TIME . ", " . sqlesc($text) . ", " . sqlesc($text) . ")") or sqlerr(__FILE__, __LINE__);
         }
     }
 
