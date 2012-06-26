@@ -56,7 +56,7 @@ class REL_SEO
 
             foreach ($linkar as $place => $param) {
                 if ($place % 2 == 0) continue;
-                if ($this->SR[$script][$param]) {
+                if (isset($this->SR[$script][$param])&&$this->SR[$script][$param]) {
                     $destar[$this->SO[$script][$param]][] = sprintf($this->SR[$script][$param], $linkar[$place + 1]);
                     if ($this->SU[$script][$param]) {
                         foreach ($this->SU[$script][$param] as $to_unset) unset($destar[$this->SO[$script][$to_unset]]);
@@ -79,7 +79,7 @@ class REL_SEO
             }
             $dest .= addslashes(implode('', $destar));
         }
-        if ($destar2) {
+        if (isset($destar2)&&$destar2) {
             foreach ($destar2 as $dkey => $dval) {
                 if ($dval)
                     $destar2[$dkey] = implode('&', $dval);

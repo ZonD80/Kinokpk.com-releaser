@@ -16,9 +16,9 @@
  */
 function maketable($res)
 {
-    global $REL_LANG, $REL_CONFIG, $cats, $REL_SEO, $disallow_view, $REL_DB;
+    global $REL_LANG, $REL_CONFIG, $cats, $REL_SEO, $disallow_view, $REL_DB, $REL_CRON;
     if ($disallow_view && get_privilege('view_private_user_profiles', false)) $ret .= "<p>{$REL_LANG->_("You are viewing private profile as administration member")}</p>";
-    $ret .= "<table class=main border=1 cellspacing=0 cellpadding=5>" . "<tr><td class=colhead align=left>" . $REL_LANG->say_by_key('type') . "</td><td class=colhead>" . $REL_LANG->say_by_key('name') . "</td>" . ($REL_CONFIG ['use_ttl'] ? "<td class=colhead align=center>" . $REL_LANG->say_by_key('ttl') . "</td>" : "") . "<td class=colhead align=center>" . $REL_LANG->say_by_key('size') . "</td><td class=colhead align=right>" . $REL_LANG->say_by_key('details_seeding') . "</td><td class=colhead align=right>" . $REL_LANG->say_by_key('details_leeching') . "</td></tr>\n";
+    $ret .= "<table class=main border=1 cellspacing=0 cellpadding=5>" . "<tr><td class=colhead align=left>" . $REL_LANG->say_by_key('type') . "</td><td class=colhead>" . $REL_LANG->say_by_key('name') . "</td>" . ($REL_CRON['ttl_days'] ? "<td class=colhead align=center>" . $REL_LANG->say_by_key('ttl') . "</td>" : "") . "<td class=colhead align=center>" . $REL_LANG->say_by_key('size') . "</td><td class=colhead align=right>" . $REL_LANG->say_by_key('details_seeding') . "</td><td class=colhead align=right>" . $REL_LANG->say_by_key('details_leeching') . "</td></tr>\n";
     while ($arr = mysql_fetch_assoc($res)) {
         $rescatids = explode(',', $arr ['category']);
         foreach ($rescatids as $rescatid)
@@ -32,7 +32,7 @@ function maketable($res)
         $size = str_replace(" ", "<br />", mksize($arr ["size"]));
         $seeders = number_format($arr ["seeders"]);
         $leechers = number_format($arr ["leechers"]);
-        $ret .= "<tr><td style='padding: 0px'>" . implode(',<br />', $arr ['cat_names']) . "</td>\n" . "<td><a href=\"" . $REL_SEO->make_link('details', 'id', $arr['torrent'], 'name', translit($arr["torrentname"])) . "\"><b>" . $arr ["torrentname"] . "</b></a></td>" . ($REL_CONFIG ['use_ttl'] ? "<td align=center>$ttl</td>" : "") . "<td align=center>$size</td><td align=right>$seeders</td><td align=right>$leechers</td></tr>\n";
+        $ret .= "<tr><td style='padding: 0px'>" . implode(',<br />', $arr ['cat_names']) . "</td>\n" . "<td><a href=\"" . $REL_SEO->make_link('details', 'id', $arr['torrent'], 'name', translit($arr["torrentname"])) . "\"><b>" . $arr ["torrentname"] . "</b></a></td>" . ($REL_CRON['ttl_days'] ? "<td align=center>$ttl</td>" : "") . "<td align=center>$size</td><td align=right>$seeders</td><td align=right>$leechers</td></tr>\n";
     }
     $ret .= "</table>\n";
     return $ret;
@@ -87,7 +87,7 @@ if (in_array($type, $allowed_types)) {
         $cats = assoc_cats();
         $r = $REL_DB->query("SELECT torrents.id, torrents.name, torrents.seeders, torrents.added, torrents.leechers, torrents.category FROM torrents WHERE owner=$id ORDER BY id DESC");
         if (mysql_num_rows($r)) {
-            $torrents = "<table class=main border=1 cellspacing=0 cellpadding=5>\n" . "<tr><td class=colhead>" . $REL_LANG->say_by_key('type') . "</td><td class=colhead>" . $REL_LANG->say_by_key('name') . "</td>" . ($REL_CONFIG ['use_ttl'] ? "<td class=colhead align=center>" . $REL_LANG->say_by_key('ttl') . "</td>" : "") . "<td class=colhead>" . $REL_LANG->say_by_key('tracker_seeders') . "</td><td class=colhead>" . $REL_LANG->say_by_key('tracker_leechers') . "</td></tr>\n";
+            $torrents = "<table class=main border=1 cellspacing=0 cellpadding=5>\n" . "<tr><td class=colhead>" . $REL_LANG->say_by_key('type') . "</td><td class=colhead>" . $REL_LANG->say_by_key('name') . "</td>" . ($REL_CRON['ttl_days'] ? "<td class=colhead align=center>" . $REL_LANG->say_by_key('ttl') . "</td>" : "") . "<td class=colhead>" . $REL_LANG->say_by_key('tracker_seeders') . "</td><td class=colhead>" . $REL_LANG->say_by_key('tracker_leechers') . "</td></tr>\n";
             while ($a = mysql_fetch_assoc($r)) {
                 $ttl = ($REL_CONFIG ['ttl_days'] * 24) - floor((TIME - $a ["added"]) / 3600);
                 if ($ttl == 1)
@@ -99,7 +99,7 @@ if (in_array($type, $allowed_types)) {
                     $a ['cat_names'] [] = "<a href=\"" . $REL_SEO->make_link('browse', 'cat', $rescatid, 'name', translit($cats[$rescatid])) . "\">" . $cats [$rescatid] . "</a>";
 
                 $cat = implode(',<br />', $a ['cat_names']);
-                $torrents .= "<tr><td style='padding: 0px'>$cat</td><td><a href=\"" . $REL_SEO->make_link('details', 'id', $a["id"], 'name', translit($a["name"])) . "\"><b>" . $a ["name"] . "</b></a></td>" . ($REL_CONFIG ['use_ttl'] ? "<td align=center>$ttl</td>" : "") . "<td align=right>$a[seeders]</td><td align=right>$a[leechers]</td></tr>\n";
+                $torrents .= "<tr><td style='padding: 0px'>$cat</td><td><a href=\"" . $REL_SEO->make_link('details', 'id', $a["id"], 'name', translit($a["name"])) . "\"><b>" . $a ["name"] . "</b></a></td>" . ($REL_CRON['ttl_days'] ? "<td align=center>$ttl</td>" : "") . "<td align=right>$a[seeders]</td><td align=right>$a[leechers]</td></tr>\n";
                 $hastorrents = true;
             }
             if ($hastorrents) $torrents .= "</table>";

@@ -27,7 +27,7 @@ $REL_DB = new REL_DB($db);
 unset($db);
 //$REL_DB->debug();
 
-$REL_CONFIGrow = $REL_DB->query("SELECT * FROM cache_stats WHERE cache_name IN ('sitename','defaultbaseurl','siteemail','default_language','smtptype')");
+$REL_CONFIGrow = $REL_DB->query("SELECT * FROM cache_stats WHERE cache_name IN ('sitename','defaultbaseurl','siteemail','default_language','smtptype','debug_language','static_language')");
 
 while ($REL_CONFIGres = mysql_fetch_assoc($REL_CONFIGrow)) $REL_CONFIG[$REL_CONFIGres['cache_name']] = $REL_CONFIGres['cache_value'];
 $REL_CONFIG['lang'] = $REL_CONFIG['default_language'];
@@ -132,7 +132,7 @@ if (mysql_num_rows($res) > 0) {
  * @see userlogin();
  */
 
-if ($REL_CRON['use_ttl']) {
+if ($REL_CRON['ttl_days']) {
     $dt = TIME - ($REL_CRON['ttl_days'] * 86400);
     $res = $REL_DB->query("SELECT id, name FROM torrents WHERE last_action < $dt");
     while ($arr = mysql_fetch_assoc($res)) {

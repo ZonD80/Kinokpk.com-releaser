@@ -121,7 +121,7 @@ class REL_LANG
     private function parse_db($language = 'en')
     {
         global $REL_CACHE, $REL_SEO, $CURUSER, $REL_DB;
-        if ($this->lang[$language]) return;
+        if (isset($this->lang[$language])&&$this->lang[$language]) return;
         $this->lang[$language] = $REL_CACHE->get('languages', $language);
         if ($this->lang[$language] === false) {
             $res = $REL_DB->query("SELECT lkey,lvalue FROM languages WHERE ltranslate='$language' ORDER by lkey ASC");

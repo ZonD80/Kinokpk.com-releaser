@@ -1596,7 +1596,7 @@ function sent_mail($to, $fromname, $fromemail, $subject, $body, $multiplemail = 
     $m->MsgHTML($body);
     if ($multiplemail) {
         //return true;
-        foreach (explode($multiplemail) as $addr) {
+        foreach (explode(',',$multiplemail) as $addr) {
             $m2 = clone $m;
             $m2->AddAddress($addr);
             $return = $m2->Send();
@@ -2766,7 +2766,7 @@ function generate_lang_js()
  * Outputs beta warning. Default false.
  * @var boolean
  */
-define ("BETA", false);
+define ("BETA", true);
 /**
  * Beta warning as it is
  * @var string
@@ -2776,5 +2776,5 @@ define ("BETA_NOTICE", "\n<br />This isn't complete release of source!");
  * Kinokpk.com releaser's version
  * @var string
  */
-define("RELVERSION", "3.39");
+define("RELVERSION", "4.00 alpha 2");
 ?>
